@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.33205.214
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LimbusCompanyModInstaller", "LimbusCompanyModInstaller\LimbusCompanyModInstaller.csproj", "{1F902027-B25A-4365-8E19-1D4633B98641}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		debug|x64 = debug|x64
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1F902027-B25A-4365-8E19-1D4633B98641}.debug|x64.ActiveCfg = debug|x64
+		{1F902027-B25A-4365-8E19-1D4633B98641}.debug|x64.Build.0 = debug|x64
+		{1F902027-B25A-4365-8E19-1D4633B98641}.Release|x64.ActiveCfg = Release|x64
+		{1F902027-B25A-4365-8E19-1D4633B98641}.Release|x64.Build.0 = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {143F34E4-AC23-454C-85F4-3463D15CED54}
+	EndGlobalSection
+EndGlobal

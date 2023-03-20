@@ -1,0 +1,1 @@
+[安装&更新&环境检查程序](https://github.com/Bright1192/LimbusLocalize/releases/download/v0.1.5/LimbusCompanyModInstaller.rar)
