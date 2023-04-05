@@ -2,14 +2,17 @@
 using SevenZipNET;
 using SimpleJSON;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Net;
+using System.Net.NetworkInformation;
 using System.Reflection.Emit;
 using System.Security.Policy;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using static System.Net.WebRequestMethods;
@@ -20,11 +23,23 @@ namespace LimbusCompanyModInstaller
 {
     public partial class Form1 : Form
     {
+        public const string VERSION = "0.1.1";
+        static Form1 __instance;
         public Form1()
         {
-            InitializeComponent();
-            if (CheckCanUse())
-                Form1_Load();
+            __instance = this;
+            try
+            {
+                InitializeComponent();
+                if (CheckCanUse())
+                    Form1_Load();
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.ToString());
+                System.Diagnostics.Process.Start("https://github.com/LocalizeLimbusCompany/LLC_MOD_Installer/releases/latest");
+                this.Close();
+            }
         }
         private bool CheckCanUse()
         {
@@ -36,6 +51,9 @@ namespace LimbusCompanyModInstaller
                     return CheckCanUse((int)ndpKey.GetValue("Release"));
                 }
             }
+            MessageBox.Show("该模组需要.NET 6.0运行环境", "致命错误", MessageBoxButtons.OK);
+            System.Diagnostics.Process.Start("https://dotnet.microsoft.com/zh-cn/download/dotnet/thank-you/sdk-6.0.406-windows-x64-installer");
+            this.Close();
             return false;
         }
         private bool CheckCanUse(int releaseKey)
@@ -57,12 +75,37 @@ namespace LimbusCompanyModInstaller
             else
             {
                 MessageBox.Show("该模组需要.NET 6.0运行环境", "致命错误", MessageBoxButtons.OK);
+                System.Diagnostics.Process.Start("https://dotnet.microsoft.com/zh-cn/download/dotnet/thank-you/sdk-6.0.406-windows-x64-installer");
                 this.Close();
             }
             return false;
         }
         private async void Form1_Load()
         {
+            try
+            {
+                using (WebClient client = new WebClient())
+                {
+                    client.Headers.Add("User-Agent", "request");
+                    string raw = new StreamReader(client.OpenRead(new Uri("https://api.github.com/repos/LocalizeLimbusCompany/LLC_MOD_Installer/releases/latest")), Encoding.UTF8).ReadToEnd();
+                    var latest = JSONNode.Parse(raw).AsObject;
+                    string latestReleaseTag = latest["tag_name"].Value.Remove(0, 1);
+                    if (new Version(latestReleaseTag) > new Version(FileVersionInfo.GetVersionInfo("./LimbusCompanyModInstaller.exe").ProductVersion))
+                    {
+                        MessageBox.Show("安装器存在更新");
+                        System.Diagnostics.Process.Start("https://github.com/LocalizeLimbusCompany/LLC_MOD_Installer/releases/latest");
+                        this.Close();
+                        return;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("看起来你无法访问Github\n" + ex.ToString());
+                System.Diagnostics.Process.Start("https://github.com/LocalizeLimbusCompany/LLC_MOD_Installer/releases/latest");
+                this.Close();
+                return;
+            }
             // Step 1: Find Limbus Company directory
             label1.Text = "正在查找Limbus Company目录...";
             progressBar1.Value = 0;
@@ -70,13 +113,15 @@ namespace LimbusCompanyModInstaller
             if (string.IsNullOrEmpty(limbusCompanyDir))
             {
                 MessageBox.Show("未能找到Limbus Company目录。");
+                this.Close();
                 return;
             }
             progressBar1.Value = 25;
 
             // Step 2: Download and extract MelonLoader
             label1.Text = "正在下载并解压MelonLoader...";
-            if (!File.Exists(limbusCompanyDir + "/version.dll"))
+            bool MelonLoaderVersion = File.Exists(limbusCompanyDir + "/MelonLoader/net6/MelonLoader.dll") ? new Version(FileVersionInfo.GetVersionInfo(limbusCompanyDir + "/MelonLoader/net6/MelonLoader.dll").ProductVersion) < new Version("0.6.0") : true;
+            if (MelonLoaderVersion)
             {
                 string melonLoaderUrl = "https://github.com/LavaGang/MelonLoader/releases/download/v0.6.0/MelonLoader.x64.zip";
                 string melonLoaderZipPath = Path.Combine(limbusCompanyDir, "MelonLoader.x64.zip");
@@ -91,12 +136,14 @@ namespace LimbusCompanyModInstaller
             string modsDir = Path.Combine(limbusCompanyDir, "Mods");
             Directory.CreateDirectory(modsDir);
             string tmpchinese = modsDir + "/tmpchinesefont";
-            if (!File.Exists(tmpchinese))
+
+            var LastWriteTime = File.Exists(tmpchinese) ? new FileInfo(tmpchinese).LastWriteTime.ToString("yyMMdd") : string.Empty;
+
+            if (CheckChineseFontAssetUpdate(LastWriteTime, out var tmpchineseUrl))
             {
-                string tmpchineseUrl = "https://github.com/Bright1192/LimbusLocalize/releases/download/v0.1.3/tmpchinesefont.7z";
                 string tmpchineseZipPath = Path.Combine(limbusCompanyDir, "tmpchinese.zip");
                 await DownloadFileAsync(tmpchineseUrl, tmpchineseZipPath);
-                ZipFile.ExtractToDirectory(tmpchineseZipPath, limbusCompanyDir);
+                new SevenZipExtractor(tmpchineseZipPath).ExtractAll(limbusCompanyDir, true);
                 File.Delete(modsDir);
             }
             progressBar1.Value = 75;
@@ -110,9 +157,11 @@ namespace LimbusCompanyModInstaller
                 // Check version
                 var versionInfo = FileVersionInfo.GetVersionInfo(limbusLocalizeDllPath);
                 string currentVersion = "v" + versionInfo.ProductVersion;
-                if (currentVersion == latestVersion)
+                if (new Version(versionInfo.ProductVersion) >= new Version(latestVersion.Remove(0, 1)))
                 {
                     MessageBox.Show("一切都是最新的。");
+                    this.Close();
+                    return;
                 }
                 else
                 {
@@ -133,26 +182,36 @@ namespace LimbusCompanyModInstaller
                 new SevenZipExtractor(limbusLocalizeZipPath).ExtractAll(limbusCompanyDir, true);
                 File.Delete(limbusLocalizeZipPath);
             }
-            this.Close();
             progressBar1.Value = 100;
+            MessageBox.Show("完成");
+            this.Close();
         }
 
         private string FindLimbusCompanyDirectory()
         {
-            DriveInfo[] drives = DriveInfo.GetDrives();
-            foreach (DriveInfo drive in drives)
+            string LimbusCompanyPath = "./LimbusCompanyPath.txt";
+            if (File.Exists(LimbusCompanyPath))
             {
-                if (drive.DriveType == DriveType.Fixed)
+                string LimbusCompany = File.ReadAllText(LimbusCompanyPath);
+                if (File.Exists(LimbusCompany + "/LimbusCompany.exe"))
                 {
-                    DirectoryInfo driveRoot = drive.RootDirectory;
-
-                    DirectoryInfo[] ProgramFiles = driveRoot.GetDirectories("Program Files (x86)");
-                    if (ProgramFiles.Length > 0)
+                    return LimbusCompany;
+                }
+            }
+            string steamPath = (string)Registry.GetValue(@"HKEY_CURRENT_USER\Software\Valve\Steam", "SteamPath", null);
+            if (steamPath != null)
+            {
+                string libraryFoldersPath = Path.Combine(steamPath, "steamapps", "libraryfolders.vdf");
+                if (File.Exists(libraryFoldersPath))
+                {
+                    string[] lines = File.ReadAllLines(libraryFoldersPath);
+                    foreach (string line in lines)
                     {
-                        DirectoryInfo[] Steam = ProgramFiles[0].GetDirectories("Steam");
-                        if (Steam.Length > 0)
+                        if (line.Contains("\t\"path\"\t\t"))
                         {
-                            DirectoryInfo[] steamapps = Steam[0].GetDirectories("steamapps");
+                            string libraryPath = line.Split('\t')[4].Trim('\"');
+
+                            DirectoryInfo[] steamapps = new DirectoryInfo(libraryPath).GetDirectories("steamapps");
                             if (steamapps.Length > 0)
                             {
                                 string commonDir = Path.Combine(steamapps[0].FullName, "common");
@@ -161,10 +220,16 @@ namespace LimbusCompanyModInstaller
                                     DirectoryInfo[] gameDirs = new DirectoryInfo(commonDir).GetDirectories("Limbus Company");
                                     if (gameDirs.Length > 0)
                                     {
-                                        return gameDirs[0].FullName;
+                                        var FullName = gameDirs[0].FullName;
+                                        if (File.Exists(FullName + "/LimbusCompany.exe"))
+                                        {
+                                            File.WriteAllText("LimbusCompanyPath.txt", FullName);
+                                            return FullName;
+                                        }
                                     }
                                 }
                             }
+
                         }
                     }
                 }
@@ -193,7 +258,7 @@ namespace LimbusCompanyModInstaller
             using (WebClient client = new WebClient())
             {
                 client.Headers.Add("User-Agent", "request");
-                string raw = new StreamReader(client.OpenRead(new Uri("https://api.github.com/repos/Bright1192/LimbusLocalize/releases")), Encoding.UTF8).ReadToEnd();
+                string raw = new StreamReader(client.OpenRead(new Uri("https://api.github.com/repos/LocalizeLimbusCompany/LocalizeLimbusCompany/releases")), Encoding.UTF8).ReadToEnd();
                 JSONArray releases = JSONNode.Parse(raw).AsArray;
 
                 string latestReleaseTag = releases[0]["tag_name"].Value;
@@ -201,10 +266,26 @@ namespace LimbusCompanyModInstaller
                 return latestReleaseTag;
             }
         }
-
+        static bool CheckChineseFontAssetUpdate(string LastWriteTime, out string download)
+        {
+            download = string.Empty;
+            using (WebClient client = new WebClient())
+            {
+                client.Headers.Add("User-Agent", "request");
+                string raw = new StreamReader(client.OpenRead(new Uri("https://api.github.com/repos/LocalizeLimbusCompany/LLC_ChineseFontAsset/releases/latest")), Encoding.UTF8).ReadToEnd();
+                var latest = JSONNode.Parse(raw).AsObject;
+                string latestReleaseTag = latest["tag_name"].Value;
+                if (latestReleaseTag != LastWriteTime)
+                {
+                    download = "https://github.com/LocalizeLimbusCompany/LLC_ChineseFontAsset/releases/download/" + latestReleaseTag + "/tmpchinesefont_" + latestReleaseTag + ".7z";
+                    return true;
+                }
+            }
+            return false;
+        }
         private string GetLatestLimbusLocalizeDownloadUrl(string version, bool isota)
         {
-            return "https://github.com/Bright1192/LimbusLocalize/releases/download/" + version + "/LimbusLocalize_" + (isota ? "OTA_" : string.Empty) + version + ".7z";
+            return "https://github.com/LocalizeLimbusCompany/LocalizeLimbusCompany/releases/download/" + version + "/LimbusLocalize_" + (isota ? "OTA_" : string.Empty) + version + ".7z";
         }
     }
 }
