@@ -23,7 +23,7 @@ namespace LimbusCompanyModInstaller
 {
     public partial class Form1 : Form
     {
-        public const string VERSION = "0.1.1";
+        public const string VERSION = "0.1.2";
         static Form1 __instance;
         public Form1()
         {
@@ -141,10 +141,10 @@ namespace LimbusCompanyModInstaller
 
             if (CheckChineseFontAssetUpdate(LastWriteTime, out var tmpchineseUrl))
             {
-                string tmpchineseZipPath = Path.Combine(limbusCompanyDir, "tmpchinese.zip");
+                string tmpchineseZipPath = Path.Combine(limbusCompanyDir, "tmpchinese.7z");
                 await DownloadFileAsync(tmpchineseUrl, tmpchineseZipPath);
                 new SevenZipExtractor(tmpchineseZipPath).ExtractAll(limbusCompanyDir, true);
-                File.Delete(modsDir);
+                File.Delete(tmpchineseZipPath);
             }
             progressBar1.Value = 75;
 
