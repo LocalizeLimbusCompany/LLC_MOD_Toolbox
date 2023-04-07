@@ -50,9 +50,7 @@
   <PropertyGroup>
     <StartupObject>LimbusCompanyModInstaller.Program</StartupObject>
   </PropertyGroup>
-  <PropertyGroup>
-    <ApplicationManifest>app.manifest</ApplicationManifest>
-  </PropertyGroup>
+  <PropertyGroup />
   <PropertyGroup>
     <ManifestCertificateThumbprint>D775D5012357CC893AA6FADBC5C340D4661056F5</ManifestCertificateThumbprint>
   </PropertyGroup>
@@ -67,6 +65,9 @@
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>Readme_Zero_Button_On.ico</ApplicationIcon>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="7z.NET, Version=1.0.3.0, Culture=neutral, processorArchitecture=MSIL">
@@ -100,6 +101,7 @@
     <Compile Include="SimpleJSON.cs" />
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <None Include="app.manifest" />
     <None Include="packages.config" />

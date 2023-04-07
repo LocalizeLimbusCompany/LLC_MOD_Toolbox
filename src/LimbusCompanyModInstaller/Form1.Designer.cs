@@ -80,7 +80,7 @@ namespace LimbusCompanyModInstaller
             this.Controls.Add(this.progressBar1);
             this.Controls.Add(this.label1);
             this.Name = "Form1";
-            this.Text = "LimbusCompanyModInstaller";
+            this.Text = "LimbusCompanyModInstaller"+ Form1.VERSION;
             this.ResumeLayout(false);
             this.PerformLayout();
 

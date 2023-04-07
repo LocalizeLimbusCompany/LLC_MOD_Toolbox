@@ -23,7 +23,7 @@ namespace LimbusCompanyModInstaller
 {
     public partial class Form1 : Form
     {
-        public const string VERSION = "0.1.2";
+        public const string VERSION = "0.1.3";
         static Form1 __instance;
         public Form1()
         {
@@ -120,13 +120,15 @@ namespace LimbusCompanyModInstaller
 
             // Step 2: Download and extract MelonLoader
             label1.Text = "正在下载并解压MelonLoader...";
-            bool MelonLoaderVersion = File.Exists(limbusCompanyDir + "/MelonLoader/net6/MelonLoader.dll") ? new Version(FileVersionInfo.GetVersionInfo(limbusCompanyDir + "/MelonLoader/net6/MelonLoader.dll").ProductVersion) < new Version("0.6.0") : true;
+            bool MelonLoaderVersion = File.Exists(limbusCompanyDir + "/MelonLoader/net6/MelonLoader.dll") ? new Version(FileVersionInfo.GetVersionInfo(limbusCompanyDir + "/MelonLoader/net6/MelonLoader.dll").ProductVersion) < new Version("0.6.1") : true;
             if (MelonLoaderVersion)
             {
-                string melonLoaderUrl = "https://github.com/LavaGang/MelonLoader/releases/download/v0.6.0/MelonLoader.x64.zip";
+                if (Directory.Exists(limbusCompanyDir + "/MelonLoader"))
+                    Directory.Delete(limbusCompanyDir + "/MelonLoader", true);
+                string melonLoaderUrl = "https://github.com/LavaGang/MelonLoader/releases/download/v0.6.1/MelonLoader.x64.zip";
                 string melonLoaderZipPath = Path.Combine(limbusCompanyDir, "MelonLoader.x64.zip");
                 await DownloadFileAsync(melonLoaderUrl, melonLoaderZipPath);
-                ZipFile.ExtractToDirectory(melonLoaderZipPath, limbusCompanyDir);
+                new SevenZipExtractor(melonLoaderZipPath).ExtractAll(limbusCompanyDir, true);
                 File.Delete(melonLoaderZipPath);
             }
             progressBar1.Value = 50;
