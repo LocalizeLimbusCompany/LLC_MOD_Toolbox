@@ -2,32 +2,21 @@
 using SevenZipNET;
 using SimpleJSON;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.IO.Compression;
-using System.Linq;
 using System.Net;
-using System.Net.NetworkInformation;
-using System.Reflection.Emit;
-using System.Security.Policy;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using static System.Net.WebRequestMethods;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using File = System.IO.File;
 
 namespace LimbusCompanyModInstaller
 {
     public partial class Form1 : Form
     {
-        public const string VERSION = "0.1.3";
-        static Form1 __instance;
+        public const string VERSION = "0.2.0";
         public Form1()
         {
-            __instance = this;
             try
             {
                 InitializeComponent();
@@ -37,48 +26,41 @@ namespace LimbusCompanyModInstaller
             catch (Exception e)
             {
                 MessageBox.Show(e.ToString());
-                System.Diagnostics.Process.Start("https://github.com/LocalizeLimbusCompany/LLC_MOD_Installer/releases/latest");
-                this.Close();
+                Openuri("https://github.com/LocalizeLimbusCompany/LLC_MOD_Installer/releases/latest");
+                Close();
             }
         }
+        static bool Has_NET_6_0;
         private bool CheckCanUse()
         {
+            Version win10version = new Version(10, 0);
+            Version currentVersion = Environment.OSVersion.Version;
+            if (currentVersion < win10version)
+            {
+                MessageBox.Show("该模组需要WIN 10运行环境", "致命错误", MessageBoxButtons.OK);
+                Close();
+                return false;
+            }
             const string subkey = @"SOFTWARE\Microsoft\NET Framework Setup\NDP\v4\Full\";
             using (RegistryKey ndpKey = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry32).OpenSubKey(subkey))
             {
                 if (ndpKey != null && ndpKey.GetValue("Release") != null)
-                {
-                    return CheckCanUse((int)ndpKey.GetValue("Release"));
-                }
+                    Check_NET_Version((int)ndpKey.GetValue("Release"));
             }
-            MessageBox.Show("该模组需要.NET 6.0运行环境", "致命错误", MessageBoxButtons.OK);
-            System.Diagnostics.Process.Start("https://dotnet.microsoft.com/zh-cn/download/dotnet/thank-you/sdk-6.0.406-windows-x64-installer");
-            this.Close();
-            return false;
+            return true;
         }
-        private bool CheckCanUse(int releaseKey)
+        private void Check_NET_Version(int releaseKey)
         {
             if (releaseKey >= 528040)
+                Has_NET_6_0 = true;
+        }
+        static void Openuri(string uri)
+        {
+            ProcessStartInfo psi = new ProcessStartInfo(uri)
             {
-                Version win10version = new Version(10, 0);
-                Version currentVersion = Environment.OSVersion.Version;
-                if (currentVersion >= win10version)
-                {
-                    return true;
-                }
-                else
-                {
-                    MessageBox.Show("该模组需要WIN 10运行环境", "致命错误", MessageBoxButtons.OK);
-                    this.Close();
-                }
-            }
-            else
-            {
-                MessageBox.Show("该模组需要.NET 6.0运行环境", "致命错误", MessageBoxButtons.OK);
-                System.Diagnostics.Process.Start("https://dotnet.microsoft.com/zh-cn/download/dotnet/thank-you/sdk-6.0.406-windows-x64-installer");
-                this.Close();
-            }
-            return false;
+                UseShellExecute = true
+            };
+            Process.Start(psi);
         }
         private async void Form1_Load()
         {
@@ -93,8 +75,8 @@ namespace LimbusCompanyModInstaller
                     if (new Version(latestReleaseTag) > new Version(FileVersionInfo.GetVersionInfo("./LimbusCompanyModInstaller.exe").ProductVersion))
                     {
                         MessageBox.Show("安装器存在更新");
-                        System.Diagnostics.Process.Start("https://github.com/LocalizeLimbusCompany/LLC_MOD_Installer/releases/latest");
-                        this.Close();
+                        Openuri("https://github.com/LocalizeLimbusCompany/LLC_MOD_Installer/releases/latest");
+                        Close();
                         return;
                     }
                 }
@@ -102,9 +84,17 @@ namespace LimbusCompanyModInstaller
             catch (Exception ex)
             {
                 MessageBox.Show("看起来你无法访问Github\n" + ex.ToString());
-                System.Diagnostics.Process.Start("https://github.com/LocalizeLimbusCompany/LLC_MOD_Installer/releases/latest");
-                this.Close();
+                Openuri("https://github.com/LocalizeLimbusCompany/LLC_MOD_Installer/releases/latest");
+                Close();
                 return;
+            }
+            if (!Has_NET_6_0)
+            {
+                label1.Text = "正在下载并打开NET 6.0流程";
+                await DownloadFileAsync("https://download.visualstudio.microsoft.com/download/pr/4a725ea4-cd2c-4383-9b63-263156d5f042/d973777b32563272b85617105a06d272/dotnet-sdk-6.0.406-win-x64.exe", "./!!!先安装我!!!NET 6.0.exe");
+                var NET = new FileInfo("./!!!先安装我!!!NET 6.0.exe");
+                Process.Start(NET.FullName).WaitForExit();
+                NET.Delete();
             }
             // Step 1: Find Limbus Company directory
             label1.Text = "正在查找Limbus Company目录...";
@@ -113,14 +103,14 @@ namespace LimbusCompanyModInstaller
             if (string.IsNullOrEmpty(limbusCompanyDir))
             {
                 MessageBox.Show("未能找到Limbus Company目录。");
-                this.Close();
+                Close();
                 return;
             }
             progressBar1.Value = 25;
 
             // Step 2: Download and extract MelonLoader
             label1.Text = "正在下载并解压MelonLoader...";
-            bool MelonLoaderVersion = File.Exists(limbusCompanyDir + "/MelonLoader/net6/MelonLoader.dll") ? new Version(FileVersionInfo.GetVersionInfo(limbusCompanyDir + "/MelonLoader/net6/MelonLoader.dll").ProductVersion) < new Version("0.6.1") : true;
+            bool MelonLoaderVersion = !File.Exists(limbusCompanyDir + "/MelonLoader/net6/MelonLoader.dll") || new Version(FileVersionInfo.GetVersionInfo(limbusCompanyDir + "/MelonLoader/net6/MelonLoader.dll").ProductVersion) < new Version("0.6.1");
             if (MelonLoaderVersion)
             {
                 if (Directory.Exists(limbusCompanyDir + "/MelonLoader"))
@@ -162,7 +152,7 @@ namespace LimbusCompanyModInstaller
                 if (new Version(versionInfo.ProductVersion) >= new Version(latestVersion.Remove(0, 1)))
                 {
                     MessageBox.Show("一切都是最新的。");
-                    this.Close();
+                    Close();
                     return;
                 }
                 else
@@ -186,7 +176,7 @@ namespace LimbusCompanyModInstaller
             }
             progressBar1.Value = 100;
             MessageBox.Show("完成");
-            this.Close();
+            Close();
         }
 
         private string FindLimbusCompanyDirectory()

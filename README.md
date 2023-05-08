@@ -1,1 +1,1 @@
-# [安装&更新&环境检查程序![](https://img.shields.io/github/downloads/LocalizeLimbusCompany/LLC_MOD_Installer/total.svg)](../../releases)
+# [安装&更新&环境检查程序![](https://img.shields.io/github/release/LocalizeLimbusCompany/LLC_MOD_Installer.svg?label=最新版&style=social)](../../releases)
