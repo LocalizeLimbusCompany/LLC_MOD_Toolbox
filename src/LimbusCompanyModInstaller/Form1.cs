@@ -14,7 +14,7 @@ namespace LimbusCompanyModInstaller
 {
     public partial class Form1 : Form
     {
-        public const string VERSION = "0.2.1";
+        public const string VERSION = "0.2.2";
         public Form1()
         {
             try
@@ -33,9 +33,9 @@ namespace LimbusCompanyModInstaller
         static bool Has_NET_6_0;
         private bool CheckCanUse()
         {
-            Version win10version = new Version(10, 0);
+            Version win10version = new Version(8, 0);
             Version currentVersion = Environment.OSVersion.Version;
-            if (currentVersion < win10version)
+            if (currentVersion > win10version)
             {
                 MessageBox.Show("该模组需要WIN 10运行环境", "致命错误", MessageBoxButtons.OK);
                 Close();
@@ -134,18 +134,6 @@ namespace LimbusCompanyModInstaller
             if (CheckChineseFontAssetUpdate(LastWriteTime, out var tmpchineseUrl))
             {
                 string tmpchineseZipPath = Path.Combine(limbusCompanyDir, "tmpchinese.7z");
-                await DownloadFileAsync(tmpchineseUrl, tmpchineseZipPath);
-                new SevenZipExtractor(tmpchineseZipPath).ExtractAll(limbusCompanyDir, true);
-                File.Delete(tmpchineseZipPath);
-            }
-
-             tmpchinese = modsDir + "/chinese_dante_notes_font";
-
-             LastWriteTime = File.Exists(tmpchinese) ? new FileInfo(tmpchinese).LastWriteTime.ToString("yyMMdd") : string.Empty;
-
-            if (Check_Dante_Notes_FontUpdate(LastWriteTime, out tmpchineseUrl))
-            {
-                string tmpchineseZipPath = Path.Combine(limbusCompanyDir, "tmpchinese2.7z");
                 await DownloadFileAsync(tmpchineseUrl, tmpchineseZipPath);
                 new SevenZipExtractor(tmpchineseZipPath).ExtractAll(limbusCompanyDir, true);
                 File.Delete(tmpchineseZipPath);
@@ -283,23 +271,6 @@ namespace LimbusCompanyModInstaller
                 if (latestReleaseTag != LastWriteTime)
                 {
                     download = "https://github.com/LocalizeLimbusCompany/LLC_ChineseFontAsset/releases/download/" + latestReleaseTag + "/tmpchinesefont_" + latestReleaseTag + ".7z";
-                    return true;
-                }
-            }
-            return false;
-        }
-        static bool Check_Dante_Notes_FontUpdate(string LastWriteTime, out string download)
-        {
-            download = string.Empty;
-            using (WebClient client = new WebClient())
-            {
-                client.Headers.Add("User-Agent", "request");
-                string raw = new StreamReader(client.OpenRead(new Uri("https://api.github.com/repos/LocalizeLimbusCompany/LLC_Dante_Notes_Font/releases/latest")), Encoding.UTF8).ReadToEnd();
-                var latest = JSONNode.Parse(raw).AsObject;
-                string latestReleaseTag = latest["tag_name"].Value;
-                if (latestReleaseTag != LastWriteTime)
-                {
-                    download = "https://github.com/LocalizeLimbusCompany/LLC_Dante_Notes_Font/releases/download/" + latestReleaseTag + "/chinese_dante_notes_font_" + latestReleaseTag + ".7z";
                     return true;
                 }
             }
