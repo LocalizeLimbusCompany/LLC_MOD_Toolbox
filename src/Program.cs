@@ -16,7 +16,7 @@ namespace LimbusCompanyModInstaller
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            var form= new Form1();
+            var form= new MainForm();
             try
             {
                 Application.Run(form);
