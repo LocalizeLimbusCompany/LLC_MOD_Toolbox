@@ -14,7 +14,7 @@ namespace LimbusCompanyModInstaller
 {
     public partial class MainForm : Form
     {
-        public const string VERSION = "0.2.3";
+        public const string VERSION = "0.2.4";
         public MainForm()
         {
             InitializeComponent();
@@ -247,7 +247,7 @@ namespace LimbusCompanyModInstaller
             // 下载MelonLoader
             try
             {
-                noteLabel.Text = "正在下载并解压MelonLoader...";
+                noteLabel.Text = "正在下载并解压MelonLoader镜像版...";
                 if (Directory.Exists(limbusCompanyDir + "/MelonLoader"))
                 {
                     Directory.Delete(limbusCompanyDir + "/MelonLoader", true);
