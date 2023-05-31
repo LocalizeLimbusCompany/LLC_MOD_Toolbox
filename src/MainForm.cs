@@ -184,12 +184,12 @@ namespace LimbusCompanyModInstaller
             // 下载MelonLoader
             try
             {
-                noteLabel.Text = "正在下载并解压MelonLoader...";
+                noteLabel.Text = "正在下载并解压MelonLoader镜像版...";
                 if (Directory.Exists(limbusCompanyDir + "/MelonLoader"))
                 {
                     Directory.Delete(limbusCompanyDir + "/MelonLoader", true);
                 }
-                string melonLoaderUrl = "https://limbus.determination.top/files/MelonLoader.x64.zip";
+                string melonLoaderUrl = "https://limbus.determination.top/files/MelonLoader_ForLLC.zip";
                 string melonLoaderZipPath = Path.Combine(limbusCompanyDir, "MelonLoader.x64.zip");
                 await DownloadFileAsync(melonLoaderUrl, melonLoaderZipPath);
                 new SevenZipExtractor(melonLoaderZipPath).ExtractAll(limbusCompanyDir, true);
@@ -252,7 +252,7 @@ namespace LimbusCompanyModInstaller
                 {
                     Directory.Delete(limbusCompanyDir + "/MelonLoader", true);
                 }
-                string melonLoaderUrl = "https://llc.determination.top/files/MelonLoader.x64.zip";
+                string melonLoaderUrl = "https://llc.determination.top/files/MelonLoader_ForLLC.zip";
                 string melonLoaderZipPath = Path.Combine(limbusCompanyDir, "MelonLoader.x64.zip");
                 await DownloadFileAsync(melonLoaderUrl, melonLoaderZipPath);
                 new SevenZipExtractor(melonLoaderZipPath).ExtractAll(limbusCompanyDir, true);
