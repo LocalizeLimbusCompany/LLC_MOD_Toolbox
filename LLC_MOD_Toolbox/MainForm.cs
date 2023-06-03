@@ -428,12 +428,12 @@ namespace LLC_MOD_Toolbox
                 logger.Log("Button is Disabled.");
             }
         }
-
+        
         // 获取最快节点
         private string GetFastnetNode()
         {
             logger.Log("Ping the Node...");
-            string[] urls = {"limbus.determination.top", "llc.determination.top" };
+            string[] urls = {"limbus.determination.top", "llc.determination.top", "dl.determination.top" };
 
             Dictionary<string, long> pingTimes = new Dictionary<string, long>();
 
@@ -441,11 +441,18 @@ namespace LLC_MOD_Toolbox
             {
                 Ping ping = new Ping();
                 logger.Log("Ping: "+url+" ...");
-                PingReply reply = ping.Send(url);
-                if (reply.Status == IPStatus.Success)
+                try
                 {
-                    logger.Log(url+" 's Roundtriptime is: "+reply.RoundtripTime+"ms.");
-                    pingTimes.Add(url, reply.RoundtripTime);
+                    PingReply reply = ping.Send(url);
+                    if (reply.Status == IPStatus.Success)
+                    {
+                        logger.Log(url + " 's Roundtriptime is: " + reply.RoundtripTime + "ms.");
+                        pingTimes.Add(url, reply.RoundtripTime);
+                    }
+                }
+                catch(Exception ex)
+                {
+                    logger.Log("ping: "+url+"has some problem. "+ex.ToString());
                 }
             }
 
