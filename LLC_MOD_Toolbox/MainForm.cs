@@ -1,4 +1,4 @@
-﻿using SimpleJSON;
+using SimpleJSON;
 using Sunny.UI;
 using System.Diagnostics;
 using System.IO;
@@ -20,12 +20,14 @@ namespace LLC_MOD_Toolbox
 {
     public partial class MainForm : UIForm
     {
-        public const string VERSION = "0.3.0";
+        public const string VERSION = "0.3.2";
         private bool Has_NET_6_0;
         private bool isWindows10;
         private string limbusCompanyDir;
         private string limbusCompanyGameDir;
-        private string fastestNode;
+        private static string fastestNode;
+        private string melonLoaderUrl;
+        private string download;
 
         logger logger = new logger("LLCToolBox_log.txt");
 
@@ -37,6 +39,7 @@ namespace LLC_MOD_Toolbox
         private void MainForm_Load(object sender, System.EventArgs e)
         {
             useMFL.Active = true;
+            useGithub.Active = false;
             string logFilePath = Path.Combine(Application.StartupPath, "LLCToolBox_log.txt");
             if (File.Exists(logFilePath))
             {
@@ -99,7 +102,7 @@ namespace LLC_MOD_Toolbox
             // 查找边狱公司dir
             logger.Log("Find Limbus Company Dir.");
 
-            limbusCompanyDir = FindLimbusCompanyDirectory();
+            // limbusCompanyDir = FindLimbusCompanyDirectory();
             if (string.IsNullOrEmpty(limbusCompanyDir))
             {
                 logger.Log("Can't auto find the limbus company dir. Use the another way.");
@@ -122,6 +125,8 @@ namespace LLC_MOD_Toolbox
                     File.WriteAllText("LimbusCompanyPath.txt", limbusCompanyDir);
                 }
             }
+            limbusCompanyGameDir = limbusCompanyDir + "\\LimbusCompany.exe";
+
             logger.Log("Find Limbus Company Dir is done.");
 
             logger.Log("Getting Fastest Node...");
@@ -155,7 +160,14 @@ namespace LLC_MOD_Toolbox
                     {
                         Directory.Delete(limbusCompanyDir + "/MelonLoader", true);
                     }
-                    string melonLoaderUrl = "https://"+fastestNode+"/files/MelonLoader_ForLLC.zip";
+                    if (useGithub.Active != true)
+                    {
+                        melonLoaderUrl = "https://" + fastestNode + "/files/MelonLoader_ForLLC.zip";
+                    }
+                    else
+                    {
+                        melonLoaderUrl = "https://github.com/LocalizeLimbusCompany/MelonLoader/releases/download/v0.6.1-OpenLLCBeta/MelonLoader_v0.6.1-OpenLLCBeta.zip";
+                    }
                     string melonLoaderZipPath = Path.Combine(limbusCompanyDir, "MelonLoader_ForLLC.zip");
                     await DownloadFileAsync(melonLoaderUrl, melonLoaderZipPath);
                     new SevenZipExtractor(melonLoaderZipPath).ExtractAll(limbusCompanyDir, true);
@@ -184,7 +196,14 @@ namespace LLC_MOD_Toolbox
                     {
                         Directory.Delete(limbusCompanyDir + "/MelonLoader", true);
                     }
-                    string melonLoaderUrl = "https://" + fastestNode + "/files/MelonLoader.x64.zip";
+                    if (useGithub.Active != true)
+                    {
+                        melonLoaderUrl = "https://" + fastestNode + "/files/MelonLoader.x64.zip";
+                    }
+                    else
+                    {
+                        melonLoaderUrl = "https://github.com/LavaGang/MelonLoader/releases/download/v0.6.1/MelonLoader.x64.zip";
+                    }
                     string melonLoaderZipPath = Path.Combine(limbusCompanyDir, "MelonLoader.x64.zip");
                     await DownloadFileAsync(melonLoaderUrl, melonLoaderZipPath);
                     new SevenZipExtractor(melonLoaderZipPath).ExtractAll(limbusCompanyDir, true);
@@ -208,11 +227,27 @@ namespace LLC_MOD_Toolbox
             string modsDir = Path.Combine(limbusCompanyDir, "Mods");
             logger.Log("create moddir.");
             Directory.CreateDirectory(modsDir);
+            string tmpchineseZipPath = Path.Combine(limbusCompanyDir, "tmpchinese.7z");
 
             try
             {
-                string tmpchineseZipPath = Path.Combine(limbusCompanyDir, "tmpchinese.7z");
-                await DownloadFileAsync("https://"+fastestNode+"/files/tmpchinesefont.7z", tmpchineseZipPath);
+                if (useGithub.Active != true)
+                {
+                    await DownloadFileAsync("https://" + fastestNode + "/files/tmpchinesefont.7z", tmpchineseZipPath);
+                }
+                else
+                {
+                    download = string.Empty;
+                    using (WebClient client = new WebClient())
+                    {
+                        client.Headers.Add("User-Agent", "request");
+                        string raw = new StreamReader(client.OpenRead(new Uri("https://api.github.com/repos/LocalizeLimbusCompany/LLC_ChineseFontAsset/releases/latest")), Encoding.UTF8).ReadToEnd();
+                        var latest = JSONNode.Parse(raw).AsObject;
+                        string latestReleaseTag = latest["tag_name"].Value;
+                        download = "https://github.com/LocalizeLimbusCompany/LLC_ChineseFontAsset/releases/download/" + latestReleaseTag + "/tmpchinesefont_" + latestReleaseTag + ".7z";
+                        await DownloadFileAsync(download, tmpchineseZipPath);
+                    }
+                }
                 logger.Log("Extract zip...");
                 new SevenZipExtractor(tmpchineseZipPath).ExtractAll(limbusCompanyDir, true);
                 File.Delete(tmpchineseZipPath);
@@ -231,14 +266,25 @@ namespace LLC_MOD_Toolbox
             // 下载本体
             status.Text = "正在下载并解压模组本体...";
             logger.Log("download mod...");
+
             string limbusLocalizeZipPath = Path.Combine(limbusCompanyDir, "LimbusLocalize.7z");
-            await DownloadFileAsync("https://"+fastestNode+"/files/LimbusLocalize_FullPack.7z", limbusLocalizeZipPath);
+            string latestVersion = GetLatestLimbusLocalizeVersion(out string latest2ReleaseTag);
+
+            if (useGithub.Active != true)
+            {
+                await DownloadFileAsync("https://" + fastestNode + "/files/LimbusLocalize_FullPack.7z", limbusLocalizeZipPath);
+            }
+            else
+            {
+                string limbusLocalizeUrl = GetLatestLimbusLocalizeDownloadUrl(latestVersion, false);
+                await DownloadFileAsync(limbusLocalizeUrl, limbusLocalizeZipPath);
+            }
             logger.Log("Extract zip...");
             new SevenZipExtractor(limbusLocalizeZipPath).ExtractAll(limbusCompanyDir, true);
             File.Delete(limbusLocalizeZipPath);
             done_Bar.Value = 100;
             logger.Log("Install is done!");
-            MessageBox.Show("安装已完成！", "完成", MessageBoxButtons.OK);
+            DialogResult opengame = MessageBox.Show("安装已完成！\n你现在可以运行游戏了。", "完成", MessageBoxButtons.OK);
             ControlButton(true);
             done_Bar.Value = 0;
             down_Bar.Value = 0;
@@ -315,6 +361,7 @@ namespace LLC_MOD_Toolbox
         }
         private void Check_DotnetVer()
         {
+            logger.Log(System.Runtime.InteropServices.RuntimeInformation.FrameworkDescription);
             logger.Log("Check the Dotnet Ver.");
             const string subkey = @"SOFTWARE\Microsoft\NET Framework Setup\NDP\v4\Full\";
             using (RegistryKey ndpKey = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry32).OpenSubKey(subkey))
@@ -341,7 +388,7 @@ namespace LLC_MOD_Toolbox
         private async void Install_Dotnet()
         {
             logger.Log("Installing the Dotnet...");
-            noteLabel.Text = "正在下载并打开安装NET 6.0流程";
+            status.Text = "正在下载并打开安装NET 6.0流程";
             logger.Log("Downloading the Dotnet...");
             await DownloadFileAsync("https://download.visualstudio.microsoft.com/download/pr/4a725ea4-cd2c-4383-9b63-263156d5f042/d973777b32563272b85617105a06d272/dotnet-sdk-6.0.406-win-x64.exe", "./!!!先安装我!!!NET 6.0.exe");
             var NET = new FileInfo("./!!!先安装我!!!NET 6.0.exe");
@@ -411,6 +458,7 @@ namespace LLC_MOD_Toolbox
                 disable.Enabled = true;
                 canable.Enabled = true;
                 useMFL.ReadOnly = false;
+                useGithub.ReadOnly = false;
                 enterAfdian.Enabled = true;
                 enterGithub.Enabled = true;
                 enterWiki.Enabled = true;
@@ -422,13 +470,14 @@ namespace LLC_MOD_Toolbox
                 disable.Enabled = false;
                 canable.Enabled = false;
                 useMFL.ReadOnly = true;
+                useGithub.ReadOnly = true;
                 enterAfdian.Enabled = false;
                 enterGithub.Enabled = false;
                 enterWiki.Enabled = false;
                 logger.Log("Button is Disabled.");
             }
         }
-        
+
         // 获取最快节点
         private string GetFastnetNode()
         {
@@ -465,61 +514,68 @@ namespace LLC_MOD_Toolbox
             return pingTimesList[0].Key;
         }
 
-       
+
         // 获取LimbusCompany路径
         private string FindLimbusCompanyDirectory()
         {
-            logger.Log("Use the auto select way.");
-            string LimbusCompanyPath = "./LimbusCompanyPath.txt";
-            if (File.Exists(LimbusCompanyPath))
+            try
             {
-                logger.Log("Find the legacy txt. return.");
-                string LimbusCompany = File.ReadAllText(LimbusCompanyPath);
-                if (File.Exists(LimbusCompany + "/LimbusCompany.exe"))
+                logger.Log("Use the auto select way.");
+                string LimbusCompanyPath = "./LimbusCompanyPath.txt";
+                if (File.Exists(LimbusCompanyPath))
                 {
-                    return LimbusCompany;
-                }
-            }
-            string steamPath = (string)Registry.GetValue(@"HKEY_CURRENT_USER\Software\Valve\Steam", "SteamPath", null);
-            if (steamPath != null)
-            {
-                string libraryFoldersPath = Path.Combine(steamPath, "steamapps", "libraryfolders.vdf");
-                if (File.Exists(libraryFoldersPath))
-                {
-                    string[] lines = File.ReadAllLines(libraryFoldersPath);
-                    foreach (string line in lines)
+                    logger.Log("Find the legacy txt. return.");
+                    string LimbusCompany = File.ReadAllText(LimbusCompanyPath);
+                    if (File.Exists(LimbusCompany + "/LimbusCompany.exe"))
                     {
-                        if (line.Contains("\t\"path\"\t\t"))
+                        return LimbusCompany;
+                    }
+                }
+                string steamPath = (string)Registry.GetValue(@"HKEY_CURRENT_USER\Software\Valve\Steam", "SteamPath", null);
+                if (steamPath != null)
+                {
+                    string libraryFoldersPath = Path.Combine(steamPath, "steamapps", "libraryfolders.vdf");
+                    if (File.Exists(libraryFoldersPath))
+                    {
+                        string[] lines = File.ReadAllLines(libraryFoldersPath);
+                        foreach (string line in lines)
                         {
-                            string libraryPath = line.Split('\t')[4].Trim('\"');
-
-                            DirectoryInfo[] steamapps = new DirectoryInfo(libraryPath).GetDirectories("steamapps");
-                            if (steamapps.Length > 0)
+                            if (line.Contains("\t\"path\"\t\t"))
                             {
-                                string commonDir = Path.Combine(steamapps[0].FullName, "common");
-                                if (Directory.Exists(commonDir))
+                                string libraryPath = line.Split('\t')[4].Trim('\"');
+
+                                DirectoryInfo[] steamapps = new DirectoryInfo(libraryPath).GetDirectories("steamapps");
+                                if (steamapps.Length > 0)
                                 {
-                                    DirectoryInfo[] gameDirs = new DirectoryInfo(commonDir).GetDirectories("Limbus Company");
-                                    if (gameDirs.Length > 0)
+                                    string commonDir = Path.Combine(steamapps[0].FullName, "common");
+                                    if (Directory.Exists(commonDir))
                                     {
-                                        var FullName = gameDirs[0].FullName;
-                                        if (File.Exists(FullName + "/LimbusCompany.exe"))
+                                        DirectoryInfo[] gameDirs = new DirectoryInfo(commonDir).GetDirectories("Limbus Company");
+                                        if (gameDirs.Length > 0)
                                         {
-                                            logger.Log("Find Limbus Company Dir.");
-                                            File.WriteAllText("LimbusCompanyPath.txt", FullName);
-                                            return FullName;
+                                            var FullName = gameDirs[0].FullName;
+                                            if (File.Exists(FullName + "/LimbusCompany.exe"))
+                                            {
+                                                logger.Log("Find Limbus Company Dir.");
+                                                File.WriteAllText("LimbusCompanyPath.txt", FullName);
+                                                return FullName;
+                                            }
                                         }
                                     }
                                 }
-                            }
 
+                            }
                         }
                     }
                 }
+                return null;
             }
-            return null;
+            catch
+            {
+                logger.Log("Auto Find Limbus Company Failed!");
+                return null;
+            }
         }
-
         private void enterAfdian_Click(object sender, EventArgs e)
         {
             Process.Start("https://afdian.net/a/Limbus_zero");
@@ -533,6 +589,26 @@ namespace LLC_MOD_Toolbox
         private void enterWiki_Click(object sender, EventArgs e)
         {
             Process.Start("https://limbuscompany.huijiwiki.com");
+        }
+
+        // For Github Mode
+        private string GetLatestLimbusLocalizeVersion(out string latest2ReleaseTag)
+        {
+            using (WebClient client = new WebClient())
+            {
+                client.Headers.Add("User-Agent", "request");
+                string raw = new StreamReader(client.OpenRead(new Uri("https://api.github.com/repos/LocalizeLimbusCompany/LocalizeLimbusCompany/releases")), Encoding.UTF8).ReadToEnd();
+                JSONArray releases = JSONNode.Parse(raw).AsArray;
+
+                string latestReleaseTag = releases[0]["tag_name"].Value;
+                latest2ReleaseTag = releases.Count > 1 ? releases[1]["tag_name"].Value : string.Empty;
+                return latestReleaseTag;
+            }
+        }
+
+        private string GetLatestLimbusLocalizeDownloadUrl(string version, bool isota)
+        {
+            return "https://github.com/LocalizeLimbusCompany/LocalizeLimbusCompany/releases/download/" + version + "/LimbusLocalize_" + (isota ? "OTA_" : string.Empty) + version + ".7z";
         }
     }
 }

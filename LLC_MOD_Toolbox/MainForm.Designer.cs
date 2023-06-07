@@ -1,4 +1,4 @@
-﻿namespace LLC_MOD_Toolbox
+namespace LLC_MOD_Toolbox
 {
     partial class MainForm
     {
@@ -38,15 +38,18 @@
             this.note_2 = new Sunny.UI.UILabel();
             this.status = new Sunny.UI.UILabel();
             this.uiGroupBox1 = new Sunny.UI.UIGroupBox();
-            this.disable = new Sunny.UI.UIButton();
-            this.canable = new Sunny.UI.UIButton();
-            this.useMFL = new Sunny.UI.UISwitch();
-            this.uiLabel1 = new Sunny.UI.UILabel();
-            this.note_3 = new Sunny.UI.UILabel();
-            this.enterAfdian = new Sunny.UI.UISymbolButton();
-            this.enterGithub = new Sunny.UI.UISymbolButton();
-            this.linkline = new Sunny.UI.UILine();
             this.enterWiki = new Sunny.UI.UISymbolButton();
+            this.linkline = new Sunny.UI.UILine();
+            this.enterGithub = new Sunny.UI.UISymbolButton();
+            this.enterAfdian = new Sunny.UI.UISymbolButton();
+            this.note_3 = new Sunny.UI.UILabel();
+            this.uiLabel1 = new Sunny.UI.UILabel();
+            this.useMFL = new Sunny.UI.UISwitch();
+            this.canable = new Sunny.UI.UIButton();
+            this.disable = new Sunny.UI.UIButton();
+            this.uiLabel2 = new Sunny.UI.UILabel();
+            this.useGithub = new Sunny.UI.UISwitch();
+            this.uiLabel3 = new Sunny.UI.UILabel();
             this.uiGroupBox_install.SuspendLayout();
             this.uiGroupBox1.SuspendLayout();
             this.SuspendLayout();
@@ -172,6 +175,9 @@
             // 
             // uiGroupBox1
             // 
+            this.uiGroupBox1.Controls.Add(this.uiLabel3);
+            this.uiGroupBox1.Controls.Add(this.useGithub);
+            this.uiGroupBox1.Controls.Add(this.uiLabel2);
             this.uiGroupBox1.Controls.Add(this.enterWiki);
             this.uiGroupBox1.Controls.Add(this.linkline);
             this.uiGroupBox1.Controls.Add(this.enterGithub);
@@ -196,28 +202,126 @@
             this.uiGroupBox1.Text = "其他";
             this.uiGroupBox1.TextAlignment = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // disable
+            // enterWiki
             // 
-            this.disable.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.disable.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(155)))), ((int)(((byte)(40)))));
-            this.disable.FillColor2 = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(155)))), ((int)(((byte)(40)))));
-            this.disable.FillHoverColor = System.Drawing.Color.FromArgb(((int)(((byte)(227)))), ((int)(((byte)(175)))), ((int)(((byte)(83)))));
-            this.disable.FillPressColor = System.Drawing.Color.FromArgb(((int)(((byte)(176)))), ((int)(((byte)(124)))), ((int)(((byte)(32)))));
-            this.disable.FillSelectedColor = System.Drawing.Color.FromArgb(((int)(((byte)(176)))), ((int)(((byte)(124)))), ((int)(((byte)(32)))));
-            this.disable.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.disable.Location = new System.Drawing.Point(22, 46);
-            this.disable.MinimumSize = new System.Drawing.Size(1, 1);
-            this.disable.Name = "disable";
-            this.disable.RectColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(155)))), ((int)(((byte)(40)))));
-            this.disable.RectHoverColor = System.Drawing.Color.FromArgb(((int)(((byte)(227)))), ((int)(((byte)(175)))), ((int)(((byte)(83)))));
-            this.disable.RectPressColor = System.Drawing.Color.FromArgb(((int)(((byte)(176)))), ((int)(((byte)(124)))), ((int)(((byte)(32)))));
-            this.disable.RectSelectedColor = System.Drawing.Color.FromArgb(((int)(((byte)(176)))), ((int)(((byte)(124)))), ((int)(((byte)(32)))));
-            this.disable.Size = new System.Drawing.Size(100, 35);
-            this.disable.Style = Sunny.UI.UIStyle.Orange;
-            this.disable.TabIndex = 0;
-            this.disable.Text = "禁用模组";
-            this.disable.TipsFont = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.disable.Click += new System.EventHandler(this.disable_Click);
+            this.enterWiki.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.enterWiki.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(155)))), ((int)(((byte)(40)))));
+            this.enterWiki.FillColor2 = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(155)))), ((int)(((byte)(40)))));
+            this.enterWiki.FillHoverColor = System.Drawing.Color.FromArgb(((int)(((byte)(227)))), ((int)(((byte)(175)))), ((int)(((byte)(83)))));
+            this.enterWiki.FillPressColor = System.Drawing.Color.FromArgb(((int)(((byte)(176)))), ((int)(((byte)(124)))), ((int)(((byte)(32)))));
+            this.enterWiki.FillSelectedColor = System.Drawing.Color.FromArgb(((int)(((byte)(176)))), ((int)(((byte)(124)))), ((int)(((byte)(32)))));
+            this.enterWiki.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.enterWiki.Location = new System.Drawing.Point(271, 314);
+            this.enterWiki.MinimumSize = new System.Drawing.Size(1, 1);
+            this.enterWiki.Name = "enterWiki";
+            this.enterWiki.RectColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(155)))), ((int)(((byte)(40)))));
+            this.enterWiki.RectHoverColor = System.Drawing.Color.FromArgb(((int)(((byte)(227)))), ((int)(((byte)(175)))), ((int)(((byte)(83)))));
+            this.enterWiki.RectPressColor = System.Drawing.Color.FromArgb(((int)(((byte)(176)))), ((int)(((byte)(124)))), ((int)(((byte)(32)))));
+            this.enterWiki.RectSelectedColor = System.Drawing.Color.FromArgb(((int)(((byte)(176)))), ((int)(((byte)(124)))), ((int)(((byte)(32)))));
+            this.enterWiki.Size = new System.Drawing.Size(111, 35);
+            this.enterWiki.Style = Sunny.UI.UIStyle.Orange;
+            this.enterWiki.Symbol = 162056;
+            this.enterWiki.TabIndex = 8;
+            this.enterWiki.Text = "灰机维基";
+            this.enterWiki.TipsFont = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.enterWiki.Click += new System.EventHandler(this.enterWiki_Click);
+            // 
+            // linkline
+            // 
+            this.linkline.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(253)))), ((int)(((byte)(249)))), ((int)(((byte)(241)))));
+            this.linkline.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.linkline.LineColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(155)))), ((int)(((byte)(40)))));
+            this.linkline.LineColor2 = System.Drawing.Color.FromArgb(((int)(((byte)(253)))), ((int)(((byte)(249)))), ((int)(((byte)(241)))));
+            this.linkline.Location = new System.Drawing.Point(22, 279);
+            this.linkline.MinimumSize = new System.Drawing.Size(1, 1);
+            this.linkline.Name = "linkline";
+            this.linkline.Size = new System.Drawing.Size(360, 29);
+            this.linkline.Style = Sunny.UI.UIStyle.Orange;
+            this.linkline.TabIndex = 7;
+            this.linkline.Text = "链接";
+            // 
+            // enterGithub
+            // 
+            this.enterGithub.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.enterGithub.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(155)))), ((int)(((byte)(40)))));
+            this.enterGithub.FillColor2 = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(155)))), ((int)(((byte)(40)))));
+            this.enterGithub.FillHoverColor = System.Drawing.Color.FromArgb(((int)(((byte)(227)))), ((int)(((byte)(175)))), ((int)(((byte)(83)))));
+            this.enterGithub.FillPressColor = System.Drawing.Color.FromArgb(((int)(((byte)(176)))), ((int)(((byte)(124)))), ((int)(((byte)(32)))));
+            this.enterGithub.FillSelectedColor = System.Drawing.Color.FromArgb(((int)(((byte)(176)))), ((int)(((byte)(124)))), ((int)(((byte)(32)))));
+            this.enterGithub.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.enterGithub.Location = new System.Drawing.Point(148, 314);
+            this.enterGithub.MinimumSize = new System.Drawing.Size(1, 1);
+            this.enterGithub.Name = "enterGithub";
+            this.enterGithub.RectColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(155)))), ((int)(((byte)(40)))));
+            this.enterGithub.RectHoverColor = System.Drawing.Color.FromArgb(((int)(((byte)(227)))), ((int)(((byte)(175)))), ((int)(((byte)(83)))));
+            this.enterGithub.RectPressColor = System.Drawing.Color.FromArgb(((int)(((byte)(176)))), ((int)(((byte)(124)))), ((int)(((byte)(32)))));
+            this.enterGithub.RectSelectedColor = System.Drawing.Color.FromArgb(((int)(((byte)(176)))), ((int)(((byte)(124)))), ((int)(((byte)(32)))));
+            this.enterGithub.Size = new System.Drawing.Size(100, 35);
+            this.enterGithub.Style = Sunny.UI.UIStyle.Orange;
+            this.enterGithub.Symbol = 61595;
+            this.enterGithub.TabIndex = 6;
+            this.enterGithub.Text = "Github";
+            this.enterGithub.TipsFont = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.enterGithub.Click += new System.EventHandler(this.enterGithub_Click);
+            // 
+            // enterAfdian
+            // 
+            this.enterAfdian.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.enterAfdian.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(155)))), ((int)(((byte)(40)))));
+            this.enterAfdian.FillColor2 = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(155)))), ((int)(((byte)(40)))));
+            this.enterAfdian.FillHoverColor = System.Drawing.Color.FromArgb(((int)(((byte)(227)))), ((int)(((byte)(175)))), ((int)(((byte)(83)))));
+            this.enterAfdian.FillPressColor = System.Drawing.Color.FromArgb(((int)(((byte)(176)))), ((int)(((byte)(124)))), ((int)(((byte)(32)))));
+            this.enterAfdian.FillSelectedColor = System.Drawing.Color.FromArgb(((int)(((byte)(176)))), ((int)(((byte)(124)))), ((int)(((byte)(32)))));
+            this.enterAfdian.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.enterAfdian.Location = new System.Drawing.Point(22, 314);
+            this.enterAfdian.MinimumSize = new System.Drawing.Size(1, 1);
+            this.enterAfdian.Name = "enterAfdian";
+            this.enterAfdian.RectColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(155)))), ((int)(((byte)(40)))));
+            this.enterAfdian.RectHoverColor = System.Drawing.Color.FromArgb(((int)(((byte)(227)))), ((int)(((byte)(175)))), ((int)(((byte)(83)))));
+            this.enterAfdian.RectPressColor = System.Drawing.Color.FromArgb(((int)(((byte)(176)))), ((int)(((byte)(124)))), ((int)(((byte)(32)))));
+            this.enterAfdian.RectSelectedColor = System.Drawing.Color.FromArgb(((int)(((byte)(176)))), ((int)(((byte)(124)))), ((int)(((byte)(32)))));
+            this.enterAfdian.Size = new System.Drawing.Size(100, 35);
+            this.enterAfdian.Style = Sunny.UI.UIStyle.Orange;
+            this.enterAfdian.Symbol = 261597;
+            this.enterAfdian.TabIndex = 5;
+            this.enterAfdian.Text = "爱发电";
+            this.enterAfdian.TipsFont = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.enterAfdian.Click += new System.EventHandler(this.enterAfdian_Click);
+            // 
+            // note_3
+            // 
+            this.note_3.Font = new System.Drawing.Font("微软雅黑", 8F);
+            this.note_3.Location = new System.Drawing.Point(19, 141);
+            this.note_3.Name = "note_3";
+            this.note_3.Size = new System.Drawing.Size(335, 69);
+            this.note_3.Style = Sunny.UI.UIStyle.Orange;
+            this.note_3.TabIndex = 4;
+            this.note_3.Text = "MelonLoader-For LLC增加了镜像源，使你能够全程摆脱github安装！\r\n如果你不知道需不需要，则你应该开启。";
+            this.note_3.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // uiLabel1
+            // 
+            this.uiLabel1.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.uiLabel1.Location = new System.Drawing.Point(18, 111);
+            this.uiLabel1.Name = "uiLabel1";
+            this.uiLabel1.Size = new System.Drawing.Size(216, 23);
+            this.uiLabel1.Style = Sunny.UI.UIStyle.Orange;
+            this.uiLabel1.TabIndex = 3;
+            this.uiLabel1.Text = "使用MelonLoader-For LLC";
+            this.uiLabel1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // useMFL
+            // 
+            this.useMFL.Active = true;
+            this.useMFL.ActiveColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(155)))), ((int)(((byte)(40)))));
+            this.useMFL.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.useMFL.Location = new System.Drawing.Point(255, 109);
+            this.useMFL.MinimumSize = new System.Drawing.Size(1, 1);
+            this.useMFL.Name = "useMFL";
+            this.useMFL.Size = new System.Drawing.Size(75, 29);
+            this.useMFL.Style = Sunny.UI.UIStyle.Orange;
+            this.useMFL.TabIndex = 2;
+            this.useMFL.Text = "uiSwitch1";
             // 
             // canable
             // 
@@ -242,126 +346,62 @@
             this.canable.TipsFont = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.canable.Click += new System.EventHandler(this.canable_Click);
             // 
-            // useMFL
+            // disable
             // 
-            this.useMFL.Active = true;
-            this.useMFL.ActiveColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(155)))), ((int)(((byte)(40)))));
-            this.useMFL.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.useMFL.Location = new System.Drawing.Point(255, 109);
-            this.useMFL.MinimumSize = new System.Drawing.Size(1, 1);
-            this.useMFL.Name = "useMFL";
-            this.useMFL.Size = new System.Drawing.Size(75, 29);
-            this.useMFL.Style = Sunny.UI.UIStyle.Orange;
-            this.useMFL.TabIndex = 2;
-            this.useMFL.Text = "uiSwitch1";
+            this.disable.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.disable.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(155)))), ((int)(((byte)(40)))));
+            this.disable.FillColor2 = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(155)))), ((int)(((byte)(40)))));
+            this.disable.FillHoverColor = System.Drawing.Color.FromArgb(((int)(((byte)(227)))), ((int)(((byte)(175)))), ((int)(((byte)(83)))));
+            this.disable.FillPressColor = System.Drawing.Color.FromArgb(((int)(((byte)(176)))), ((int)(((byte)(124)))), ((int)(((byte)(32)))));
+            this.disable.FillSelectedColor = System.Drawing.Color.FromArgb(((int)(((byte)(176)))), ((int)(((byte)(124)))), ((int)(((byte)(32)))));
+            this.disable.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.disable.Location = new System.Drawing.Point(22, 46);
+            this.disable.MinimumSize = new System.Drawing.Size(1, 1);
+            this.disable.Name = "disable";
+            this.disable.RectColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(155)))), ((int)(((byte)(40)))));
+            this.disable.RectHoverColor = System.Drawing.Color.FromArgb(((int)(((byte)(227)))), ((int)(((byte)(175)))), ((int)(((byte)(83)))));
+            this.disable.RectPressColor = System.Drawing.Color.FromArgb(((int)(((byte)(176)))), ((int)(((byte)(124)))), ((int)(((byte)(32)))));
+            this.disable.RectSelectedColor = System.Drawing.Color.FromArgb(((int)(((byte)(176)))), ((int)(((byte)(124)))), ((int)(((byte)(32)))));
+            this.disable.Size = new System.Drawing.Size(100, 35);
+            this.disable.Style = Sunny.UI.UIStyle.Orange;
+            this.disable.TabIndex = 0;
+            this.disable.Text = "禁用模组";
+            this.disable.TipsFont = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.disable.Click += new System.EventHandler(this.disable_Click);
             // 
-            // uiLabel1
+            // uiLabel2
             // 
-            this.uiLabel1.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.uiLabel1.Location = new System.Drawing.Point(18, 111);
-            this.uiLabel1.Name = "uiLabel1";
-            this.uiLabel1.Size = new System.Drawing.Size(216, 23);
-            this.uiLabel1.Style = Sunny.UI.UIStyle.Orange;
-            this.uiLabel1.TabIndex = 3;
-            this.uiLabel1.Text = "使用MelonLoader-For LLC";
-            this.uiLabel1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.uiLabel2.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.uiLabel2.Location = new System.Drawing.Point(18, 210);
+            this.uiLabel2.Name = "uiLabel2";
+            this.uiLabel2.Size = new System.Drawing.Size(216, 23);
+            this.uiLabel2.Style = Sunny.UI.UIStyle.Orange;
+            this.uiLabel2.TabIndex = 9;
+            this.uiLabel2.Text = "从Github下载文件";
+            this.uiLabel2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
-            // note_3
+            // useGithub
             // 
-            this.note_3.Font = new System.Drawing.Font("微软雅黑", 8F);
-            this.note_3.Location = new System.Drawing.Point(19, 141);
-            this.note_3.Name = "note_3";
-            this.note_3.Size = new System.Drawing.Size(335, 69);
-            this.note_3.Style = Sunny.UI.UIStyle.Orange;
-            this.note_3.TabIndex = 4;
-            this.note_3.Text = "MelonLoader-For LLC增加了镜像源，使你能够全程摆脱github安装！\r\n如果你不知道需不需要，则你应该开启。";
-            this.note_3.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.useGithub.ActiveColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(155)))), ((int)(((byte)(40)))));
+            this.useGithub.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.useGithub.Location = new System.Drawing.Point(255, 204);
+            this.useGithub.MinimumSize = new System.Drawing.Size(1, 1);
+            this.useGithub.Name = "useGithub";
+            this.useGithub.Size = new System.Drawing.Size(75, 29);
+            this.useGithub.Style = Sunny.UI.UIStyle.Orange;
+            this.useGithub.TabIndex = 10;
+            this.useGithub.Text = "uiSwitch1";
             // 
-            // enterAfdian
+            // uiLabel3
             // 
-            this.enterAfdian.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.enterAfdian.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(155)))), ((int)(((byte)(40)))));
-            this.enterAfdian.FillColor2 = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(155)))), ((int)(((byte)(40)))));
-            this.enterAfdian.FillHoverColor = System.Drawing.Color.FromArgb(((int)(((byte)(227)))), ((int)(((byte)(175)))), ((int)(((byte)(83)))));
-            this.enterAfdian.FillPressColor = System.Drawing.Color.FromArgb(((int)(((byte)(176)))), ((int)(((byte)(124)))), ((int)(((byte)(32)))));
-            this.enterAfdian.FillSelectedColor = System.Drawing.Color.FromArgb(((int)(((byte)(176)))), ((int)(((byte)(124)))), ((int)(((byte)(32)))));
-            this.enterAfdian.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.enterAfdian.Location = new System.Drawing.Point(22, 268);
-            this.enterAfdian.MinimumSize = new System.Drawing.Size(1, 1);
-            this.enterAfdian.Name = "enterAfdian";
-            this.enterAfdian.RectColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(155)))), ((int)(((byte)(40)))));
-            this.enterAfdian.RectHoverColor = System.Drawing.Color.FromArgb(((int)(((byte)(227)))), ((int)(((byte)(175)))), ((int)(((byte)(83)))));
-            this.enterAfdian.RectPressColor = System.Drawing.Color.FromArgb(((int)(((byte)(176)))), ((int)(((byte)(124)))), ((int)(((byte)(32)))));
-            this.enterAfdian.RectSelectedColor = System.Drawing.Color.FromArgb(((int)(((byte)(176)))), ((int)(((byte)(124)))), ((int)(((byte)(32)))));
-            this.enterAfdian.Size = new System.Drawing.Size(100, 35);
-            this.enterAfdian.Style = Sunny.UI.UIStyle.Orange;
-            this.enterAfdian.Symbol = 261597;
-            this.enterAfdian.TabIndex = 5;
-            this.enterAfdian.Text = "爱发电";
-            this.enterAfdian.TipsFont = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.enterAfdian.Click += new System.EventHandler(this.enterAfdian_Click);
-            // 
-            // enterGithub
-            // 
-            this.enterGithub.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.enterGithub.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(155)))), ((int)(((byte)(40)))));
-            this.enterGithub.FillColor2 = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(155)))), ((int)(((byte)(40)))));
-            this.enterGithub.FillHoverColor = System.Drawing.Color.FromArgb(((int)(((byte)(227)))), ((int)(((byte)(175)))), ((int)(((byte)(83)))));
-            this.enterGithub.FillPressColor = System.Drawing.Color.FromArgb(((int)(((byte)(176)))), ((int)(((byte)(124)))), ((int)(((byte)(32)))));
-            this.enterGithub.FillSelectedColor = System.Drawing.Color.FromArgb(((int)(((byte)(176)))), ((int)(((byte)(124)))), ((int)(((byte)(32)))));
-            this.enterGithub.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.enterGithub.Location = new System.Drawing.Point(147, 268);
-            this.enterGithub.MinimumSize = new System.Drawing.Size(1, 1);
-            this.enterGithub.Name = "enterGithub";
-            this.enterGithub.RectColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(155)))), ((int)(((byte)(40)))));
-            this.enterGithub.RectHoverColor = System.Drawing.Color.FromArgb(((int)(((byte)(227)))), ((int)(((byte)(175)))), ((int)(((byte)(83)))));
-            this.enterGithub.RectPressColor = System.Drawing.Color.FromArgb(((int)(((byte)(176)))), ((int)(((byte)(124)))), ((int)(((byte)(32)))));
-            this.enterGithub.RectSelectedColor = System.Drawing.Color.FromArgb(((int)(((byte)(176)))), ((int)(((byte)(124)))), ((int)(((byte)(32)))));
-            this.enterGithub.Size = new System.Drawing.Size(100, 35);
-            this.enterGithub.Style = Sunny.UI.UIStyle.Orange;
-            this.enterGithub.Symbol = 61595;
-            this.enterGithub.TabIndex = 6;
-            this.enterGithub.Text = "Github";
-            this.enterGithub.TipsFont = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.enterGithub.Click += new System.EventHandler(this.enterGithub_Click);
-            // 
-            // linkline
-            // 
-            this.linkline.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(253)))), ((int)(((byte)(249)))), ((int)(((byte)(241)))));
-            this.linkline.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.linkline.LineColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(155)))), ((int)(((byte)(40)))));
-            this.linkline.LineColor2 = System.Drawing.Color.FromArgb(((int)(((byte)(253)))), ((int)(((byte)(249)))), ((int)(((byte)(241)))));
-            this.linkline.Location = new System.Drawing.Point(22, 214);
-            this.linkline.MinimumSize = new System.Drawing.Size(1, 1);
-            this.linkline.Name = "linkline";
-            this.linkline.Size = new System.Drawing.Size(360, 29);
-            this.linkline.Style = Sunny.UI.UIStyle.Orange;
-            this.linkline.TabIndex = 7;
-            this.linkline.Text = "链接";
-            // 
-            // enterWiki
-            // 
-            this.enterWiki.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.enterWiki.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(155)))), ((int)(((byte)(40)))));
-            this.enterWiki.FillColor2 = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(155)))), ((int)(((byte)(40)))));
-            this.enterWiki.FillHoverColor = System.Drawing.Color.FromArgb(((int)(((byte)(227)))), ((int)(((byte)(175)))), ((int)(((byte)(83)))));
-            this.enterWiki.FillPressColor = System.Drawing.Color.FromArgb(((int)(((byte)(176)))), ((int)(((byte)(124)))), ((int)(((byte)(32)))));
-            this.enterWiki.FillSelectedColor = System.Drawing.Color.FromArgb(((int)(((byte)(176)))), ((int)(((byte)(124)))), ((int)(((byte)(32)))));
-            this.enterWiki.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.enterWiki.Location = new System.Drawing.Point(271, 268);
-            this.enterWiki.MinimumSize = new System.Drawing.Size(1, 1);
-            this.enterWiki.Name = "enterWiki";
-            this.enterWiki.RectColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(155)))), ((int)(((byte)(40)))));
-            this.enterWiki.RectHoverColor = System.Drawing.Color.FromArgb(((int)(((byte)(227)))), ((int)(((byte)(175)))), ((int)(((byte)(83)))));
-            this.enterWiki.RectPressColor = System.Drawing.Color.FromArgb(((int)(((byte)(176)))), ((int)(((byte)(124)))), ((int)(((byte)(32)))));
-            this.enterWiki.RectSelectedColor = System.Drawing.Color.FromArgb(((int)(((byte)(176)))), ((int)(((byte)(124)))), ((int)(((byte)(32)))));
-            this.enterWiki.Size = new System.Drawing.Size(111, 35);
-            this.enterWiki.Style = Sunny.UI.UIStyle.Orange;
-            this.enterWiki.Symbol = 162056;
-            this.enterWiki.TabIndex = 8;
-            this.enterWiki.Text = "灰机维基";
-            this.enterWiki.TipsFont = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.enterWiki.Click += new System.EventHandler(this.enterWiki_Click);
+            this.uiLabel3.Font = new System.Drawing.Font("微软雅黑", 8F);
+            this.uiLabel3.Location = new System.Drawing.Point(19, 233);
+            this.uiLabel3.Name = "uiLabel3";
+            this.uiLabel3.Size = new System.Drawing.Size(335, 30);
+            this.uiLabel3.Style = Sunny.UI.UIStyle.Orange;
+            this.uiLabel3.TabIndex = 11;
+            this.uiLabel3.Text = "除非你知道你在做什么，否则不要开启。";
+            this.uiLabel3.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // MainForm
             // 
@@ -409,6 +449,9 @@
         private Sunny.UI.UILine linkline;
         private Sunny.UI.UISymbolButton enterGithub;
         private Sunny.UI.UISymbolButton enterAfdian;
+        private Sunny.UI.UILabel uiLabel3;
+        private Sunny.UI.UISwitch useGithub;
+        private Sunny.UI.UILabel uiLabel2;
     }
 }
 
