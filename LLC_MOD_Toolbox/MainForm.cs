@@ -102,7 +102,7 @@ namespace LLC_MOD_Toolbox
             // 查找边狱公司dir
             logger.Log("Find Limbus Company Dir.");
 
-            // limbusCompanyDir = FindLimbusCompanyDirectory();
+            limbusCompanyDir = FindLimbusCompanyDirectory();
             if (string.IsNullOrEmpty(limbusCompanyDir))
             {
                 logger.Log("Can't auto find the limbus company dir. Use the another way.");
