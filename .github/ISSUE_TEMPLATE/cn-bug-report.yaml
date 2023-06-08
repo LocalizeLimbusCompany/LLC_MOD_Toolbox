@@ -1,4 +1,5 @@
 name: Bug 反馈（使用中文）
+description: 闪退,无法使用等
 labels: bug
 assignees: ZengXiaoPi
 body:
