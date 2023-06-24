@@ -293,8 +293,6 @@ namespace LLC_MOD_Toolbox
 
             string limbusLocalizeDllPath = modsDir + "/LimbusLocalize.dll";
             string limbusLocalizeZipPath = Path.Combine(limbusCompanyDir, "LimbusLocalize.7z");
-            var versionInfo = FileVersionInfo.GetVersionInfo(limbusLocalizeDllPath);
-            string currentVersion = "v" + versionInfo.ProductVersion;
 
             try
             {
@@ -303,14 +301,22 @@ namespace LLC_MOD_Toolbox
                     string latestVersion = GetLatestLimbusLocalizeVersion(false, out string latest2ReleaseTag);
                     if (File.Exists(limbusLocalizeDllPath))
                     {
+                        var versionInfo = FileVersionInfo.GetVersionInfo(limbusLocalizeDllPath);
+                        string currentVersion = "v" + versionInfo.ProductVersion;
                         if (new Version(versionInfo.ProductVersion) < new Version(latestVersion.Remove(0, 1)))
                         {
                             await DownloadFileAsync("https://" + fastestNode + "/files/LimbusLocalize_FullPack.7z", limbusLocalizeZipPath);
+                            logger.Log("Extract zip...");
+                            new SevenZipExtractor(limbusLocalizeZipPath).ExtractAll(limbusCompanyDir, true);
+                            File.Delete(limbusLocalizeZipPath);
                         }
                     }
                     else
                     {
                         await DownloadFileAsync("https://" + fastestNode + "/files/LimbusLocalize_FullPack.7z", limbusLocalizeZipPath);
+                        logger.Log("Extract zip...");
+                        new SevenZipExtractor(limbusLocalizeZipPath).ExtractAll(limbusCompanyDir, true);
+                        File.Delete(limbusLocalizeZipPath);
                     }
                 }
                 else
@@ -319,6 +325,8 @@ namespace LLC_MOD_Toolbox
                     string limbusLocalizeUrl = GetLatestLimbusLocalizeDownloadUrl(latestVersion, false);
                     if (File.Exists(limbusLocalizeDllPath))
                     {
+                        var versionInfo = FileVersionInfo.GetVersionInfo(limbusLocalizeDllPath);
+                        string currentVersion = "v" + versionInfo.ProductVersion;
                         if (new Version(versionInfo.ProductVersion) < new Version(latestVersion.Remove(0, 1)))
                         {
                             await DownloadFileAsync(limbusLocalizeUrl, limbusLocalizeZipPath);
@@ -521,6 +529,7 @@ namespace LLC_MOD_Toolbox
                 enterAfdian.Enabled = true;
                 enterGithub.Enabled = true;
                 enterWiki.Enabled = true;
+                enterDoc.Enabled = true;
                 logger.Log("Button is Enabled.");
             }
             else
@@ -531,6 +540,7 @@ namespace LLC_MOD_Toolbox
                 enterAfdian.Enabled = false;
                 enterGithub.Enabled = false;
                 enterWiki.Enabled = false;
+                enterDoc.Enabled = false;
                 logger.Log("Button is Disabled.");
             }
         }
