@@ -6,11 +6,8 @@ using System.Net;
 using System.Text;
 using System.Windows.Forms;
 using System;
-using System.Security.Policy;
 using System.Runtime.InteropServices;
 using Microsoft.Win32;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
-using static LLC_MOD_Toolbox.logger;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Net.NetworkInformation;
@@ -20,7 +17,7 @@ namespace LLC_MOD_Toolbox
 {
     public partial class MainForm : UIForm
     {
-        public const string VERSION = "0.3.2";
+        public const string VERSION = "0.3.3";
         private bool Has_NET_6_0;
         private bool isWindows10;
         private string limbusCompanyDir;
@@ -28,6 +25,7 @@ namespace LLC_MOD_Toolbox
         private static string fastestNode;
         private string melonLoaderUrl;
         private string download;
+        private string melonLoaderZipPath;
 
         logger logger = new logger("LLCToolBox_log.txt");
 
@@ -155,24 +153,46 @@ namespace LLC_MOD_Toolbox
                 {
                     logger.Log("Downloading MFL...");
                     status.Text = "正在下载并解压MelonLoader...";
-                    MessageBox.Show("如果你安装了杀毒软件，接下来可能会提示工具箱正在修改关键dll。\n允许即可。如果不信任汉化补丁，可以退出本程序。", "警告");
-                    if (Directory.Exists(limbusCompanyDir + "/MelonLoader"))
-                    {
-                        Directory.Delete(limbusCompanyDir + "/MelonLoader", true);
-                    }
+                    logger.Log("LimbusCompanyDir: "+limbusCompanyDir);
+                    bool MelonLoaderVersion = !File.Exists(limbusCompanyDir + "/MelonLoader/net6/MelonLoader.dll") || new Version(FileVersionInfo.GetVersionInfo(limbusCompanyDir + "/MelonLoader/net6/MelonLoader.dll").ProductVersion) < new Version("0.6.1");
                     if (useGithub.Active != true)
                     {
-                        melonLoaderUrl = "https://" + fastestNode + "/files/MelonLoader_ForLLC.zip";
+                        if (MelonLoaderVersion)
+                        {
+                            logger.Log("cant find melonloader. start installing");
+                            MessageBox.Show("如果你安装了杀毒软件，接下来可能会提示工具箱正在修改关键dll。\n允许即可。如果不信任汉化补丁，可以退出本程序。", "警告");
+                            if (Directory.Exists(limbusCompanyDir + "/MelonLoader"))
+                            {
+                                Directory.Delete(limbusCompanyDir + "/MelonLoader", true);
+                            }
+                            melonLoaderUrl = "https://" + fastestNode + "/files/MelonLoader_ForLLC.zip";
+                            melonLoaderZipPath = Path.Combine(limbusCompanyDir, "MelonLoader_ForLLC.zip");
+                            logger.Log("MelonLoaderZipPath: " + melonLoaderZipPath);
+                            await DownloadFileAsync(melonLoaderUrl, melonLoaderZipPath);
+                            logger.Log("start Extract zip.");
+                            new SevenZipExtractor(melonLoaderZipPath).ExtractAll(limbusCompanyDir, true);
+                            logger.Log("Extract zip...");
+                            File.Delete(melonLoaderZipPath);
+                        }
+                        else
+                        {
+                            logger.Log("Find MelonLoader. Stop.");
+                        }
                     }
                     else
                     {
-                        melonLoaderUrl = "https://github.com/LocalizeLimbusCompany/MelonLoader/releases/download/v0.6.1-OpenLLCBeta/MelonLoader_v0.6.1-OpenLLCBeta.zip";
+                        if (MelonLoaderVersion)
+                        {
+                            melonLoaderUrl = "https://github.com/LocalizeLimbusCompany/MelonLoader-LLC/releases/download/v0.6.3/ML_LLC_v0.6.3.zip";
+                            melonLoaderZipPath = Path.Combine(limbusCompanyDir, "MelonLoader_v0.6.1-OpenLLCBeta.zip");
+                            logger.Log("MelonLoaderZipPath: " + melonLoaderZipPath);
+                            await DownloadFileAsync(melonLoaderUrl, melonLoaderZipPath);
+                        }
+                        else
+                        {
+                            logger.Log("Find MelonLoader. Stop.");
+                        }
                     }
-                    string melonLoaderZipPath = Path.Combine(limbusCompanyDir, "MelonLoader_ForLLC.zip");
-                    await DownloadFileAsync(melonLoaderUrl, melonLoaderZipPath);
-                    new SevenZipExtractor(melonLoaderZipPath).ExtractAll(limbusCompanyDir, true);
-                    logger.Log("Extract zip...");
-                    File.Delete(melonLoaderZipPath);
                     logger.Log("MFL is done.");
                     done_Bar.Value = 33;
                 }
@@ -228,29 +248,33 @@ namespace LLC_MOD_Toolbox
             logger.Log("create moddir.");
             Directory.CreateDirectory(modsDir);
             string tmpchineseZipPath = Path.Combine(limbusCompanyDir, "tmpchinese.7z");
+            string tmpchinese = modsDir + "/tmpchinesefont";
+            var LastWriteTime = File.Exists(tmpchinese) ? new FileInfo(tmpchinese).LastWriteTime.ToString("yyMMdd") : string.Empty;
 
             try
             {
                 if (useGithub.Active != true)
                 {
-                    await DownloadFileAsync("https://" + fastestNode + "/files/tmpchinesefont.7z", tmpchineseZipPath);
+                    if (CheckChineseFontAssetUpdate(LastWriteTime, false, out var latestTag))
+                    {
+                        await DownloadFileAsync("https://" + fastestNode + "/files/tmpchinesefont.7z", tmpchineseZipPath);
+                        logger.Log("Extract zip...");
+                        new SevenZipExtractor(tmpchineseZipPath).ExtractAll(limbusCompanyDir, true);
+                        File.Delete(tmpchineseZipPath);
+                    }
                 }
                 else
                 {
-                    download = string.Empty;
-                    using (WebClient client = new WebClient())
+                    if (CheckChineseFontAssetUpdate(LastWriteTime, true, out var latestTag))
                     {
-                        client.Headers.Add("User-Agent", "request");
-                        string raw = new StreamReader(client.OpenRead(new Uri("https://api.github.com/repos/LocalizeLimbusCompany/LLC_ChineseFontAsset/releases/latest")), Encoding.UTF8).ReadToEnd();
-                        var latest = JSONNode.Parse(raw).AsObject;
-                        string latestReleaseTag = latest["tag_name"].Value;
-                        download = "https://github.com/LocalizeLimbusCompany/LLC_ChineseFontAsset/releases/download/" + latestReleaseTag + "/tmpchinesefont_" + latestReleaseTag + ".7z";
-                        await DownloadFileAsync(download, tmpchineseZipPath);
+                        string downloadTMP = "https://github.com/LocalizeLimbusCompany/LLC_ChineseFontAsset/releases/download/" + latestTag + "/tmpchinesefont_" + latestTag + ".7z";
+                        tmpchineseZipPath = Path.Combine(limbusCompanyDir, "tmpchinese.7z");
+                        await DownloadFileAsync(downloadTMP, tmpchineseZipPath);
+                        logger.Log("Extract zip...");
+                        new SevenZipExtractor(tmpchineseZipPath).ExtractAll(limbusCompanyDir, true);
+                        File.Delete(tmpchineseZipPath);
                     }
                 }
-                logger.Log("Extract zip...");
-                new SevenZipExtractor(tmpchineseZipPath).ExtractAll(limbusCompanyDir, true);
-                File.Delete(tmpchineseZipPath);
             }
             catch (Exception ex)
             {
@@ -267,21 +291,57 @@ namespace LLC_MOD_Toolbox
             status.Text = "正在下载并解压模组本体...";
             logger.Log("download mod...");
 
+            string limbusLocalizeDllPath = modsDir + "/LimbusLocalize.dll";
             string limbusLocalizeZipPath = Path.Combine(limbusCompanyDir, "LimbusLocalize.7z");
-            string latestVersion = GetLatestLimbusLocalizeVersion(out string latest2ReleaseTag);
+            var versionInfo = FileVersionInfo.GetVersionInfo(limbusLocalizeDllPath);
+            string currentVersion = "v" + versionInfo.ProductVersion;
 
-            if (useGithub.Active != true)
+            try
             {
-                await DownloadFileAsync("https://" + fastestNode + "/files/LimbusLocalize_FullPack.7z", limbusLocalizeZipPath);
-            }
-            else
+                if (useGithub.Active != true)
+                {
+                    string latestVersion = GetLatestLimbusLocalizeVersion(false, out string latest2ReleaseTag);
+                    if (File.Exists(limbusLocalizeDllPath))
+                    {
+                        if (new Version(versionInfo.ProductVersion) < new Version(latestVersion.Remove(0, 1)))
+                        {
+                            await DownloadFileAsync("https://" + fastestNode + "/files/LimbusLocalize_FullPack.7z", limbusLocalizeZipPath);
+                        }
+                    }
+                    else
+                    {
+                        await DownloadFileAsync("https://" + fastestNode + "/files/LimbusLocalize_FullPack.7z", limbusLocalizeZipPath);
+                    }
+                }
+                else
+                {
+                    string latestVersion = GetLatestLimbusLocalizeVersion(true, out string latest2ReleaseTag);
+                    string limbusLocalizeUrl = GetLatestLimbusLocalizeDownloadUrl(latestVersion, false);
+                    if (File.Exists(limbusLocalizeDllPath))
+                    {
+                        if (new Version(versionInfo.ProductVersion) < new Version(latestVersion.Remove(0, 1)))
+                        {
+                            await DownloadFileAsync(limbusLocalizeUrl, limbusLocalizeZipPath);
+                            logger.Log("Extract zip...");
+                            new SevenZipExtractor(limbusLocalizeZipPath).ExtractAll(limbusCompanyDir, true);
+                            File.Delete(limbusLocalizeZipPath);
+                        }
+                    }
+                    else
+                    {
+                        await DownloadFileAsync(limbusLocalizeUrl, limbusLocalizeZipPath);
+                        logger.Log("Extract zip...");
+                        new SevenZipExtractor(limbusLocalizeZipPath).ExtractAll(limbusCompanyDir, true);
+                        File.Delete(limbusLocalizeZipPath);
+                    }
+                }
+            }catch(Exception ex)
             {
-                string limbusLocalizeUrl = GetLatestLimbusLocalizeDownloadUrl(latestVersion, false);
-                await DownloadFileAsync(limbusLocalizeUrl, limbusLocalizeZipPath);
+                logger.Log("have some problem: " + ex.ToString());
+                MessageBox.Show("出现了问题。\n" + ex.ToString());
+                Close();
+                return;
             }
-            logger.Log("Extract zip...");
-            new SevenZipExtractor(limbusLocalizeZipPath).ExtractAll(limbusCompanyDir, true);
-            File.Delete(limbusLocalizeZipPath);
             done_Bar.Value = 100;
             logger.Log("Install is done!");
             DialogResult opengame = MessageBox.Show("安装已完成！\n你现在可以运行游戏了。", "完成", MessageBoxButtons.OK);
@@ -435,6 +495,7 @@ namespace LLC_MOD_Toolbox
         private async Task DownloadFileAsync(string url, string filePath)
         {
             logger.Log("Download the File from: "+url);
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
             using (WebClient client = new WebClient())
             {
                 client.DownloadProgressChanged += (s, e) =>
@@ -455,8 +516,6 @@ namespace LLC_MOD_Toolbox
             if(yon == true)
             {
                 installButton.Enabled = true;
-                disable.Enabled = true;
-                canable.Enabled = true;
                 useMFL.ReadOnly = false;
                 useGithub.ReadOnly = false;
                 enterAfdian.Enabled = true;
@@ -467,8 +526,6 @@ namespace LLC_MOD_Toolbox
             else
             {
                 installButton.Enabled = false;
-                disable.Enabled = false;
-                canable.Enabled = false;
                 useMFL.ReadOnly = true;
                 useGithub.ReadOnly = true;
                 enterAfdian.Enabled = false;
@@ -576,6 +633,8 @@ namespace LLC_MOD_Toolbox
                 return null;
             }
         }
+
+
         private void enterAfdian_Click(object sender, EventArgs e)
         {
             Process.Start("https://afdian.net/a/Limbus_zero");
@@ -590,14 +649,24 @@ namespace LLC_MOD_Toolbox
         {
             Process.Start("https://limbuscompany.huijiwiki.com");
         }
-
+        private void enterDoc_Click(object sender, EventArgs e)
+        {
+            Process.Start("https://zxp123.eu.org");
+        }
         // For Github Mode
-        private string GetLatestLimbusLocalizeVersion(out string latest2ReleaseTag)
+        private string GetLatestLimbusLocalizeVersion(bool IsGithub, out string latest2ReleaseTag)
         {
             using (WebClient client = new WebClient())
             {
                 client.Headers.Add("User-Agent", "request");
-                string raw = new StreamReader(client.OpenRead(new Uri("https://api.github.com/repos/LocalizeLimbusCompany/LocalizeLimbusCompany/releases")), Encoding.UTF8).ReadToEnd();
+                string raw = string.Empty;
+                if (IsGithub == true)
+                {
+                    raw = new StreamReader(client.OpenRead(new Uri("https://api.github.com/repos/LocalizeLimbusCompany/LocalizeLimbusCompany/releases")), Encoding.UTF8).ReadToEnd();
+                }else
+                {
+                    raw = new StreamReader(client.OpenRead(new Uri("https://json.zxp123.eu.org/Mod_Release.json")), Encoding.UTF8).ReadToEnd();
+                }
                 JSONArray releases = JSONNode.Parse(raw).AsArray;
 
                 string latestReleaseTag = releases[0]["tag_name"].Value;
@@ -609,6 +678,39 @@ namespace LLC_MOD_Toolbox
         private string GetLatestLimbusLocalizeDownloadUrl(string version, bool isota)
         {
             return "https://github.com/LocalizeLimbusCompany/LocalizeLimbusCompany/releases/download/" + version + "/LimbusLocalize_" + (isota ? "OTA_" : string.Empty) + version + ".7z";
+        }
+
+        static bool CheckChineseFontAssetUpdate(string LastWriteTime, bool IsGithub, out string tag)
+        {
+            tag = string.Empty;
+            try
+            {
+                using (WebClient client = new WebClient())
+                {
+                    client.Headers.Add("User-Agent", "request");
+                    string raw = string.Empty;
+                    if (IsGithub == true)
+                    {
+                        raw = new StreamReader(client.OpenRead(new Uri("https://api.github.com/repos/LocalizeLimbusCompany/LLC_ChineseFontAsset/releases/latest")), Encoding.UTF8).ReadToEnd();
+                    }
+                    else
+                    {
+                        raw = new StreamReader(client.OpenRead(new Uri("https://json.zxp123.eu.org/LatestTmp_Release.json")), Encoding.UTF8).ReadToEnd();
+                    }
+                    var latest = JSONNode.Parse(raw).AsObject;
+                    string latestReleaseTag = latest["tag_name"].Value;
+                    if (latestReleaseTag != LastWriteTime)
+                    {
+                        tag = latestReleaseTag;
+                        return true;
+                    }
+                }
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show("出现了问题。\n" + ex.ToString());
+            }
+            return false;
         }
     }
 }
