@@ -1,6 +1,6 @@
 name: Bug 反馈（使用中文）
 description: 闪退,无法使用等
-labels: bug
+labels: 错误
 assignees: ZengXiaoPi
 body:
   - type: checkboxes
