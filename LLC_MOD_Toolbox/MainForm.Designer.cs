@@ -208,7 +208,7 @@ namespace LLC_MOD_Toolbox
             this.uiLabel3.Size = new System.Drawing.Size(335, 30);
             this.uiLabel3.Style = Sunny.UI.UIStyle.Orange;
             this.uiLabel3.TabIndex = 11;
-            this.uiLabel3.Text = "除非你知道你在做什么，否则不要开启。";
+            this.uiLabel3.Text = "除非你知道你在做什么，否则不要更改。";
             this.uiLabel3.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // useGithub
