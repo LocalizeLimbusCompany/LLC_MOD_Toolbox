@@ -18,7 +18,7 @@ namespace LLC_MOD_Toolbox
 {
     public partial class MainForm : UIForm
     {
-        public const string VERSION = "0.3.4";
+        public const string VERSION = "0.3.5";
         private bool Has_NET_6_0;
         private bool isWindows10;
         private string limbusCompanyDir;
@@ -34,7 +34,7 @@ namespace LLC_MOD_Toolbox
             InitializeComponent();
         }
 
-        private void MainForm_Load(object sender, System.EventArgs e)
+        private void MainForm_Load(object sender, EventArgs e)
         {
             useMFL.Active = true;
             useGithub.Active = false;
@@ -54,6 +54,16 @@ namespace LLC_MOD_Toolbox
             // 关闭按钮
             ControlButton(false);
 
+            logger.Log("Getting Fastest Node...");
+            // 获取最快节点
+            fastestNode = GetFastnetNode();
+            if (string.IsNullOrEmpty(fastestNode))
+            {
+                MessageBox.Show("网络错误,你无法访问任何站点。请检查 网络或代理", "错误", MessageBoxButtons.OK);
+                Close();
+                return;
+            }
+            logger.Log("Done. The Fastest Node is: " + fastestNode);
             // 检查更新
             logger.Log("Check the Installer's Update.");
             try
@@ -62,14 +72,15 @@ namespace LLC_MOD_Toolbox
                 {
                     client.Headers.Add("User-Agent", "request");
                     logger.Log("Open Github API.");
-                    string raw = new StreamReader(client.OpenRead(new Uri("https://api.github.com/repos/LocalizeLimbusCompany/LLC_MOD_Installer/releases/latest")), Encoding.UTF8).ReadToEnd();
+                    bool isgit = fastestNode == "github.com";
+                    string raw = new StreamReader(client.OpenRead(new Uri(isgit ? "https://api.github.com/repos/LocalizeLimbusCompany/LLC_MOD_Installer/releases/latest" : "https://json.zxp123.eu.org/Toolbox_Release.json")), Encoding.UTF8).ReadToEnd();
                     var latest = JSONNode.Parse(raw).AsObject;
                     string latestReleaseTag = latest["tag_name"].Value.Remove(0, 1);
-                    if (new Version(latestReleaseTag) > new Version(FileVersionInfo.GetVersionInfo("./LimbusCompanyModInstaller.exe").ProductVersion))
+                    if (new Version(latestReleaseTag) > new Version(FileVersionInfo.GetVersionInfo("./LLC_MOD_Toolbox.exe").ProductVersion))
                     {
                         logger.Log("Find the installer's new version. version: " + latestReleaseTag);
                         MessageBox.Show("安装器存在更新");
-                        Openuri("https://github.com/LocalizeLimbusCompany/LLC_MOD_Installer/releases/latest");
+                        Openuri(isgit ? "https://github.com/LocalizeLimbusCompany/LLC_MOD_Installer/releases/latest" : "https://www.zeroasso.top/docs/install/autoinstall");
                         Close();
                         return;
                     }
@@ -112,7 +123,7 @@ namespace LLC_MOD_Toolbox
                 if (dialog.ShowDialog() == DialogResult.OK)
                 {
                     limbusCompanyDir = dialog.SelectedPath;
-                    limbusCompanyGameDir = limbusCompanyDir + "\\LimbusCompany.exe";
+                    limbusCompanyGameDir = limbusCompanyDir + "/LimbusCompany.exe";
                     if (File.Exists(limbusCompanyGameDir) != true)
                     {
                         logger.Log("Select wrong dir.Close.");
@@ -123,20 +134,9 @@ namespace LLC_MOD_Toolbox
                     File.WriteAllText("LimbusCompanyPath.txt", limbusCompanyDir);
                 }
             }
-            limbusCompanyGameDir = limbusCompanyDir + "\\LimbusCompany.exe";
+            limbusCompanyGameDir = limbusCompanyDir + "/LimbusCompany.exe";
 
             logger.Log("Find Limbus Company Dir is done.");
-
-            logger.Log("Getting Fastest Node...");
-            // 获取最快节点
-            fastestNode = GetFastnetNode();
-            if (string.IsNullOrEmpty(fastestNode))
-            {
-                MessageBox.Show("网络错误,你无法访问任何站点。请检查 网络或代理", "错误", MessageBoxButtons.OK);
-                Close();
-                return;
-            }
-            logger.Log("Done. The Fastest Node is: " + fastestNode);
 
             // 控制打开Button
             ControlButton(true);
@@ -171,8 +171,8 @@ namespace LLC_MOD_Toolbox
                             {
                                 Directory.Delete(limbusCompanyDir + "/MelonLoader", true);
                             }
-                            melonLoaderUrl = "https://" + fastestNode + "/files/ML_LLC_v0.6.3.zip.zip";
-                            melonLoaderZipPath = Path.Combine(limbusCompanyDir, "ML_LLC_v0.6.3.zip.zip");
+                            melonLoaderUrl = "https://" + fastestNode + "/files/ML_LLC_v0.6.3.zip";
+                            melonLoaderZipPath = Path.Combine(limbusCompanyDir, "ML_LLC_v0.6.3.zip");
                             logger.Log("MelonLoaderZipPath: " + melonLoaderZipPath);
                             await DownloadFileAsync(melonLoaderUrl, melonLoaderZipPath);
                             logger.Log("start Extract zip.");
@@ -190,7 +190,7 @@ namespace LLC_MOD_Toolbox
                         if (MelonLoaderVersion)
                         {
                             melonLoaderUrl = "https://github.com/LocalizeLimbusCompany/MelonLoader-LLC/releases/download/v0.6.3/ML_LLC_v0.6.3.zip";
-                            melonLoaderZipPath = Path.Combine(limbusCompanyDir, "ML_LLC_v0.6.3.zip.zip");
+                            melonLoaderZipPath = Path.Combine(limbusCompanyDir, "ML_LLC_v0.6.3.zip");
                             logger.Log("MelonLoaderZipPath: " + melonLoaderZipPath);
                             await DownloadFileAsync(melonLoaderUrl, melonLoaderZipPath);
                         }
@@ -670,21 +670,21 @@ namespace LLC_MOD_Toolbox
 
         private void enterAfdian_Click(object sender, EventArgs e)
         {
-            Process.Start("https://afdian.net/a/Limbus_zero");
+            Openuri("https://afdian.net/a/Limbus_zero");
         }
 
         private void enterGithub_Click(object sender, EventArgs e)
         {
-            Process.Start("https://github.com/LocalizeLimbusCompany/LLC_MOD_Installer");
+            Openuri("https://github.com/LocalizeLimbusCompany/LLC_MOD_Installer");
         }
 
         private void enterWiki_Click(object sender, EventArgs e)
         {
-            Process.Start("https://limbuscompany.huijiwiki.com");
+            Openuri("https://limbuscompany.huijiwiki.com");
         }
         private void enterDoc_Click(object sender, EventArgs e)
         {
-            Process.Start("https://www.zeroasso.top");
+            Openuri("https://www.zeroasso.top");
         }
         // For Github Mode
         private string GetLatestLimbusLocalizeVersion(bool IsGithub, out string latest2ReleaseTag)
