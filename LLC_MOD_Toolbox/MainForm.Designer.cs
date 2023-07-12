@@ -511,7 +511,7 @@ namespace LLC_MOD_Toolbox
             this.RectColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(155)))), ((int)(((byte)(40)))));
             this.ShowTitleIcon = true;
             this.Style = Sunny.UI.UIStyle.Orange;
-            this.Text = "LLC Mod Toolbox v0.3.5";
+            this.Text = "LLC Mod Toolbox v0.3.6";
             this.TitleColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(155)))), ((int)(((byte)(40)))));
             this.ZoomScaleRect = new System.Drawing.Rectangle(15, 15, 800, 450);
             this.Load += new System.EventHandler(this.MainForm_Load);
