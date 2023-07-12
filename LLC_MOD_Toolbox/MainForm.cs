@@ -802,6 +802,7 @@ namespace LLC_MOD_Toolbox
             downfromofb = true;
             downfromlv = false;
             downfromlvcdn = false;
+            MessageBox.Show("手动切换成功。", "提示", MessageBoxButtons.OK);
         }
 
         private void dlFromLV_Click(object sender, EventArgs e)
@@ -809,6 +810,7 @@ namespace LLC_MOD_Toolbox
             downfromofb = false;
             downfromlv = true;
             downfromlvcdn = false;
+            MessageBox.Show("手动切换成功。", "提示", MessageBoxButtons.OK);
         }
 
         private void dlFromDefault_Click(object sender, EventArgs e)
@@ -816,6 +818,7 @@ namespace LLC_MOD_Toolbox
             downfromofb = false;
             downfromlv = false;
             downfromlvcdn = false;
+            MessageBox.Show("手动切换成功。", "提示", MessageBoxButtons.OK);
         }
 
         private void dlFromLVCDN_Click(object sender, EventArgs e)
@@ -823,6 +826,7 @@ namespace LLC_MOD_Toolbox
             downfromofb = false;
             downfromlv = false;
             downfromlvcdn = true;
+            MessageBox.Show("手动切换成功。", "提示", MessageBoxButtons.OK);
         }
     }
 }
