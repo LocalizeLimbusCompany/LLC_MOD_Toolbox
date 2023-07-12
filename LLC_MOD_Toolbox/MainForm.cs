@@ -18,7 +18,7 @@ namespace LLC_MOD_Toolbox
 {
     public partial class MainForm : UIForm
     {
-        public const string VERSION = "0.3.5";
+        public const string VERSION = "0.3.6";
         private bool Has_NET_6_0;
         private bool isWindows10;
         private string limbusCompanyDir;
@@ -26,6 +26,9 @@ namespace LLC_MOD_Toolbox
         private static string fastestNode;
         private string melonLoaderUrl;
         private string melonLoaderZipPath;
+        private bool downfromofb = false;
+        private bool downfromlv = false;
+        private bool downfromlvcdn = false;
 
         logger logger = new logger("LLCToolBox_log.txt");
 
@@ -38,6 +41,9 @@ namespace LLC_MOD_Toolbox
         {
             useMFL.Active = true;
             useGithub.Active = false;
+            downfromofb = false;
+            downfromlv = false;
+            downfromlvcdn = false;
             string logFilePath = Path.Combine(Application.StartupPath, "LLCToolBox_log.txt");
             if (File.Exists(logFilePath))
             {
@@ -50,6 +56,7 @@ namespace LLC_MOD_Toolbox
                 }
             }
             logger.Log("LLCToolbox is loading.");
+            logger.Log("Version: "+ VERSION);
 
             // 关闭按钮
             ControlButton(false);
@@ -73,6 +80,10 @@ namespace LLC_MOD_Toolbox
                     client.Headers.Add("User-Agent", "request");
                     logger.Log("Open Github API.");
                     bool isgit = fastestNode == "github.com";
+                    if(isgit == true)
+                    {
+                        useGithub.Active = true;
+                    }
                     string raw = new StreamReader(client.OpenRead(new Uri(isgit ? "https://api.github.com/repos/LocalizeLimbusCompany/LLC_MOD_Installer/releases/latest" : "https://json.zxp123.eu.org/Toolbox_Release.json")), Encoding.UTF8).ReadToEnd();
                     var latest = JSONNode.Parse(raw).AsObject;
                     string latestReleaseTag = latest["tag_name"].Value.Remove(0, 1);
@@ -151,6 +162,31 @@ namespace LLC_MOD_Toolbox
 
             ControlButton(false);
 
+            logger.Log("Check some error.");
+            if (useGithub.Active == false && fastestNode == "github.com")
+            {
+                logger.Log("useGithub.Active == false && fastestNode == \"github.com\"");
+                fastestNode = "dl.determination.top";
+            }
+
+            if (downfromofb == true)
+            {
+                logger.Log("control node to ofb.");
+                fastestNode = "dl.determination.top";
+            }
+
+            if (downfromlv == true)
+            {
+                logger.Log("control node to lv server.");
+                fastestNode = "lv.zeroasso.top";
+            }
+
+            if (downfromlvcdn == true)
+            {
+                logger.Log("control node to lv server.(with cdn)");
+                fastestNode = "lvcdn.zeroasso.top";
+            }
+
             // 下载MelonLoader
             if (useMFL.Active == true)
             {
@@ -182,13 +218,14 @@ namespace LLC_MOD_Toolbox
                         }
                         else
                         {
-                            logger.Log("Find MelonLoader. Stop.");
+                            logger.Log("Find True MelonLoader. Stop.");
                         }
                     }
                     else
                     {
                         if (MelonLoaderVersion)
                         {
+                            logger.Log("Download MelonLoader from github.");
                             melonLoaderUrl = "https://github.com/LocalizeLimbusCompany/MelonLoader-LLC/releases/download/v0.6.3/ML_LLC_v0.6.3.zip";
                             melonLoaderZipPath = Path.Combine(limbusCompanyDir, "ML_LLC_v0.6.3.zip");
                             logger.Log("MelonLoaderZipPath: " + melonLoaderZipPath);
@@ -196,7 +233,7 @@ namespace LLC_MOD_Toolbox
                         }
                         else
                         {
-                            logger.Log("Find MelonLoader. Stop.");
+                            logger.Log("Find True MelonLoader. Stop.");
                         }
                     }
                     logger.Log("MFL is done.");
@@ -220,6 +257,7 @@ namespace LLC_MOD_Toolbox
                     MessageBox.Show("如果你安装了杀毒软件，接下来可能会提示工具箱正在修改关键dll。\n允许即可。如果不信任汉化补丁，可以退出本程序。", "警告");
                     if (Directory.Exists(limbusCompanyDir + "/MelonLoader"))
                     {
+                        logger.Log("find melonloader, delete.");
                         Directory.Delete(limbusCompanyDir + "/MelonLoader", true);
                     }
                     if (useGithub.Active != true)
@@ -545,6 +583,10 @@ namespace LLC_MOD_Toolbox
                 enterGithub.Enabled = true;
                 enterWiki.Enabled = true;
                 enterDoc.Enabled = true;
+                dlFromOFB.Enabled = true;
+                dlFromLV.Enabled = true;
+                dlFromDefault.Enabled = true;
+                dlFromLVCDN.Enabled = true;
                 logger.Log("Button is Enabled.");
             }
             else
@@ -556,6 +598,10 @@ namespace LLC_MOD_Toolbox
                 enterGithub.Enabled = false;
                 enterWiki.Enabled = false;
                 enterDoc.Enabled = false;
+                dlFromOFB.Enabled = false;
+                dlFromLV.Enabled = false;
+                dlFromDefault.Enabled = false;
+                dlFromLVCDN.Enabled = false;
                 logger.Log("Button is Disabled.");
             }
         }
@@ -565,7 +611,7 @@ namespace LLC_MOD_Toolbox
         {
             logger.Log("Ping the Node...");
 
-            Dictionary<string, long> pingTimes = new Dictionary<string, long>() { { "github.com", 9999L }, { "limbus.determination.top", 9999L }, { "llc.determination.top", 9999L }, { "dl.determination.top", 9999L } };
+            Dictionary<string, long> pingTimes = new Dictionary<string, long>() { { "github.com", 9999L }, { "lv.zeroasso.top", 9999L }, { "lvcdn.zeroasso.top", 9999L }, { "dl.determination.top", 9999L } };
 
             foreach (string url in pingTimes.Keys.ToArray())
             {
@@ -670,20 +716,24 @@ namespace LLC_MOD_Toolbox
 
         private void enterAfdian_Click(object sender, EventArgs e)
         {
+            logger.Log("enter afdian.");
             Openuri("https://afdian.net/a/Limbus_zero");
         }
 
         private void enterGithub_Click(object sender, EventArgs e)
         {
+            logger.Log("enter github.");
             Openuri("https://github.com/LocalizeLimbusCompany/LLC_MOD_Installer");
         }
 
         private void enterWiki_Click(object sender, EventArgs e)
         {
+            logger.Log("enter huijiwiki.");
             Openuri("https://limbuscompany.huijiwiki.com");
         }
         private void enterDoc_Click(object sender, EventArgs e)
         {
+            logger.Log("enter our website.");
             Openuri("https://www.zeroasso.top");
         }
         // For Github Mode
@@ -745,6 +795,34 @@ namespace LLC_MOD_Toolbox
                 MessageBox.Show("出现了问题。\n" + ex.ToString());
             }
             return false;
+        }
+
+        private void dlFromOFB_Click(object sender, EventArgs e)
+        {
+            downfromofb = true;
+            downfromlv = false;
+            downfromlvcdn = false;
+        }
+
+        private void dlFromLV_Click(object sender, EventArgs e)
+        {
+            downfromofb = false;
+            downfromlv = true;
+            downfromlvcdn = false;
+        }
+
+        private void dlFromDefault_Click(object sender, EventArgs e)
+        {
+            downfromofb = false;
+            downfromlv = false;
+            downfromlvcdn = false;
+        }
+
+        private void dlFromLVCDN_Click(object sender, EventArgs e)
+        {
+            downfromofb = false;
+            downfromlv = false;
+            downfromlvcdn = true;
         }
     }
 }
