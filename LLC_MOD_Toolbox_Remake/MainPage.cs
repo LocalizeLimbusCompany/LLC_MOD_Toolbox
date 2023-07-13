@@ -21,7 +21,7 @@ namespace LLC_MOD_Toolbox_Remake
 
     public partial class MainPage : UIForm
     {
-        public const string VERSION = "0.3.6";
+        public const string VERSION = "0.4.0";
 
         // 注册日志系统
         private static readonly ILog logger = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
