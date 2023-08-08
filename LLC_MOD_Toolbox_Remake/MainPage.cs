@@ -1,4 +1,4 @@
-﻿using log4net;
+using log4net;
 using Microsoft.Win32;
 using SevenZipNET;
 using SimpleJSON;
@@ -14,14 +14,13 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace LLC_MOD_Toolbox_Remake
 {
 
     public partial class MainPage : UIForm
     {
-        public const string VERSION = "0.4.0";
+        public const string VERSION = "0.4.1";
 
         // 注册日志系统
         private static readonly ILog logger = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
@@ -115,7 +114,7 @@ namespace LLC_MOD_Toolbox_Remake
         {
             logger.Info("开始安装。");
 
-            logger.Info("安装 MelonLoader 中。");
+            logger.Info("安装 Bepinex 中。");
 
             ControlButton(false);
 
@@ -124,13 +123,13 @@ namespace LLC_MOD_Toolbox_Remake
             if (useGithub.Active == false && fastestNode == "github.com")
             {
                 logger.Warn("在关闭使用 Github 的情况下，最快节点为 Github 。已自动切换至 Onedrive For Business 。");
-                fastestNode = "dl.determination.top";
+                fastestNode = "download.zeroasso.top";
             }
 
             if (downFromOFB == true)
             {
                 logger.Info("切换节点至 Onedrive For Business 。");
-                fastestNode = "dl.determination.top";
+                fastestNode = "download.zeroasso.top";
             }
 
             if (downFromLV == true)
@@ -144,112 +143,86 @@ namespace LLC_MOD_Toolbox_Remake
                 logger.Info("切换节点至 拉斯维加斯服务器 with CDN。");
                 fastestNode = "lvcdn.zeroasso.top";
             }
-
-            // 下载MelonLoader
-            if (useMFL.Active == true)
+            try
             {
-                logger.Info("使用 MelonLoader For LLC 。");
-                try
+                logger.Info("下载 BepInEx For LLC 中。");
+                ChangeStatu("正在下载并解压BepInEx...");
+                logger.Info("Limbus Company 目录： " + limbusCompanyDir);
+                if (useGithub.Active != true)
                 {
-                    logger.Info("下载 MelonLoader For LLC 中。");
-                    ChangeStatu("正在下载并解压MelonLoader...");
-                    logger.Info("Limbus Company 目录： " + limbusCompanyDir);
-                    bool MelonLoaderVersion = !File.Exists(limbusCompanyDir + "/MelonLoader/net6/MelonLoader.dll") || new Version(FileVersionInfo.GetVersionInfo(limbusCompanyDir + "/MelonLoader/net6/MelonLoader.dll").ProductVersion) < new Version("0.6.3");
-                    if (useGithub.Active != true)
+                    if (File.Exists(limbusCompanyDir + "/MelonLoader/net6/MelonLoader.dll"))
                     {
-                        if (MelonLoaderVersion)
-                        {
-                            logger.Info("没有找到 MelonLoader / MelonLoader 版本不足，开始安装。");
-                            MessageBox.Show("如果你安装了杀毒软件，接下来可能会提示工具箱正在修改关键dll。\n允许即可。如果不信任汉化补丁，可以退出本程序。", "警告");
-                            if (Directory.Exists(limbusCompanyDir + "/MelonLoader"))
-                            {
-                                Directory.Delete(limbusCompanyDir + "/MelonLoader", true);
-                            }
-                            melonLoaderUrl = "https://" + fastestNode + "/files/ML_LLC_v0.6.3.zip";
-                            melonLoaderZipPath = Path.Combine(limbusCompanyDir, "ML_LLC_v0.6.3.zip");
-                            logger.Info("MelonLoader Zip目录： " + melonLoaderZipPath);
-                            await DownloadFileAsync(melonLoaderUrl, melonLoaderZipPath);
-                            logger.Info("开始解压 MelonLoader zip。");
-                            new SevenZipExtractor(melonLoaderZipPath).ExtractAll(limbusCompanyDir, true);
-                            logger.Info("解压完成。删除 MelonLoader zip。");
-                            File.Delete(melonLoaderZipPath);
-                        }
-                        else
-                        {
-                            logger.Info("MelonLoader 已被安装且版本正确，跳过安装。");
-                        }
+                        logger.Info("检测到MelonLoader，自动删除");
+                        deleteMelonLoader();
                     }
                     else
                     {
-                        if (MelonLoaderVersion)
-                        {
-                            logger.Info("从 Github 下载 MelonLoader For LLC 。");
-                            melonLoaderUrl = "https://github.com/LocalizeLimbusCompany/MelonLoader-LLC/releases/download/v0.6.3/ML_LLC_v0.6.3.zip";
-                            melonLoaderZipPath = Path.Combine(limbusCompanyDir, "ML_LLC_v0.6.3.zip");
-                            logger.Info("MelonLoader Zip路径： " + melonLoaderZipPath);
-                            await DownloadFileAsync(melonLoaderUrl, melonLoaderZipPath);
-                        }
-                        else
-                        {
-                            logger.Info("MelonLoader 已被安装且版本正确，跳过安装。");
-                        }
+                        logger.Info("未检测到MelonLoader");
                     }
-                    logger.Info("已完成 MelonLoader For LLC 的安装。");
-                    TotalBar.Value = 33;
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("出现了问题。\n" + ex.ToString());
-                    logger.Error("出现了问题： " + ex.ToString());
-                    Close();
-                    return;
-                }
-            }
-            else
-            {
-                logger.Info("使用官方 MelonLoader 。");
-                try
-                {
-                    logger.Info("下载官方 MelonLoader 。");
-                    ChangeStatu("正在下载并解压MelonLoader...");
-                    MessageBox.Show("如果你安装了杀毒软件，接下来可能会提示工具箱正在修改关键dll。\n允许即可。如果不信任汉化补丁，可以退出本程序。", "警告");
-                    if (Directory.Exists(limbusCompanyDir + "/MelonLoader"))
+                    logger.Info("开始安装。");
+                    if (!File.Exists(limbusCompanyDir + "/BepInEx/core/BepInEx.Core.dll") || new Version(FileVersionInfo.GetVersionInfo(limbusCompanyDir + "/BepInEx/core/BepInEx.Core.dll").ProductVersion) != new Version("6.0.0.0"))
                     {
-                        logger.Info("发现MelonLoader，删除目录。");
-                        Directory.Delete(limbusCompanyDir + "/MelonLoader", true);
-                    }
-                    if (useGithub.Active != true)
-                    {
-                        melonLoaderUrl = "https://" + fastestNode + "/files/MelonLoader.x64.zip";
+                        logger.Info("未检测到正确Bepinex。");
+                        MessageBox.Show("如果你安装了杀毒软件，接下来可能会提示工具箱正在修改关键dll。\n允许即可。如果不信任汉化补丁，可以退出本程序。", "警告");
+                        if (Directory.Exists(limbusCompanyDir + "/BepInEx"))
+                        {
+                            Directory.Delete(limbusCompanyDir + "/BepInEx", true);
+                        }
+                        BepInExUrl = "https://" + fastestNode + "/files/BepInEx-IL2CPP-x64.7z";
+                        BepInExZipPath = Path.Combine(limbusCompanyDir, "BepInEx-IL2CPP-x64.7z");
+                        logger.Info("BepInEx Zip目录： " + BepInExZipPath);
+                        await DownloadFileAsync(BepInExUrl, BepInExZipPath);
+                        logger.Info("开始解压 BepInEx zip。");
+                        new SevenZipExtractor(BepInExZipPath).ExtractAll(limbusCompanyDir, true);
+                        logger.Info("解压完成。删除 BepInEx zip。");
+                        File.Delete(BepInExZipPath);
                     }
                     else
                     {
-                        melonLoaderUrl = "https://github.com/LavaGang/MelonLoader/releases/download/v0.6.1/MelonLoader.x64.zip";
+                        logger.Info("检测到正确BepInEx。");
                     }
-                    string melonLoaderZipPath = Path.Combine(limbusCompanyDir, "MelonLoader.x64.zip");
-                    await DownloadFileAsync(melonLoaderUrl, melonLoaderZipPath);
-                    new SevenZipExtractor(melonLoaderZipPath).ExtractAll(limbusCompanyDir, true);
-                    logger.Info("解压 MelonLoader zip ……");
-                    File.Delete(melonLoaderZipPath);
-                    logger.Info("已完成安装官方 MelonLoader 。");
-                    TotalBar.Value = 33;
                 }
-                catch (Exception ex)
+                else
                 {
-                    logger.Info("出现问题： " + ex.ToString());
-                    MessageBox.Show("出现了问题。\n" + ex.ToString());
-                    Close();
-                    return;
+                    if (File.Exists(limbusCompanyDir + "/MelonLoader/net6/MelonLoader.dll"))
+                    {
+                        logger.Info("检测到MelonLoader，自动删除");
+                        deleteMelonLoader();
+                    }
+                    else
+                    {
+                        logger.Info("未检测到MelonLoader");
+                    }
+                    if (!File.Exists(limbusCompanyDir + "/BepInEx/core/BepInEx.Core.dll") || new Version(FileVersionInfo.GetVersionInfo(limbusCompanyDir + "/BepInEx/core/BepInEx.Core.dll").ProductVersion) != new Version("6.0.0.0"))
+                    {
+                        logger.Info("从 Github 下载 BepInEx 。");
+                        BepInExUrl = "https://github.com/LocalizeLimbusCompany/BepInEx_For_LLC/releases/download/v6.0.0-LLC/BepInEx-IL2CPP-x64.7z";
+                        BepInExZipPath = Path.Combine(limbusCompanyDir, "BepInEx-IL2CPP-x64.7z");
+                        logger.Info("BepInEx Zip路径： " + BepInExZipPath);
+                        await DownloadFileAsync(BepInExUrl, BepInExZipPath);
+                    }
+                    else
+                    {
+                        logger.Info("检测到正确BepInEx。");
+                    }
                 }
+                logger.Info("已完成 BepInEx 的安装。");
+                TotalBar.Value = 33;
             }
-
+            catch (Exception ex)
+            {
+                MessageBox.Show("出现了问题。\n" + ex.ToString());
+                logger.Error("出现了问题： " + ex.ToString());
+                Close();
+                return;
+            }
             // 下载 tmp
             logger.Info("下载字体文件……");
             ChangeStatu("正在下载并解压tmpchinese...");
-            string modsDir = Path.Combine(limbusCompanyDir, "Mods");
+            string modsDir = limbusCompanyDir + "/BepInEx/plugins/LLC";
             logger.Info("创建 Mods 目录。");
             Directory.CreateDirectory(modsDir);
-            string tmpchineseZipPath = Path.Combine(limbusCompanyDir, "tmpchinese.7z");
+            string tmpchineseZipPath = Path.Combine(limbusCompanyDir, "tmpchinese_BIE.7z");
             string tmpchinese = modsDir + "/tmpchinesefont";
             var LastWriteTime = File.Exists(tmpchinese) ? new FileInfo(tmpchinese).LastWriteTime.ToString("yyMMdd") : string.Empty;
 
@@ -259,7 +232,7 @@ namespace LLC_MOD_Toolbox_Remake
                 {
                     if (CheckChineseFontAssetUpdate(LastWriteTime, false, out var latestTag))
                     {
-                        await DownloadFileAsync("https://" + fastestNode + "/files/tmpchinesefont.7z", tmpchineseZipPath);
+                        await DownloadFileAsync("https://" + fastestNode + "/files/tmpchinesefont_BIE.7z", tmpchineseZipPath);
                         logger.Info("解压 tmp zip 中。");
                         new SevenZipExtractor(tmpchineseZipPath).ExtractAll(limbusCompanyDir, true);
                         logger.Info("删除 tmp zip 。");
@@ -270,8 +243,8 @@ namespace LLC_MOD_Toolbox_Remake
                 {
                     if (CheckChineseFontAssetUpdate(LastWriteTime, true, out var latestTag))
                     {
-                        string downloadTMP = "https://github.com/LocalizeLimbusCompany/LLC_ChineseFontAsset/releases/download/" + latestTag + "/tmpchinesefont_" + latestTag + ".7z";
-                        tmpchineseZipPath = Path.Combine(limbusCompanyDir, "tmpchinese.7z");
+                        string downloadTMP = "https://github.com/LocalizeLimbusCompany/LLC_ChineseFontAsset/releases/download/" + latestTag + "/tmpchinesefont_BIE_" + latestTag + ".7z";
+                        tmpchineseZipPath = Path.Combine(limbusCompanyDir, "tmpchinese_BIE.7z");
                         await DownloadFileAsync(downloadTMP, tmpchineseZipPath);
                         logger.Info("解压 tmp zip 。");
                         new SevenZipExtractor(tmpchineseZipPath).ExtractAll(limbusCompanyDir, true);
@@ -295,8 +268,8 @@ namespace LLC_MOD_Toolbox_Remake
             ChangeStatu("正在下载并解压模组本体...");
             logger.Info("下载模组本体。");
 
-            string limbusLocalizeDllPath = modsDir + "/LimbusLocalize.dll";
-            string limbusLocalizeZipPath = Path.Combine(limbusCompanyDir, "LimbusLocalize.7z");
+            string limbusLocalizeDllPath = modsDir + "/LimbusLocalize_BIE.dll";
+            string limbusLocalizeZipPath = Path.Combine(limbusCompanyDir, "LimbusLocalize_BIE.7z");
             string latestLLCVersion;
             string currentVersion = null;
             try
@@ -304,14 +277,14 @@ namespace LLC_MOD_Toolbox_Remake
                 if (useGithub.Active != true)
                 {
                     latestLLCVersion = GetLatestLimbusLocalizeVersion(false, out string latest2ReleaseTag);
-                    logger.Info("最后模组版本： "+latestLLCVersion);
+                    logger.Info("最后模组版本： " + latestLLCVersion);
                     if (File.Exists(limbusLocalizeDllPath))
                     {
                         var versionInfo = FileVersionInfo.GetVersionInfo(limbusLocalizeDllPath);
                         currentVersion = versionInfo.ProductVersion;
                         if (new Version(versionInfo.ProductVersion) < new Version(latestLLCVersion.Remove(0, 1)))
                         {
-                            await DownloadFileAsync("https://" + fastestNode + "/files/LimbusLocalize_FullPack.7z", limbusLocalizeZipPath);
+                            await DownloadFileAsync("https://" + fastestNode + "/files/LimbusLocalize_BIE_FullPack.7z", limbusLocalizeZipPath);
                             logger.Info("解压模组本体 zip 中。");
                             new SevenZipExtractor(limbusLocalizeZipPath).ExtractAll(limbusCompanyDir, true);
                             logger.Info("删除模组本体 zip 。");
@@ -320,7 +293,7 @@ namespace LLC_MOD_Toolbox_Remake
                     }
                     else
                     {
-                        await DownloadFileAsync("https://" + fastestNode + "/files/LimbusLocalize_FullPack.7z", limbusLocalizeZipPath);
+                        await DownloadFileAsync("https://" + fastestNode + "/files/LimbusLocalize_BIE_FullPack.7z", limbusLocalizeZipPath);
                         logger.Info("解压模组本体 zip 中。");
                         new SevenZipExtractor(limbusLocalizeZipPath).ExtractAll(limbusCompanyDir, true);
                         logger.Info("删除模组本体 zip 。");
@@ -367,10 +340,7 @@ namespace LLC_MOD_Toolbox_Remake
             logger.Info("安装完成。");
             var version = FileVersionInfo.GetVersionInfo(limbusLocalizeDllPath);
             Version new_version = new Version(version.ProductVersion);
-            if (string.IsNullOrEmpty(currentVersion) || new_version > new Version(currentVersion) && new_version >= new Version(latestLLCVersion.Remove(0, 1)))
-                MessageBox.Show("安装已完成！\n你现在可以运行游戏了。", "完成", MessageBoxButtons.OK);
-            else
-                MessageBox.Show("模组没有更新", "完成?", MessageBoxButtons.OK);
+            MessageBox.Show("安装已完成！\n你现在可以运行游戏了。\n加载时请耐心等待。", "完成", MessageBoxButtons.OK);
             ControlButton(true);
             TotalBar.Value = 0;
             DownloadBar.Value = 0;
@@ -393,7 +363,6 @@ namespace LLC_MOD_Toolbox_Remake
                 dlFromDefault.Enabled = true;
                 deleteButton.Enabled = true;
                 useGithub.ReadOnly = false;
-                useMFL.ReadOnly = false;
                 logger.Info("开启完成。");
             }
             else
@@ -406,7 +375,6 @@ namespace LLC_MOD_Toolbox_Remake
                 dlFromDefault.Enabled = false;
                 deleteButton.Enabled = false;
                 useGithub.ReadOnly = true;
-                useMFL.ReadOnly = true;
                 logger.Info("关闭完成。");
             }
         }
@@ -483,7 +451,7 @@ namespace LLC_MOD_Toolbox_Remake
         {
             logger.Info("正在获取最快的节点……");
 
-            Dictionary<string, long> pingTimes = new Dictionary<string, long>() { { "github.com", 9999L }, { "lv.zeroasso.top", 9999L }, { "lvcdn.zeroasso.top", 9999L }, { "dl.determination.top", 9999L } };
+            Dictionary<string, long> pingTimes = new Dictionary<string, long>() { { "github.com", 9999L }, { "lv.zeroasso.top", 9999L }, { "lvcdn.zeroasso.top", 9999L }, { "download.zeroasso.top", 9999L } };
 
             foreach (string url in pingTimes.Keys.ToArray())
             {
@@ -655,7 +623,7 @@ namespace LLC_MOD_Toolbox_Remake
 
         private string GetLatestLimbusLocalizeDownloadUrl(string version, bool isota)
         {
-            return "https://github.com/LocalizeLimbusCompany/LocalizeLimbusCompany/releases/download/" + version + "/LimbusLocalize_" + (isota ? "OTA_" : string.Empty) + version + ".7z";
+            return "https://github.com/LocalizeLimbusCompany/LocalizeLimbusCompany/releases/download/" + version + "/LimbusLocalize_BIE_" + (isota ? "OTA_" : string.Empty) + version + ".7z";
         }
 
         static bool CheckChineseFontAssetUpdate(string LastWriteTime, bool IsGithub, out string tag)
@@ -697,7 +665,7 @@ namespace LLC_MOD_Toolbox_Remake
             downFromOFB = true;
             downFromLV = false;
             downFromLVCDN = false;
-            MessageBox.Show("切换成功。","提示");
+            MessageBox.Show("切换成功。", "提示");
         }
 
         private void dlFromLV_Click(object sender, EventArgs e)
@@ -737,23 +705,15 @@ namespace LLC_MOD_Toolbox_Remake
                 ControlButton(false);
                 try
                 {
-                    deleteDir(limbusCompanyDir + "/MelonLoader");
-                    deleteDir(limbusCompanyDir + "/Mods");
-                    deleteDir(limbusCompanyDir + "/Plugins");
-                    deleteDir(limbusCompanyDir + "/UserData");
-                    deleteDir(limbusCompanyDir + "/UserLibs");
-                    deleteFile(limbusCompanyDir + "/dobby.dll");
-                    deleteFile(limbusCompanyDir + "/Latest(框架日志).log");
-                    deleteFile(limbusCompanyDir + "/Player(游戏日志).log");
-                    deleteFile(limbusCompanyDir + "/version.dll");
-                    deleteFile(limbusCompanyDir + "/NOTICE.txt");
+                    deleteMelonLoader();
+                    deleteBepInEx();
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
-                    MessageBox.Show("删除过程中出现了一些问题： "+ex.ToString(), "警告");
+                    MessageBox.Show("删除过程中出现了一些问题： " + ex.ToString(), "警告");
                     logger.Info("删除过程中出现了一些问题： " + ex.ToString());
                 }
-                MessageBox.Show("删除完成。","提示");
+                MessageBox.Show("删除完成。", "提示");
                 logger.Info("删除完成。");
                 ControlButton(true);
             }
@@ -775,6 +735,30 @@ namespace LLC_MOD_Toolbox_Remake
                 logger.Info("删除文件： " + path);
                 File.Delete(path);
             }
+        }
+
+        private void deleteMelonLoader()
+        {
+            deleteDir(limbusCompanyDir + "/MelonLoader");
+            deleteDir(limbusCompanyDir + "/Mods");
+            deleteDir(limbusCompanyDir + "/Plugins");
+            deleteDir(limbusCompanyDir + "/UserData");
+            deleteDir(limbusCompanyDir + "/UserLibs");
+            deleteFile(limbusCompanyDir + "/dobby.dll");
+            deleteFile(limbusCompanyDir + "/Latest(框架日志).log");
+            deleteFile(limbusCompanyDir + "/Player(游戏日志).log");
+            deleteFile(limbusCompanyDir + "/version.dll");
+            deleteFile(limbusCompanyDir + "/NOTICE.txt");
+        }
+
+        private void deleteBepInEx()
+        {
+            deleteDir(limbusCompanyDir + "/BepInEx");
+            deleteDir(limbusCompanyDir + "/dotnet");
+            deleteFile(limbusCompanyDir + "/doorstop_config.ini");
+            deleteFile(limbusCompanyDir + "/Latest(框架日志).log");
+            deleteFile(limbusCompanyDir + "/Player(游戏日志).log");
+            deleteFile(limbusCompanyDir + "/winhttp.dll");
         }
 
         #region 链接按钮
@@ -850,7 +834,7 @@ namespace LLC_MOD_Toolbox_Remake
         private string limbusCompanyDir;
         private string limbusCompanyGameDir;
 
-        private string melonLoaderUrl;
-        private string melonLoaderZipPath;
+        private string BepInExUrl;
+        private string BepInExZipPath;
     }
 }
