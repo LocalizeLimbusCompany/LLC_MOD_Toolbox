@@ -20,7 +20,7 @@ namespace LLC_MOD_Toolbox_Remake
 
     public partial class MainPage : UIForm
     {
-        public const string VERSION = "0.4.1";
+        public const string VERSION = "0.4.2";
 
         // 注册日志系统
         private static readonly ILog logger = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
@@ -160,7 +160,7 @@ namespace LLC_MOD_Toolbox_Remake
                         logger.Info("未检测到MelonLoader");
                     }
                     logger.Info("开始安装。");
-                    if (!File.Exists(limbusCompanyDir + "/BepInEx/core/BepInEx.Core.dll") || new Version(FileVersionInfo.GetVersionInfo(limbusCompanyDir + "/BepInEx/core/BepInEx.Core.dll").ProductVersion) != new Version("6.0.0.0"))
+                    if (!File.Exists(limbusCompanyDir + "/BepInEx/core/BepInEx.Core.dll"))
                     {
                         logger.Info("未检测到正确Bepinex。");
                         MessageBox.Show("如果你安装了杀毒软件，接下来可能会提示工具箱正在修改关键dll。\n允许即可。如果不信任汉化补丁，可以退出本程序。", "警告");
