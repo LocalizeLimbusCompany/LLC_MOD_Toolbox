@@ -193,7 +193,7 @@ namespace LLC_MOD_Toolbox_Remake
                     {
                         logger.Info("未检测到MelonLoader");
                     }
-                    if (!File.Exists(limbusCompanyDir + "/BepInEx/core/BepInEx.Core.dll") || new Version(FileVersionInfo.GetVersionInfo(limbusCompanyDir + "/BepInEx/core/BepInEx.Core.dll").ProductVersion) != new Version("6.0.0.0"))
+                    if (!File.Exists(limbusCompanyDir + "/BepInEx/core/BepInEx.Core.dll"))
                     {
                         logger.Info("从 Github 下载 BepInEx 。");
                         BepInExUrl = "https://github.com/LocalizeLimbusCompany/BepInEx_For_LLC/releases/download/v6.0.0-LLC/BepInEx-IL2CPP-x64.7z";
