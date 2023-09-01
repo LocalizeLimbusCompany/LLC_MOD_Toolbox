@@ -210,14 +210,14 @@ namespace SimpleJSON
 
         public override string ToString()
         {
-            StringBuilder sb = new StringBuilder();
+            StringBuilder sb = new();
             WriteToStringBuilder(sb, 0, 0, JSONTextMode.Compact);
             return sb.ToString();
         }
 
         public virtual string ToString(int aIndent)
         {
-            StringBuilder sb = new StringBuilder();
+            StringBuilder sb = new();
             WriteToStringBuilder(sb, 0, aIndent, JSONTextMode.Indent);
             return sb.ToString();
         }
@@ -237,7 +237,7 @@ namespace SimpleJSON
         {
             get
             {
-                double v = 0.0;
+                double v;
                 if (double.TryParse(Value, NumberStyles.Float, CultureInfo.InvariantCulture, out v))
                     return v;
                 return 0.0;
@@ -264,7 +264,7 @@ namespace SimpleJSON
         {
             get
             {
-                bool v = false;
+                bool v;
                 if (bool.TryParse(Value, out v))
                     return v;
                 return !string.IsNullOrEmpty(Value);
@@ -279,7 +279,7 @@ namespace SimpleJSON
         {
             get
             {
-                long val = 0;
+                long val;
                 if (long.TryParse(Value, NumberStyles.Integer, CultureInfo.InvariantCulture, out val))
                     return val;
                 return 0L;
@@ -294,7 +294,7 @@ namespace SimpleJSON
         {
             get
             {
-                ulong val = 0;
+                ulong val;
                 if (ulong.TryParse(Value, NumberStyles.Integer, CultureInfo.InvariantCulture, out val))
                     return val;
                 return 0;
@@ -505,10 +505,10 @@ namespace SimpleJSON
 
         public static JSONNode Parse(string aJSON)
         {
-            Stack<JSONNode> stack = new Stack<JSONNode>();
+            Stack<JSONNode> stack = new();
             JSONNode ctx = null;
             int i = 0;
-            StringBuilder Token = new StringBuilder();
+            StringBuilder Token = new();
             string TokenName = "";
             bool QuoteMode = false;
             bool TokenIsQuoted = false;
@@ -599,7 +599,6 @@ namespace SimpleJSON
                         }
                         if (Token.Length > 0 || TokenIsQuoted)
                             ctx.Add(TokenName, ParseElement(Token.ToString(), TokenIsQuoted));
-                        TokenIsQuoted = false;
                         TokenName = "";
                         Token.Length = 0;
                         TokenIsQuoted = false;
@@ -684,7 +683,7 @@ namespace SimpleJSON
 
     public partial class JSONArray : JSONNode
     {
-        private List<JSONNode> m_List = new List<JSONNode>();
+        private List<JSONNode> m_List = new();
         private bool inline = false;
         public override bool Inline
         {
@@ -808,7 +807,7 @@ namespace SimpleJSON
 
     public partial class JSONObject : JSONNode
     {
-        private Dictionary<string, JSONNode> m_Dict = new Dictionary<string, JSONNode>();
+        private Dictionary<string, JSONNode> m_Dict = new();
 
         private bool inline = false;
         public override bool Inline
@@ -1188,7 +1187,7 @@ namespace SimpleJSON
 
     public partial class JSONNull : JSONNode
     {
-        static JSONNull m_StaticInstance = new JSONNull();
+        static JSONNull m_StaticInstance = new();
         public static bool reuseSameInstance = true;
         public static JSONNull CreateOrGet()
         {

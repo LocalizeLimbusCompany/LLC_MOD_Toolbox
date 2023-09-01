@@ -15,12 +15,12 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace LLC_MOD_Toolbox_Remake
+namespace LLC_MOD_Toolbox
 {
 
     public partial class MainPage : UIForm
     {
-        public const string VERSION = "0.4.2";
+        public const string VERSION = "0.4.3";
 
         // 注册日志系统
         private static readonly ILog logger = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
@@ -61,6 +61,13 @@ namespace LLC_MOD_Toolbox_Remake
             {
                 useGithub.Active = true;
             }
+            if (CheckToolboxUpdate(VERSION, isgit))
+            {
+                logger.Error("安装器存在更新");
+                MessageBox.Show("安装器存在更新", "存在更新", MessageBoxButtons.OK);
+                EnterToolBoxGithub_Click(null, null);
+                Close();
+            }
 
             ChangeStatu("检查 .NET 。");
             // 检查.NET6.0
@@ -86,7 +93,7 @@ namespace LLC_MOD_Toolbox_Remake
             {
                 logger.Error("未能找到 Limbus Company 目录，手动选择模式。");
                 MessageBox.Show("未能找到 Limbus Company 目录。请手动选择。");
-                FolderBrowserDialog dialog = new FolderBrowserDialog
+                FolderBrowserDialog dialog = new()
                 {
                     Description = "请选择你的边狱公司游戏路径（steam目录/steamapps/common/Limbus Company）请不要选择LimbusCompany_Data！"
                 };
@@ -164,10 +171,6 @@ namespace LLC_MOD_Toolbox_Remake
                     {
                         logger.Info("未检测到正确Bepinex。");
                         MessageBox.Show("如果你安装了杀毒软件，接下来可能会提示工具箱正在修改关键dll。\n允许即可。如果不信任汉化补丁，可以退出本程序。", "警告");
-                        if (Directory.Exists(limbusCompanyDir + "/BepInEx"))
-                        {
-                            Directory.Delete(limbusCompanyDir + "/BepInEx", true);
-                        }
                         BepInExUrl = "https://" + fastestNode + "/files/BepInEx-IL2CPP-x64.7z";
                         BepInExZipPath = Path.Combine(limbusCompanyDir, "BepInEx-IL2CPP-x64.7z");
                         logger.Info("BepInEx Zip目录： " + BepInExZipPath);
@@ -179,7 +182,24 @@ namespace LLC_MOD_Toolbox_Remake
                     }
                     else
                     {
-                        logger.Info("检测到正确BepInEx。");
+                        var versionInfo = FileVersionInfo.GetVersionInfo(limbusCompanyDir + "/BepInEx/core/BepInEx.Core.dll");
+                        if (new Version(versionInfo.FileVersion.Remove(5, 2)) < new Version("6.0.1"))
+                        {
+                            logger.Info("未检测到正确Bepinex。");
+                            MessageBox.Show("如果你安装了杀毒软件，接下来可能会提示工具箱正在修改关键dll。\n允许即可。如果不信任汉化补丁，可以退出本程序。", "警告");
+                            BepInExUrl = "https://" + fastestNode + "/files/BepInEx-IL2CPP-x64.7z";
+                            BepInExZipPath = Path.Combine(limbusCompanyDir, "BepInEx-IL2CPP-x64.7z");
+                            logger.Info("BepInEx Zip目录： " + BepInExZipPath);
+                            await DownloadFileAsync(BepInExUrl, BepInExZipPath);
+                            logger.Info("开始解压 BepInEx zip。");
+                            new SevenZipExtractor(BepInExZipPath).ExtractAll(limbusCompanyDir, true);
+                            logger.Info("解压完成。删除 BepInEx zip。");
+                            File.Delete(BepInExZipPath);
+                        }
+                        else
+                        {
+                            logger.Info("检测到正确BepInEx。");
+                        }
                     }
                 }
                 else
@@ -196,14 +216,35 @@ namespace LLC_MOD_Toolbox_Remake
                     if (!File.Exists(limbusCompanyDir + "/BepInEx/core/BepInEx.Core.dll"))
                     {
                         logger.Info("从 Github 下载 BepInEx 。");
-                        BepInExUrl = "https://github.com/LocalizeLimbusCompany/BepInEx_For_LLC/releases/download/v6.0.0-LLC/BepInEx-IL2CPP-x64.7z";
+                        BepInExUrl = "https://github.com/LocalizeLimbusCompany/BepInEx_For_LLC/releases/download/v6.0.1-LLC/BepInEx-IL2CPP-x64-6.0.1.rar";
                         BepInExZipPath = Path.Combine(limbusCompanyDir, "BepInEx-IL2CPP-x64.7z");
                         logger.Info("BepInEx Zip路径： " + BepInExZipPath);
                         await DownloadFileAsync(BepInExUrl, BepInExZipPath);
+                        logger.Info("开始解压 BepInEx zip。");
+                        new SevenZipExtractor(BepInExZipPath).ExtractAll(limbusCompanyDir, true);
+                        logger.Info("解压完成。删除 BepInEx zip。");
+                        File.Delete(BepInExZipPath);
                     }
                     else
                     {
-                        logger.Info("检测到正确BepInEx。");
+                        var versionInfo = FileVersionInfo.GetVersionInfo(limbusCompanyDir + "/BepInEx/core/BepInEx.Core.dll");
+                        if (new Version(versionInfo.FileVersion.Remove(5, 2)) < new Version("6.0.1"))
+                        {
+                            logger.Info("未检测到正确Bepinex。");
+                            MessageBox.Show("如果你安装了杀毒软件，接下来可能会提示工具箱正在修改关键dll。\n允许即可。如果不信任汉化补丁，可以退出本程序。", "警告");
+                            BepInExUrl = "https://github.com/LocalizeLimbusCompany/BepInEx_For_LLC/releases/download/v6.0.1-LLC/BepInEx-IL2CPP-x64-6.0.1.rar";
+                            BepInExZipPath = Path.Combine(limbusCompanyDir, "BepInEx-IL2CPP-x64.7z");
+                            logger.Info("BepInEx Zip目录： " + BepInExZipPath);
+                            await DownloadFileAsync(BepInExUrl, BepInExZipPath);
+                            logger.Info("开始解压 BepInEx zip。");
+                            new SevenZipExtractor(BepInExZipPath).ExtractAll(limbusCompanyDir, true);
+                            logger.Info("解压完成。删除 BepInEx zip。");
+                            File.Delete(BepInExZipPath);
+                        }
+                        else
+                        {
+                            logger.Info("检测到正确BepInEx。");
+                        }
                     }
                 }
                 logger.Info("已完成 BepInEx 的安装。");
@@ -282,7 +323,7 @@ namespace LLC_MOD_Toolbox_Remake
                     {
                         var versionInfo = FileVersionInfo.GetVersionInfo(limbusLocalizeDllPath);
                         currentVersion = versionInfo.ProductVersion;
-                        if (new Version(versionInfo.ProductVersion) < new Version(latestLLCVersion.Remove(0, 1)))
+                        if (new Version(currentVersion) < new Version(latestLLCVersion.Remove(0, 1)))
                         {
                             await DownloadFileAsync("https://" + fastestNode + "/files/LimbusLocalize_BIE_FullPack.7z", limbusLocalizeZipPath);
                             logger.Info("解压模组本体 zip 中。");
@@ -310,7 +351,7 @@ namespace LLC_MOD_Toolbox_Remake
                     {
                         var versionInfo = FileVersionInfo.GetVersionInfo(limbusLocalizeDllPath);
                         currentVersion = versionInfo.ProductVersion;
-                        if (new Version(versionInfo.ProductVersion) < new Version(latestLLCVersion.Remove(0, 1)))
+                        if (new Version(currentVersion) < new Version(latestLLCVersion.Remove(0, 1)))
                         {
                             await DownloadFileAsync(limbusLocalizeUrl, limbusLocalizeZipPath);
                             logger.Info("解压模组本体 zip 中。");
@@ -339,8 +380,11 @@ namespace LLC_MOD_Toolbox_Remake
             TotalBar.Value = 100;
             logger.Info("安装完成。");
             var version = FileVersionInfo.GetVersionInfo(limbusLocalizeDllPath);
-            Version new_version = new Version(version.ProductVersion);
-            MessageBox.Show("安装已完成！\n你现在可以运行游戏了。\n加载时请耐心等待。", "完成", MessageBoxButtons.OK);
+            Version new_version = new(version.ProductVersion);
+            if (string.IsNullOrEmpty(currentVersion) || new_version > new Version(currentVersion) && new_version >= new Version(latestLLCVersion.Remove(0, 1)))
+                MessageBox.Show("安装已完成！\n你现在可以运行游戏了。\n加载时请耐心等待。", "完成", MessageBoxButtons.OK);
+            else
+                MessageBox.Show("模组没有更新", "完成?", MessageBoxButtons.OK);
             ControlButton(true);
             TotalBar.Value = 0;
             DownloadBar.Value = 0;
@@ -381,7 +425,7 @@ namespace LLC_MOD_Toolbox_Remake
 
         static void Openuri(string uri)
         {
-            ProcessStartInfo psi = new ProcessStartInfo(uri)
+            ProcessStartInfo psi = new(uri)
             {
                 UseShellExecute = true
             };
@@ -392,12 +436,10 @@ namespace LLC_MOD_Toolbox_Remake
         {
             logger.Info("检查 .NET FrameWork 版本。");
             const string subkey = @"SOFTWARE\Microsoft\NET Framework Setup\NDP\v4\Full\";
-            using (RegistryKey ndpKey = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry32).OpenSubKey(subkey))
+            using RegistryKey ndpKey = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry32).OpenSubKey(subkey);
+            if (ndpKey != null && ndpKey.GetValue("Release") != null)
             {
-                if (ndpKey != null && ndpKey.GetValue("Release") != null)
-                {
-                    Check_NET_Version((int)ndpKey.GetValue("Release"));
-                }
+                Check_NET_Version((int)ndpKey.GetValue("Release"));
             }
         }
         private void Check_NET_Version(int releaseKey)
@@ -431,19 +473,17 @@ namespace LLC_MOD_Toolbox_Remake
         private async Task DownloadFileAsync(string url, string filePath)
         {
             logger.Info("从: " + url + "下载文件。");
-            using (WebClient client = new WebClient())
+            using WebClient client = new();
+            client.DownloadProgressChanged += (s, e) =>
             {
-                client.DownloadProgressChanged += (s, e) =>
-                {
-                    DownloadBar.Value = e.ProgressPercentage;
-                };
-                client.DownloadFileCompleted += (s, e) =>
-                {
-                    logger.Info("下载完成。");
-                    DownloadBar.Value = 100;
-                };
-                await client.DownloadFileTaskAsync(new Uri(url), filePath);
-            }
+                DownloadBar.Value = e.ProgressPercentage;
+            };
+            client.DownloadFileCompleted += (s, e) =>
+            {
+                logger.Info("下载完成。");
+                DownloadBar.Value = 100;
+            };
+            await client.DownloadFileTaskAsync(new Uri(url), filePath);
         }
 
         // 获取最快节点
@@ -451,11 +491,11 @@ namespace LLC_MOD_Toolbox_Remake
         {
             logger.Info("正在获取最快的节点……");
 
-            Dictionary<string, long> pingTimes = new Dictionary<string, long>() { { "github.com", 9999L }, { "lv.zeroasso.top", 9999L }, { "lvcdn.zeroasso.top", 9999L }, { "download.zeroasso.top", 9999L } };
+            Dictionary<string, long> pingTimes = new() { { "github.com", 9999L }, { "lv.zeroasso.top", 9999L }, { "lvcdn.zeroasso.top", 9999L }, { "download.zeroasso.top", 9999L } };
 
             foreach (string url in pingTimes.Keys.ToArray())
             {
-                Ping ping = new Ping();
+                Ping ping = new();
                 logger.Info("获取 " + url + " 的延迟中……");
                 try
                 {
@@ -474,7 +514,7 @@ namespace LLC_MOD_Toolbox_Remake
                 pingTimes[url] = 9999L;
             }
 
-            List<KeyValuePair<string, long>> pingTimesList = new List<KeyValuePair<string, long>>(pingTimes);
+            List<KeyValuePair<string, long>> pingTimesList = new(pingTimes);
             pingTimesList.Sort(delegate (KeyValuePair<string, long> pair1, KeyValuePair<string, long> pair2)
             {
                 return pair1.Value.CompareTo(pair2.Value);
@@ -600,25 +640,23 @@ namespace LLC_MOD_Toolbox_Remake
         // For Github Mode
         private string GetLatestLimbusLocalizeVersion(bool IsGithub, out string latest2ReleaseTag)
         {
-            using (WebClient client = new WebClient())
+            using WebClient client = new();
+            client.Headers.Add("User-Agent", "request");
+            string raw = string.Empty;
+            if (IsGithub == true)
             {
-                client.Headers.Add("User-Agent", "request");
-                string raw = string.Empty;
-                if (IsGithub == true)
-                {
-                    raw = new StreamReader(client.OpenRead(new Uri("https://api.github.com/repos/LocalizeLimbusCompany/LocalizeLimbusCompany/releases")), Encoding.UTF8).ReadToEnd();
-                }
-                else
-                {
-                    raw = new StreamReader(client.OpenRead(new Uri("https://json.zxp123.eu.org/Mod_Release.json")), Encoding.UTF8).ReadToEnd();
-                }
-                JSONArray releases = JSONNode.Parse(raw).AsArray;
-
-                string latestReleaseTag = releases[0]["tag_name"].Value;
-                latest2ReleaseTag = releases.Count > 1 ? releases[1]["tag_name"].Value : string.Empty;
-                logger.Info("TMP 字体最后标签为： " + latestReleaseTag);
-                return latestReleaseTag;
+                raw = new StreamReader(client.OpenRead(new Uri("https://api.github.com/repos/LocalizeLimbusCompany/LocalizeLimbusCompany/releases")), Encoding.UTF8).ReadToEnd();
             }
+            else
+            {
+                raw = new StreamReader(client.OpenRead(new Uri("https://json.zxp123.eu.org/Mod_Release.json")), Encoding.UTF8).ReadToEnd();
+            }
+            JSONArray releases = JSONNode.Parse(raw).AsArray;
+
+            string latestReleaseTag = releases[0]["tag_name"].Value;
+            latest2ReleaseTag = releases.Count > 1 ? releases[1]["tag_name"].Value : string.Empty;
+            logger.Info("TMP 字体最后标签为： " + latestReleaseTag);
+            return latestReleaseTag;
         }
 
         private string GetLatestLimbusLocalizeDownloadUrl(string version, bool isota)
@@ -626,30 +664,88 @@ namespace LLC_MOD_Toolbox_Remake
             return "https://github.com/LocalizeLimbusCompany/LocalizeLimbusCompany/releases/download/" + version + "/LimbusLocalize_BIE_" + (isota ? "OTA_" : string.Empty) + version + ".7z";
         }
 
-        static bool CheckChineseFontAssetUpdate(string LastWriteTime, bool IsGithub, out string tag)
+        static bool CheckChineseFontAssetUpdate(string version, bool IsGithub, out string tag)
         {
             tag = string.Empty;
             try
             {
-                using (WebClient client = new WebClient())
+                using WebClient client = new();
+                client.Headers.Add("User-Agent", "request");
+                string raw = string.Empty;
+                if (IsGithub == true)
                 {
-                    client.Headers.Add("User-Agent", "request");
-                    string raw = string.Empty;
-                    if (IsGithub == true)
-                    {
-                        raw = new StreamReader(client.OpenRead(new Uri("https://api.github.com/repos/LocalizeLimbusCompany/LLC_ChineseFontAsset/releases/latest")), Encoding.UTF8).ReadToEnd();
-                    }
-                    else
-                    {
-                        raw = new StreamReader(client.OpenRead(new Uri("https://json.zxp123.eu.org/LatestTmp_Release.json")), Encoding.UTF8).ReadToEnd();
-                    }
-                    var latest = JSONNode.Parse(raw).AsObject;
-                    string latestReleaseTag = latest["tag_name"].Value;
-                    if (latestReleaseTag != LastWriteTime)
-                    {
-                        tag = latestReleaseTag;
-                        return true;
-                    }
+                    raw = new StreamReader(client.OpenRead(new Uri("https://api.github.com/repos/LocalizeLimbusCompany/LLC_ChineseFontAsset/releases/latest")), Encoding.UTF8).ReadToEnd();
+                }
+                else
+                {
+                    raw = new StreamReader(client.OpenRead(new Uri("https://json.zxp123.eu.org/LatestTmp_Release.json")), Encoding.UTF8).ReadToEnd();
+                }
+                var latest = JSONNode.Parse(raw).AsObject;
+                string latestReleaseTag = latest["tag_name"].Value;
+                if (latestReleaseTag != version)
+                {
+                    tag = latestReleaseTag;
+                    return true;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("出现了问题。\n" + ex.ToString());
+            }
+            return false;
+        }
+
+        static bool CheckToolboxUpdate(string version, bool IsGithub)
+        {
+            try
+            {
+                using WebClient client = new();
+                client.Headers.Add("User-Agent", "request");
+                string raw = string.Empty;
+                if (IsGithub == true)
+                {
+                    raw = new StreamReader(client.OpenRead(new Uri("https://api.github.com/repos/LocalizeLimbusCompany/LLC_MOD_Toolbox/releases/latest")), Encoding.UTF8).ReadToEnd();
+                }
+                else
+                {
+                    raw = new StreamReader(client.OpenRead(new Uri("https://json.zxp123.eu.org/Toolbox_Release.json")), Encoding.UTF8).ReadToEnd();
+                }
+                var latest = JSONNode.Parse(raw).AsObject;
+                string latestReleaseTag = latest["tag_name"].Value.Remove(0, 1);
+                if (new Version(latestReleaseTag) > new Version(version))
+                {
+                    return true;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("出现了问题。\n" + ex.ToString());
+            }
+            return false;
+        }
+
+        static bool CheckBepInExUpdate(string version, bool IsGithub, out string tag)
+        {
+            tag = string.Empty;
+            try
+            {
+                using WebClient client = new();
+                client.Headers.Add("User-Agent", "request");
+                string raw = string.Empty;
+                if (IsGithub == true)
+                {
+                    raw = new StreamReader(client.OpenRead(new Uri("https://api.github.com/repos/LocalizeLimbusCompany/BepInEx_For_LLC/releases/latest")), Encoding.UTF8).ReadToEnd();
+                }
+                else
+                {
+                    raw = new StreamReader(client.OpenRead(new Uri("https://json.zxp123.eu.org/BepInEx_For_LLC_Release.json")), Encoding.UTF8).ReadToEnd();
+                }
+                var latest = JSONNode.Parse(raw).AsObject;
+                string latestReleaseTag = latest["tag_name"].Value;
+                if (latestReleaseTag != version)
+                {
+                    tag = latestReleaseTag;
+                    return true;
                 }
             }
             catch (Exception ex)
@@ -747,6 +843,8 @@ namespace LLC_MOD_Toolbox_Remake
             deleteFile(limbusCompanyDir + "/dobby.dll");
             deleteFile(limbusCompanyDir + "/Latest(框架日志).log");
             deleteFile(limbusCompanyDir + "/Player(游戏日志).log");
+            deleteFile(limbusCompanyDir + "/框架日志.log");
+            deleteFile(limbusCompanyDir + "/游戏日志.log");
             deleteFile(limbusCompanyDir + "/version.dll");
             deleteFile(limbusCompanyDir + "/NOTICE.txt");
         }
@@ -759,13 +857,14 @@ namespace LLC_MOD_Toolbox_Remake
             deleteFile(limbusCompanyDir + "/Latest(框架日志).log");
             deleteFile(limbusCompanyDir + "/Player(游戏日志).log");
             deleteFile(limbusCompanyDir + "/winhttp.dll");
+            deleteFile(limbusCompanyDir + "/changelog.txt");
         }
 
         #region 链接按钮
         private void EnterToolBoxGithub_Click(object sender, EventArgs e)
         {
             logger.Info("进入工具箱的 Github。");
-            Openuri("https://github.com/LocalizeLimbusCompany/LLC_MOD_Installer");
+            Openuri("https://github.com/LocalizeLimbusCompany/LLC_MOD_Toolbox");
         }
 
         private void EnterLLCGithub_Click(object sender, EventArgs e)

@@ -1,0 +1,31 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net48</TargetFramework>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <AllowedReferenceRelatedFileExtensions>none</AllowedReferenceRelatedFileExtensions>
+    <DebugSymbols>true</DebugSymbols>
+    <LangVersion>10.0</LangVersion>
+    <IsPublishable>True</IsPublishable>
+    <RunAnalyzersDuringBuild>False</RunAnalyzersDuringBuild>
+    <OutputPath>..\LLC_MOD_Toolbox</OutputPath>
+    <NoWarn>1701;1702;2211;CA2211;IDE1006;IDE0060</NoWarn>
+    <DebugType>none</DebugType>
+    <Optimize>True</Optimize>
+    <RootNamespace>$(MSBuildProjectName)</RootNamespace>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>ZeroICO.ico</ApplicationIcon>
+  </PropertyGroup>
+  <PropertyGroup>
+    <NoWin32Manifest>true</NoWin32Manifest>
+    <StartupObject></StartupObject>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="7z.NET" Version="1.0.3" />
+    <PackageReference Include="log4net" Version="2.0.15" />
+    <PackageReference Include="SunnyUI" Version="3.4.2" />
+  </ItemGroup>
+</Project>

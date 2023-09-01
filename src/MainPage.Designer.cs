@@ -1,4 +1,4 @@
-namespace LLC_MOD_Toolbox_Remake
+namespace LLC_MOD_Toolbox
 {
     partial class MainPage
     {
@@ -747,7 +747,7 @@ namespace LLC_MOD_Toolbox_Remake
             this.ShowRect = false;
             this.ShowTitleIcon = true;
             this.Style = Sunny.UI.UIStyle.LayuiGreen;
-            this.Text = "零协会工具箱 v0.4.1";
+            this.Text = "零协会工具箱 v" + MainPage.VERSION;
             this.TitleColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(150)))), ((int)(((byte)(136)))));
             this.TitleHeight = 40;
             this.ZoomScaleRect = new System.Drawing.Rectangle(15, 15, 800, 450);

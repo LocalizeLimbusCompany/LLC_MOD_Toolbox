@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace LLC_MOD_Toolbox_Remake
+namespace LLC_MOD_Toolbox
 {
     internal static class Program
     {
