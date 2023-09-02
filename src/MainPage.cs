@@ -20,7 +20,7 @@ namespace LLC_MOD_Toolbox
 
     public partial class MainPage : UIForm
     {
-        public const string VERSION = "0.4.3";
+        public const string VERSION = "0.4.4";
 
         // 注册日志系统
         private static readonly ILog logger = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
@@ -51,9 +51,18 @@ namespace LLC_MOD_Toolbox
             if (string.IsNullOrEmpty(fastestNode))
             {
                 logger.Error("最快节点为空，网络错误。");
-                MessageBox.Show("网络错误,你无法访问任何站点。请检查网络或代理是否正常。", "错误", MessageBoxButtons.OK);
-                Close();
-                return;
+                MessageBox.Show("网络错误,你无法访问任何站点。\n将禁止使用自动安装功能。\n请尝试使用手动安装功能。", "错误", MessageBoxButtons.OK);
+                installButton.Enabled = false;
+                dlFromDefault.Enabled = false;
+                dlFromLV.Enabled = false;
+                dlFromLVCDN.Enabled = false;
+                dlFromOFB.Enabled = false;
+                useGithub.ReadOnly = true;
+                canUseAutoInstall = false;
+            }
+            else
+            {
+                canUseAutoInstall = true;
             }
 
             bool isgit = fastestNode == "github.com";
@@ -401,18 +410,23 @@ namespace LLC_MOD_Toolbox
             {
                 logger.Info("正在开启按钮。");
                 uiTabControl.Enabled = true;
-                dlFromDefault.Enabled = true;
-                dlFromLV.Enabled = true;
-                dlFromLVCDN.Enabled = true;
-                dlFromDefault.Enabled = true;
+                if (canUseAutoInstall == true)
+                {
+                    installButton.Enabled = true;
+                    dlFromDefault.Enabled = true;
+                    dlFromLV.Enabled = true;
+                    dlFromLVCDN.Enabled = true;
+                    dlFromDefault.Enabled = true;
+                    useGithub.ReadOnly = false;
+                }
                 deleteButton.Enabled = true;
-                useGithub.ReadOnly = false;
                 logger.Info("开启完成。");
             }
             else
             {
                 logger.Info("正在关闭按钮。");
                 uiTabControl.Enabled = false;
+                installButton.Enabled = false;
                 dlFromDefault.Enabled = false;
                 dlFromLV.Enabled = false;
                 dlFromLVCDN.Enabled = false;
@@ -719,7 +733,7 @@ namespace LLC_MOD_Toolbox
             }
             catch (Exception ex)
             {
-                MessageBox.Show("出现了问题。\n" + ex.ToString());
+                logger.Error("出现了问题。\n" + ex.ToString());
             }
             return false;
         }
@@ -751,6 +765,7 @@ namespace LLC_MOD_Toolbox
             catch (Exception ex)
             {
                 MessageBox.Show("出现了问题。\n" + ex.ToString());
+                logger.Error("出现了问题：\n"+ex.ToString());
             }
             return false;
         }
@@ -815,6 +830,88 @@ namespace LLC_MOD_Toolbox
             }
         }
 
+        private void selectBepinex_Click(object sender, EventArgs e)
+        {
+            logger.Info("手动选择 BepInEx 。");
+            OpenFileDialog openFileDialog = new();
+            openFileDialog.Filter = "BepInEx压缩包 (*.7z)|*.7z";
+
+            DialogResult result = openFileDialog.ShowDialog();
+
+            if (result == DialogResult.OK)
+            {
+                string filePath = openFileDialog.FileName;
+                logger.Info("选择的文件路径： " + filePath);
+                bepinexfile.Text = filePath;
+            }
+        }
+        private void selectTmp_Click(object sender, EventArgs e)
+        {
+            logger.Info("手动选择 TMP 。");
+            OpenFileDialog openFileDialog = new();
+            openFileDialog.Filter = "TMP压缩包 (*.7z)|*.7z";
+
+            DialogResult result = openFileDialog.ShowDialog();
+
+            if (result == DialogResult.OK)
+            {
+                string filePath = openFileDialog.FileName;
+                logger.Info("选择的文件路径： " + filePath);
+                tmpfile.Text = filePath;
+            }
+        }
+
+        private void SelectLLCFile_Click(object sender, EventArgs e)
+        {
+            logger.Info("手动选择汉化补丁。");
+            OpenFileDialog openFileDialog = new();
+            openFileDialog.Filter = "汉化补丁压缩包 (*.7z)|*.7z";
+
+            DialogResult result = openFileDialog.ShowDialog();
+
+            if (result == DialogResult.OK)
+            {
+                string filePath = openFileDialog.FileName;
+                logger.Info("选择的文件路径： " + filePath);
+                llcfile.Text = filePath;
+            }
+        }
+        private void manualInstall_Click(object sender, EventArgs e)
+        {
+            if (bepinexfile.Text == "请点击右侧浏览文件" || bepinexfile.Text == String.Empty)
+            {
+                MessageBox.Show("未填写 BepInEx 的文件路径。", "提示");
+                logger.Info("未填写 BepInEx 的文件路径。");
+                return;
+            }
+            if (tmpfile.Text == "请点击右侧浏览文件" || tmpfile.Text == String.Empty)
+            {
+                MessageBox.Show("未填写 TMP 的文件路径。", "提示");
+                logger.Info("未填写 TMP 的文件路径。");
+                return;
+            }
+            if (llcfile.Text == "请点击右侧浏览文件" || llcfile.Text == String.Empty)
+            {
+                MessageBox.Show("未填写汉化补丁的文件路径。", "提示");
+                logger.Info("未填写汉化补丁的文件路径。");
+                return;
+            }
+            manualInstall.Enabled = false;
+            try
+            {
+                MessageBox.Show("如果你安装了杀毒软件，接下来可能会提示工具箱正在修改关键dll。\n允许即可。如果不信任汉化补丁，可以退出本程序。", "警告");
+                new SevenZipExtractor(bepinexfile.Text).ExtractAll(limbusCompanyDir, true);
+                new SevenZipExtractor(tmpfile.Text).ExtractAll(limbusCompanyDir, true);
+                new SevenZipExtractor(llcfile.Text).ExtractAll(limbusCompanyDir, true);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("出现了问题。\n" + ex.ToString());
+                logger.Error("出现了问题：\n" + ex.ToString());
+            }
+            MessageBox.Show("安装已完成！\n你现在可以运行游戏了。\n加载时请耐心等待。", "完成", MessageBoxButtons.OK);
+            manualInstall.Enabled = true;
+        }
         private void deleteDir(string path)
         {
             if (Directory.Exists(path))
@@ -922,8 +1019,16 @@ namespace LLC_MOD_Toolbox
 
         #endregion
 
+        private void downloadFile_Click(object sender, EventArgs e)
+        {
+            logger.Info("进入下载文件的链接。");
+            Openuri("https://zxp123-my.sharepoint.com/:f:/g/personal/drive_zxp123_onmicrosoft_com/EqJQQKYcRwBLhh2tiAsurXoBGUdwpzusfSQQ2qWePhBifQ?e=LnIAKy");
+        }
+
         private bool Has_NET_6_0 = false;
         private bool isWindows10;
+
+        private bool canUseAutoInstall;
 
         private bool downFromOFB = false;
         private bool downFromLV = false;
