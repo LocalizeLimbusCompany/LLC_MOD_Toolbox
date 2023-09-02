@@ -59,6 +59,7 @@ namespace LLC_MOD_Toolbox
                 dlFromOFB.Enabled = false;
                 useGithub.ReadOnly = true;
                 canUseAutoInstall = false;
+                ChangeStatu("自动安装已被禁用，请使用手动安装功能！");
             }
             else
             {
