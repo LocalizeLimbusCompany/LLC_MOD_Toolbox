@@ -1,6 +1,7 @@
 using log4net;
 using Microsoft.Win32;
 using SevenZipNET;
+using SharpConfig;
 using SimpleJSON;
 using Sunny.UI;
 using System;
@@ -14,13 +15,14 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Xml.Linq;
 
 namespace LLC_MOD_Toolbox
 {
 
     public partial class MainPage : UIForm
     {
-        public const string VERSION = "0.4.4";
+        public const string VERSION = "0.4.5";
 
         // 注册日志系统
         private static readonly ILog logger = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
@@ -29,13 +31,15 @@ namespace LLC_MOD_Toolbox
             InitializeComponent();
         }
 
-        // 窗体完成加载后事件
+        // 窗体加载事件
         private void MainPage_Load(object sender, EventArgs e)
         {
             logger.Info("-----------------------");
+            alreadyLoaded = false;
             ControlButton(false);
             logger.Info("正在初始化窗体。");
             Init_Toolbox();
+            alreadyLoaded = true;
             logger.Info("窗体已完成加载。");
             ChangeStatu("空闲中！");
             logger.Info("安装器版本：" + VERSION);
@@ -45,6 +49,10 @@ namespace LLC_MOD_Toolbox
         // 初始化
         private void Init_Toolbox()
         {
+            manual_has_open = false;
+            config_has_open = false;
+            filereplace_has_open = false;
+
             ChangeStatu("获取最快节点。");
             fastestNode = GetFastnetNode();
 
@@ -124,6 +132,8 @@ namespace LLC_MOD_Toolbox
             limbusCompanyGameDir = limbusCompanyDir + "/LimbusCompany.exe";
 
             logger.Info("找到 Limbus Company 目录。");
+
+            readConfig();
         }
 
         // 安装
@@ -335,7 +345,7 @@ namespace LLC_MOD_Toolbox
                         currentVersion = versionInfo.ProductVersion;
                         if (new Version(currentVersion) < new Version(latestLLCVersion.Remove(0, 1)))
                         {
-                            await DownloadFileAsync("https://" + fastestNode + "/files/LimbusLocalize_BIE_FullPack.7z", limbusLocalizeZipPath);
+                            await DownloadFileAsync("https://" + fastestNode + "/files/LimbusLocalize_BIE_"+latestLLCVersion+".7z", limbusLocalizeZipPath);
                             logger.Info("解压模组本体 zip 中。");
                             new SevenZipExtractor(limbusLocalizeZipPath).ExtractAll(limbusCompanyDir, true);
                             logger.Info("删除模组本体 zip 。");
@@ -344,7 +354,7 @@ namespace LLC_MOD_Toolbox
                     }
                     else
                     {
-                        await DownloadFileAsync("https://" + fastestNode + "/files/LimbusLocalize_BIE_FullPack.7z", limbusLocalizeZipPath);
+                        await DownloadFileAsync("https://" + fastestNode + "/files/LimbusLocalize_BIE_"+latestLLCVersion+".7z", limbusLocalizeZipPath);
                         logger.Info("解压模组本体 zip 中。");
                         new SevenZipExtractor(limbusLocalizeZipPath).ExtractAll(limbusCompanyDir, true);
                         logger.Info("删除模组本体 zip 。");
@@ -766,7 +776,7 @@ namespace LLC_MOD_Toolbox
             catch (Exception ex)
             {
                 MessageBox.Show("出现了问题。\n" + ex.ToString());
-                logger.Error("出现了问题：\n"+ex.ToString());
+                logger.Error("出现了问题：\n" + ex.ToString());
             }
             return false;
         }
@@ -877,6 +887,134 @@ namespace LLC_MOD_Toolbox
                 llcfile.Text = filePath;
             }
         }
+
+        private void filereplace_button_Click(object sender, EventArgs e)
+        {
+            logger.Info("选择文件覆盖文件。");
+            OpenFileDialog openFileDialog = new();
+            openFileDialog.Filter = "文件覆盖压缩包 (*.zip)|*.zip";
+
+            DialogResult result = openFileDialog.ShowDialog();
+
+            if (result == DialogResult.OK)
+            {
+                string filePath = openFileDialog.FileName;
+                logger.Info("选择的文件路径： " + filePath);
+                filereplace_file.Text = filePath;
+            }
+        }
+
+        private void filereplace_start_Click(object sender, EventArgs e)
+        {
+            if (filereplace_file.Text == "请点击右侧浏览文件" || filereplace_file.Text == String.Empty)
+            {
+                MessageBox.Show("未填写文件路径。", "提示");
+                logger.Info("未填写文件路径。");
+                return;
+            }
+            filereplace_start.Enabled = false;
+            try
+            {
+                deleteMelonLoader();
+                deleteBepInEx();
+                MessageBox.Show("如果你安装了杀毒软件，接下来可能会提示工具箱正在修改关键dll。\n允许即可。如果不信任汉化补丁，可以退出本程序。", "警告");
+                new SevenZipExtractor(filereplace_file.Text).ExtractAll(limbusCompanyDir, true);
+                MoveFolder(limbusCompanyDir + "/Limbus Company", limbusCompanyDir);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("出现了问题。\n" + ex.ToString());
+                logger.Error("出现了问题：\n" + ex.ToString());
+            }
+            MessageBox.Show("安装已完成！\n你现在可以运行游戏了。\n加载时请耐心等待。", "完成", MessageBoxButtons.OK);
+            filereplace_start.Enabled = true;
+        }
+        private void manual_open_Click(object sender, EventArgs e)
+        {
+            if (!manual_has_open)
+            {
+                logger.Info("开启手动安装页面");
+                manual_open.Text = "关闭";
+                manual_open_text.Text = "关闭手动安装页面";
+                this.uiTabControl.Controls.Add(this.tabPage5);
+                manual_has_open = true;
+                MessageBox.Show("开启成功","提示");
+            }
+            else
+            {
+                logger.Info("关闭手动安装页面");
+                manual_open.Text = "开启";
+                manual_open_text.Text = "开启手动安装页面";
+                this.uiTabControl.Controls.Remove(this.tabPage5);
+                manual_has_open = false;
+                MessageBox.Show("关闭成功", "提示");
+            }
+        }
+
+        static void MoveFolder(string sourceFolderPath, string destinationFolderPath)
+        {
+            Directory.CreateDirectory(destinationFolderPath);
+
+            foreach (string file in Directory.GetFiles(sourceFolderPath))
+            {
+                string fileName = Path.GetFileName(file);
+                string destinationFilePath = Path.Combine(destinationFolderPath, fileName);
+                File.Move(file, destinationFilePath);
+            }
+
+            foreach (string subfolder in Directory.GetDirectories(sourceFolderPath))
+            {
+                string subfolderName = Path.GetFileName(subfolder);
+                string destinationSubfolderPath = Path.Combine(destinationFolderPath, subfolderName);
+                MoveFolder(subfolder, destinationSubfolderPath);
+            }
+
+            Directory.Delete(sourceFolderPath);
+        }
+
+        private void config_open_Click(object sender, EventArgs e)
+        {
+            if (!config_has_open)
+            {
+                logger.Info("开启更改配置页面");
+                config_open.Text = "关闭";
+                config_open_text.Text = "关闭更改配置页面";
+                this.uiTabControl.Controls.Add(this.tabPage6);
+                config_has_open = true;
+                MessageBox.Show("开启成功", "提示");
+            }
+            else
+            {
+                logger.Info("关闭更改配置页面");
+                config_open.Text = "开启";
+                config_open_text.Text = "开启更改配置页面";
+                this.uiTabControl.Controls.Remove(this.tabPage6);
+                config_has_open = false;
+                MessageBox.Show("关闭成功", "提示");
+            }
+        }
+
+        private void filereplace_open_Click(object sender, EventArgs e)
+        {
+            if (!filereplace_has_open)
+            {
+                logger.Info("开启文件覆盖页面");
+                filereplace_open.Text = "关闭";
+                filereplace_open_text.Text = "关闭文件覆盖页面";
+                this.uiTabControl.Controls.Add(this.tabPage7);
+                filereplace_has_open = true;
+                MessageBox.Show("开启成功", "提示");
+            }
+            else
+            {
+                logger.Info("关闭手动安装页面");
+                filereplace_open.Text = "开启";
+                filereplace_open_text.Text = "开启文件覆盖页面";
+                this.uiTabControl.Controls.Remove(this.tabPage7);
+                filereplace_has_open = false;
+                MessageBox.Show("关闭成功", "提示");
+            }
+        }
         private void manualInstall_Click(object sender, EventArgs e)
         {
             if (bepinexfile.Text == "请点击右侧浏览文件" || bepinexfile.Text == String.Empty)
@@ -900,6 +1038,8 @@ namespace LLC_MOD_Toolbox
             manualInstall.Enabled = false;
             try
             {
+                deleteMelonLoader();
+                deleteBepInEx();
                 MessageBox.Show("如果你安装了杀毒软件，接下来可能会提示工具箱正在修改关键dll。\n允许即可。如果不信任汉化补丁，可以退出本程序。", "警告");
                 new SevenZipExtractor(bepinexfile.Text).ExtractAll(limbusCompanyDir, true);
                 new SevenZipExtractor(tmpfile.Text).ExtractAll(limbusCompanyDir, true);
@@ -957,6 +1097,191 @@ namespace LLC_MOD_Toolbox
             deleteFile(limbusCompanyDir + "/winhttp.dll");
             deleteFile(limbusCompanyDir + "/changelog.txt");
         }
+
+        #region 配置文件
+
+        private void writeConfigBool(string node, bool change)
+        {
+            string cfgfile = limbusCompanyDir + "/BepInEx/config/Com.Bright.LocalizeLimbusCompany.cfg";
+
+            logger.Info("更改配置文件（Bool），节点：" + node + "，改为：" + change.ToString());
+
+            if (File.Exists(cfgfile)) {
+                try
+                {
+                    Configuration config = Configuration.LoadFromFile(cfgfile);
+                    foreach (Section item in config)
+                    {
+                        if (item.Name == "LLC Settings")
+                        {
+                            item[node].BoolValue = change;
+                        }
+                    }
+                    config.SaveToFile(cfgfile, Encoding.UTF8);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("出现了问题。\n" + ex.ToString());
+                    logger.Error("出现了问题：\n" + ex.ToString());
+                }
+            }
+            else
+            {
+                MessageBox.Show("配置文件不存在。\n请尝试进入游戏一次游戏后，退出，再进行修改操作。");
+                logger.Error("配置文件不存在。");
+            }
+        }
+
+        private void writeConfigString(string node, string change)
+        {
+            string cfgfile = limbusCompanyDir + "/BepInEx/config/Com.Bright.LocalizeLimbusCompany.cfg";
+
+            logger.Info("更改配置文件（String），节点：" + node + "，改为：" + change);
+
+            if (File.Exists(cfgfile))
+            {
+                try
+                {
+                    Configuration config = Configuration.LoadFromFile(cfgfile);
+                    foreach (Section item in config)
+                    {
+                        if (item.Name == "LLC Settings")
+                        {
+                            item[node].StringValue = change;
+                        }
+                    }
+                    config.SaveToFile(cfgfile, Encoding.UTF8);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("出现了问题。\n" + ex.ToString());
+                    logger.Error("出现了问题：\n" + ex.ToString());
+                }
+            }
+            else
+            {
+                MessageBox.Show("配置文件不存在。\n请尝试进入游戏一次游戏后，退出，再进行修改操作。");
+                logger.Error("配置文件不存在。");
+            }
+        }
+
+        private void readConfig()
+        {
+            logger.Info("读取配置。");
+
+            string cfgfile = limbusCompanyDir + "/BepInEx/config/Com.Bright.LocalizeLimbusCompany.cfg";
+
+            if (File.Exists(cfgfile))
+            {
+                try
+                {
+                    Configuration config = Configuration.LoadFromFile(cfgfile);
+
+                    foreach (Section item in config)
+                    {
+                        if (item.Name == "LLC Settings")
+                        {
+                            randomallcg.Active = item["RandomAllLoadCG"].BoolValue;
+                            loadcustomtext.Active = item["RandomLoadText"].BoolValue;
+                            usechinese.Active = item["IsUseChinese"].BoolValue;
+                            autoupdate.Active = item["AutoUpdate"].BoolValue;
+                            if (item["UpdateURI"].StringValue == "Github")
+                            {
+                                configUseGithub();
+                            }
+                            else
+                            {
+                                configUseOfb();
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("出现了问题。\n" + ex.ToString());
+                    logger.Error("出现了问题：\n" + ex.ToString());
+                }
+            }
+            else
+            {
+                logger.Error("配置文件不存在。");
+            }
+        }
+
+        private void configUseGithub()
+        {
+            update_usegithub.Enabled = false;
+            update_useofb.Enabled = true;
+            update_usegithub.Text = "(当前)Github";
+            update_useofb.Text = "OneDrive For Business";
+        }
+
+        private void configUseOfb()
+        {
+            update_usegithub.Enabled = true;
+            update_useofb.Enabled = false;
+            update_usegithub.Text = "Github";
+            update_useofb.Text = "(当前)OneDrive For Business";
+        }
+
+        private void refreshConfig_Click(object sender, EventArgs e)
+        {
+            logger.Info("点击刷新配置。");
+            readConfig();
+            MessageBox.Show("读取完成。");
+        }
+
+        private void update_usegithub_Click(object sender, EventArgs e)
+        {
+            logger.Info("自动更新使用Github。");
+            writeConfigString("UpdateURI","Github");
+            configUseGithub();
+        }
+
+        private void update_useofb_Click(object sender, EventArgs e)
+        {
+            logger.Info("自动更新使用Ofb。");
+            writeConfigString("UpdateURI", "Mirror_OneDrive");
+            configUseOfb();
+        }
+
+        private void randomallcg_ValueChanged(object sender, bool value)
+        {
+            if (alreadyLoaded)
+            {
+                logger.Info("加载页面使用所有已获得CG为：" + randomallcg.Active.ToString());
+                writeConfigBool("RandomAllLoadCG", randomallcg.Active);
+            }
+        }
+
+        private void loadcustomtext_ValueChanged(object sender, bool value)
+        {
+            if (alreadyLoaded)
+            {
+                logger.Info("加载页面使用自定义文本为：" + loadcustomtext.Active.ToString());
+                writeConfigBool("RandomLoadText", loadcustomtext.Active);
+            }
+        }
+
+        private void usechinese_ValueChanged(object sender, bool value)
+        {
+            if (alreadyLoaded)
+            {
+                logger.Info("是否使用汉化为：" + usechinese.Active.ToString());
+                writeConfigBool("IsUseChinese", usechinese.Active);
+            }
+        }
+
+        private void autoupdate_ValueChanged(object sender, bool value)
+        {
+            if (alreadyLoaded)
+            {
+                logger.Info("使用自动更新为：" + autoupdate.Active.ToString());
+                writeConfigBool("AutoUpdate", autoupdate.Active);
+            }
+        }
+
+        #endregion
 
         #region 链接按钮
         private void EnterToolBoxGithub_Click(object sender, EventArgs e)
@@ -1022,8 +1347,14 @@ namespace LLC_MOD_Toolbox
 
         private void downloadFile_Click(object sender, EventArgs e)
         {
-            logger.Info("进入下载文件的链接。");
+            logger.Info("进入下载手动安装文件的链接。");
             Openuri("https://zxp123-my.sharepoint.com/:f:/g/personal/drive_zxp123_onmicrosoft_com/EqJQQKYcRwBLhh2tiAsurXoBGUdwpzusfSQQ2qWePhBifQ?e=LnIAKy");
+        }
+
+        private void download_filereplace_Click(object sender, EventArgs e)
+        {
+            logger.Info("进入下载文件覆盖文件的链接。");
+            Openuri("https://n07w1-my.sharepoint.com/:f:/g/personal/northwind_n07w1_onmicrosoft_com/ElVIKQVcHqtCj3a4NJjLdDUBMkVxSQ5S6TGQ0MzZlU1nBw");
         }
 
         private bool Has_NET_6_0 = false;
@@ -1041,5 +1372,11 @@ namespace LLC_MOD_Toolbox
 
         private string BepInExUrl;
         private string BepInExZipPath;
+
+        private bool manual_has_open;
+        private bool config_has_open;
+        private bool filereplace_has_open;
+
+        private bool alreadyLoaded;
     }
 }
