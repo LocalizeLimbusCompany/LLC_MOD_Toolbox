@@ -873,7 +873,7 @@ namespace LLC_MOD_Toolbox
             this.uiLabel9.Size = new System.Drawing.Size(502, 36);
             this.uiLabel9.Style = Sunny.UI.UIStyle.LayuiGreen;
             this.uiLabel9.TabIndex = 1;
-            this.uiLabel9.Text = "LLC_Toolbox 版本0.4.5";
+            this.uiLabel9.Text = "LLC_Toolbox 版本0.4.6";
             this.uiLabel9.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // uiLabel8
@@ -1585,7 +1585,7 @@ namespace LLC_MOD_Toolbox
             this.ShowRect = false;
             this.ShowTitleIcon = true;
             this.Style = Sunny.UI.UIStyle.LayuiGreen;
-            this.Text = "零协会工具箱 v0.4.5";
+            this.Text = "零协会工具箱 v0.4.6";
             this.TitleColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(150)))), ((int)(((byte)(136)))));
             this.TitleFont = new System.Drawing.Font("微软雅黑", 12F);
             this.TitleHeight = 40;

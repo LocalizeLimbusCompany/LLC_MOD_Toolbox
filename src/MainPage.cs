@@ -22,7 +22,7 @@ namespace LLC_MOD_Toolbox
 
     public partial class MainPage : UIForm
     {
-        public const string VERSION = "0.4.5";
+        public const string VERSION = "0.4.6";
 
         // 注册日志系统
         private static readonly ILog logger = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
@@ -236,8 +236,8 @@ namespace LLC_MOD_Toolbox
                     if (!File.Exists(limbusCompanyDir + "/BepInEx/core/BepInEx.Core.dll"))
                     {
                         logger.Info("从 Github 下载 BepInEx 。");
-                        BepInExUrl = "https://github.com/LocalizeLimbusCompany/BepInEx_For_LLC/releases/download/v6.0.1-LLC/BepInEx-IL2CPP-x64-6.0.1.rar";
-                        BepInExZipPath = Path.Combine(limbusCompanyDir, "BepInEx-IL2CPP-x64.7z");
+                        BepInExUrl = "https://github.com/LocalizeLimbusCompany/BepInEx_For_LLC/releases/download/v6.0.1-LLC/BepInEx-IL2CPP-x64-6.0.1.7z";
+                        BepInExZipPath = Path.Combine(limbusCompanyDir, "BepInEx-IL2CPP-x64-6.0.1.7z");
                         logger.Info("BepInEx Zip路径： " + BepInExZipPath);
                         await DownloadFileAsync(BepInExUrl, BepInExZipPath);
                         logger.Info("开始解压 BepInEx zip。");
@@ -252,8 +252,8 @@ namespace LLC_MOD_Toolbox
                         {
                             logger.Info("未检测到正确Bepinex。");
                             MessageBox.Show("如果你安装了杀毒软件，接下来可能会提示工具箱正在修改关键dll。\n允许即可。如果不信任汉化补丁，可以退出本程序。", "警告");
-                            BepInExUrl = "https://github.com/LocalizeLimbusCompany/BepInEx_For_LLC/releases/download/v6.0.1-LLC/BepInEx-IL2CPP-x64-6.0.1.rar";
-                            BepInExZipPath = Path.Combine(limbusCompanyDir, "BepInEx-IL2CPP-x64.7z");
+                            BepInExUrl = "https://github.com/LocalizeLimbusCompany/BepInEx_For_LLC/releases/download/v6.0.1-LLC/BepInEx-IL2CPP-x64-6.0.1.7z";
+                            BepInExZipPath = Path.Combine(limbusCompanyDir, "BepInEx-IL2CPP-x64-6.0.1.7z");
                             logger.Info("BepInEx Zip目录： " + BepInExZipPath);
                             await DownloadFileAsync(BepInExUrl, BepInExZipPath);
                             logger.Info("开始解压 BepInEx zip。");
