@@ -5,24 +5,21 @@ using SharpConfig;
 using SimpleJSON;
 using Sunny.UI;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Net;
-using System.Net.NetworkInformation;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Xml.Linq;
 
 namespace LLC_MOD_Toolbox
 {
 
     public partial class MainPage : UIForm
     {
-        public const string VERSION = "0.4.6";
+        public const string VERSION = "0.5.0";
 
         // 注册日志系统
         private static readonly ILog logger = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
@@ -53,18 +50,16 @@ namespace LLC_MOD_Toolbox
             config_has_open = false;
             filereplace_has_open = false;
 
-            ChangeStatu("获取最快节点。");
-            fastestNode = GetFastnetNode();
+            // ChangeStatu("获取最快节点。");
+            // fastestNode = GetFastnetNode();
+
+            fastestNode = "lanzou";
 
             if (string.IsNullOrEmpty(fastestNode))
             {
                 logger.Error("最快节点为空，网络错误。");
                 MessageBox.Show("网络错误,你无法访问任何站点。\n将禁止使用自动安装功能。\n请尝试使用手动安装功能。", "错误", MessageBoxButtons.OK);
                 installButton.Enabled = false;
-                dlFromDefault.Enabled = false;
-                dlFromLV.Enabled = false;
-                dlFromLVCDN.Enabled = false;
-                dlFromOFB.Enabled = false;
                 useGithub.ReadOnly = true;
                 canUseAutoInstall = false;
                 ChangeStatu("自动安装已被禁用，请使用手动安装功能！");
@@ -152,24 +147,6 @@ namespace LLC_MOD_Toolbox
                 logger.Warn("在关闭使用 Github 的情况下，最快节点为 Github 。已自动切换至 Onedrive For Business 。");
                 fastestNode = "download.zeroasso.top";
             }
-
-            if (downFromOFB == true)
-            {
-                logger.Info("切换节点至 Onedrive For Business 。");
-                fastestNode = "download.zeroasso.top";
-            }
-
-            if (downFromLV == true)
-            {
-                logger.Info("切换节点至 拉斯维加斯服务器。");
-                fastestNode = "lv.zeroasso.top";
-            }
-
-            if (downFromLVCDN == true)
-            {
-                logger.Info("切换节点至 拉斯维加斯服务器 with CDN。");
-                fastestNode = "lvcdn.zeroasso.top";
-            }
             try
             {
                 logger.Info("下载 BepInEx For LLC 中。");
@@ -191,10 +168,9 @@ namespace LLC_MOD_Toolbox
                     {
                         logger.Info("未检测到正确Bepinex。");
                         MessageBox.Show("如果你安装了杀毒软件，接下来可能会提示工具箱正在修改关键dll。\n允许即可。如果不信任汉化补丁，可以退出本程序。", "警告");
-                        BepInExUrl = "https://" + fastestNode + "/files/BepInEx-IL2CPP-x64.7z";
                         BepInExZipPath = Path.Combine(limbusCompanyDir, "BepInEx-IL2CPP-x64.7z");
                         logger.Info("BepInEx Zip目录： " + BepInExZipPath);
-                        await DownloadFileAsync(BepInExUrl, BepInExZipPath);
+                        await DownloadFileAutoSelect("BepInEx-IL2CPP-x64.7z", BepInExZipPath);
                         logger.Info("开始解压 BepInEx zip。");
                         new SevenZipExtractor(BepInExZipPath).ExtractAll(limbusCompanyDir, true);
                         logger.Info("解压完成。删除 BepInEx zip。");
@@ -210,7 +186,7 @@ namespace LLC_MOD_Toolbox
                             BepInExUrl = "https://" + fastestNode + "/files/BepInEx-IL2CPP-x64.7z";
                             BepInExZipPath = Path.Combine(limbusCompanyDir, "BepInEx-IL2CPP-x64.7z");
                             logger.Info("BepInEx Zip目录： " + BepInExZipPath);
-                            await DownloadFileAsync(BepInExUrl, BepInExZipPath);
+                            await DownloadFileAutoSelect("BepInEx-IL2CPP-x64.7z", BepInExZipPath);
                             logger.Info("开始解压 BepInEx zip。");
                             new SevenZipExtractor(BepInExZipPath).ExtractAll(limbusCompanyDir, true);
                             logger.Info("解压完成。删除 BepInEx zip。");
@@ -293,7 +269,7 @@ namespace LLC_MOD_Toolbox
                 {
                     if (CheckChineseFontAssetUpdate(LastWriteTime, false, out var latestTag))
                     {
-                        await DownloadFileAsync("https://" + fastestNode + "/files/tmpchinesefont_BIE.7z", tmpchineseZipPath);
+                        await DownloadFileAutoSelect("tmpchinesefont_BIE.7z", tmpchineseZipPath);
                         logger.Info("解压 tmp zip 中。");
                         new SevenZipExtractor(tmpchineseZipPath).ExtractAll(limbusCompanyDir, true);
                         logger.Info("删除 tmp zip 。");
@@ -345,7 +321,7 @@ namespace LLC_MOD_Toolbox
                         currentVersion = versionInfo.ProductVersion;
                         if (new Version(currentVersion) < new Version(latestLLCVersion.Remove(0, 1)))
                         {
-                            await DownloadFileAsync("https://" + fastestNode + "/files/LimbusLocalize_BIE_"+latestLLCVersion+".7z", limbusLocalizeZipPath);
+                            await DownloadFileAutoSelect("LimbusLocalize_BIE_" + latestLLCVersion + ".7z", limbusLocalizeZipPath);
                             logger.Info("解压模组本体 zip 中。");
                             new SevenZipExtractor(limbusLocalizeZipPath).ExtractAll(limbusCompanyDir, true);
                             logger.Info("删除模组本体 zip 。");
@@ -354,7 +330,7 @@ namespace LLC_MOD_Toolbox
                     }
                     else
                     {
-                        await DownloadFileAsync("https://" + fastestNode + "/files/LimbusLocalize_BIE_"+latestLLCVersion+".7z", limbusLocalizeZipPath);
+                        await DownloadFileAutoSelect("LimbusLocalize_BIE_" + latestLLCVersion + ".7z", limbusLocalizeZipPath);
                         logger.Info("解压模组本体 zip 中。");
                         new SevenZipExtractor(limbusLocalizeZipPath).ExtractAll(limbusCompanyDir, true);
                         logger.Info("删除模组本体 zip 。");
@@ -401,10 +377,7 @@ namespace LLC_MOD_Toolbox
             logger.Info("安装完成。");
             var version = FileVersionInfo.GetVersionInfo(limbusLocalizeDllPath);
             Version new_version = new(version.ProductVersion);
-            if (string.IsNullOrEmpty(currentVersion) || new_version > new Version(currentVersion) && new_version >= new Version(latestLLCVersion.Remove(0, 1)))
-                MessageBox.Show("安装已完成！\n你现在可以运行游戏了。\n加载时请耐心等待。", "完成", MessageBoxButtons.OK);
-            else
-                MessageBox.Show("模组没有更新", "完成?", MessageBoxButtons.OK);
+            MessageBox.Show("安装已完成！\n你现在可以运行游戏了。\n加载时请耐心等待。", "完成", MessageBoxButtons.OK);
             ControlButton(true);
             TotalBar.Value = 0;
             DownloadBar.Value = 0;
@@ -424,10 +397,6 @@ namespace LLC_MOD_Toolbox
                 if (canUseAutoInstall == true)
                 {
                     installButton.Enabled = true;
-                    dlFromDefault.Enabled = true;
-                    dlFromLV.Enabled = true;
-                    dlFromLVCDN.Enabled = true;
-                    dlFromDefault.Enabled = true;
                     useGithub.ReadOnly = false;
                 }
                 deleteButton.Enabled = true;
@@ -438,10 +407,6 @@ namespace LLC_MOD_Toolbox
                 logger.Info("正在关闭按钮。");
                 uiTabControl.Enabled = false;
                 installButton.Enabled = false;
-                dlFromDefault.Enabled = false;
-                dlFromLV.Enabled = false;
-                dlFromLVCDN.Enabled = false;
-                dlFromDefault.Enabled = false;
                 deleteButton.Enabled = false;
                 useGithub.ReadOnly = true;
                 logger.Info("关闭完成。");
@@ -511,48 +476,32 @@ namespace LLC_MOD_Toolbox
             await client.DownloadFileTaskAsync(new Uri(url), filePath);
         }
 
-        // 获取最快节点
-        private string GetFastnetNode()
+        // 自适应下载文件
+        private async Task DownloadFileAutoSelect(string file, string filePath)
         {
-            logger.Info("正在获取最快的节点……");
-
-            Dictionary<string, long> pingTimes = new() { { "github.com", 9999L }, { "lv.zeroasso.top", 9999L }, { "lvcdn.zeroasso.top", 9999L }, { "download.zeroasso.top", 9999L } };
-
-            foreach (string url in pingTimes.Keys.ToArray())
+            string lanzou = "http://81.70.83.185:5244/d/lanzou/" + file;
+            string unicom = "http://81.70.83.185:5244/d/unicom/" + file;
+            string tianyi = "http://81.70.83.185:5244/d/tianyi/" + file;
+            if (node == String.Empty)
             {
-                Ping ping = new();
-                logger.Info("获取 " + url + " 的延迟中……");
                 try
                 {
-                    PingReply reply = ping.Send(url);
-                    if (reply.Status == IPStatus.Success)
-                    {
-                        logger.Info(url + " 的延迟为 " + reply.RoundtripTime + "ms。");
-                        pingTimes[url] = reply.RoundtripTime;
-                        continue;
-                    }
+                    await DownloadFileAsync(lanzou, filePath);
                 }
                 catch (Exception ex)
                 {
-                    logger.Error("在获取 " + url + " 的延迟时遇到了一些错误。" + ex.ToString());
+                    logger.Error("从lanzou下载文件出现了问题。\n" + ex.ToString());
+                    try
+                    {
+                        await DownloadFileAsync(unicom, filePath);
+                    }
+                    catch (Exception ex2)
+                    {
+                        logger.Error("从unicom下载文件出现了问题。\n" + ex2.ToString());
+                        await DownloadFileAsync(tianyi, filePath);
+                    }
                 }
-                pingTimes[url] = 9999L;
             }
-
-            List<KeyValuePair<string, long>> pingTimesList = new(pingTimes);
-            pingTimesList.Sort(delegate (KeyValuePair<string, long> pair1, KeyValuePair<string, long> pair2)
-            {
-                return pair1.Value.CompareTo(pair2.Value);
-            });
-            string Fastest = pingTimesList[0].Key;
-            long Roundtriptime = pingTimesList[0].Value;
-            if (Roundtriptime > 600L)
-            {
-                logger.Error("网络错误。");
-                return null;
-            }
-            logger.Info("完成，最快节点为： " + Fastest + " 它的延迟是： " + Roundtriptime + " ms。");
-            return Fastest;
         }
 
         // 获取LimbusCompany路径
@@ -716,12 +665,14 @@ namespace LLC_MOD_Toolbox
             catch (Exception ex)
             {
                 MessageBox.Show("出现了问题。\n" + ex.ToString());
+                logger.Error("出现了问题。\n" + ex.ToString());
             }
             return false;
         }
 
         static bool CheckToolboxUpdate(string version, bool IsGithub)
         {
+            logger.Info("正在检查工具箱更新。");
             try
             {
                 using WebClient client = new();
@@ -729,16 +680,19 @@ namespace LLC_MOD_Toolbox
                 string raw = string.Empty;
                 if (IsGithub == true)
                 {
+                    logger.Info("从Github检查。");
                     raw = new StreamReader(client.OpenRead(new Uri("https://api.github.com/repos/LocalizeLimbusCompany/LLC_MOD_Toolbox/releases/latest")), Encoding.UTF8).ReadToEnd();
                 }
                 else
                 {
+                    logger.Info("从镜像检查。");
                     raw = new StreamReader(client.OpenRead(new Uri("https://json.zxp123.eu.org/Toolbox_Release.json")), Encoding.UTF8).ReadToEnd();
                 }
                 var latest = JSONNode.Parse(raw).AsObject;
                 string latestReleaseTag = latest["tag_name"].Value.Remove(0, 1);
                 if (new Version(latestReleaseTag) > new Version(version))
                 {
+                    logger.Info("有更新。");
                     return true;
                 }
             }
@@ -746,6 +700,7 @@ namespace LLC_MOD_Toolbox
             {
                 logger.Error("出现了问题。\n" + ex.ToString());
             }
+            logger.Info("没有更新。");
             return false;
         }
 
@@ -779,42 +734,6 @@ namespace LLC_MOD_Toolbox
                 logger.Error("出现了问题：\n" + ex.ToString());
             }
             return false;
-        }
-
-        private void dlFromOFB_Click(object sender, EventArgs e)
-        {
-            logger.Info("手动切换节点为 Onedrive For Business 。");
-            downFromOFB = true;
-            downFromLV = false;
-            downFromLVCDN = false;
-            MessageBox.Show("切换成功。", "提示");
-        }
-
-        private void dlFromLV_Click(object sender, EventArgs e)
-        {
-            logger.Info("手动切换节点为 Onedrive For Business 。");
-            downFromOFB = false;
-            downFromLV = true;
-            downFromLVCDN = false;
-            MessageBox.Show("切换成功。", "提示");
-        }
-
-        private void dlFromLVCDN_Click(object sender, EventArgs e)
-        {
-            logger.Info("手动切换节点为 Onedrive For Business 。");
-            downFromOFB = false;
-            downFromLV = false;
-            downFromLVCDN = true;
-            MessageBox.Show("切换成功。", "提示");
-        }
-
-        private void dlFromDefault_Click(object sender, EventArgs e)
-        {
-            logger.Info("节点切换为默认情况。");
-            downFromOFB = false;
-            downFromLV = false;
-            downFromLVCDN = false;
-            MessageBox.Show("切换成功。", "提示");
         }
 
         private void deleteButton_Click(object sender, EventArgs e)
@@ -938,7 +857,7 @@ namespace LLC_MOD_Toolbox
                 manual_open_text.Text = "关闭手动安装页面";
                 this.uiTabControl.Controls.Add(this.tabPage5);
                 manual_has_open = true;
-                MessageBox.Show("开启成功","提示");
+                MessageBox.Show("开启成功", "提示");
             }
             else
             {
@@ -1106,7 +1025,8 @@ namespace LLC_MOD_Toolbox
 
             logger.Info("更改配置文件（Bool），节点：" + node + "，改为：" + change.ToString());
 
-            if (File.Exists(cfgfile)) {
+            if (File.Exists(cfgfile))
+            {
                 try
                 {
                     Configuration config = Configuration.LoadFromFile(cfgfile);
@@ -1234,7 +1154,7 @@ namespace LLC_MOD_Toolbox
         private void update_usegithub_Click(object sender, EventArgs e)
         {
             logger.Info("自动更新使用Github。");
-            writeConfigString("UpdateURI","Github");
+            writeConfigString("UpdateURI", "Github");
             configUseGithub();
         }
 
@@ -1348,7 +1268,7 @@ namespace LLC_MOD_Toolbox
         private void downloadFile_Click(object sender, EventArgs e)
         {
             logger.Info("进入下载手动安装文件的链接。");
-            Openuri("https://zxp123-my.sharepoint.com/:f:/g/personal/drive_zxp123_onmicrosoft_com/EqJQQKYcRwBLhh2tiAsurXoBGUdwpzusfSQQ2qWePhBifQ?e=LnIAKy");
+            Openuri("http://81.70.83.185:5244/lanzou");
         }
 
         private void download_filereplace_Click(object sender, EventArgs e)
@@ -1362,9 +1282,7 @@ namespace LLC_MOD_Toolbox
 
         private bool canUseAutoInstall;
 
-        private bool downFromOFB = false;
-        private bool downFromLV = false;
-        private bool downFromLVCDN = false;
+        private string node = string.Empty;
 
         private string fastestNode;
         private string limbusCompanyDir;
