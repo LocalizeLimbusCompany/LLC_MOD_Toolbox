@@ -362,3 +362,5 @@ MigrationBackup/
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
 /LLC_MOD_Toolbox*
+LLC_MOD_Toolbox.7z
+LocalizeLimbusModInstaller.7z
