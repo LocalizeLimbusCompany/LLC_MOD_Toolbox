@@ -8,7 +8,7 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Net;
-using System.Reflection;
+using System.Net.Http;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
@@ -19,7 +19,7 @@ namespace LLC_MOD_Toolbox
 
     public partial class MainPage : UIForm
     {
-        public const string VERSION = "0.5.0";
+        public const string VERSION = "0.5.1";
 
         // 注册日志系统
         private static readonly ILog logger = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
@@ -53,21 +53,7 @@ namespace LLC_MOD_Toolbox
             // ChangeStatu("获取最快节点。");
             // fastestNode = GetFastnetNode();
 
-            fastestNode = "lanzou";
-
-            if (string.IsNullOrEmpty(fastestNode))
-            {
-                logger.Error("最快节点为空，网络错误。");
-                MessageBox.Show("网络错误,你无法访问任何站点。\n将禁止使用自动安装功能。\n请尝试使用手动安装功能。", "错误", MessageBoxButtons.OK);
-                installButton.Enabled = false;
-                useGithub.ReadOnly = true;
-                canUseAutoInstall = false;
-                ChangeStatu("自动安装已被禁用，请使用手动安装功能！");
-            }
-            else
-            {
-                canUseAutoInstall = true;
-            }
+            fastestNode = "tianyi";
 
             bool isgit = fastestNode == "github.com";
             if (isgit == true)
@@ -375,8 +361,6 @@ namespace LLC_MOD_Toolbox
             }
             TotalBar.Value = 100;
             logger.Info("安装完成。");
-            var version = FileVersionInfo.GetVersionInfo(limbusLocalizeDllPath);
-            Version new_version = new(version.ProductVersion);
             MessageBox.Show("安装已完成！\n你现在可以运行游戏了。\n加载时请耐心等待。", "完成", MessageBoxButtons.OK);
             ControlButton(true);
             TotalBar.Value = 0;
@@ -394,11 +378,8 @@ namespace LLC_MOD_Toolbox
             {
                 logger.Info("正在开启按钮。");
                 uiTabControl.Enabled = true;
-                if (canUseAutoInstall == true)
-                {
-                    installButton.Enabled = true;
-                    useGithub.ReadOnly = false;
-                }
+                installButton.Enabled = true;
+                useGithub.ReadOnly = false;
                 deleteButton.Enabled = true;
                 logger.Info("开启完成。");
             }
@@ -463,43 +444,81 @@ namespace LLC_MOD_Toolbox
         private async Task DownloadFileAsync(string url, string filePath)
         {
             logger.Info("从: " + url + "下载文件。");
-            using WebClient client = new();
-            client.DownloadProgressChanged += (s, e) =>
+            HttpClient httpClient = new HttpClient();
+            Directory.CreateDirectory(Path.GetDirectoryName(filePath));
+
+            HttpResponseMessage response = await httpClient.GetAsync(url, HttpCompletionOption.ResponseHeadersRead);
+
+            long totalSize = response.Content.Headers.ContentLength ?? -1;
+
+            using (Stream contentStream = await response.Content.ReadAsStreamAsync())
             {
-                DownloadBar.Value = e.ProgressPercentage;
-            };
-            client.DownloadFileCompleted += (s, e) =>
-            {
-                logger.Info("下载完成。");
-                DownloadBar.Value = 100;
-            };
-            await client.DownloadFileTaskAsync(new Uri(url), filePath);
+                using (FileStream fileStream = new FileStream(filePath, FileMode.Create, FileAccess.Write, FileShare.None))
+                {
+                    byte[] buffer = new byte[8192];
+                    int bytesRead;
+                    long totalBytesRead = 0;
+
+                    while ((bytesRead = await contentStream.ReadAsync(buffer, 0, buffer.Length)) > 0)
+                    {
+                        await fileStream.WriteAsync(buffer, 0, bytesRead);
+                        totalBytesRead += bytesRead;
+
+                        int progressPercentage = (int)((double)totalBytesRead / totalSize * 100);
+
+                        Invoke(new Action(() =>
+                        {
+                            DownloadBar.Value = progressPercentage;
+                        }));
+                    }
+                }
+            }
         }
 
         // 自适应下载文件
         private async Task DownloadFileAutoSelect(string file, string filePath)
         {
-            string lanzou = "http://81.70.83.185:5244/d/lanzou/" + file;
             string unicom = "http://81.70.83.185:5244/d/unicom/" + file;
             string tianyi = "http://81.70.83.185:5244/d/tianyi/" + file;
+            string ofb = "http://81.70.83.185:5244/d/ofb/" + file;
+            // 是，我知道这段代码和if else一样，很屎。
+            // 体谅一下。没办法。
             if (node == String.Empty)
             {
                 try
                 {
-                    await DownloadFileAsync(lanzou, filePath);
+                    await DownloadFileAsync(unicom, filePath);
                 }
-                catch (Exception ex)
+                catch (Exception ex2)
                 {
-                    logger.Error("从lanzou下载文件出现了问题。\n" + ex.ToString());
+                    logger.Error("从unicom下载文件出现了问题。\n" + ex2.ToString());
                     try
                     {
-                        await DownloadFileAsync(unicom, filePath);
-                    }
-                    catch (Exception ex2)
-                    {
-                        logger.Error("从unicom下载文件出现了问题。\n" + ex2.ToString());
                         await DownloadFileAsync(tianyi, filePath);
                     }
+                    catch (Exception ex3)
+                    {
+                        logger.Error("从tianyi下载文件出现了问题。\n" + ex3.ToString());
+                        await DownloadFileAsync(ofb, filePath);
+                    }
+                }
+            }
+            else
+            {
+                // 你看这个，简洁大方。
+                switch (node)
+                {
+                    case "unicom":
+                        await DownloadFileAsync(unicom, filePath);
+                        break;
+                    case "tianyi":
+                        await DownloadFileAsync(tianyi, filePath);
+                        break;
+                    case "ofb":
+                        await DownloadFileAsync(ofb, filePath);
+                        break;
+                    default:
+                        break;
                 }
             }
         }
@@ -690,6 +709,7 @@ namespace LLC_MOD_Toolbox
                 }
                 var latest = JSONNode.Parse(raw).AsObject;
                 string latestReleaseTag = latest["tag_name"].Value.Remove(0, 1);
+                logger.Info("最新安装器tag：" + latestReleaseTag);
                 if (new Version(latestReleaseTag) > new Version(version))
                 {
                     logger.Info("有更新。");
@@ -933,6 +953,34 @@ namespace LLC_MOD_Toolbox
                 filereplace_has_open = false;
                 MessageBox.Show("关闭成功", "提示");
             }
+        }
+
+        private void NodeComboBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            switch (NodeComboBox.Text)
+            {
+                case "镜像节点-1":
+                    node = "tianyi";
+                    break;
+                case "镜像节点-2-联通优化":
+                    node = "unicom";
+                    break;
+                case "镜像节点-3-支持我们":
+                    node = "ofb";
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        private void ResetNode_Click(object sender, EventArgs e)
+        {
+            NodeComboBox.Text = "手动选择节点（点击右方箭头选择）";
+            node = String.Empty;
+        }
+        private void NodeInfo_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("镜像节点-3为我们的 Onedrive For Business 链接。\n使用此链接下载可帮助开发者续费 Microsft E5 开发者账号。", "节点说明");
         }
         private void manualInstall_Click(object sender, EventArgs e)
         {
@@ -1268,7 +1316,7 @@ namespace LLC_MOD_Toolbox
         private void downloadFile_Click(object sender, EventArgs e)
         {
             logger.Info("进入下载手动安装文件的链接。");
-            Openuri("http://81.70.83.185:5244/lanzou");
+            Openuri("http://81.70.83.185:5244/od/sharefile");
         }
 
         private void download_filereplace_Click(object sender, EventArgs e)
