@@ -10,6 +10,7 @@ using System.IO;
 using System.Net;
 using System.Net.Http;
 using System.Runtime.InteropServices;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -19,7 +20,7 @@ namespace LLC_MOD_Toolbox
 
     public partial class MainPage : UIForm
     {
-        public const string VERSION = "0.5.1";
+        public const string VERSION = "0.5.2";
 
         // 注册日志系统
         private static readonly ILog logger = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
@@ -53,14 +54,7 @@ namespace LLC_MOD_Toolbox
             // ChangeStatu("获取最快节点。");
             // fastestNode = GetFastnetNode();
 
-            fastestNode = "tianyi";
-
-            bool isgit = fastestNode == "github.com";
-            if (isgit == true)
-            {
-                useGithub.Active = true;
-            }
-            if (CheckToolboxUpdate(VERSION, isgit))
+            if (CheckToolboxUpdate(VERSION, false))
             {
                 logger.Error("安装器存在更新");
                 MessageBox.Show("安装器存在更新", "存在更新", MessageBoxButtons.OK);
@@ -128,11 +122,6 @@ namespace LLC_MOD_Toolbox
 
             logger.Info("检查某些可能出现的问题。");
 
-            if (useGithub.Active == false && fastestNode == "github.com")
-            {
-                logger.Warn("在关闭使用 Github 的情况下，最快节点为 Github 。已自动切换至 Onedrive For Business 。");
-                fastestNode = "download.zeroasso.top";
-            }
             try
             {
                 logger.Info("下载 BepInEx For LLC 中。");
@@ -169,7 +158,6 @@ namespace LLC_MOD_Toolbox
                         {
                             logger.Info("未检测到正确Bepinex。");
                             MessageBox.Show("如果你安装了杀毒软件，接下来可能会提示工具箱正在修改关键dll。\n允许即可。如果不信任汉化补丁，可以退出本程序。", "警告");
-                            BepInExUrl = "https://" + fastestNode + "/files/BepInEx-IL2CPP-x64.7z";
                             BepInExZipPath = Path.Combine(limbusCompanyDir, "BepInEx-IL2CPP-x64.7z");
                             logger.Info("BepInEx Zip目录： " + BepInExZipPath);
                             await DownloadFileAutoSelect("BepInEx-IL2CPP-x64.7z", BepInExZipPath);
@@ -308,6 +296,12 @@ namespace LLC_MOD_Toolbox
                         if (new Version(currentVersion) < new Version(latestLLCVersion.Remove(0, 1)))
                         {
                             await DownloadFileAutoSelect("LimbusLocalize_BIE_" + latestLLCVersion + ".7z", limbusLocalizeZipPath);
+                            if (GetLimbusLocalizeHash() != CalculateSHA256(limbusLocalizeZipPath))
+                            {
+                                logger.Error("校验Hash失败。");
+                                MessageBox.Show("校验Hash失败。\n请等待数分钟或更换节点。\n如果问题仍然出现，请进行反馈。","校验失败");
+                                Close();
+                            }
                             logger.Info("解压模组本体 zip 中。");
                             new SevenZipExtractor(limbusLocalizeZipPath).ExtractAll(limbusCompanyDir, true);
                             logger.Info("删除模组本体 zip 。");
@@ -317,6 +311,16 @@ namespace LLC_MOD_Toolbox
                     else
                     {
                         await DownloadFileAutoSelect("LimbusLocalize_BIE_" + latestLLCVersion + ".7z", limbusLocalizeZipPath);
+                        if (GetLimbusLocalizeHash() != CalculateSHA256(limbusLocalizeZipPath))
+                        {
+                            logger.Error("校验Hash失败。");
+                            MessageBox.Show("校验Hash失败。\n请等待数分钟或更换节点。\n如果问题仍然出现，请进行反馈。", "校验失败");
+                            Close();
+                        }
+                        else
+                        {
+                            logger.Info("校验Hash成功。");
+                        }
                         logger.Info("解压模组本体 zip 中。");
                         new SevenZipExtractor(limbusLocalizeZipPath).ExtractAll(limbusCompanyDir, true);
                         logger.Info("删除模组本体 zip 。");
@@ -480,28 +484,12 @@ namespace LLC_MOD_Toolbox
         {
             string unicom = "http://81.70.83.185:5244/d/unicom/" + file;
             string tianyi = "http://81.70.83.185:5244/d/tianyi/" + file;
-            string ofb = "http://81.70.83.185:5244/d/ofb/" + file;
+            string ofb = "http://81.70.83.185:5244/d/od/" + file;
             // 是，我知道这段代码和if else一样，很屎。
             // 体谅一下。没办法。
             if (node == String.Empty)
             {
-                try
-                {
-                    await DownloadFileAsync(unicom, filePath);
-                }
-                catch (Exception ex2)
-                {
-                    logger.Error("从unicom下载文件出现了问题。\n" + ex2.ToString());
-                    try
-                    {
-                        await DownloadFileAsync(tianyi, filePath);
-                    }
-                    catch (Exception ex3)
-                    {
-                        logger.Error("从tianyi下载文件出现了问题。\n" + ex3.ToString());
-                        await DownloadFileAsync(ofb, filePath);
-                    }
-                }
+                await DownloadFileAsync(ofb, filePath);
             }
             else
             {
@@ -689,6 +677,42 @@ namespace LLC_MOD_Toolbox
             return false;
         }
 
+        private string GetLimbusLocalizeHash()
+        {
+            string unicom = "http://81.70.83.185:5244/d/unicom/LimbusLocalizeHash.json";
+            string tianyi = "http://81.70.83.185:5244/d/tianyi/LimbusLocalizeHash.json";
+            string ofb = "http://81.70.83.185:5244/d/od/LimbusLocalizeHash.json";
+            using WebClient client = new();
+            client.Headers.Add("User-Agent", "request");
+            string raw = string.Empty;
+            if (node == String.Empty)
+            {
+                raw = new StreamReader(client.OpenRead(new Uri(ofb)), Encoding.UTF8).ReadToEnd();
+            }
+            else
+            {
+                switch (node)
+                {
+                    case "unicom":
+                        raw = new StreamReader(client.OpenRead(new Uri(unicom)), Encoding.UTF8).ReadToEnd();
+                        break;
+                    case "tianyi":
+                        raw = new StreamReader(client.OpenRead(new Uri(tianyi)), Encoding.UTF8).ReadToEnd();
+                        break;
+                    case "ofb":
+                        raw = new StreamReader(client.OpenRead(new Uri(ofb)), Encoding.UTF8).ReadToEnd();
+                        break;
+                    default:
+                        raw = new StreamReader(client.OpenRead(new Uri(ofb)), Encoding.UTF8).ReadToEnd();
+                        break;
+                }
+            }
+            var hashObject = JSONNode.Parse(raw).AsObject;
+            string hash = hashObject["hash"].Value;
+            logger.Info("获取到的最新Hash为：" + hash);
+            return hash;
+        }
+
         static bool CheckToolboxUpdate(string version, bool IsGithub)
         {
             logger.Info("正在检查工具箱更新。");
@@ -755,7 +779,18 @@ namespace LLC_MOD_Toolbox
             }
             return false;
         }
-
+        public static string CalculateSHA256(string filePath)
+        {
+            using (var sha256 = SHA256.Create())
+            {
+                using (var fileStream = File.OpenRead(filePath))
+                {
+                    byte[] hashBytes = sha256.ComputeHash(fileStream);
+                    logger.Info("计算位置为 " + filePath + " 的文件的Hash结果为：" + BitConverter.ToString(hashBytes).Replace("-", "").ToLower());
+                    return BitConverter.ToString(hashBytes).Replace("-", "").ToLower();
+                }
+            }
+        }
         private void deleteButton_Click(object sender, EventArgs e)
         {
             logger.Info("点击删除模组");
@@ -959,10 +994,10 @@ namespace LLC_MOD_Toolbox
         {
             switch (NodeComboBox.Text)
             {
-                case "镜像节点-1":
+                case "镜像节点-1-高速":
                     node = "tianyi";
                     break;
-                case "镜像节点-2-联通优化":
+                case "镜像节点-2-高速-联通优化":
                     node = "unicom";
                     break;
                 case "镜像节点-3-支持我们":
@@ -1328,16 +1363,16 @@ namespace LLC_MOD_Toolbox
         private bool Has_NET_6_0 = false;
         private bool isWindows10;
 
-        private bool canUseAutoInstall;
 
         private string node = string.Empty;
 
-        private string fastestNode;
         private string limbusCompanyDir;
         private string limbusCompanyGameDir;
 
         private string BepInExUrl;
         private string BepInExZipPath;
+
+        private string LimbusLocalizeHash;
 
         private bool manual_has_open;
         private bool config_has_open;

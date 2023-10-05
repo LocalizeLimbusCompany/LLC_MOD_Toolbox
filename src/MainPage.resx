@@ -117,6 +117,21 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="uiLabel8.Text" xml:space="preserve">
+    <value>汉化：零协会全体成员
+首席外交官（划掉）LLTT系长：N071（北岚）
+LLC部长：Bright1192（奈芙） 
+汉化补丁作者：Bright1192（奈芙） 
+BepInEx作者：BepInEx团队
+BepInEx For LLC分支作者：Bright1192（奈芙）
+字体贡献者：茜
+安装器原作者&amp;技术支持：Bright1192（奈芙） 
+工具箱重制：曾小皮-ZengXiaoPi
+镜像节点：曾小皮-ZengXiaoPi
+
+使用 SunnyUI https://gitee.com/yhuse/SunnyUI
+最棒的WinForm美化！</value>
+  </data>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="$this.Icon" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
@@ -1883,20 +1898,5 @@
         /////////4AAAAAAAAAAAAH/////////////gAAAAAAAAAAAAf/////////////AAAAAAAAAAAAD////
         //8=
 </value>
-  </data>
-  <data name="uiLabel8.Text" xml:space="preserve">
-    <value>汉化：零协会全体成员
-首席外交官（划掉）LLTT系长：N071（北岚）
-LLC部长：Bright1192（奈芙） 
-汉化补丁作者：Bright1192（奈芙） 
-BepInEx作者：BepInEx团队
-BepInEx For LLC分支作者：Bright1192（奈芙）
-字体贡献者：茜
-安装器原作者&amp;技术支持：Bright1192（奈芙） 
-工具箱重制：曾小皮-ZengXiaoPi
-镜像节点：曾小皮-ZengXiaoPi
-
-使用 SunnyUI https://gitee.com/yhuse/SunnyUI
-最棒的WinForm美化！</value>
   </data>
 </root>

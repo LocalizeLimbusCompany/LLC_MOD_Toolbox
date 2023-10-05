@@ -133,7 +133,7 @@ namespace LLC_MOD_Toolbox
             this.uiTabControl.SelectedIndex = 0;
             this.uiTabControl.Size = new System.Drawing.Size(1077, 483);
             this.uiTabControl.SizeMode = System.Windows.Forms.TabSizeMode.Fixed;
-            this.uiTabControl.Style = Sunny.UI.UIStyle.Custom;
+            this.uiTabControl.Style = Sunny.UI.UIStyle.Colorful;
             this.uiTabControl.TabBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(240)))), ((int)(((byte)(240)))));
             this.uiTabControl.TabIndex = 0;
             this.uiTabControl.TabSelectedColor = System.Drawing.Color.FromArgb(((int)(((byte)(250)))), ((int)(((byte)(250)))), ((int)(((byte)(250)))));
@@ -161,38 +161,38 @@ namespace LLC_MOD_Toolbox
             this.statu.Location = new System.Drawing.Point(291, 22);
             this.statu.Name = "statu";
             this.statu.Size = new System.Drawing.Size(498, 63);
-            this.statu.Style = Sunny.UI.UIStyle.Custom;
+            this.statu.Style = Sunny.UI.UIStyle.Colorful;
             this.statu.TabIndex = 3;
             this.statu.Text = "正在加载中……";
             this.statu.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // DownloadBar
             // 
-            this.DownloadBar.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(238)))), ((int)(((byte)(248)))), ((int)(((byte)(248)))));
+            this.DownloadBar.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(238)))), ((int)(((byte)(251)))), ((int)(((byte)(250)))));
             this.DownloadBar.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.DownloadBar.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(150)))), ((int)(((byte)(136)))));
+            this.DownloadBar.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(190)))), ((int)(((byte)(172)))));
             this.DownloadBar.Location = new System.Drawing.Point(380, 296);
             this.DownloadBar.MinimumSize = new System.Drawing.Size(70, 3);
             this.DownloadBar.Name = "DownloadBar";
             this.DownloadBar.RadiusSides = ((Sunny.UI.UICornerRadiusSides)((Sunny.UI.UICornerRadiusSides.RightBottom | Sunny.UI.UICornerRadiusSides.LeftBottom)));
-            this.DownloadBar.RectColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(150)))), ((int)(((byte)(136)))));
+            this.DownloadBar.RectColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(190)))), ((int)(((byte)(172)))));
             this.DownloadBar.Size = new System.Drawing.Size(312, 19);
-            this.DownloadBar.Style = Sunny.UI.UIStyle.Custom;
+            this.DownloadBar.Style = Sunny.UI.UIStyle.Colorful;
             this.DownloadBar.TabIndex = 2;
             this.DownloadBar.Text = "DownloadBar";
             // 
             // TotalBar
             // 
-            this.TotalBar.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(238)))), ((int)(((byte)(248)))), ((int)(((byte)(248)))));
+            this.TotalBar.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(238)))), ((int)(((byte)(251)))), ((int)(((byte)(250)))));
             this.TotalBar.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.TotalBar.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(150)))), ((int)(((byte)(136)))));
+            this.TotalBar.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(190)))), ((int)(((byte)(172)))));
             this.TotalBar.Location = new System.Drawing.Point(380, 268);
             this.TotalBar.MinimumSize = new System.Drawing.Size(70, 3);
             this.TotalBar.Name = "TotalBar";
             this.TotalBar.RadiusSides = ((Sunny.UI.UICornerRadiusSides)((Sunny.UI.UICornerRadiusSides.LeftTop | Sunny.UI.UICornerRadiusSides.RightTop)));
-            this.TotalBar.RectColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(150)))), ((int)(((byte)(136)))));
+            this.TotalBar.RectColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(190)))), ((int)(((byte)(172)))));
             this.TotalBar.Size = new System.Drawing.Size(312, 29);
-            this.TotalBar.Style = Sunny.UI.UIStyle.Custom;
+            this.TotalBar.Style = Sunny.UI.UIStyle.Colorful;
             this.TotalBar.TabIndex = 1;
             this.TotalBar.Text = "TotalBar";
             // 
@@ -214,7 +214,7 @@ namespace LLC_MOD_Toolbox
             this.installButton.RectPressColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(152)))), ((int)(((byte)(138)))));
             this.installButton.RectSelectedColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(152)))), ((int)(((byte)(138)))));
             this.installButton.Size = new System.Drawing.Size(312, 121);
-            this.installButton.Style = Sunny.UI.UIStyle.Custom;
+            this.installButton.Style = Sunny.UI.UIStyle.Colorful;
             this.installButton.TabIndex = 0;
             this.installButton.Text = "立刻安装/更新";
             this.installButton.TipsFont = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
@@ -257,7 +257,7 @@ namespace LLC_MOD_Toolbox
             this.EnterAfdian.RectPressColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(152)))), ((int)(((byte)(138)))));
             this.EnterAfdian.RectSelectedColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(152)))), ((int)(((byte)(138)))));
             this.EnterAfdian.Size = new System.Drawing.Size(194, 46);
-            this.EnterAfdian.Style = Sunny.UI.UIStyle.Custom;
+            this.EnterAfdian.Style = Sunny.UI.UIStyle.Colorful;
             this.EnterAfdian.Symbol = 61654;
             this.EnterAfdian.TabIndex = 11;
             this.EnterAfdian.Text = "爱发电（赞助渠道）";
@@ -282,7 +282,7 @@ namespace LLC_MOD_Toolbox
             this.EnterQuestion.RectPressColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(152)))), ((int)(((byte)(138)))));
             this.EnterQuestion.RectSelectedColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(152)))), ((int)(((byte)(138)))));
             this.EnterQuestion.Size = new System.Drawing.Size(176, 46);
-            this.EnterQuestion.Style = Sunny.UI.UIStyle.Custom;
+            this.EnterQuestion.Style = Sunny.UI.UIStyle.Colorful;
             this.EnterQuestion.Symbol = 61736;
             this.EnterQuestion.TabIndex = 10;
             this.EnterQuestion.Text = "常见问题";
@@ -307,7 +307,7 @@ namespace LLC_MOD_Toolbox
             this.EnterLLCG.RectPressColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(152)))), ((int)(((byte)(138)))));
             this.EnterLLCG.RectSelectedColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(152)))), ((int)(((byte)(138)))));
             this.EnterLLCG.Size = new System.Drawing.Size(176, 46);
-            this.EnterLLCG.Style = Sunny.UI.UIStyle.Custom;
+            this.EnterLLCG.Style = Sunny.UI.UIStyle.Colorful;
             this.EnterLLCG.Symbol = 61910;
             this.EnterLLCG.TabIndex = 9;
             this.EnterLLCG.Text = "LLCG";
@@ -332,7 +332,7 @@ namespace LLC_MOD_Toolbox
             this.EnterParatranz.RectPressColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(152)))), ((int)(((byte)(138)))));
             this.EnterParatranz.RectSelectedColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(152)))), ((int)(((byte)(138)))));
             this.EnterParatranz.Size = new System.Drawing.Size(176, 46);
-            this.EnterParatranz.Style = Sunny.UI.UIStyle.Custom;
+            this.EnterParatranz.Style = Sunny.UI.UIStyle.Colorful;
             this.EnterParatranz.Symbol = 300080;
             this.EnterParatranz.TabIndex = 8;
             this.EnterParatranz.Text = "Paratranz";
@@ -357,7 +357,7 @@ namespace LLC_MOD_Toolbox
             this.EnterBilibili.RectPressColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(152)))), ((int)(((byte)(138)))));
             this.EnterBilibili.RectSelectedColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(152)))), ((int)(((byte)(138)))));
             this.EnterBilibili.Size = new System.Drawing.Size(176, 46);
-            this.EnterBilibili.Style = Sunny.UI.UIStyle.Custom;
+            this.EnterBilibili.Style = Sunny.UI.UIStyle.Colorful;
             this.EnterBilibili.Symbol = 158329;
             this.EnterBilibili.TabIndex = 5;
             this.EnterBilibili.Text = "我们的BiliBili";
@@ -382,7 +382,7 @@ namespace LLC_MOD_Toolbox
             this.EnterWebsite.RectPressColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(152)))), ((int)(((byte)(138)))));
             this.EnterWebsite.RectSelectedColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(152)))), ((int)(((byte)(138)))));
             this.EnterWebsite.Size = new System.Drawing.Size(176, 46);
-            this.EnterWebsite.Style = Sunny.UI.UIStyle.Custom;
+            this.EnterWebsite.Style = Sunny.UI.UIStyle.Colorful;
             this.EnterWebsite.Symbol = 362844;
             this.EnterWebsite.TabIndex = 4;
             this.EnterWebsite.Text = "官网";
@@ -407,7 +407,7 @@ namespace LLC_MOD_Toolbox
             this.EnterSteampp.RectPressColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(152)))), ((int)(((byte)(138)))));
             this.EnterSteampp.RectSelectedColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(152)))), ((int)(((byte)(138)))));
             this.EnterSteampp.Size = new System.Drawing.Size(176, 46);
-            this.EnterSteampp.Style = Sunny.UI.UIStyle.Custom;
+            this.EnterSteampp.Style = Sunny.UI.UIStyle.Colorful;
             this.EnterSteampp.Symbol = 357527;
             this.EnterSteampp.TabIndex = 3;
             this.EnterSteampp.Text = "Watt Toolkit";
@@ -432,7 +432,7 @@ namespace LLC_MOD_Toolbox
             this.EnterLLCGithub.RectPressColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(152)))), ((int)(((byte)(138)))));
             this.EnterLLCGithub.RectSelectedColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(152)))), ((int)(((byte)(138)))));
             this.EnterLLCGithub.Size = new System.Drawing.Size(176, 46);
-            this.EnterLLCGithub.Style = Sunny.UI.UIStyle.Custom;
+            this.EnterLLCGithub.Style = Sunny.UI.UIStyle.Colorful;
             this.EnterLLCGithub.Symbol = 161595;
             this.EnterLLCGithub.TabIndex = 2;
             this.EnterLLCGithub.Text = "汉化补丁 Github";
@@ -457,7 +457,7 @@ namespace LLC_MOD_Toolbox
             this.EnterWiki.RectPressColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(152)))), ((int)(((byte)(138)))));
             this.EnterWiki.RectSelectedColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(152)))), ((int)(((byte)(138)))));
             this.EnterWiki.Size = new System.Drawing.Size(176, 46);
-            this.EnterWiki.Style = Sunny.UI.UIStyle.Custom;
+            this.EnterWiki.Style = Sunny.UI.UIStyle.Colorful;
             this.EnterWiki.Symbol = 361912;
             this.EnterWiki.TabIndex = 1;
             this.EnterWiki.Text = "边狱公司 灰机Wiki";
@@ -482,7 +482,7 @@ namespace LLC_MOD_Toolbox
             this.EnterToolBoxGithub.RectPressColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(152)))), ((int)(((byte)(138)))));
             this.EnterToolBoxGithub.RectSelectedColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(152)))), ((int)(((byte)(138)))));
             this.EnterToolBoxGithub.Size = new System.Drawing.Size(176, 46);
-            this.EnterToolBoxGithub.Style = Sunny.UI.UIStyle.Custom;
+            this.EnterToolBoxGithub.Style = Sunny.UI.UIStyle.Colorful;
             this.EnterToolBoxGithub.Symbol = 161595;
             this.EnterToolBoxGithub.TabIndex = 0;
             this.EnterToolBoxGithub.Text = "工具箱 Github";
@@ -515,17 +515,17 @@ namespace LLC_MOD_Toolbox
             this.uiGroupBox2.Controls.Add(this.uiLabel7);
             this.uiGroupBox2.Controls.Add(this.useGithub);
             this.uiGroupBox2.Controls.Add(this.uiLabel2);
-            this.uiGroupBox2.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(238)))), ((int)(((byte)(248)))), ((int)(((byte)(248)))));
-            this.uiGroupBox2.FillColor2 = System.Drawing.Color.FromArgb(((int)(((byte)(238)))), ((int)(((byte)(248)))), ((int)(((byte)(248)))));
+            this.uiGroupBox2.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(238)))), ((int)(((byte)(251)))), ((int)(((byte)(250)))));
+            this.uiGroupBox2.FillColor2 = System.Drawing.Color.FromArgb(((int)(((byte)(238)))), ((int)(((byte)(251)))), ((int)(((byte)(250)))));
             this.uiGroupBox2.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.uiGroupBox2.Location = new System.Drawing.Point(17, 5);
             this.uiGroupBox2.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.uiGroupBox2.MinimumSize = new System.Drawing.Size(1, 1);
             this.uiGroupBox2.Name = "uiGroupBox2";
             this.uiGroupBox2.Padding = new System.Windows.Forms.Padding(0, 32, 0, 0);
-            this.uiGroupBox2.RectColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(150)))), ((int)(((byte)(136)))));
+            this.uiGroupBox2.RectColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(190)))), ((int)(((byte)(172)))));
             this.uiGroupBox2.Size = new System.Drawing.Size(1041, 422);
-            this.uiGroupBox2.Style = Sunny.UI.UIStyle.Custom;
+            this.uiGroupBox2.Style = Sunny.UI.UIStyle.Colorful;
             this.uiGroupBox2.TabIndex = 3;
             this.uiGroupBox2.Text = "设置";
             this.uiGroupBox2.TextAlignment = System.Drawing.ContentAlignment.MiddleCenter;
@@ -585,8 +585,8 @@ namespace LLC_MOD_Toolbox
             this.NodeComboBox.ItemHoverColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(242)))), ((int)(((byte)(238)))));
             this.NodeComboBox.ItemRectColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(190)))), ((int)(((byte)(172)))));
             this.NodeComboBox.Items.AddRange(new object[] {
-            "镜像节点-1",
-            "镜像节点-2-联通优化",
+            "镜像节点-1-高速",
+            "镜像节点-2-高速-联通优化",
             "镜像节点-3-支持我们"});
             this.NodeComboBox.ItemSelectBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(190)))), ((int)(((byte)(172)))));
             this.NodeComboBox.ItemSelectForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(238)))), ((int)(((byte)(251)))), ((int)(((byte)(250)))));
@@ -694,7 +694,7 @@ namespace LLC_MOD_Toolbox
             this.filereplace_open_text.Location = new System.Drawing.Point(17, 270);
             this.filereplace_open_text.Name = "filereplace_open_text";
             this.filereplace_open_text.Size = new System.Drawing.Size(357, 23);
-            this.filereplace_open_text.Style = Sunny.UI.UIStyle.Custom;
+            this.filereplace_open_text.Style = Sunny.UI.UIStyle.Colorful;
             this.filereplace_open_text.TabIndex = 8;
             this.filereplace_open_text.Text = "开启文件覆盖页面";
             this.filereplace_open_text.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -705,7 +705,7 @@ namespace LLC_MOD_Toolbox
             this.config_open_text.Location = new System.Drawing.Point(17, 218);
             this.config_open_text.Name = "config_open_text";
             this.config_open_text.Size = new System.Drawing.Size(357, 23);
-            this.config_open_text.Style = Sunny.UI.UIStyle.Custom;
+            this.config_open_text.Style = Sunny.UI.UIStyle.Colorful;
             this.config_open_text.TabIndex = 7;
             this.config_open_text.Text = "开启更改配置页面";
             this.config_open_text.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -716,7 +716,7 @@ namespace LLC_MOD_Toolbox
             this.manual_open_text.Location = new System.Drawing.Point(17, 165);
             this.manual_open_text.Name = "manual_open_text";
             this.manual_open_text.Size = new System.Drawing.Size(357, 23);
-            this.manual_open_text.Style = Sunny.UI.UIStyle.Custom;
+            this.manual_open_text.Style = Sunny.UI.UIStyle.Colorful;
             this.manual_open_text.TabIndex = 6;
             this.manual_open_text.Text = "开启手动安装页面";
             this.manual_open_text.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -750,19 +750,20 @@ namespace LLC_MOD_Toolbox
             this.uiLabel7.Location = new System.Drawing.Point(17, 110);
             this.uiLabel7.Name = "uiLabel7";
             this.uiLabel7.Size = new System.Drawing.Size(357, 23);
-            this.uiLabel7.Style = Sunny.UI.UIStyle.Custom;
+            this.uiLabel7.Style = Sunny.UI.UIStyle.Colorful;
             this.uiLabel7.TabIndex = 4;
             this.uiLabel7.Text = "删除汉化补丁";
             this.uiLabel7.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // useGithub
             // 
+            this.useGithub.ActiveColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(190)))), ((int)(((byte)(172)))));
             this.useGithub.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.useGithub.Location = new System.Drawing.Point(430, 56);
             this.useGithub.MinimumSize = new System.Drawing.Size(1, 1);
             this.useGithub.Name = "useGithub";
             this.useGithub.Size = new System.Drawing.Size(74, 29);
-            this.useGithub.Style = Sunny.UI.UIStyle.Custom;
+            this.useGithub.Style = Sunny.UI.UIStyle.Colorful;
             this.useGithub.SwitchShape = Sunny.UI.UISwitch.UISwitchShape.Square;
             this.useGithub.TabIndex = 3;
             this.useGithub.Text = "uiSwitch1";
@@ -773,7 +774,7 @@ namespace LLC_MOD_Toolbox
             this.uiLabel2.Location = new System.Drawing.Point(17, 58);
             this.uiLabel2.Name = "uiLabel2";
             this.uiLabel2.Size = new System.Drawing.Size(357, 23);
-            this.uiLabel2.Style = Sunny.UI.UIStyle.Custom;
+            this.uiLabel2.Style = Sunny.UI.UIStyle.Colorful;
             this.uiLabel2.TabIndex = 2;
             this.uiLabel2.Text = "从 Github 下载文件";
             this.uiLabel2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -795,9 +796,9 @@ namespace LLC_MOD_Toolbox
             this.uiLabel9.Location = new System.Drawing.Point(18, 16);
             this.uiLabel9.Name = "uiLabel9";
             this.uiLabel9.Size = new System.Drawing.Size(502, 36);
-            this.uiLabel9.Style = Sunny.UI.UIStyle.Custom;
+            this.uiLabel9.Style = Sunny.UI.UIStyle.Colorful;
             this.uiLabel9.TabIndex = 1;
-            this.uiLabel9.Text = "LLC_Toolbox 版本0.5.1";
+            this.uiLabel9.Text = "LLC_Toolbox 版本0.5.2";
             this.uiLabel9.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // uiLabel8
@@ -806,7 +807,7 @@ namespace LLC_MOD_Toolbox
             this.uiLabel8.Location = new System.Drawing.Point(18, 52);
             this.uiLabel8.Name = "uiLabel8";
             this.uiLabel8.Size = new System.Drawing.Size(996, 278);
-            this.uiLabel8.Style = Sunny.UI.UIStyle.Custom;
+            this.uiLabel8.Style = Sunny.UI.UIStyle.Colorful;
             this.uiLabel8.TabIndex = 0;
             this.uiLabel8.Text = resources.GetString("uiLabel8.Text");
             this.uiLabel8.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -1486,8 +1487,8 @@ namespace LLC_MOD_Toolbox
             this.ShowRadius = false;
             this.ShowRect = false;
             this.ShowTitleIcon = true;
-            this.Style = Sunny.UI.UIStyle.Custom;
-            this.Text = "零协会工具箱 v0.5.1";
+            this.Style = Sunny.UI.UIStyle.Colorful;
+            this.Text = "零协会工具箱 v0.5.2";
             this.TitleColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(190)))), ((int)(((byte)(172)))));
             this.TitleFont = new System.Drawing.Font("微软雅黑", 12F);
             this.TitleHeight = 40;
