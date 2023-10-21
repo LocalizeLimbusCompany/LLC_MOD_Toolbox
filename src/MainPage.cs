@@ -1,3 +1,15 @@
+/*
+
+                    警告：
+        本安装器代码可能带有以下成分：
+        1. 瞎命名函数
+        2. 瞎放函数
+        3. 睿智实现功能
+        4. 可读性为零的结构
+        5. 垃圾性能
+        如果感到不适，请立刻退出本文件！
+
+*/
 using log4net;
 using Microsoft.Win32;
 using SevenZipNET;
@@ -20,7 +32,7 @@ namespace LLC_MOD_Toolbox
 
     public partial class MainPage : UIForm
     {
-        public const string VERSION = "0.5.2";
+        public const string VERSION = "0.5.3";
 
         // 注册日志系统
         private static readonly ILog logger = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
@@ -57,8 +69,8 @@ namespace LLC_MOD_Toolbox
             if (CheckToolboxUpdate(VERSION, false))
             {
                 logger.Error("安装器存在更新");
-                MessageBox.Show("安装器存在更新", "存在更新", MessageBoxButtons.OK);
-                EnterToolBoxGithub_Click(null, null);
+                MessageBox.Show("安装器存在更新，将进入官网，请在此下载最新版工具箱。", "存在更新", MessageBoxButtons.OK);
+                Openuri("https://www.zeroasso.top/docs/install/autoinstall#%E4%B8%8B%E8%BD%BD-%E5%B7%A5%E5%85%B7%E7%AE%B1");
                 Close();
             }
 
@@ -482,14 +494,15 @@ namespace LLC_MOD_Toolbox
         // 自适应下载文件
         private async Task DownloadFileAutoSelect(string file, string filePath)
         {
-            string unicom = "http://81.70.83.185:5244/d/unicom/" + file;
-            string tianyi = "http://81.70.83.185:5244/d/tianyi/" + file;
-            string ofb = "http://81.70.83.185:5244/d/od/" + file;
+            string unicom = "http://alist.zeroasso.top:5244/d/unicom/" + file;
+            string tianyi = "http://alist.zeroasso.top:5244/d/tianyi/" + file;
+            string ofb = "http://alist.zeroasso.top:5244/d/od/" + file;
+            string kr = "https://dl.kr.zeroasso.top/files/" + file;
             // 是，我知道这段代码和if else一样，很屎。
             // 体谅一下。没办法。
             if (node == String.Empty)
             {
-                await DownloadFileAsync(ofb, filePath);
+                await DownloadFileAsync(kr, filePath);
             }
             else
             {
@@ -504,6 +517,9 @@ namespace LLC_MOD_Toolbox
                         break;
                     case "ofb":
                         await DownloadFileAsync(ofb, filePath);
+                        break;
+                    case "kr":
+                        await DownloadFileAsync(kr, filePath);
                         break;
                     default:
                         break;
@@ -630,7 +646,7 @@ namespace LLC_MOD_Toolbox
             }
             else
             {
-                raw = new StreamReader(client.OpenRead(new Uri("https://json.zxp123.eu.org/Mod_Release.json")), Encoding.UTF8).ReadToEnd();
+                raw = new StreamReader(client.OpenRead(new Uri("https://api.kr.zeroasso.top/Mod_Release.json")), Encoding.UTF8).ReadToEnd();
             }
             JSONArray releases = JSONNode.Parse(raw).AsArray;
 
@@ -659,7 +675,7 @@ namespace LLC_MOD_Toolbox
                 }
                 else
                 {
-                    raw = new StreamReader(client.OpenRead(new Uri("https://json.zxp123.eu.org/LatestTmp_Release.json")), Encoding.UTF8).ReadToEnd();
+                    raw = new StreamReader(client.OpenRead(new Uri("https://api.kr.zeroasso.top/LatestTmp_Release.json")), Encoding.UTF8).ReadToEnd();
                 }
                 var latest = JSONNode.Parse(raw).AsObject;
                 string latestReleaseTag = latest["tag_name"].Value;
@@ -679,9 +695,10 @@ namespace LLC_MOD_Toolbox
 
         private string GetLimbusLocalizeHash()
         {
-            string unicom = "http://81.70.83.185:5244/d/unicom/LimbusLocalizeHash.json";
-            string tianyi = "http://81.70.83.185:5244/d/tianyi/LimbusLocalizeHash.json";
-            string ofb = "http://81.70.83.185:5244/d/od/LimbusLocalizeHash.json";
+            string unicom = "http://alist.zeroasso.top:5244/d/unicom/LimbusLocalizeHash.json";
+            string tianyi = "http://alist.zeroasso.top:5244/d/tianyi/LimbusLocalizeHash.json";
+            string ofb = "http://alist.zeroasso.top:5244/d/od/LimbusLocalizeHash.json";
+            string kr = "https://dl.kr.zeroasso.top/files/LimbusLocalizeHash.json";
             using WebClient client = new();
             client.Headers.Add("User-Agent", "request");
             string raw = string.Empty;
@@ -701,6 +718,9 @@ namespace LLC_MOD_Toolbox
                         break;
                     case "ofb":
                         raw = new StreamReader(client.OpenRead(new Uri(ofb)), Encoding.UTF8).ReadToEnd();
+                        break;
+                    case "kr":
+                        raw = new StreamReader(client.OpenRead(new Uri(kr)), Encoding.UTF8).ReadToEnd();
                         break;
                     default:
                         raw = new StreamReader(client.OpenRead(new Uri(ofb)), Encoding.UTF8).ReadToEnd();
@@ -729,7 +749,7 @@ namespace LLC_MOD_Toolbox
                 else
                 {
                     logger.Info("从镜像检查。");
-                    raw = new StreamReader(client.OpenRead(new Uri("https://json.zxp123.eu.org/Toolbox_Release.json")), Encoding.UTF8).ReadToEnd();
+                    raw = new StreamReader(client.OpenRead(new Uri("https://api.kr.zeroasso.top/Toolbox_Release.json")), Encoding.UTF8).ReadToEnd();
                 }
                 var latest = JSONNode.Parse(raw).AsObject;
                 string latestReleaseTag = latest["tag_name"].Value.Remove(0, 1);
@@ -762,7 +782,7 @@ namespace LLC_MOD_Toolbox
                 }
                 else
                 {
-                    raw = new StreamReader(client.OpenRead(new Uri("https://json.zxp123.eu.org/BepInEx_For_LLC_Release.json")), Encoding.UTF8).ReadToEnd();
+                    raw = new StreamReader(client.OpenRead(new Uri("https://api.kr.zeroasso.top/BepInEx_For_LLC_Release.json")), Encoding.UTF8).ReadToEnd();
                 }
                 var latest = JSONNode.Parse(raw).AsObject;
                 string latestReleaseTag = latest["tag_name"].Value;
@@ -1002,6 +1022,9 @@ namespace LLC_MOD_Toolbox
                     break;
                 case "镜像节点-3-支持我们":
                     node = "ofb";
+                    break;
+                case "镜像节点-4-韩国首尔":
+                    node = "kr";
                     break;
                 default:
                     break;
@@ -1351,7 +1374,7 @@ namespace LLC_MOD_Toolbox
         private void downloadFile_Click(object sender, EventArgs e)
         {
             logger.Info("进入下载手动安装文件的链接。");
-            Openuri("http://81.70.83.185:5244/od/sharefile");
+            Openuri("http://alist.zeroasso.top:5244/od/sharefile");
         }
 
         private void download_filereplace_Click(object sender, EventArgs e)
@@ -1362,7 +1385,6 @@ namespace LLC_MOD_Toolbox
 
         private bool Has_NET_6_0 = false;
         private bool isWindows10;
-
 
         private string node = string.Empty;
 

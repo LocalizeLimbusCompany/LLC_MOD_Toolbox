@@ -235,7 +235,7 @@ namespace LLC_MOD_Toolbox
             this.tabPage2.Controls.Add(this.EnterToolBoxGithub);
             this.tabPage2.Location = new System.Drawing.Point(0, 40);
             this.tabPage2.Name = "tabPage2";
-            this.tabPage2.Size = new System.Drawing.Size(1077, 443);
+            this.tabPage2.Size = new System.Drawing.Size(200, 60);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "链接";
             // 
@@ -587,7 +587,8 @@ namespace LLC_MOD_Toolbox
             this.NodeComboBox.Items.AddRange(new object[] {
             "镜像节点-1-高速",
             "镜像节点-2-高速-联通优化",
-            "镜像节点-3-支持我们"});
+            "镜像节点-3-支持我们",
+            "镜像节点-4-韩国首尔"});
             this.NodeComboBox.ItemSelectBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(190)))), ((int)(((byte)(172)))));
             this.NodeComboBox.ItemSelectForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(238)))), ((int)(((byte)(251)))), ((int)(((byte)(250)))));
             this.NodeComboBox.Location = new System.Drawing.Point(537, 56);
@@ -798,7 +799,7 @@ namespace LLC_MOD_Toolbox
             this.uiLabel9.Size = new System.Drawing.Size(502, 36);
             this.uiLabel9.Style = Sunny.UI.UIStyle.Colorful;
             this.uiLabel9.TabIndex = 1;
-            this.uiLabel9.Text = "LLC_Toolbox 版本0.5.2";
+            this.uiLabel9.Text = "LLC_Toolbox 版本0.5.3";
             this.uiLabel9.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // uiLabel8
@@ -1488,12 +1489,12 @@ namespace LLC_MOD_Toolbox
             this.ShowRect = false;
             this.ShowTitleIcon = true;
             this.Style = Sunny.UI.UIStyle.Colorful;
-            this.Text = "零协会工具箱 v0.5.2";
+            this.Text = "零协会工具箱 v0.5.3";
             this.TitleColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(190)))), ((int)(((byte)(172)))));
             this.TitleFont = new System.Drawing.Font("微软雅黑", 12F);
             this.TitleHeight = 40;
             this.ZoomScaleRect = new System.Drawing.Rectangle(15, 15, 800, 450);
-            this.Load += new System.EventHandler(this.MainPage_Load);
+            this.Shown += new System.EventHandler(this.MainPage_Load);
             this.uiTabControl.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
             this.tabPage2.ResumeLayout(false);
