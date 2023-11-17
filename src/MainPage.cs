@@ -10,6 +10,7 @@
         如果感到不适，请立刻退出本文件！
 
 */
+// 我的价值终会实现的。
 using log4net;
 using Microsoft.Win32;
 using SevenZipNET;
@@ -24,6 +25,7 @@ using System.Net.Http;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -32,7 +34,7 @@ namespace LLC_MOD_Toolbox
 
     public partial class MainPage : UIForm
     {
-        public const string VERSION = "0.5.3";
+        public const string VERSION = "0.6.0";
 
         // 注册日志系统
         private static readonly ILog logger = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
@@ -62,15 +64,16 @@ namespace LLC_MOD_Toolbox
             manual_has_open = false;
             config_has_open = false;
             filereplace_has_open = false;
+            devmode = false;
 
             // ChangeStatu("获取最快节点。");
             // fastestNode = GetFastnetNode();
 
             if (CheckToolboxUpdate(VERSION, false))
             {
-                logger.Error("安装器存在更新");
-                MessageBox.Show("安装器存在更新，将进入官网，请在此下载最新版工具箱。", "存在更新", MessageBoxButtons.OK);
-                Openuri("https://www.zeroasso.top/docs/install/autoinstall#%E4%B8%8B%E8%BD%BD-%E5%B7%A5%E5%85%B7%E7%AE%B1");
+                logger.Info("安装器存在更新。");
+                MessageBox.Show("安装器存在更新。\n点击确定进入官网下载最新版本工具箱", "更新提醒");
+                Openuri("https://www.zeroasso.top/docs/install/autoinstall");
                 Close();
             }
 
@@ -297,22 +300,52 @@ namespace LLC_MOD_Toolbox
             string currentVersion = null;
             try
             {
-                if (useGithub.Active != true)
+                if (devmode)
                 {
-                    latestLLCVersion = GetLatestLimbusLocalizeVersion(false, out string latest2ReleaseTag);
-                    logger.Info("最后模组版本： " + latestLLCVersion);
-                    if (File.Exists(limbusLocalizeDllPath))
+                    logger.Info("开发者模式。下载测试文件：" + devfilename);
+                    await DownloadFileAsync("https://dev.zeroasso.top/files/LimbusLocalize_Dev_" + devfilename + ".7z", limbusLocalizeZipPath);
+                    logger.Info("解压模组本体 zip 中。");
+                    new SevenZipExtractor(limbusLocalizeZipPath).ExtractAll(limbusCompanyDir, true);
+                    logger.Info("删除模组本体 zip 。");
+                    File.Delete(limbusLocalizeZipPath);
+                }
+                else
+                {
+                    if (useGithub.Active != true)
                     {
-                        var versionInfo = FileVersionInfo.GetVersionInfo(limbusLocalizeDllPath);
-                        currentVersion = versionInfo.ProductVersion;
-                        if (new Version(currentVersion) < new Version(latestLLCVersion.Remove(0, 1)))
+                        latestLLCVersion = GetLatestLimbusLocalizeVersion(false, out string latest2ReleaseTag);
+                        logger.Info("最后模组版本： " + latestLLCVersion);
+                        if (File.Exists(limbusLocalizeDllPath))
+                        {
+                            var versionInfo = FileVersionInfo.GetVersionInfo(limbusLocalizeDllPath);
+                            currentVersion = versionInfo.ProductVersion;
+                            if (new Version(currentVersion) < new Version(latestLLCVersion.Remove(0, 1)))
+                            {
+                                await DownloadFileAutoSelect("LimbusLocalize_BIE_" + latestLLCVersion + ".7z", limbusLocalizeZipPath);
+                                if (GetLimbusLocalizeHash() != CalculateSHA256(limbusLocalizeZipPath))
+                                {
+                                    logger.Error("校验Hash失败。");
+                                    MessageBox.Show("校验Hash失败。\n请等待数分钟或更换节点。\n如果问题仍然出现，请进行反馈。", "校验失败");
+                                    Close();
+                                }
+                                logger.Info("解压模组本体 zip 中。");
+                                new SevenZipExtractor(limbusLocalizeZipPath).ExtractAll(limbusCompanyDir, true);
+                                logger.Info("删除模组本体 zip 。");
+                                File.Delete(limbusLocalizeZipPath);
+                            }
+                        }
+                        else
                         {
                             await DownloadFileAutoSelect("LimbusLocalize_BIE_" + latestLLCVersion + ".7z", limbusLocalizeZipPath);
                             if (GetLimbusLocalizeHash() != CalculateSHA256(limbusLocalizeZipPath))
                             {
                                 logger.Error("校验Hash失败。");
-                                MessageBox.Show("校验Hash失败。\n请等待数分钟或更换节点。\n如果问题仍然出现，请进行反馈。","校验失败");
+                                MessageBox.Show("校验Hash失败。\n请等待数分钟或更换节点。\n如果问题仍然出现，请进行反馈。", "校验失败");
                                 Close();
+                            }
+                            else
+                            {
+                                logger.Info("校验Hash成功。");
                             }
                             logger.Info("解压模组本体 zip 中。");
                             new SevenZipExtractor(limbusLocalizeZipPath).ExtractAll(limbusCompanyDir, true);
@@ -322,34 +355,24 @@ namespace LLC_MOD_Toolbox
                     }
                     else
                     {
-                        await DownloadFileAutoSelect("LimbusLocalize_BIE_" + latestLLCVersion + ".7z", limbusLocalizeZipPath);
-                        if (GetLimbusLocalizeHash() != CalculateSHA256(limbusLocalizeZipPath))
+                        latestLLCVersion = GetLatestLimbusLocalizeVersion(true, out string latest2ReleaseTag);
+                        logger.Info("最后模组版本： " + latestLLCVersion);
+                        string limbusLocalizeUrl = GetLatestLimbusLocalizeDownloadUrl(latestLLCVersion, false);
+                        logger.Info("模组下载链接 " + limbusLocalizeUrl);
+                        if (File.Exists(limbusLocalizeDllPath))
                         {
-                            logger.Error("校验Hash失败。");
-                            MessageBox.Show("校验Hash失败。\n请等待数分钟或更换节点。\n如果问题仍然出现，请进行反馈。", "校验失败");
-                            Close();
+                            var versionInfo = FileVersionInfo.GetVersionInfo(limbusLocalizeDllPath);
+                            currentVersion = versionInfo.ProductVersion;
+                            if (new Version(currentVersion) < new Version(latestLLCVersion.Remove(0, 1)))
+                            {
+                                await DownloadFileAsync(limbusLocalizeUrl, limbusLocalizeZipPath);
+                                logger.Info("解压模组本体 zip 中。");
+                                new SevenZipExtractor(limbusLocalizeZipPath).ExtractAll(limbusCompanyDir, true);
+                                logger.Info("删除模组本体 zip 。");
+                                File.Delete(limbusLocalizeZipPath);
+                            }
                         }
                         else
-                        {
-                            logger.Info("校验Hash成功。");
-                        }
-                        logger.Info("解压模组本体 zip 中。");
-                        new SevenZipExtractor(limbusLocalizeZipPath).ExtractAll(limbusCompanyDir, true);
-                        logger.Info("删除模组本体 zip 。");
-                        File.Delete(limbusLocalizeZipPath);
-                    }
-                }
-                else
-                {
-                    latestLLCVersion = GetLatestLimbusLocalizeVersion(true, out string latest2ReleaseTag);
-                    logger.Info("最后模组版本： " + latestLLCVersion);
-                    string limbusLocalizeUrl = GetLatestLimbusLocalizeDownloadUrl(latestLLCVersion, false);
-                    logger.Info("模组下载链接 " + limbusLocalizeUrl);
-                    if (File.Exists(limbusLocalizeDllPath))
-                    {
-                        var versionInfo = FileVersionInfo.GetVersionInfo(limbusLocalizeDllPath);
-                        currentVersion = versionInfo.ProductVersion;
-                        if (new Version(currentVersion) < new Version(latestLLCVersion.Remove(0, 1)))
                         {
                             await DownloadFileAsync(limbusLocalizeUrl, limbusLocalizeZipPath);
                             logger.Info("解压模组本体 zip 中。");
@@ -357,14 +380,6 @@ namespace LLC_MOD_Toolbox
                             logger.Info("删除模组本体 zip 。");
                             File.Delete(limbusLocalizeZipPath);
                         }
-                    }
-                    else
-                    {
-                        await DownloadFileAsync(limbusLocalizeUrl, limbusLocalizeZipPath);
-                        logger.Info("解压模组本体 zip 中。");
-                        new SevenZipExtractor(limbusLocalizeZipPath).ExtractAll(limbusCompanyDir, true);
-                        logger.Info("删除模组本体 zip 。");
-                        File.Delete(limbusLocalizeZipPath);
                     }
                 }
             }
@@ -923,27 +938,6 @@ namespace LLC_MOD_Toolbox
             MessageBox.Show("安装已完成！\n你现在可以运行游戏了。\n加载时请耐心等待。", "完成", MessageBoxButtons.OK);
             filereplace_start.Enabled = true;
         }
-        private void manual_open_Click(object sender, EventArgs e)
-        {
-            if (!manual_has_open)
-            {
-                logger.Info("开启手动安装页面");
-                manual_open.Text = "关闭";
-                manual_open_text.Text = "关闭手动安装页面";
-                this.uiTabControl.Controls.Add(this.tabPage5);
-                manual_has_open = true;
-                MessageBox.Show("开启成功", "提示");
-            }
-            else
-            {
-                logger.Info("关闭手动安装页面");
-                manual_open.Text = "开启";
-                manual_open_text.Text = "开启手动安装页面";
-                this.uiTabControl.Controls.Remove(this.tabPage5);
-                manual_has_open = false;
-                MessageBox.Show("关闭成功", "提示");
-            }
-        }
 
         static void MoveFolder(string sourceFolderPath, string destinationFolderPath)
         {
@@ -984,28 +978,6 @@ namespace LLC_MOD_Toolbox
                 config_open_text.Text = "开启更改配置页面";
                 this.uiTabControl.Controls.Remove(this.tabPage6);
                 config_has_open = false;
-                MessageBox.Show("关闭成功", "提示");
-            }
-        }
-
-        private void filereplace_open_Click(object sender, EventArgs e)
-        {
-            if (!filereplace_has_open)
-            {
-                logger.Info("开启文件覆盖页面");
-                filereplace_open.Text = "关闭";
-                filereplace_open_text.Text = "关闭文件覆盖页面";
-                this.uiTabControl.Controls.Add(this.tabPage7);
-                filereplace_has_open = true;
-                MessageBox.Show("开启成功", "提示");
-            }
-            else
-            {
-                logger.Info("关闭手动安装页面");
-                filereplace_open.Text = "开启";
-                filereplace_open_text.Text = "开启文件覆盖页面";
-                this.uiTabControl.Controls.Remove(this.tabPage7);
-                filereplace_has_open = false;
                 MessageBox.Show("关闭成功", "提示");
             }
         }
@@ -1371,6 +1343,67 @@ namespace LLC_MOD_Toolbox
 
         #endregion
 
+        #region 灰度测试
+
+        private void get_devjson_Click(object sender, EventArgs e)
+        {
+            logger.Info("试图获取测试权限。");
+            string token = dev_token.Text;
+            if (token == null || token == "请在此输入测试秘钥")
+            {
+                MessageBox.Show("请输入测试秘钥！", "警告");
+                logger.Error("测试秘钥为空。");
+                return;
+            }
+            try
+            {
+                logger.Info("测试秘钥为：" + token);
+                string statu = GetDevJson(token, "status");
+                if (statu == "stop")
+                {
+                    MessageBox.Show("测试已停止。", "提示");
+                    logger.Info("测试停止。");
+                    return;
+                }
+                test_note.Text = GetDevJson(token, "note");
+                devfilename = Regex.Unescape(GetDevJson(token, "file_name"));
+                NodeComboBox.Text = "镜像节点-4-韩国首尔";
+                NodeComboBox.Enabled = false;
+                node = "kr";
+                useGithub.Enabled = false;
+                this.uiTabControl1.Controls.Remove(this.tabPage5);
+                this.uiTabControl1.Controls.Remove(this.tabPage7);
+                this.Text = this.Text + "[测试模式]";
+                tabPage8.Text = "自动安装（测试版）";
+                devmode = true;
+            }
+            catch (WebException ex)
+            {
+                if (ex.Response is HttpWebResponse httpWebResponse && httpWebResponse.StatusCode == HttpStatusCode.NotFound)
+                {
+                    MessageBox.Show("您的测试秘钥无效。", "提示");
+                    logger.Info("测试秘钥无效。");
+                }
+                else
+                {
+                    MessageBox.Show("出现了问题。\n" + ex.ToString());
+                    logger.Error("出现了问题：\n" + ex.ToString());
+                }
+            }
+        }
+
+        static string GetDevJson(string token, string gettype)
+        {
+            using WebClient client = new();
+            client.Headers.Add("User-Agent", "request");
+            string raw = string.Empty;
+            raw = new StreamReader(client.OpenRead(new Uri("https://dev.zeroasso.top/api/" + token + ".json")), Encoding.UTF8).ReadToEnd();
+            var rawobject = JSONNode.Parse(raw).AsObject;
+            string gettext = rawobject[gettype].Value;
+            return gettext;
+        }
+
+        #endregion
         private void downloadFile_Click(object sender, EventArgs e)
         {
             logger.Info("进入下载手动安装文件的链接。");
@@ -1401,5 +1434,7 @@ namespace LLC_MOD_Toolbox
         private bool filereplace_has_open;
 
         private bool alreadyLoaded;
+        private bool devmode;
+        private string devfilename;
     }
 }
