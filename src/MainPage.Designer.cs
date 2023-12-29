@@ -28,11 +28,13 @@ namespace LLC_MOD_Toolbox
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainPage));
             this.uiTabControl = new Sunny.UI.UITabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.uiTabControl1 = new Sunny.UI.UITabControl();
             this.tabPage8 = new System.Windows.Forms.TabPage();
+            this.TipText = new Sunny.UI.UILabel();
             this.statu = new Sunny.UI.UILabel();
             this.DownloadBar = new Sunny.UI.UIProcessBar();
             this.installButton = new Sunny.UI.UISymbolButton();
@@ -83,6 +85,11 @@ namespace LLC_MOD_Toolbox
             this.useGithub = new Sunny.UI.UISwitch();
             this.uiLabel2 = new Sunny.UI.UILabel();
             this.tabPage10 = new System.Windows.Forms.TabPage();
+            this.uiLine4 = new Sunny.UI.UILine();
+            this.test_note = new Sunny.UI.UILabel();
+            this.get_devjson = new Sunny.UI.UIButton();
+            this.uiLabel3 = new Sunny.UI.UILabel();
+            this.dev_token = new Sunny.UI.UITextBox();
             this.tabPage4 = new System.Windows.Forms.TabPage();
             this.uiLabel9 = new Sunny.UI.UILabel();
             this.uiLabel8 = new Sunny.UI.UILabel();
@@ -102,11 +109,9 @@ namespace LLC_MOD_Toolbox
             this.uiLabel11 = new Sunny.UI.UILabel();
             this.randomallcg = new Sunny.UI.UISwitch();
             this.tabPage9 = new System.Windows.Forms.TabPage();
-            this.dev_token = new Sunny.UI.UITextBox();
-            this.uiLabel3 = new Sunny.UI.UILabel();
-            this.get_devjson = new Sunny.UI.UIButton();
-            this.test_note = new Sunny.UI.UILabel();
-            this.uiLine4 = new Sunny.UI.UILine();
+            this.TipTimer = new System.Windows.Forms.Timer(this.components);
+            this.uiLabel4 = new Sunny.UI.UILabel();
+            this.uiButton1 = new Sunny.UI.UIButton();
             this.uiTabControl.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.uiTabControl1.SuspendLayout();
@@ -131,7 +136,6 @@ namespace LLC_MOD_Toolbox
             this.uiTabControl.Controls.Add(this.tabPage10);
             this.uiTabControl.Controls.Add(this.tabPage4);
             this.uiTabControl.DrawMode = System.Windows.Forms.TabDrawMode.OwnerDrawFixed;
-            this.uiTabControl.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(251)))), ((int)(((byte)(238)))));
             this.uiTabControl.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.uiTabControl.Frame = this;
             this.uiTabControl.ItemSize = new System.Drawing.Size(150, 40);
@@ -142,12 +146,9 @@ namespace LLC_MOD_Toolbox
             this.uiTabControl.SelectedIndex = 0;
             this.uiTabControl.Size = new System.Drawing.Size(1077, 483);
             this.uiTabControl.SizeMode = System.Windows.Forms.TabSizeMode.Fixed;
-            this.uiTabControl.Style = Sunny.UI.UIStyle.LayuiOrange;
             this.uiTabControl.TabBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(240)))), ((int)(((byte)(240)))));
             this.uiTabControl.TabIndex = 0;
             this.uiTabControl.TabSelectedColor = System.Drawing.Color.FromArgb(((int)(((byte)(250)))), ((int)(((byte)(250)))), ((int)(((byte)(250)))));
-            this.uiTabControl.TabSelectedForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(184)))), ((int)(((byte)(0)))));
-            this.uiTabControl.TabSelectedHighColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(184)))), ((int)(((byte)(0)))));
             this.uiTabControl.TabUnSelectedForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
             this.uiTabControl.TipsFont = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             // 
@@ -167,7 +168,6 @@ namespace LLC_MOD_Toolbox
             this.uiTabControl1.Controls.Add(this.tabPage5);
             this.uiTabControl1.Controls.Add(this.tabPage7);
             this.uiTabControl1.DrawMode = System.Windows.Forms.TabDrawMode.OwnerDrawFixed;
-            this.uiTabControl1.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(251)))), ((int)(((byte)(238)))));
             this.uiTabControl1.Font = new System.Drawing.Font("微软雅黑", 12F);
             this.uiTabControl1.ItemSize = new System.Drawing.Size(356, 40);
             this.uiTabControl1.Location = new System.Drawing.Point(3, 3);
@@ -176,15 +176,13 @@ namespace LLC_MOD_Toolbox
             this.uiTabControl1.SelectedIndex = 0;
             this.uiTabControl1.Size = new System.Drawing.Size(1071, 437);
             this.uiTabControl1.SizeMode = System.Windows.Forms.TabSizeMode.Fixed;
-            this.uiTabControl1.Style = Sunny.UI.UIStyle.LayuiOrange;
             this.uiTabControl1.TabIndex = 4;
-            this.uiTabControl1.TabSelectedForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(184)))), ((int)(((byte)(0)))));
-            this.uiTabControl1.TabSelectedHighColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(184)))), ((int)(((byte)(0)))));
             this.uiTabControl1.TipsFont = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             // 
             // tabPage8
             // 
-            this.tabPage8.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(251)))), ((int)(((byte)(238)))));
+            this.tabPage8.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(243)))), ((int)(((byte)(249)))), ((int)(((byte)(255)))));
+            this.tabPage8.Controls.Add(this.TipText);
             this.tabPage8.Controls.Add(this.statu);
             this.tabPage8.Controls.Add(this.DownloadBar);
             this.tabPage8.Controls.Add(this.installButton);
@@ -195,51 +193,47 @@ namespace LLC_MOD_Toolbox
             this.tabPage8.TabIndex = 0;
             this.tabPage8.Text = "自动安装（推荐）";
             // 
+            // TipText
+            // 
+            this.TipText.Font = new System.Drawing.Font("微软雅黑", 12F);
+            this.TipText.Location = new System.Drawing.Point(31, 351);
+            this.TipText.Name = "TipText";
+            this.TipText.Size = new System.Drawing.Size(985, 23);
+            this.TipText.TabIndex = 4;
+            this.TipText.Text = "Tips: 都市零协会！";
+            this.TipText.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
             // statu
             // 
             this.statu.Font = new System.Drawing.Font("微软雅黑", 14F);
             this.statu.Location = new System.Drawing.Point(267, 19);
             this.statu.Name = "statu";
             this.statu.Size = new System.Drawing.Size(498, 63);
-            this.statu.Style = Sunny.UI.UIStyle.LayuiOrange;
             this.statu.TabIndex = 3;
             this.statu.Text = "正在加载中……";
             this.statu.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // DownloadBar
             // 
-            this.DownloadBar.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(251)))), ((int)(((byte)(238)))));
+            this.DownloadBar.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(235)))), ((int)(((byte)(243)))), ((int)(((byte)(255)))));
             this.DownloadBar.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.DownloadBar.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(184)))), ((int)(((byte)(0)))));
             this.DownloadBar.Location = new System.Drawing.Point(351, 293);
             this.DownloadBar.MinimumSize = new System.Drawing.Size(70, 3);
             this.DownloadBar.Name = "DownloadBar";
             this.DownloadBar.RadiusSides = ((Sunny.UI.UICornerRadiusSides)((Sunny.UI.UICornerRadiusSides.RightBottom | Sunny.UI.UICornerRadiusSides.LeftBottom)));
-            this.DownloadBar.RectColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(184)))), ((int)(((byte)(0)))));
             this.DownloadBar.Size = new System.Drawing.Size(312, 19);
-            this.DownloadBar.Style = Sunny.UI.UIStyle.LayuiOrange;
             this.DownloadBar.TabIndex = 2;
             this.DownloadBar.Text = "DownloadBar";
             // 
             // installButton
             // 
             this.installButton.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.installButton.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(184)))), ((int)(((byte)(0)))));
-            this.installButton.FillColor2 = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(184)))), ((int)(((byte)(0)))));
-            this.installButton.FillHoverColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(198)))), ((int)(((byte)(51)))));
-            this.installButton.FillPressColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(148)))), ((int)(((byte)(0)))));
-            this.installButton.FillSelectedColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(148)))), ((int)(((byte)(0)))));
             this.installButton.Font = new System.Drawing.Font("微软雅黑", 15F);
             this.installButton.Location = new System.Drawing.Point(351, 99);
             this.installButton.MinimumSize = new System.Drawing.Size(1, 1);
             this.installButton.Name = "installButton";
             this.installButton.Radius = 20;
-            this.installButton.RectColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(184)))), ((int)(((byte)(0)))));
-            this.installButton.RectHoverColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(198)))), ((int)(((byte)(51)))));
-            this.installButton.RectPressColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(148)))), ((int)(((byte)(0)))));
-            this.installButton.RectSelectedColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(148)))), ((int)(((byte)(0)))));
             this.installButton.Size = new System.Drawing.Size(312, 121);
-            this.installButton.Style = Sunny.UI.UIStyle.LayuiOrange;
             this.installButton.TabIndex = 0;
             this.installButton.Text = "立刻安装/更新";
             this.installButton.TipsFont = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
@@ -247,22 +241,19 @@ namespace LLC_MOD_Toolbox
             // 
             // TotalBar
             // 
-            this.TotalBar.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(251)))), ((int)(((byte)(238)))));
+            this.TotalBar.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(235)))), ((int)(((byte)(243)))), ((int)(((byte)(255)))));
             this.TotalBar.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.TotalBar.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(184)))), ((int)(((byte)(0)))));
             this.TotalBar.Location = new System.Drawing.Point(351, 265);
             this.TotalBar.MinimumSize = new System.Drawing.Size(70, 3);
             this.TotalBar.Name = "TotalBar";
             this.TotalBar.RadiusSides = ((Sunny.UI.UICornerRadiusSides)((Sunny.UI.UICornerRadiusSides.LeftTop | Sunny.UI.UICornerRadiusSides.RightTop)));
-            this.TotalBar.RectColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(184)))), ((int)(((byte)(0)))));
             this.TotalBar.Size = new System.Drawing.Size(312, 29);
-            this.TotalBar.Style = Sunny.UI.UIStyle.LayuiOrange;
             this.TotalBar.TabIndex = 1;
             this.TotalBar.Text = "TotalBar";
             // 
             // tabPage5
             // 
-            this.tabPage5.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(251)))), ((int)(((byte)(238)))));
+            this.tabPage5.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(243)))), ((int)(((byte)(249)))), ((int)(((byte)(255)))));
             this.tabPage5.Controls.Add(this.manualInstall);
             this.tabPage5.Controls.Add(this.SelectLLCFile);
             this.tabPage5.Controls.Add(this.llcfile);
@@ -278,28 +269,18 @@ namespace LLC_MOD_Toolbox
             this.tabPage5.Controls.Add(this.uiLabel1);
             this.tabPage5.Location = new System.Drawing.Point(0, 40);
             this.tabPage5.Name = "tabPage5";
-            this.tabPage5.Size = new System.Drawing.Size(1071, 397);
+            this.tabPage5.Size = new System.Drawing.Size(200, 60);
             this.tabPage5.TabIndex = 0;
             this.tabPage5.Text = "手动安装";
             // 
             // manualInstall
             // 
             this.manualInstall.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.manualInstall.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(184)))), ((int)(((byte)(0)))));
-            this.manualInstall.FillColor2 = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(184)))), ((int)(((byte)(0)))));
-            this.manualInstall.FillHoverColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(198)))), ((int)(((byte)(51)))));
-            this.manualInstall.FillPressColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(148)))), ((int)(((byte)(0)))));
-            this.manualInstall.FillSelectedColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(148)))), ((int)(((byte)(0)))));
             this.manualInstall.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.manualInstall.Location = new System.Drawing.Point(838, 343);
             this.manualInstall.MinimumSize = new System.Drawing.Size(1, 1);
             this.manualInstall.Name = "manualInstall";
-            this.manualInstall.RectColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(184)))), ((int)(((byte)(0)))));
-            this.manualInstall.RectHoverColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(198)))), ((int)(((byte)(51)))));
-            this.manualInstall.RectPressColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(148)))), ((int)(((byte)(0)))));
-            this.manualInstall.RectSelectedColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(148)))), ((int)(((byte)(0)))));
             this.manualInstall.Size = new System.Drawing.Size(224, 43);
-            this.manualInstall.Style = Sunny.UI.UIStyle.LayuiOrange;
             this.manualInstall.Symbol = 61515;
             this.manualInstall.TabIndex = 11;
             this.manualInstall.Text = "手动安装";
@@ -309,21 +290,11 @@ namespace LLC_MOD_Toolbox
             // SelectLLCFile
             // 
             this.SelectLLCFile.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.SelectLLCFile.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(184)))), ((int)(((byte)(0)))));
-            this.SelectLLCFile.FillColor2 = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(184)))), ((int)(((byte)(0)))));
-            this.SelectLLCFile.FillHoverColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(198)))), ((int)(((byte)(51)))));
-            this.SelectLLCFile.FillPressColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(148)))), ((int)(((byte)(0)))));
-            this.SelectLLCFile.FillSelectedColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(148)))), ((int)(((byte)(0)))));
             this.SelectLLCFile.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.SelectLLCFile.Location = new System.Drawing.Point(937, 302);
             this.SelectLLCFile.MinimumSize = new System.Drawing.Size(1, 1);
             this.SelectLLCFile.Name = "SelectLLCFile";
-            this.SelectLLCFile.RectColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(184)))), ((int)(((byte)(0)))));
-            this.SelectLLCFile.RectHoverColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(198)))), ((int)(((byte)(51)))));
-            this.SelectLLCFile.RectPressColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(148)))), ((int)(((byte)(0)))));
-            this.SelectLLCFile.RectSelectedColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(148)))), ((int)(((byte)(0)))));
             this.SelectLLCFile.Size = new System.Drawing.Size(125, 29);
-            this.SelectLLCFile.Style = Sunny.UI.UIStyle.LayuiOrange;
             this.SelectLLCFile.Symbol = 61563;
             this.SelectLLCFile.TabIndex = 10;
             this.SelectLLCFile.Text = "浏览";
@@ -332,26 +303,16 @@ namespace LLC_MOD_Toolbox
             // 
             // llcfile
             // 
-            this.llcfile.ButtonFillColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(184)))), ((int)(((byte)(0)))));
-            this.llcfile.ButtonFillHoverColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(198)))), ((int)(((byte)(51)))));
-            this.llcfile.ButtonFillPressColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(148)))), ((int)(((byte)(0)))));
-            this.llcfile.ButtonRectColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(184)))), ((int)(((byte)(0)))));
-            this.llcfile.ButtonRectHoverColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(198)))), ((int)(((byte)(51)))));
-            this.llcfile.ButtonRectPressColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(148)))), ((int)(((byte)(0)))));
             this.llcfile.ButtonSymbolOffset = new System.Drawing.Point(0, 0);
             this.llcfile.Cursor = System.Windows.Forms.Cursors.IBeam;
-            this.llcfile.FillColor2 = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(251)))), ((int)(((byte)(238)))));
             this.llcfile.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.llcfile.Location = new System.Drawing.Point(17, 302);
             this.llcfile.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.llcfile.MinimumSize = new System.Drawing.Size(1, 16);
             this.llcfile.Name = "llcfile";
             this.llcfile.Padding = new System.Windows.Forms.Padding(5);
-            this.llcfile.RectColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(184)))), ((int)(((byte)(0)))));
-            this.llcfile.ScrollBarColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(184)))), ((int)(((byte)(0)))));
             this.llcfile.ShowText = false;
             this.llcfile.Size = new System.Drawing.Size(913, 29);
-            this.llcfile.Style = Sunny.UI.UIStyle.LayuiOrange;
             this.llcfile.TabIndex = 7;
             this.llcfile.Text = "请点击右侧浏览文件";
             this.llcfile.TextAlignment = System.Drawing.ContentAlignment.MiddleLeft;
@@ -361,11 +322,9 @@ namespace LLC_MOD_Toolbox
             // 
             this.selectLLC.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.selectLLC.Location = new System.Drawing.Point(13, 274);
-            this.selectLLC.MarkColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(184)))), ((int)(((byte)(0)))));
             this.selectLLC.Name = "selectLLC";
             this.selectLLC.Padding = new System.Windows.Forms.Padding(5, 0, 0, 0);
             this.selectLLC.Size = new System.Drawing.Size(233, 23);
-            this.selectLLC.Style = Sunny.UI.UIStyle.LayuiOrange;
             this.selectLLC.TabIndex = 9;
             this.selectLLC.Text = "LimbusLocalize_BIE_v版本号";
             this.selectLLC.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -373,21 +332,11 @@ namespace LLC_MOD_Toolbox
             // selectTmp
             // 
             this.selectTmp.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.selectTmp.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(184)))), ((int)(((byte)(0)))));
-            this.selectTmp.FillColor2 = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(184)))), ((int)(((byte)(0)))));
-            this.selectTmp.FillHoverColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(198)))), ((int)(((byte)(51)))));
-            this.selectTmp.FillPressColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(148)))), ((int)(((byte)(0)))));
-            this.selectTmp.FillSelectedColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(148)))), ((int)(((byte)(0)))));
             this.selectTmp.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.selectTmp.Location = new System.Drawing.Point(937, 240);
             this.selectTmp.MinimumSize = new System.Drawing.Size(1, 1);
             this.selectTmp.Name = "selectTmp";
-            this.selectTmp.RectColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(184)))), ((int)(((byte)(0)))));
-            this.selectTmp.RectHoverColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(198)))), ((int)(((byte)(51)))));
-            this.selectTmp.RectPressColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(148)))), ((int)(((byte)(0)))));
-            this.selectTmp.RectSelectedColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(148)))), ((int)(((byte)(0)))));
             this.selectTmp.Size = new System.Drawing.Size(125, 29);
-            this.selectTmp.Style = Sunny.UI.UIStyle.LayuiOrange;
             this.selectTmp.Symbol = 61563;
             this.selectTmp.TabIndex = 8;
             this.selectTmp.Text = "浏览";
@@ -396,26 +345,16 @@ namespace LLC_MOD_Toolbox
             // 
             // tmpfile
             // 
-            this.tmpfile.ButtonFillColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(184)))), ((int)(((byte)(0)))));
-            this.tmpfile.ButtonFillHoverColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(198)))), ((int)(((byte)(51)))));
-            this.tmpfile.ButtonFillPressColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(148)))), ((int)(((byte)(0)))));
-            this.tmpfile.ButtonRectColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(184)))), ((int)(((byte)(0)))));
-            this.tmpfile.ButtonRectHoverColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(198)))), ((int)(((byte)(51)))));
-            this.tmpfile.ButtonRectPressColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(148)))), ((int)(((byte)(0)))));
             this.tmpfile.ButtonSymbolOffset = new System.Drawing.Point(0, 0);
             this.tmpfile.Cursor = System.Windows.Forms.Cursors.IBeam;
-            this.tmpfile.FillColor2 = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(251)))), ((int)(((byte)(238)))));
             this.tmpfile.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.tmpfile.Location = new System.Drawing.Point(17, 240);
             this.tmpfile.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.tmpfile.MinimumSize = new System.Drawing.Size(1, 16);
             this.tmpfile.Name = "tmpfile";
             this.tmpfile.Padding = new System.Windows.Forms.Padding(5);
-            this.tmpfile.RectColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(184)))), ((int)(((byte)(0)))));
-            this.tmpfile.ScrollBarColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(184)))), ((int)(((byte)(0)))));
             this.tmpfile.ShowText = false;
             this.tmpfile.Size = new System.Drawing.Size(913, 29);
-            this.tmpfile.Style = Sunny.UI.UIStyle.LayuiOrange;
             this.tmpfile.TabIndex = 6;
             this.tmpfile.Text = "请点击右侧浏览文件";
             this.tmpfile.TextAlignment = System.Drawing.ContentAlignment.MiddleLeft;
@@ -425,11 +364,9 @@ namespace LLC_MOD_Toolbox
             // 
             this.uiMarkLabel2.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.uiMarkLabel2.Location = new System.Drawing.Point(13, 212);
-            this.uiMarkLabel2.MarkColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(184)))), ((int)(((byte)(0)))));
             this.uiMarkLabel2.Name = "uiMarkLabel2";
             this.uiMarkLabel2.Padding = new System.Windows.Forms.Padding(5, 0, 0, 0);
             this.uiMarkLabel2.Size = new System.Drawing.Size(171, 23);
-            this.uiMarkLabel2.Style = Sunny.UI.UIStyle.LayuiOrange;
             this.uiMarkLabel2.TabIndex = 7;
             this.uiMarkLabel2.Text = "tmpchinesefont_BIE";
             this.uiMarkLabel2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -437,21 +374,11 @@ namespace LLC_MOD_Toolbox
             // selectBepinex
             // 
             this.selectBepinex.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.selectBepinex.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(184)))), ((int)(((byte)(0)))));
-            this.selectBepinex.FillColor2 = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(184)))), ((int)(((byte)(0)))));
-            this.selectBepinex.FillHoverColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(198)))), ((int)(((byte)(51)))));
-            this.selectBepinex.FillPressColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(148)))), ((int)(((byte)(0)))));
-            this.selectBepinex.FillSelectedColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(148)))), ((int)(((byte)(0)))));
             this.selectBepinex.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.selectBepinex.Location = new System.Drawing.Point(937, 178);
             this.selectBepinex.MinimumSize = new System.Drawing.Size(1, 1);
             this.selectBepinex.Name = "selectBepinex";
-            this.selectBepinex.RectColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(184)))), ((int)(((byte)(0)))));
-            this.selectBepinex.RectHoverColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(198)))), ((int)(((byte)(51)))));
-            this.selectBepinex.RectPressColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(148)))), ((int)(((byte)(0)))));
-            this.selectBepinex.RectSelectedColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(148)))), ((int)(((byte)(0)))));
             this.selectBepinex.Size = new System.Drawing.Size(125, 29);
-            this.selectBepinex.Style = Sunny.UI.UIStyle.LayuiOrange;
             this.selectBepinex.Symbol = 61563;
             this.selectBepinex.TabIndex = 6;
             this.selectBepinex.Text = "浏览";
@@ -460,26 +387,16 @@ namespace LLC_MOD_Toolbox
             // 
             // bepinexfile
             // 
-            this.bepinexfile.ButtonFillColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(184)))), ((int)(((byte)(0)))));
-            this.bepinexfile.ButtonFillHoverColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(198)))), ((int)(((byte)(51)))));
-            this.bepinexfile.ButtonFillPressColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(148)))), ((int)(((byte)(0)))));
-            this.bepinexfile.ButtonRectColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(184)))), ((int)(((byte)(0)))));
-            this.bepinexfile.ButtonRectHoverColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(198)))), ((int)(((byte)(51)))));
-            this.bepinexfile.ButtonRectPressColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(148)))), ((int)(((byte)(0)))));
             this.bepinexfile.ButtonSymbolOffset = new System.Drawing.Point(0, 0);
             this.bepinexfile.Cursor = System.Windows.Forms.Cursors.IBeam;
-            this.bepinexfile.FillColor2 = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(251)))), ((int)(((byte)(238)))));
             this.bepinexfile.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.bepinexfile.Location = new System.Drawing.Point(17, 178);
             this.bepinexfile.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.bepinexfile.MinimumSize = new System.Drawing.Size(1, 16);
             this.bepinexfile.Name = "bepinexfile";
             this.bepinexfile.Padding = new System.Windows.Forms.Padding(5);
-            this.bepinexfile.RectColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(184)))), ((int)(((byte)(0)))));
-            this.bepinexfile.ScrollBarColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(184)))), ((int)(((byte)(0)))));
             this.bepinexfile.ShowText = false;
             this.bepinexfile.Size = new System.Drawing.Size(913, 29);
-            this.bepinexfile.Style = Sunny.UI.UIStyle.LayuiOrange;
             this.bepinexfile.TabIndex = 5;
             this.bepinexfile.Text = "请点击右侧浏览文件";
             this.bepinexfile.TextAlignment = System.Drawing.ContentAlignment.MiddleLeft;
@@ -489,47 +406,32 @@ namespace LLC_MOD_Toolbox
             // 
             this.uiMarkLabel1.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.uiMarkLabel1.Location = new System.Drawing.Point(13, 150);
-            this.uiMarkLabel1.MarkColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(184)))), ((int)(((byte)(0)))));
             this.uiMarkLabel1.Name = "uiMarkLabel1";
             this.uiMarkLabel1.Padding = new System.Windows.Forms.Padding(5, 0, 0, 0);
             this.uiMarkLabel1.Size = new System.Drawing.Size(171, 23);
-            this.uiMarkLabel1.Style = Sunny.UI.UIStyle.LayuiOrange;
             this.uiMarkLabel1.TabIndex = 4;
             this.uiMarkLabel1.Text = "BepInEx-IL2CPP-x64";
             this.uiMarkLabel1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // uiLine1
             // 
-            this.uiLine1.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(251)))), ((int)(((byte)(238)))));
             this.uiLine1.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.uiLine1.LineColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(184)))), ((int)(((byte)(0)))));
-            this.uiLine1.LineColor2 = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(251)))), ((int)(((byte)(238)))));
+            this.uiLine1.LineColor2 = System.Drawing.Color.FromArgb(((int)(((byte)(80)))), ((int)(((byte)(160)))), ((int)(((byte)(255)))));
             this.uiLine1.Location = new System.Drawing.Point(17, 118);
             this.uiLine1.MinimumSize = new System.Drawing.Size(1, 1);
             this.uiLine1.Name = "uiLine1";
             this.uiLine1.Size = new System.Drawing.Size(1045, 29);
-            this.uiLine1.Style = Sunny.UI.UIStyle.LayuiOrange;
             this.uiLine1.TabIndex = 3;
             this.uiLine1.Text = "安装";
             // 
             // downloadFile
             // 
             this.downloadFile.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.downloadFile.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(184)))), ((int)(((byte)(0)))));
-            this.downloadFile.FillColor2 = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(184)))), ((int)(((byte)(0)))));
-            this.downloadFile.FillHoverColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(198)))), ((int)(((byte)(51)))));
-            this.downloadFile.FillPressColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(148)))), ((int)(((byte)(0)))));
-            this.downloadFile.FillSelectedColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(148)))), ((int)(((byte)(0)))));
             this.downloadFile.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.downloadFile.Location = new System.Drawing.Point(872, 24);
             this.downloadFile.MinimumSize = new System.Drawing.Size(1, 1);
             this.downloadFile.Name = "downloadFile";
-            this.downloadFile.RectColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(184)))), ((int)(((byte)(0)))));
-            this.downloadFile.RectHoverColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(198)))), ((int)(((byte)(51)))));
-            this.downloadFile.RectPressColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(148)))), ((int)(((byte)(0)))));
-            this.downloadFile.RectSelectedColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(148)))), ((int)(((byte)(0)))));
             this.downloadFile.Size = new System.Drawing.Size(172, 88);
-            this.downloadFile.Style = Sunny.UI.UIStyle.LayuiOrange;
             this.downloadFile.Symbol = 61465;
             this.downloadFile.TabIndex = 1;
             this.downloadFile.Text = "下载压缩包";
@@ -542,7 +444,6 @@ namespace LLC_MOD_Toolbox
             this.uiLabel1.Location = new System.Drawing.Point(13, 17);
             this.uiLabel1.Name = "uiLabel1";
             this.uiLabel1.Size = new System.Drawing.Size(597, 88);
-            this.uiLabel1.Style = Sunny.UI.UIStyle.LayuiOrange;
             this.uiLabel1.TabIndex = 0;
             this.uiLabel1.Text = "如果你!!无法使用!!自动安装，请使用此页面安装。\r\n下载最新版压缩包后，在此处指定你下载的安装包。\r\n全部填写后点击安装。\r\n不一定要在这里下载最新压缩包，可以" +
     "找LLCG的群友要最新版汉化补丁压缩包。\r\n";
@@ -550,7 +451,7 @@ namespace LLC_MOD_Toolbox
             // 
             // tabPage7
             // 
-            this.tabPage7.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(251)))), ((int)(((byte)(238)))));
+            this.tabPage7.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(243)))), ((int)(((byte)(249)))), ((int)(((byte)(255)))));
             this.tabPage7.Controls.Add(this.filereplace_start);
             this.tabPage7.Controls.Add(this.filereplace_button);
             this.tabPage7.Controls.Add(this.filereplace_file);
@@ -560,28 +461,18 @@ namespace LLC_MOD_Toolbox
             this.tabPage7.Controls.Add(this.uiLabel10);
             this.tabPage7.Location = new System.Drawing.Point(0, 40);
             this.tabPage7.Name = "tabPage7";
-            this.tabPage7.Size = new System.Drawing.Size(1071, 397);
+            this.tabPage7.Size = new System.Drawing.Size(200, 60);
             this.tabPage7.TabIndex = 2;
             this.tabPage7.Text = "文件覆盖";
             // 
             // filereplace_start
             // 
             this.filereplace_start.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.filereplace_start.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(184)))), ((int)(((byte)(0)))));
-            this.filereplace_start.FillColor2 = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(184)))), ((int)(((byte)(0)))));
-            this.filereplace_start.FillHoverColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(198)))), ((int)(((byte)(51)))));
-            this.filereplace_start.FillPressColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(148)))), ((int)(((byte)(0)))));
-            this.filereplace_start.FillSelectedColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(148)))), ((int)(((byte)(0)))));
             this.filereplace_start.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.filereplace_start.Location = new System.Drawing.Point(823, 313);
             this.filereplace_start.MinimumSize = new System.Drawing.Size(1, 1);
             this.filereplace_start.Name = "filereplace_start";
-            this.filereplace_start.RectColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(184)))), ((int)(((byte)(0)))));
-            this.filereplace_start.RectHoverColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(198)))), ((int)(((byte)(51)))));
-            this.filereplace_start.RectPressColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(148)))), ((int)(((byte)(0)))));
-            this.filereplace_start.RectSelectedColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(148)))), ((int)(((byte)(0)))));
             this.filereplace_start.Size = new System.Drawing.Size(224, 43);
-            this.filereplace_start.Style = Sunny.UI.UIStyle.LayuiOrange;
             this.filereplace_start.Symbol = 61515;
             this.filereplace_start.TabIndex = 12;
             this.filereplace_start.Text = "安装";
@@ -591,21 +482,11 @@ namespace LLC_MOD_Toolbox
             // filereplace_button
             // 
             this.filereplace_button.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.filereplace_button.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(184)))), ((int)(((byte)(0)))));
-            this.filereplace_button.FillColor2 = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(184)))), ((int)(((byte)(0)))));
-            this.filereplace_button.FillHoverColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(198)))), ((int)(((byte)(51)))));
-            this.filereplace_button.FillPressColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(148)))), ((int)(((byte)(0)))));
-            this.filereplace_button.FillSelectedColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(148)))), ((int)(((byte)(0)))));
             this.filereplace_button.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.filereplace_button.Location = new System.Drawing.Point(937, 176);
             this.filereplace_button.MinimumSize = new System.Drawing.Size(1, 1);
             this.filereplace_button.Name = "filereplace_button";
-            this.filereplace_button.RectColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(184)))), ((int)(((byte)(0)))));
-            this.filereplace_button.RectHoverColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(198)))), ((int)(((byte)(51)))));
-            this.filereplace_button.RectPressColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(148)))), ((int)(((byte)(0)))));
-            this.filereplace_button.RectSelectedColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(148)))), ((int)(((byte)(0)))));
             this.filereplace_button.Size = new System.Drawing.Size(125, 29);
-            this.filereplace_button.Style = Sunny.UI.UIStyle.LayuiOrange;
             this.filereplace_button.Symbol = 61563;
             this.filereplace_button.TabIndex = 8;
             this.filereplace_button.Text = "浏览";
@@ -614,26 +495,16 @@ namespace LLC_MOD_Toolbox
             // 
             // filereplace_file
             // 
-            this.filereplace_file.ButtonFillColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(184)))), ((int)(((byte)(0)))));
-            this.filereplace_file.ButtonFillHoverColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(198)))), ((int)(((byte)(51)))));
-            this.filereplace_file.ButtonFillPressColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(148)))), ((int)(((byte)(0)))));
-            this.filereplace_file.ButtonRectColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(184)))), ((int)(((byte)(0)))));
-            this.filereplace_file.ButtonRectHoverColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(198)))), ((int)(((byte)(51)))));
-            this.filereplace_file.ButtonRectPressColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(148)))), ((int)(((byte)(0)))));
             this.filereplace_file.ButtonSymbolOffset = new System.Drawing.Point(0, 0);
             this.filereplace_file.Cursor = System.Windows.Forms.Cursors.IBeam;
-            this.filereplace_file.FillColor2 = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(251)))), ((int)(((byte)(238)))));
             this.filereplace_file.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.filereplace_file.Location = new System.Drawing.Point(17, 176);
             this.filereplace_file.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.filereplace_file.MinimumSize = new System.Drawing.Size(1, 16);
             this.filereplace_file.Name = "filereplace_file";
             this.filereplace_file.Padding = new System.Windows.Forms.Padding(5);
-            this.filereplace_file.RectColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(184)))), ((int)(((byte)(0)))));
-            this.filereplace_file.ScrollBarColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(184)))), ((int)(((byte)(0)))));
             this.filereplace_file.ShowText = false;
             this.filereplace_file.Size = new System.Drawing.Size(913, 29);
-            this.filereplace_file.Style = Sunny.UI.UIStyle.LayuiOrange;
             this.filereplace_file.TabIndex = 7;
             this.filereplace_file.Text = "请点击右侧浏览文件";
             this.filereplace_file.TextAlignment = System.Drawing.ContentAlignment.MiddleLeft;
@@ -641,15 +512,12 @@ namespace LLC_MOD_Toolbox
             // 
             // uiLine2
             // 
-            this.uiLine2.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(251)))), ((int)(((byte)(238)))));
             this.uiLine2.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.uiLine2.LineColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(184)))), ((int)(((byte)(0)))));
-            this.uiLine2.LineColor2 = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(251)))), ((int)(((byte)(238)))));
+            this.uiLine2.LineColor2 = System.Drawing.Color.FromArgb(((int)(((byte)(80)))), ((int)(((byte)(160)))), ((int)(((byte)(255)))));
             this.uiLine2.Location = new System.Drawing.Point(17, 116);
             this.uiLine2.MinimumSize = new System.Drawing.Size(1, 1);
             this.uiLine2.Name = "uiLine2";
             this.uiLine2.Size = new System.Drawing.Size(1030, 29);
-            this.uiLine2.Style = Sunny.UI.UIStyle.LayuiOrange;
             this.uiLine2.TabIndex = 6;
             this.uiLine2.Text = "安装";
             // 
@@ -657,11 +525,9 @@ namespace LLC_MOD_Toolbox
             // 
             this.uiMarkLabel3.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.uiMarkLabel3.Location = new System.Drawing.Point(13, 148);
-            this.uiMarkLabel3.MarkColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(184)))), ((int)(((byte)(0)))));
             this.uiMarkLabel3.Name = "uiMarkLabel3";
             this.uiMarkLabel3.Padding = new System.Windows.Forms.Padding(5, 0, 0, 0);
             this.uiMarkLabel3.Size = new System.Drawing.Size(171, 23);
-            this.uiMarkLabel3.Style = Sunny.UI.UIStyle.LayuiOrange;
             this.uiMarkLabel3.TabIndex = 5;
             this.uiMarkLabel3.Text = "压缩包";
             this.uiMarkLabel3.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -669,21 +535,11 @@ namespace LLC_MOD_Toolbox
             // download_filereplace
             // 
             this.download_filereplace.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.download_filereplace.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(184)))), ((int)(((byte)(0)))));
-            this.download_filereplace.FillColor2 = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(184)))), ((int)(((byte)(0)))));
-            this.download_filereplace.FillHoverColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(198)))), ((int)(((byte)(51)))));
-            this.download_filereplace.FillPressColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(148)))), ((int)(((byte)(0)))));
-            this.download_filereplace.FillSelectedColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(148)))), ((int)(((byte)(0)))));
             this.download_filereplace.Font = new System.Drawing.Font("微软雅黑", 12F);
             this.download_filereplace.Location = new System.Drawing.Point(882, 19);
             this.download_filereplace.MinimumSize = new System.Drawing.Size(1, 1);
             this.download_filereplace.Name = "download_filereplace";
-            this.download_filereplace.RectColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(184)))), ((int)(((byte)(0)))));
-            this.download_filereplace.RectHoverColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(198)))), ((int)(((byte)(51)))));
-            this.download_filereplace.RectPressColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(148)))), ((int)(((byte)(0)))));
-            this.download_filereplace.RectSelectedColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(148)))), ((int)(((byte)(0)))));
             this.download_filereplace.Size = new System.Drawing.Size(165, 91);
-            this.download_filereplace.Style = Sunny.UI.UIStyle.LayuiOrange;
             this.download_filereplace.Symbol = 61465;
             this.download_filereplace.TabIndex = 2;
             this.download_filereplace.Text = "下载文件";
@@ -696,7 +552,6 @@ namespace LLC_MOD_Toolbox
             this.uiLabel10.Location = new System.Drawing.Point(21, 28);
             this.uiLabel10.Name = "uiLabel10";
             this.uiLabel10.Size = new System.Drawing.Size(766, 85);
-            this.uiLabel10.Style = Sunny.UI.UIStyle.LayuiOrange;
             this.uiLabel10.TabIndex = 0;
             this.uiLabel10.Text = "这就是最终方案了。\r\n除非你前两个方案都用不了，才应该用这个方法。\r\n在右侧下载由我们的一位组员制作的已经完成初始化的模组包（进入后点击左上角的下载或Downlo" +
     "ad），并在本界面选择后点击安装。如果这都不能解决您的问题……祝您好运。";
@@ -704,7 +559,7 @@ namespace LLC_MOD_Toolbox
             // 
             // tabPage2
             // 
-            this.tabPage2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(251)))), ((int)(((byte)(238)))));
+            this.tabPage2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(243)))), ((int)(((byte)(249)))), ((int)(((byte)(255)))));
             this.tabPage2.Controls.Add(this.EnterAfdian);
             this.tabPage2.Controls.Add(this.EnterQuestion);
             this.tabPage2.Controls.Add(this.EnterLLCG);
@@ -724,22 +579,12 @@ namespace LLC_MOD_Toolbox
             // EnterAfdian
             // 
             this.EnterAfdian.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.EnterAfdian.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(184)))), ((int)(((byte)(0)))));
-            this.EnterAfdian.FillColor2 = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(184)))), ((int)(((byte)(0)))));
-            this.EnterAfdian.FillHoverColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(198)))), ((int)(((byte)(51)))));
-            this.EnterAfdian.FillPressColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(148)))), ((int)(((byte)(0)))));
-            this.EnterAfdian.FillSelectedColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(148)))), ((int)(((byte)(0)))));
             this.EnterAfdian.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.EnterAfdian.Location = new System.Drawing.Point(281, 211);
             this.EnterAfdian.MinimumSize = new System.Drawing.Size(1, 1);
             this.EnterAfdian.Name = "EnterAfdian";
             this.EnterAfdian.Radius = 10;
-            this.EnterAfdian.RectColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(184)))), ((int)(((byte)(0)))));
-            this.EnterAfdian.RectHoverColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(198)))), ((int)(((byte)(51)))));
-            this.EnterAfdian.RectPressColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(148)))), ((int)(((byte)(0)))));
-            this.EnterAfdian.RectSelectedColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(148)))), ((int)(((byte)(0)))));
             this.EnterAfdian.Size = new System.Drawing.Size(194, 46);
-            this.EnterAfdian.Style = Sunny.UI.UIStyle.LayuiOrange;
             this.EnterAfdian.Symbol = 61654;
             this.EnterAfdian.TabIndex = 11;
             this.EnterAfdian.Text = "爱发电（赞助渠道）";
@@ -749,22 +594,12 @@ namespace LLC_MOD_Toolbox
             // EnterQuestion
             // 
             this.EnterQuestion.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.EnterQuestion.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(184)))), ((int)(((byte)(0)))));
-            this.EnterQuestion.FillColor2 = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(184)))), ((int)(((byte)(0)))));
-            this.EnterQuestion.FillHoverColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(198)))), ((int)(((byte)(51)))));
-            this.EnterQuestion.FillPressColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(148)))), ((int)(((byte)(0)))));
-            this.EnterQuestion.FillSelectedColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(148)))), ((int)(((byte)(0)))));
             this.EnterQuestion.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.EnterQuestion.Location = new System.Drawing.Point(562, 119);
             this.EnterQuestion.MinimumSize = new System.Drawing.Size(1, 1);
             this.EnterQuestion.Name = "EnterQuestion";
             this.EnterQuestion.Radius = 10;
-            this.EnterQuestion.RectColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(184)))), ((int)(((byte)(0)))));
-            this.EnterQuestion.RectHoverColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(198)))), ((int)(((byte)(51)))));
-            this.EnterQuestion.RectPressColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(148)))), ((int)(((byte)(0)))));
-            this.EnterQuestion.RectSelectedColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(148)))), ((int)(((byte)(0)))));
             this.EnterQuestion.Size = new System.Drawing.Size(176, 46);
-            this.EnterQuestion.Style = Sunny.UI.UIStyle.LayuiOrange;
             this.EnterQuestion.Symbol = 61736;
             this.EnterQuestion.TabIndex = 10;
             this.EnterQuestion.Text = "常见问题";
@@ -774,22 +609,12 @@ namespace LLC_MOD_Toolbox
             // EnterLLCG
             // 
             this.EnterLLCG.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.EnterLLCG.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(184)))), ((int)(((byte)(0)))));
-            this.EnterLLCG.FillColor2 = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(184)))), ((int)(((byte)(0)))));
-            this.EnterLLCG.FillHoverColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(198)))), ((int)(((byte)(51)))));
-            this.EnterLLCG.FillPressColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(148)))), ((int)(((byte)(0)))));
-            this.EnterLLCG.FillSelectedColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(148)))), ((int)(((byte)(0)))));
             this.EnterLLCG.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.EnterLLCG.Location = new System.Drawing.Point(832, 119);
             this.EnterLLCG.MinimumSize = new System.Drawing.Size(1, 1);
             this.EnterLLCG.Name = "EnterLLCG";
             this.EnterLLCG.Radius = 10;
-            this.EnterLLCG.RectColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(184)))), ((int)(((byte)(0)))));
-            this.EnterLLCG.RectHoverColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(198)))), ((int)(((byte)(51)))));
-            this.EnterLLCG.RectPressColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(148)))), ((int)(((byte)(0)))));
-            this.EnterLLCG.RectSelectedColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(148)))), ((int)(((byte)(0)))));
             this.EnterLLCG.Size = new System.Drawing.Size(176, 46);
-            this.EnterLLCG.Style = Sunny.UI.UIStyle.LayuiOrange;
             this.EnterLLCG.Symbol = 61910;
             this.EnterLLCG.TabIndex = 9;
             this.EnterLLCG.Text = "LLCG";
@@ -799,22 +624,12 @@ namespace LLC_MOD_Toolbox
             // EnterParatranz
             // 
             this.EnterParatranz.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.EnterParatranz.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(184)))), ((int)(((byte)(0)))));
-            this.EnterParatranz.FillColor2 = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(184)))), ((int)(((byte)(0)))));
-            this.EnterParatranz.FillHoverColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(198)))), ((int)(((byte)(51)))));
-            this.EnterParatranz.FillPressColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(148)))), ((int)(((byte)(0)))));
-            this.EnterParatranz.FillSelectedColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(148)))), ((int)(((byte)(0)))));
             this.EnterParatranz.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.EnterParatranz.Location = new System.Drawing.Point(29, 211);
             this.EnterParatranz.MinimumSize = new System.Drawing.Size(1, 1);
             this.EnterParatranz.Name = "EnterParatranz";
             this.EnterParatranz.Radius = 10;
-            this.EnterParatranz.RectColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(184)))), ((int)(((byte)(0)))));
-            this.EnterParatranz.RectHoverColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(198)))), ((int)(((byte)(51)))));
-            this.EnterParatranz.RectPressColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(148)))), ((int)(((byte)(0)))));
-            this.EnterParatranz.RectSelectedColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(148)))), ((int)(((byte)(0)))));
             this.EnterParatranz.Size = new System.Drawing.Size(176, 46);
-            this.EnterParatranz.Style = Sunny.UI.UIStyle.LayuiOrange;
             this.EnterParatranz.Symbol = 300080;
             this.EnterParatranz.TabIndex = 8;
             this.EnterParatranz.Text = "Paratranz";
@@ -824,22 +639,12 @@ namespace LLC_MOD_Toolbox
             // EnterBilibili
             // 
             this.EnterBilibili.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.EnterBilibili.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(184)))), ((int)(((byte)(0)))));
-            this.EnterBilibili.FillColor2 = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(184)))), ((int)(((byte)(0)))));
-            this.EnterBilibili.FillHoverColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(198)))), ((int)(((byte)(51)))));
-            this.EnterBilibili.FillPressColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(148)))), ((int)(((byte)(0)))));
-            this.EnterBilibili.FillSelectedColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(148)))), ((int)(((byte)(0)))));
             this.EnterBilibili.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.EnterBilibili.Location = new System.Drawing.Point(832, 28);
             this.EnterBilibili.MinimumSize = new System.Drawing.Size(1, 1);
             this.EnterBilibili.Name = "EnterBilibili";
             this.EnterBilibili.Radius = 10;
-            this.EnterBilibili.RectColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(184)))), ((int)(((byte)(0)))));
-            this.EnterBilibili.RectHoverColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(198)))), ((int)(((byte)(51)))));
-            this.EnterBilibili.RectPressColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(148)))), ((int)(((byte)(0)))));
-            this.EnterBilibili.RectSelectedColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(148)))), ((int)(((byte)(0)))));
             this.EnterBilibili.Size = new System.Drawing.Size(176, 46);
-            this.EnterBilibili.Style = Sunny.UI.UIStyle.LayuiOrange;
             this.EnterBilibili.Symbol = 158329;
             this.EnterBilibili.TabIndex = 5;
             this.EnterBilibili.Text = "我们的BiliBili";
@@ -849,22 +654,12 @@ namespace LLC_MOD_Toolbox
             // EnterWebsite
             // 
             this.EnterWebsite.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.EnterWebsite.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(184)))), ((int)(((byte)(0)))));
-            this.EnterWebsite.FillColor2 = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(184)))), ((int)(((byte)(0)))));
-            this.EnterWebsite.FillHoverColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(198)))), ((int)(((byte)(51)))));
-            this.EnterWebsite.FillPressColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(148)))), ((int)(((byte)(0)))));
-            this.EnterWebsite.FillSelectedColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(148)))), ((int)(((byte)(0)))));
             this.EnterWebsite.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.EnterWebsite.Location = new System.Drawing.Point(562, 28);
             this.EnterWebsite.MinimumSize = new System.Drawing.Size(1, 1);
             this.EnterWebsite.Name = "EnterWebsite";
             this.EnterWebsite.Radius = 10;
-            this.EnterWebsite.RectColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(184)))), ((int)(((byte)(0)))));
-            this.EnterWebsite.RectHoverColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(198)))), ((int)(((byte)(51)))));
-            this.EnterWebsite.RectPressColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(148)))), ((int)(((byte)(0)))));
-            this.EnterWebsite.RectSelectedColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(148)))), ((int)(((byte)(0)))));
             this.EnterWebsite.Size = new System.Drawing.Size(176, 46);
-            this.EnterWebsite.Style = Sunny.UI.UIStyle.LayuiOrange;
             this.EnterWebsite.Symbol = 362844;
             this.EnterWebsite.TabIndex = 4;
             this.EnterWebsite.Text = "官网";
@@ -874,22 +669,12 @@ namespace LLC_MOD_Toolbox
             // EnterSteampp
             // 
             this.EnterSteampp.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.EnterSteampp.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(184)))), ((int)(((byte)(0)))));
-            this.EnterSteampp.FillColor2 = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(184)))), ((int)(((byte)(0)))));
-            this.EnterSteampp.FillHoverColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(198)))), ((int)(((byte)(51)))));
-            this.EnterSteampp.FillPressColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(148)))), ((int)(((byte)(0)))));
-            this.EnterSteampp.FillSelectedColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(148)))), ((int)(((byte)(0)))));
             this.EnterSteampp.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.EnterSteampp.Location = new System.Drawing.Point(290, 119);
             this.EnterSteampp.MinimumSize = new System.Drawing.Size(1, 1);
             this.EnterSteampp.Name = "EnterSteampp";
             this.EnterSteampp.Radius = 10;
-            this.EnterSteampp.RectColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(184)))), ((int)(((byte)(0)))));
-            this.EnterSteampp.RectHoverColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(198)))), ((int)(((byte)(51)))));
-            this.EnterSteampp.RectPressColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(148)))), ((int)(((byte)(0)))));
-            this.EnterSteampp.RectSelectedColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(148)))), ((int)(((byte)(0)))));
             this.EnterSteampp.Size = new System.Drawing.Size(176, 46);
-            this.EnterSteampp.Style = Sunny.UI.UIStyle.LayuiOrange;
             this.EnterSteampp.Symbol = 357527;
             this.EnterSteampp.TabIndex = 3;
             this.EnterSteampp.Text = "Watt Toolkit";
@@ -899,22 +684,12 @@ namespace LLC_MOD_Toolbox
             // EnterLLCGithub
             // 
             this.EnterLLCGithub.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.EnterLLCGithub.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(184)))), ((int)(((byte)(0)))));
-            this.EnterLLCGithub.FillColor2 = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(184)))), ((int)(((byte)(0)))));
-            this.EnterLLCGithub.FillHoverColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(198)))), ((int)(((byte)(51)))));
-            this.EnterLLCGithub.FillPressColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(148)))), ((int)(((byte)(0)))));
-            this.EnterLLCGithub.FillSelectedColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(148)))), ((int)(((byte)(0)))));
             this.EnterLLCGithub.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.EnterLLCGithub.Location = new System.Drawing.Point(290, 28);
             this.EnterLLCGithub.MinimumSize = new System.Drawing.Size(1, 1);
             this.EnterLLCGithub.Name = "EnterLLCGithub";
             this.EnterLLCGithub.Radius = 10;
-            this.EnterLLCGithub.RectColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(184)))), ((int)(((byte)(0)))));
-            this.EnterLLCGithub.RectHoverColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(198)))), ((int)(((byte)(51)))));
-            this.EnterLLCGithub.RectPressColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(148)))), ((int)(((byte)(0)))));
-            this.EnterLLCGithub.RectSelectedColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(148)))), ((int)(((byte)(0)))));
             this.EnterLLCGithub.Size = new System.Drawing.Size(176, 46);
-            this.EnterLLCGithub.Style = Sunny.UI.UIStyle.LayuiOrange;
             this.EnterLLCGithub.Symbol = 161595;
             this.EnterLLCGithub.TabIndex = 2;
             this.EnterLLCGithub.Text = "汉化补丁 Github";
@@ -924,22 +699,12 @@ namespace LLC_MOD_Toolbox
             // EnterWiki
             // 
             this.EnterWiki.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.EnterWiki.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(184)))), ((int)(((byte)(0)))));
-            this.EnterWiki.FillColor2 = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(184)))), ((int)(((byte)(0)))));
-            this.EnterWiki.FillHoverColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(198)))), ((int)(((byte)(51)))));
-            this.EnterWiki.FillPressColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(148)))), ((int)(((byte)(0)))));
-            this.EnterWiki.FillSelectedColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(148)))), ((int)(((byte)(0)))));
             this.EnterWiki.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.EnterWiki.Location = new System.Drawing.Point(29, 119);
             this.EnterWiki.MinimumSize = new System.Drawing.Size(1, 1);
             this.EnterWiki.Name = "EnterWiki";
             this.EnterWiki.Radius = 10;
-            this.EnterWiki.RectColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(184)))), ((int)(((byte)(0)))));
-            this.EnterWiki.RectHoverColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(198)))), ((int)(((byte)(51)))));
-            this.EnterWiki.RectPressColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(148)))), ((int)(((byte)(0)))));
-            this.EnterWiki.RectSelectedColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(148)))), ((int)(((byte)(0)))));
             this.EnterWiki.Size = new System.Drawing.Size(176, 46);
-            this.EnterWiki.Style = Sunny.UI.UIStyle.LayuiOrange;
             this.EnterWiki.Symbol = 361912;
             this.EnterWiki.TabIndex = 1;
             this.EnterWiki.Text = "边狱公司 灰机Wiki";
@@ -949,22 +714,12 @@ namespace LLC_MOD_Toolbox
             // EnterToolBoxGithub
             // 
             this.EnterToolBoxGithub.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.EnterToolBoxGithub.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(184)))), ((int)(((byte)(0)))));
-            this.EnterToolBoxGithub.FillColor2 = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(184)))), ((int)(((byte)(0)))));
-            this.EnterToolBoxGithub.FillHoverColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(198)))), ((int)(((byte)(51)))));
-            this.EnterToolBoxGithub.FillPressColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(148)))), ((int)(((byte)(0)))));
-            this.EnterToolBoxGithub.FillSelectedColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(148)))), ((int)(((byte)(0)))));
             this.EnterToolBoxGithub.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.EnterToolBoxGithub.Location = new System.Drawing.Point(29, 28);
             this.EnterToolBoxGithub.MinimumSize = new System.Drawing.Size(1, 1);
             this.EnterToolBoxGithub.Name = "EnterToolBoxGithub";
             this.EnterToolBoxGithub.Radius = 10;
-            this.EnterToolBoxGithub.RectColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(184)))), ((int)(((byte)(0)))));
-            this.EnterToolBoxGithub.RectHoverColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(198)))), ((int)(((byte)(51)))));
-            this.EnterToolBoxGithub.RectPressColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(148)))), ((int)(((byte)(0)))));
-            this.EnterToolBoxGithub.RectSelectedColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(148)))), ((int)(((byte)(0)))));
             this.EnterToolBoxGithub.Size = new System.Drawing.Size(176, 46);
-            this.EnterToolBoxGithub.Style = Sunny.UI.UIStyle.LayuiOrange;
             this.EnterToolBoxGithub.Symbol = 161595;
             this.EnterToolBoxGithub.TabIndex = 0;
             this.EnterToolBoxGithub.Text = "工具箱 Github";
@@ -973,7 +728,7 @@ namespace LLC_MOD_Toolbox
             // 
             // tabPage3
             // 
-            this.tabPage3.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(251)))), ((int)(((byte)(238)))));
+            this.tabPage3.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(243)))), ((int)(((byte)(249)))), ((int)(((byte)(255)))));
             this.tabPage3.Controls.Add(this.uiGroupBox2);
             this.tabPage3.Location = new System.Drawing.Point(0, 40);
             this.tabPage3.Name = "tabPage3";
@@ -983,6 +738,8 @@ namespace LLC_MOD_Toolbox
             // 
             // uiGroupBox2
             // 
+            this.uiGroupBox2.Controls.Add(this.uiButton1);
+            this.uiGroupBox2.Controls.Add(this.uiLabel4);
             this.uiGroupBox2.Controls.Add(this.NodeInfo);
             this.uiGroupBox2.Controls.Add(this.ResetNode);
             this.uiGroupBox2.Controls.Add(this.NodeComboBox);
@@ -993,17 +750,13 @@ namespace LLC_MOD_Toolbox
             this.uiGroupBox2.Controls.Add(this.uiLabel7);
             this.uiGroupBox2.Controls.Add(this.useGithub);
             this.uiGroupBox2.Controls.Add(this.uiLabel2);
-            this.uiGroupBox2.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(251)))), ((int)(((byte)(238)))));
-            this.uiGroupBox2.FillColor2 = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(251)))), ((int)(((byte)(238)))));
             this.uiGroupBox2.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.uiGroupBox2.Location = new System.Drawing.Point(17, 5);
             this.uiGroupBox2.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.uiGroupBox2.MinimumSize = new System.Drawing.Size(1, 1);
             this.uiGroupBox2.Name = "uiGroupBox2";
             this.uiGroupBox2.Padding = new System.Windows.Forms.Padding(0, 32, 0, 0);
-            this.uiGroupBox2.RectColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(184)))), ((int)(((byte)(0)))));
             this.uiGroupBox2.Size = new System.Drawing.Size(1041, 422);
-            this.uiGroupBox2.Style = Sunny.UI.UIStyle.LayuiOrange;
             this.uiGroupBox2.TabIndex = 3;
             this.uiGroupBox2.Text = "设置";
             this.uiGroupBox2.TextAlignment = System.Drawing.ContentAlignment.MiddleCenter;
@@ -1011,21 +764,11 @@ namespace LLC_MOD_Toolbox
             // NodeInfo
             // 
             this.NodeInfo.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.NodeInfo.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(184)))), ((int)(((byte)(0)))));
-            this.NodeInfo.FillColor2 = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(184)))), ((int)(((byte)(0)))));
-            this.NodeInfo.FillHoverColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(198)))), ((int)(((byte)(51)))));
-            this.NodeInfo.FillPressColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(148)))), ((int)(((byte)(0)))));
-            this.NodeInfo.FillSelectedColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(148)))), ((int)(((byte)(0)))));
             this.NodeInfo.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.NodeInfo.Location = new System.Drawing.Point(832, 58);
             this.NodeInfo.MinimumSize = new System.Drawing.Size(1, 1);
             this.NodeInfo.Name = "NodeInfo";
-            this.NodeInfo.RectColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(184)))), ((int)(((byte)(0)))));
-            this.NodeInfo.RectHoverColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(198)))), ((int)(((byte)(51)))));
-            this.NodeInfo.RectPressColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(148)))), ((int)(((byte)(0)))));
-            this.NodeInfo.RectSelectedColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(148)))), ((int)(((byte)(0)))));
             this.NodeInfo.Size = new System.Drawing.Size(96, 35);
-            this.NodeInfo.Style = Sunny.UI.UIStyle.LayuiOrange;
             this.NodeInfo.TabIndex = 15;
             this.NodeInfo.Text = "节点说明";
             this.NodeInfo.TipsFont = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
@@ -1034,21 +777,11 @@ namespace LLC_MOD_Toolbox
             // ResetNode
             // 
             this.ResetNode.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.ResetNode.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(184)))), ((int)(((byte)(0)))));
-            this.ResetNode.FillColor2 = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(184)))), ((int)(((byte)(0)))));
-            this.ResetNode.FillHoverColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(198)))), ((int)(((byte)(51)))));
-            this.ResetNode.FillPressColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(148)))), ((int)(((byte)(0)))));
-            this.ResetNode.FillSelectedColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(148)))), ((int)(((byte)(0)))));
             this.ResetNode.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.ResetNode.Location = new System.Drawing.Point(932, 58);
             this.ResetNode.MinimumSize = new System.Drawing.Size(1, 1);
             this.ResetNode.Name = "ResetNode";
-            this.ResetNode.RectColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(184)))), ((int)(((byte)(0)))));
-            this.ResetNode.RectHoverColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(198)))), ((int)(((byte)(51)))));
-            this.ResetNode.RectPressColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(148)))), ((int)(((byte)(0)))));
-            this.ResetNode.RectSelectedColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(148)))), ((int)(((byte)(0)))));
             this.ResetNode.Size = new System.Drawing.Size(96, 35);
-            this.ResetNode.Style = Sunny.UI.UIStyle.LayuiOrange;
             this.ResetNode.TabIndex = 14;
             this.ResetNode.Text = "重置节点";
             this.ResetNode.TipsFont = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
@@ -1058,25 +791,18 @@ namespace LLC_MOD_Toolbox
             // 
             this.NodeComboBox.DataSource = null;
             this.NodeComboBox.FillColor = System.Drawing.Color.White;
-            this.NodeComboBox.FillColor2 = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(251)))), ((int)(((byte)(238)))));
             this.NodeComboBox.Font = new System.Drawing.Font("微软雅黑", 12F);
-            this.NodeComboBox.ItemHoverColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(241)))), ((int)(((byte)(204)))));
-            this.NodeComboBox.ItemRectColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(184)))), ((int)(((byte)(0)))));
             this.NodeComboBox.Items.AddRange(new object[] {
             "镜像节点-1-高速",
             "镜像节点-2-高速-联通优化",
             "镜像节点-3-支持我们",
             "镜像节点-4-韩国首尔"});
-            this.NodeComboBox.ItemSelectBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(184)))), ((int)(((byte)(0)))));
-            this.NodeComboBox.ItemSelectForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(251)))), ((int)(((byte)(238)))));
             this.NodeComboBox.Location = new System.Drawing.Point(537, 56);
             this.NodeComboBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.NodeComboBox.MinimumSize = new System.Drawing.Size(63, 0);
             this.NodeComboBox.Name = "NodeComboBox";
             this.NodeComboBox.Padding = new System.Windows.Forms.Padding(0, 0, 30, 2);
-            this.NodeComboBox.RectColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(184)))), ((int)(((byte)(0)))));
             this.NodeComboBox.Size = new System.Drawing.Size(289, 41);
-            this.NodeComboBox.Style = Sunny.UI.UIStyle.LayuiOrange;
             this.NodeComboBox.TabIndex = 13;
             this.NodeComboBox.Text = "手动选择节点（点击右方箭头选择）";
             this.NodeComboBox.TextAlignment = System.Drawing.ContentAlignment.MiddleLeft;
@@ -1086,36 +812,22 @@ namespace LLC_MOD_Toolbox
             // uiLine3
             // 
             this.uiLine3.Direction = Sunny.UI.UILine.LineDirection.Vertical;
-            this.uiLine3.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(251)))), ((int)(((byte)(238)))));
             this.uiLine3.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.uiLine3.LineColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(184)))), ((int)(((byte)(0)))));
-            this.uiLine3.LineColor2 = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(251)))), ((int)(((byte)(238)))));
             this.uiLine3.Location = new System.Drawing.Point(510, 35);
             this.uiLine3.MinimumSize = new System.Drawing.Size(1, 1);
             this.uiLine3.Name = "uiLine3";
             this.uiLine3.Size = new System.Drawing.Size(20, 374);
-            this.uiLine3.Style = Sunny.UI.UIStyle.LayuiOrange;
             this.uiLine3.TabIndex = 12;
             this.uiLine3.Text = "uiLine3";
             // 
             // config_open
             // 
             this.config_open.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.config_open.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(184)))), ((int)(((byte)(0)))));
-            this.config_open.FillColor2 = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(184)))), ((int)(((byte)(0)))));
-            this.config_open.FillHoverColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(198)))), ((int)(((byte)(51)))));
-            this.config_open.FillPressColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(148)))), ((int)(((byte)(0)))));
-            this.config_open.FillSelectedColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(148)))), ((int)(((byte)(0)))));
             this.config_open.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.config_open.Location = new System.Drawing.Point(430, 165);
             this.config_open.MinimumSize = new System.Drawing.Size(1, 1);
             this.config_open.Name = "config_open";
-            this.config_open.RectColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(184)))), ((int)(((byte)(0)))));
-            this.config_open.RectHoverColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(198)))), ((int)(((byte)(51)))));
-            this.config_open.RectPressColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(148)))), ((int)(((byte)(0)))));
-            this.config_open.RectSelectedColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(148)))), ((int)(((byte)(0)))));
             this.config_open.Size = new System.Drawing.Size(74, 35);
-            this.config_open.Style = Sunny.UI.UIStyle.LayuiOrange;
             this.config_open.TabIndex = 10;
             this.config_open.Text = "开启";
             this.config_open.TipsFont = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
@@ -1124,10 +836,9 @@ namespace LLC_MOD_Toolbox
             // config_open_text
             // 
             this.config_open_text.Font = new System.Drawing.Font("微软雅黑", 14F);
-            this.config_open_text.Location = new System.Drawing.Point(12, 172);
+            this.config_open_text.Location = new System.Drawing.Point(16, 172);
             this.config_open_text.Name = "config_open_text";
             this.config_open_text.Size = new System.Drawing.Size(357, 23);
-            this.config_open_text.Style = Sunny.UI.UIStyle.LayuiOrange;
             this.config_open_text.TabIndex = 7;
             this.config_open_text.Text = "开启更改配置页面";
             this.config_open_text.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -1135,21 +846,11 @@ namespace LLC_MOD_Toolbox
             // deleteButton
             // 
             this.deleteButton.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.deleteButton.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(184)))), ((int)(((byte)(0)))));
-            this.deleteButton.FillColor2 = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(184)))), ((int)(((byte)(0)))));
-            this.deleteButton.FillHoverColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(198)))), ((int)(((byte)(51)))));
-            this.deleteButton.FillPressColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(148)))), ((int)(((byte)(0)))));
-            this.deleteButton.FillSelectedColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(148)))), ((int)(((byte)(0)))));
             this.deleteButton.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.deleteButton.Location = new System.Drawing.Point(430, 109);
             this.deleteButton.MinimumSize = new System.Drawing.Size(1, 1);
             this.deleteButton.Name = "deleteButton";
-            this.deleteButton.RectColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(184)))), ((int)(((byte)(0)))));
-            this.deleteButton.RectHoverColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(198)))), ((int)(((byte)(51)))));
-            this.deleteButton.RectPressColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(148)))), ((int)(((byte)(0)))));
-            this.deleteButton.RectSelectedColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(148)))), ((int)(((byte)(0)))));
             this.deleteButton.Size = new System.Drawing.Size(74, 35);
-            this.deleteButton.Style = Sunny.UI.UIStyle.LayuiOrange;
             this.deleteButton.TabIndex = 5;
             this.deleteButton.Text = "删除";
             this.deleteButton.TipsFont = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
@@ -1161,20 +862,17 @@ namespace LLC_MOD_Toolbox
             this.uiLabel7.Location = new System.Drawing.Point(17, 117);
             this.uiLabel7.Name = "uiLabel7";
             this.uiLabel7.Size = new System.Drawing.Size(357, 23);
-            this.uiLabel7.Style = Sunny.UI.UIStyle.LayuiOrange;
             this.uiLabel7.TabIndex = 4;
             this.uiLabel7.Text = "删除汉化补丁";
             this.uiLabel7.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // useGithub
             // 
-            this.useGithub.ActiveColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(184)))), ((int)(((byte)(0)))));
             this.useGithub.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.useGithub.Location = new System.Drawing.Point(430, 56);
             this.useGithub.MinimumSize = new System.Drawing.Size(1, 1);
             this.useGithub.Name = "useGithub";
             this.useGithub.Size = new System.Drawing.Size(74, 29);
-            this.useGithub.Style = Sunny.UI.UIStyle.LayuiOrange;
             this.useGithub.SwitchShape = Sunny.UI.UISwitch.UISwitchShape.Square;
             this.useGithub.TabIndex = 3;
             this.useGithub.Text = "uiSwitch1";
@@ -1185,14 +883,13 @@ namespace LLC_MOD_Toolbox
             this.uiLabel2.Location = new System.Drawing.Point(17, 60);
             this.uiLabel2.Name = "uiLabel2";
             this.uiLabel2.Size = new System.Drawing.Size(357, 23);
-            this.uiLabel2.Style = Sunny.UI.UIStyle.LayuiOrange;
             this.uiLabel2.TabIndex = 2;
             this.uiLabel2.Text = "从 Github 下载文件";
             this.uiLabel2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // tabPage10
             // 
-            this.tabPage10.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(251)))), ((int)(((byte)(238)))));
+            this.tabPage10.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(243)))), ((int)(((byte)(249)))), ((int)(((byte)(255)))));
             this.tabPage10.Controls.Add(this.uiLine4);
             this.tabPage10.Controls.Add(this.test_note);
             this.tabPage10.Controls.Add(this.get_devjson);
@@ -1204,14 +901,76 @@ namespace LLC_MOD_Toolbox
             this.tabPage10.TabIndex = 2;
             this.tabPage10.Text = "灰度测试";
             // 
+            // uiLine4
+            // 
+            this.uiLine4.Font = new System.Drawing.Font("微软雅黑", 12F);
+            this.uiLine4.LineColor2 = System.Drawing.Color.FromArgb(((int)(((byte)(80)))), ((int)(((byte)(160)))), ((int)(((byte)(255)))));
+            this.uiLine4.Location = new System.Drawing.Point(34, 221);
+            this.uiLine4.MinimumSize = new System.Drawing.Size(1, 1);
+            this.uiLine4.Name = "uiLine4";
+            this.uiLine4.Size = new System.Drawing.Size(989, 29);
+            this.uiLine4.TabIndex = 4;
+            this.uiLine4.Text = "提示";
+            // 
+            // test_note
+            // 
+            this.test_note.Font = new System.Drawing.Font("微软雅黑", 12F);
+            this.test_note.Location = new System.Drawing.Point(30, 257);
+            this.test_note.Name = "test_note";
+            this.test_note.Size = new System.Drawing.Size(816, 87);
+            this.test_note.TabIndex = 3;
+            this.test_note.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // get_devjson
+            // 
+            this.get_devjson.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.get_devjson.Font = new System.Drawing.Font("微软雅黑", 12F);
+            this.get_devjson.Location = new System.Drawing.Point(661, 178);
+            this.get_devjson.MinimumSize = new System.Drawing.Size(1, 1);
+            this.get_devjson.Name = "get_devjson";
+            this.get_devjson.Size = new System.Drawing.Size(100, 35);
+            this.get_devjson.TabIndex = 2;
+            this.get_devjson.Text = "解析秘钥";
+            this.get_devjson.TipsFont = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.get_devjson.Click += new System.EventHandler(this.get_devjson_Click);
+            // 
+            // uiLabel3
+            // 
+            this.uiLabel3.Font = new System.Drawing.Font("微软雅黑", 12F);
+            this.uiLabel3.Location = new System.Drawing.Point(35, 21);
+            this.uiLabel3.Name = "uiLabel3";
+            this.uiLabel3.Size = new System.Drawing.Size(988, 140);
+            this.uiLabel3.TabIndex = 1;
+            this.uiLabel3.Text = "如果你不知道这是什么，无需使用此功能。\r\n灰度测试能让您获得最新的测试版汉化补丁，您可以获得最新的汉化内容，并且向我们反馈问题。\r\n测试秘钥可在测试群内公告获得。" +
+    "\r\n退出测试模式需要重启软件。";
+            this.uiLabel3.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // dev_token
+            // 
+            this.dev_token.ButtonSymbolOffset = new System.Drawing.Point(0, 0);
+            this.dev_token.Cursor = System.Windows.Forms.Cursors.IBeam;
+            this.dev_token.Font = new System.Drawing.Font("微软雅黑", 12F);
+            this.dev_token.Location = new System.Drawing.Point(34, 183);
+            this.dev_token.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.dev_token.MinimumSize = new System.Drawing.Size(1, 16);
+            this.dev_token.Name = "dev_token";
+            this.dev_token.Padding = new System.Windows.Forms.Padding(5);
+            this.dev_token.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.dev_token.ShowText = false;
+            this.dev_token.Size = new System.Drawing.Size(585, 29);
+            this.dev_token.TabIndex = 0;
+            this.dev_token.Text = "请在此输入测试秘钥";
+            this.dev_token.TextAlignment = System.Drawing.ContentAlignment.MiddleLeft;
+            this.dev_token.Watermark = "";
+            // 
             // tabPage4
             // 
-            this.tabPage4.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(251)))), ((int)(((byte)(238)))));
+            this.tabPage4.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(243)))), ((int)(((byte)(249)))), ((int)(((byte)(255)))));
             this.tabPage4.Controls.Add(this.uiLabel9);
             this.tabPage4.Controls.Add(this.uiLabel8);
             this.tabPage4.Location = new System.Drawing.Point(0, 40);
             this.tabPage4.Name = "tabPage4";
-            this.tabPage4.Size = new System.Drawing.Size(1077, 443);
+            this.tabPage4.Size = new System.Drawing.Size(200, 60);
             this.tabPage4.TabIndex = 1;
             this.tabPage4.Text = "关于";
             // 
@@ -1221,9 +980,8 @@ namespace LLC_MOD_Toolbox
             this.uiLabel9.Location = new System.Drawing.Point(18, 16);
             this.uiLabel9.Name = "uiLabel9";
             this.uiLabel9.Size = new System.Drawing.Size(502, 36);
-            this.uiLabel9.Style = Sunny.UI.UIStyle.LayuiOrange;
             this.uiLabel9.TabIndex = 1;
-            this.uiLabel9.Text = "LLC_Toolbox 版本0.6.0";
+            this.uiLabel9.Text = "LLC_Toolbox 版本0.6.1";
             this.uiLabel9.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // uiLabel8
@@ -1232,7 +990,6 @@ namespace LLC_MOD_Toolbox
             this.uiLabel8.Location = new System.Drawing.Point(18, 52);
             this.uiLabel8.Name = "uiLabel8";
             this.uiLabel8.Size = new System.Drawing.Size(996, 278);
-            this.uiLabel8.Style = Sunny.UI.UIStyle.LayuiOrange;
             this.uiLabel8.TabIndex = 0;
             this.uiLabel8.Text = resources.GetString("uiLabel8.Text");
             this.uiLabel8.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -1464,109 +1221,48 @@ namespace LLC_MOD_Toolbox
             this.tabPage9.Text = "tabPage9";
             this.tabPage9.UseVisualStyleBackColor = true;
             // 
-            // dev_token
+            // TipTimer
             // 
-            this.dev_token.ButtonFillColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(155)))), ((int)(((byte)(40)))));
-            this.dev_token.ButtonFillHoverColor = System.Drawing.Color.FromArgb(((int)(((byte)(227)))), ((int)(((byte)(175)))), ((int)(((byte)(83)))));
-            this.dev_token.ButtonFillPressColor = System.Drawing.Color.FromArgb(((int)(((byte)(176)))), ((int)(((byte)(124)))), ((int)(((byte)(32)))));
-            this.dev_token.ButtonRectColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(155)))), ((int)(((byte)(40)))));
-            this.dev_token.ButtonRectHoverColor = System.Drawing.Color.FromArgb(((int)(((byte)(227)))), ((int)(((byte)(175)))), ((int)(((byte)(83)))));
-            this.dev_token.ButtonRectPressColor = System.Drawing.Color.FromArgb(((int)(((byte)(176)))), ((int)(((byte)(124)))), ((int)(((byte)(32)))));
-            this.dev_token.ButtonSymbolOffset = new System.Drawing.Point(0, 0);
-            this.dev_token.Cursor = System.Windows.Forms.Cursors.IBeam;
-            this.dev_token.FillColor2 = System.Drawing.Color.FromArgb(((int)(((byte)(253)))), ((int)(((byte)(249)))), ((int)(((byte)(241)))));
-            this.dev_token.Font = new System.Drawing.Font("微软雅黑", 12F);
-            this.dev_token.Location = new System.Drawing.Point(34, 183);
-            this.dev_token.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.dev_token.MinimumSize = new System.Drawing.Size(1, 16);
-            this.dev_token.Name = "dev_token";
-            this.dev_token.Padding = new System.Windows.Forms.Padding(5);
-            this.dev_token.RectColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(155)))), ((int)(((byte)(40)))));
-            this.dev_token.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.dev_token.ScrollBarColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(155)))), ((int)(((byte)(40)))));
-            this.dev_token.ShowText = false;
-            this.dev_token.Size = new System.Drawing.Size(585, 29);
-            this.dev_token.Style = Sunny.UI.UIStyle.Orange;
-            this.dev_token.TabIndex = 0;
-            this.dev_token.Text = "请在此输入测试秘钥";
-            this.dev_token.TextAlignment = System.Drawing.ContentAlignment.MiddleLeft;
-            this.dev_token.Watermark = "";
+            this.TipTimer.Interval = 6000;
+            this.TipTimer.Tick += new System.EventHandler(this.tipsTick);
             // 
-            // uiLabel3
+            // uiLabel4
             // 
-            this.uiLabel3.Font = new System.Drawing.Font("微软雅黑", 12F);
-            this.uiLabel3.Location = new System.Drawing.Point(35, 21);
-            this.uiLabel3.Name = "uiLabel3";
-            this.uiLabel3.Size = new System.Drawing.Size(988, 140);
-            this.uiLabel3.TabIndex = 1;
-            this.uiLabel3.Text = "如果你不知道这是什么，无需使用此功能。\r\n灰度测试能让您获得最新的测试版汉化补丁，您可以获得最新的汉化内容，并且向我们反馈问题。\r\n测试秘钥可在测试群内公告获得。" +
-    "\r\n退出测试模式需要重启软件。";
-            this.uiLabel3.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.uiLabel4.Font = new System.Drawing.Font("微软雅黑", 14F);
+            this.uiLabel4.Location = new System.Drawing.Point(17, 225);
+            this.uiLabel4.Name = "uiLabel4";
+            this.uiLabel4.Size = new System.Drawing.Size(357, 23);
+            this.uiLabel4.TabIndex = 16;
+            this.uiLabel4.Text = "开启/关闭模组";
+            this.uiLabel4.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
-            // get_devjson
+            // uiButton1
             // 
-            this.get_devjson.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.get_devjson.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(184)))), ((int)(((byte)(0)))));
-            this.get_devjson.FillColor2 = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(184)))), ((int)(((byte)(0)))));
-            this.get_devjson.FillHoverColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(198)))), ((int)(((byte)(51)))));
-            this.get_devjson.FillPressColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(148)))), ((int)(((byte)(0)))));
-            this.get_devjson.FillSelectedColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(148)))), ((int)(((byte)(0)))));
-            this.get_devjson.Font = new System.Drawing.Font("微软雅黑", 12F);
-            this.get_devjson.Location = new System.Drawing.Point(661, 178);
-            this.get_devjson.MinimumSize = new System.Drawing.Size(1, 1);
-            this.get_devjson.Name = "get_devjson";
-            this.get_devjson.RectColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(184)))), ((int)(((byte)(0)))));
-            this.get_devjson.RectHoverColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(198)))), ((int)(((byte)(51)))));
-            this.get_devjson.RectPressColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(148)))), ((int)(((byte)(0)))));
-            this.get_devjson.RectSelectedColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(148)))), ((int)(((byte)(0)))));
-            this.get_devjson.Size = new System.Drawing.Size(100, 35);
-            this.get_devjson.Style = Sunny.UI.UIStyle.LayuiOrange;
-            this.get_devjson.TabIndex = 2;
-            this.get_devjson.Text = "解析秘钥";
-            this.get_devjson.TipsFont = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.get_devjson.Click += new System.EventHandler(this.get_devjson_Click);
-            // 
-            // test_note
-            // 
-            this.test_note.Font = new System.Drawing.Font("微软雅黑", 12F);
-            this.test_note.Location = new System.Drawing.Point(30, 257);
-            this.test_note.Name = "test_note";
-            this.test_note.Size = new System.Drawing.Size(816, 87);
-            this.test_note.TabIndex = 3;
-            this.test_note.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // uiLine4
-            // 
-            this.uiLine4.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(251)))), ((int)(((byte)(238)))));
-            this.uiLine4.Font = new System.Drawing.Font("微软雅黑", 12F);
-            this.uiLine4.LineColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(184)))), ((int)(((byte)(0)))));
-            this.uiLine4.LineColor2 = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(251)))), ((int)(((byte)(238)))));
-            this.uiLine4.Location = new System.Drawing.Point(34, 221);
-            this.uiLine4.MinimumSize = new System.Drawing.Size(1, 1);
-            this.uiLine4.Name = "uiLine4";
-            this.uiLine4.Size = new System.Drawing.Size(989, 29);
-            this.uiLine4.Style = Sunny.UI.UIStyle.LayuiOrange;
-            this.uiLine4.TabIndex = 4;
-            this.uiLine4.Text = "提示";
+            this.uiButton1.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.uiButton1.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.uiButton1.Location = new System.Drawing.Point(430, 219);
+            this.uiButton1.MinimumSize = new System.Drawing.Size(1, 1);
+            this.uiButton1.Name = "uiButton1";
+            this.uiButton1.Size = new System.Drawing.Size(74, 35);
+            this.uiButton1.TabIndex = 17;
+            this.uiButton1.Text = "开关";
+            this.uiButton1.TipsFont = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.uiButton1.Click += new System.EventHandler(this.uiButton1_Click);
             // 
             // MainPage
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.ClientSize = new System.Drawing.Size(1083, 529);
-            this.ControlBoxFillHoverColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(198)))), ((int)(((byte)(51)))));
             this.Controls.Add(this.uiTabControl);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainTabControl = this.uiTabControl;
             this.MaximizeBox = false;
             this.Name = "MainPage";
             this.Padding = new System.Windows.Forms.Padding(0, 40, 0, 0);
-            this.RectColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(184)))), ((int)(((byte)(0)))));
             this.ShowRadius = false;
             this.ShowRect = false;
             this.ShowTitleIcon = true;
-            this.Style = Sunny.UI.UIStyle.LayuiOrange;
-            this.Text = "零协会工具箱 v0.6.0";
-            this.TitleColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(184)))), ((int)(((byte)(0)))));
+            this.Text = "都市零协会模组工具箱 v0.6.1";
             this.TitleFont = new System.Drawing.Font("微软雅黑", 12F);
             this.TitleHeight = 40;
             this.ZoomScaleRect = new System.Drawing.Rectangle(15, 15, 800, 450);
@@ -1669,6 +1365,10 @@ namespace LLC_MOD_Toolbox
         private Sunny.UI.UITextBox dev_token;
         private Sunny.UI.UILabel test_note;
         private Sunny.UI.UILine uiLine4;
+        private Sunny.UI.UILabel TipText;
+        private System.Windows.Forms.Timer TipTimer;
+        private Sunny.UI.UIButton uiButton1;
+        private Sunny.UI.UILabel uiLabel4;
     }
 }
 

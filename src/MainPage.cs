@@ -34,8 +34,9 @@ namespace LLC_MOD_Toolbox
 
     public partial class MainPage : UIForm
     {
-        public const string VERSION = "0.6.0";
-
+        public const string VERSION = "0.6.1";
+        private string tipTexts;
+        private string TipsPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Tips.txt");
         // 注册日志系统
         private static readonly ILog logger = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         public MainPage()
@@ -124,6 +125,31 @@ namespace LLC_MOD_Toolbox
             logger.Info("找到 Limbus Company 目录。");
 
             readConfig();
+
+            if (File.Exists(TipsPath))
+            {
+                var tips = JSONNode.Parse(File.ReadAllText(TipsPath)).AsObject;
+                string tipsversion = tips["version"].Value;
+                logger.Info(tipsversion);
+                CheckTipUpdate(tipsversion);
+            }
+            else
+            {
+                using WebClient client = new();
+                string raw = string.Empty;
+                try
+                {
+                    raw = new StreamReader(client.OpenRead(new Uri("https://dl.kr.zeroasso.top/api/tip.json")), Encoding.UTF8).ReadToEnd();
+                    File.WriteAllText(TipsPath, raw);
+                }
+                catch (Exception ex)
+                {
+                    logger.Error("出现问题： " + ex.ToString());
+                }
+            }
+            tipTexts = File.ReadAllText(TipsPath);
+            Application.DoEvents();
+            TipTimer.Enabled = true;
         }
 
         // 安装
@@ -136,6 +162,16 @@ namespace LLC_MOD_Toolbox
             ControlButton(false);
 
             logger.Info("检查某些可能出现的问题。");
+
+            Process[] limbusProcess = Process.GetProcessesByName("LimbusCompany");
+
+            if (limbusProcess.Length > 0)
+            {
+                logger.Warn("LimbusCompany仍然开启。");
+                MessageBox.Show("Limbus Company 仍然处于开启状态！\n您需要在关闭游戏后才能安装模组。", "警告");
+                ControlButton(true);
+                return;
+            }
 
             try
             {
@@ -392,7 +428,19 @@ namespace LLC_MOD_Toolbox
             }
             TotalBar.Value = 100;
             logger.Info("安装完成。");
-            MessageBox.Show("安装已完成！\n你现在可以运行游戏了。\n加载时请耐心等待。", "完成", MessageBoxButtons.OK);
+            DialogResult RunResult = MessageBox.Show("安装已完成！\n点击“确定”立刻运行边狱公司。\n点击“取消”关闭弹窗。\n加载时请耐心等待。", "完成", MessageBoxButtons.OKCancel);
+            if (RunResult == DialogResult.OK)
+            {
+                try
+                {
+                    Process.Start("steam://rungameid/1973530");
+                }
+                catch (Exception ex)
+                {
+                    logger.Error("出现了问题： " + ex.ToString());
+                    MessageBox.Show("出现了问题。\n" + ex.ToString());
+                }
+            }
             ControlButton(true);
             TotalBar.Value = 0;
             DownloadBar.Value = 0;
@@ -1373,7 +1421,10 @@ namespace LLC_MOD_Toolbox
                 useGithub.Enabled = false;
                 this.uiTabControl1.Controls.Remove(this.tabPage5);
                 this.uiTabControl1.Controls.Remove(this.tabPage7);
-                this.Text = this.Text + "[测试模式]";
+                if (!devmode)
+                {
+                    this.Text = this.Text + "[测试模式]";
+                }
                 tabPage8.Text = "自动安装（测试版）";
                 devmode = true;
             }
@@ -1404,6 +1455,43 @@ namespace LLC_MOD_Toolbox
         }
 
         #endregion
+
+        #region Tips
+
+        private void tipsTick(object sender, EventArgs e)
+        {
+            Random random = new();
+            var Tip = JSONNode.Parse(tipTexts).AsObject;
+            int index = random.Next(Tip["tips"].Count);
+            TipText.Text = "Tip: " + Tip["tips"][index].Value;
+        }
+        private void CheckTipUpdate(string tag)
+        {
+            logger.Info("检查Tip更新。");
+            try
+            {
+                using WebClient client = new();
+                string raw = string.Empty;
+                raw = new StreamReader(client.OpenRead(new Uri("https://dl.kr.zeroasso.top/api/tip.json")), Encoding.UTF8).ReadToEnd();
+                var json_Object = JSONNode.Parse(raw).AsObject;
+                string latestTag = json_Object["version"].Value;
+                if (latestTag != tag)
+                {
+                    logger.Info("版本落后（目前版本：" + tag + "，最新版本：" + latestTag + "），尝试更新。");
+                    File.WriteAllText(TipsPath, raw);
+                }
+                else
+                {
+                    logger.Info("Tip无需更新。");
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.Error("出现了问题：\n" + ex.ToString());
+            }
+        }
+
+        #endregion
         private void downloadFile_Click(object sender, EventArgs e)
         {
             logger.Info("进入下载手动安装文件的链接。");
@@ -1414,6 +1502,28 @@ namespace LLC_MOD_Toolbox
         {
             logger.Info("进入下载文件覆盖文件的链接。");
             Openuri("https://n07w1-my.sharepoint.com/:f:/g/personal/northwind_n07w1_onmicrosoft_com/ElVIKQVcHqtCj3a4NJjLdDUBMkVxSQ5S6TGQ0MzZlU1nBw");
+        }
+
+        private void uiButton1_Click(object sender, EventArgs e)
+        {
+            logger.Info("尝试开关模组。");
+            if (File.Exists(limbusCompanyDir + "/winhttp.dll"))
+            {
+                File.Move(limbusCompanyDir + "/winhttp.dll", limbusCompanyDir + "/winhttp.dll.disable");
+                logger.Info("关闭模组成功。");
+                MessageBox.Show("关闭模组成功。", "提示");
+            }
+            else if (File.Exists(limbusCompanyDir + "/winhttp.dll.disable"))
+            {
+                File.Move(limbusCompanyDir + "/winhttp.dll.disable", limbusCompanyDir + "/winhttp.dll");
+                logger.Info("开启模组成功。");
+                MessageBox.Show("开启模组成功。", "提示");
+            }
+            else
+            {
+                logger.Error("开关失败。");
+                MessageBox.Show("开关失败。是否还未安装模组？", "错误");
+            }
         }
 
         private bool Has_NET_6_0 = false;
