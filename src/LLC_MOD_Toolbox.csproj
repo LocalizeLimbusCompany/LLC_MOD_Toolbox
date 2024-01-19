@@ -27,7 +27,7 @@
     <PackageReference Include="7z.NET" Version="1.0.3" />
     <PackageReference Include="log4net" Version="2.0.15" />
     <PackageReference Include="sharpconfig" Version="3.2.9.1" />
-    <PackageReference Include="SunnyUI" Version="3.5.0" />
+    <PackageReference Include="SunnyUI" Version="3.6.3" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System.Net.Http" />

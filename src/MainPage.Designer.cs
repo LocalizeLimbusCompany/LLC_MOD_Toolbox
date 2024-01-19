@@ -74,6 +74,8 @@ namespace LLC_MOD_Toolbox
             this.EnterToolBoxGithub = new Sunny.UI.UISymbolButton();
             this.tabPage3 = new System.Windows.Forms.TabPage();
             this.uiGroupBox2 = new Sunny.UI.UIGroupBox();
+            this.uiButton1 = new Sunny.UI.UIButton();
+            this.uiLabel4 = new Sunny.UI.UILabel();
             this.NodeInfo = new Sunny.UI.UIButton();
             this.ResetNode = new Sunny.UI.UIButton();
             this.NodeComboBox = new Sunny.UI.UIComboBox();
@@ -82,8 +84,6 @@ namespace LLC_MOD_Toolbox
             this.config_open_text = new Sunny.UI.UILabel();
             this.deleteButton = new Sunny.UI.UIButton();
             this.uiLabel7 = new Sunny.UI.UILabel();
-            this.useGithub = new Sunny.UI.UISwitch();
-            this.uiLabel2 = new Sunny.UI.UILabel();
             this.tabPage10 = new System.Windows.Forms.TabPage();
             this.uiLine4 = new Sunny.UI.UILine();
             this.test_note = new Sunny.UI.UILabel();
@@ -110,8 +110,6 @@ namespace LLC_MOD_Toolbox
             this.randomallcg = new Sunny.UI.UISwitch();
             this.tabPage9 = new System.Windows.Forms.TabPage();
             this.TipTimer = new System.Windows.Forms.Timer(this.components);
-            this.uiLabel4 = new Sunny.UI.UILabel();
-            this.uiButton1 = new Sunny.UI.UIButton();
             this.uiTabControl.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.uiTabControl1.SuspendLayout();
@@ -196,6 +194,7 @@ namespace LLC_MOD_Toolbox
             // TipText
             // 
             this.TipText.Font = new System.Drawing.Font("微软雅黑", 12F);
+            this.TipText.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
             this.TipText.Location = new System.Drawing.Point(31, 351);
             this.TipText.Name = "TipText";
             this.TipText.Size = new System.Drawing.Size(985, 23);
@@ -206,6 +205,7 @@ namespace LLC_MOD_Toolbox
             // statu
             // 
             this.statu.Font = new System.Drawing.Font("微软雅黑", 14F);
+            this.statu.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
             this.statu.Location = new System.Drawing.Point(267, 19);
             this.statu.Name = "statu";
             this.statu.Size = new System.Drawing.Size(498, 63);
@@ -321,6 +321,7 @@ namespace LLC_MOD_Toolbox
             // selectLLC
             // 
             this.selectLLC.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.selectLLC.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
             this.selectLLC.Location = new System.Drawing.Point(13, 274);
             this.selectLLC.Name = "selectLLC";
             this.selectLLC.Padding = new System.Windows.Forms.Padding(5, 0, 0, 0);
@@ -363,6 +364,7 @@ namespace LLC_MOD_Toolbox
             // uiMarkLabel2
             // 
             this.uiMarkLabel2.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.uiMarkLabel2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
             this.uiMarkLabel2.Location = new System.Drawing.Point(13, 212);
             this.uiMarkLabel2.Name = "uiMarkLabel2";
             this.uiMarkLabel2.Padding = new System.Windows.Forms.Padding(5, 0, 0, 0);
@@ -405,6 +407,7 @@ namespace LLC_MOD_Toolbox
             // uiMarkLabel1
             // 
             this.uiMarkLabel1.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.uiMarkLabel1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
             this.uiMarkLabel1.Location = new System.Drawing.Point(13, 150);
             this.uiMarkLabel1.Name = "uiMarkLabel1";
             this.uiMarkLabel1.Padding = new System.Windows.Forms.Padding(5, 0, 0, 0);
@@ -415,7 +418,9 @@ namespace LLC_MOD_Toolbox
             // 
             // uiLine1
             // 
+            this.uiLine1.BackColor = System.Drawing.Color.Transparent;
             this.uiLine1.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.uiLine1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
             this.uiLine1.LineColor2 = System.Drawing.Color.FromArgb(((int)(((byte)(80)))), ((int)(((byte)(160)))), ((int)(((byte)(255)))));
             this.uiLine1.Location = new System.Drawing.Point(17, 118);
             this.uiLine1.MinimumSize = new System.Drawing.Size(1, 1);
@@ -441,6 +446,7 @@ namespace LLC_MOD_Toolbox
             // uiLabel1
             // 
             this.uiLabel1.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.uiLabel1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
             this.uiLabel1.Location = new System.Drawing.Point(13, 17);
             this.uiLabel1.Name = "uiLabel1";
             this.uiLabel1.Size = new System.Drawing.Size(597, 88);
@@ -512,7 +518,9 @@ namespace LLC_MOD_Toolbox
             // 
             // uiLine2
             // 
+            this.uiLine2.BackColor = System.Drawing.Color.Transparent;
             this.uiLine2.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.uiLine2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
             this.uiLine2.LineColor2 = System.Drawing.Color.FromArgb(((int)(((byte)(80)))), ((int)(((byte)(160)))), ((int)(((byte)(255)))));
             this.uiLine2.Location = new System.Drawing.Point(17, 116);
             this.uiLine2.MinimumSize = new System.Drawing.Size(1, 1);
@@ -524,6 +532,7 @@ namespace LLC_MOD_Toolbox
             // uiMarkLabel3
             // 
             this.uiMarkLabel3.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.uiMarkLabel3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
             this.uiMarkLabel3.Location = new System.Drawing.Point(13, 148);
             this.uiMarkLabel3.Name = "uiMarkLabel3";
             this.uiMarkLabel3.Padding = new System.Windows.Forms.Padding(5, 0, 0, 0);
@@ -549,6 +558,7 @@ namespace LLC_MOD_Toolbox
             // uiLabel10
             // 
             this.uiLabel10.Font = new System.Drawing.Font("微软雅黑", 12F);
+            this.uiLabel10.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
             this.uiLabel10.Location = new System.Drawing.Point(21, 28);
             this.uiLabel10.Name = "uiLabel10";
             this.uiLabel10.Size = new System.Drawing.Size(766, 85);
@@ -572,7 +582,7 @@ namespace LLC_MOD_Toolbox
             this.tabPage2.Controls.Add(this.EnterToolBoxGithub);
             this.tabPage2.Location = new System.Drawing.Point(0, 40);
             this.tabPage2.Name = "tabPage2";
-            this.tabPage2.Size = new System.Drawing.Size(1077, 443);
+            this.tabPage2.Size = new System.Drawing.Size(200, 60);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "链接";
             // 
@@ -748,8 +758,6 @@ namespace LLC_MOD_Toolbox
             this.uiGroupBox2.Controls.Add(this.config_open_text);
             this.uiGroupBox2.Controls.Add(this.deleteButton);
             this.uiGroupBox2.Controls.Add(this.uiLabel7);
-            this.uiGroupBox2.Controls.Add(this.useGithub);
-            this.uiGroupBox2.Controls.Add(this.uiLabel2);
             this.uiGroupBox2.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.uiGroupBox2.Location = new System.Drawing.Point(17, 5);
             this.uiGroupBox2.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
@@ -761,11 +769,35 @@ namespace LLC_MOD_Toolbox
             this.uiGroupBox2.Text = "设置";
             this.uiGroupBox2.TextAlignment = System.Drawing.ContentAlignment.MiddleCenter;
             // 
+            // uiButton1
+            // 
+            this.uiButton1.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.uiButton1.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.uiButton1.Location = new System.Drawing.Point(430, 219);
+            this.uiButton1.MinimumSize = new System.Drawing.Size(1, 1);
+            this.uiButton1.Name = "uiButton1";
+            this.uiButton1.Size = new System.Drawing.Size(74, 35);
+            this.uiButton1.TabIndex = 17;
+            this.uiButton1.Text = "开关";
+            this.uiButton1.TipsFont = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.uiButton1.Click += new System.EventHandler(this.uiButton1_Click);
+            // 
+            // uiLabel4
+            // 
+            this.uiLabel4.Font = new System.Drawing.Font("微软雅黑", 14F);
+            this.uiLabel4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
+            this.uiLabel4.Location = new System.Drawing.Point(17, 225);
+            this.uiLabel4.Name = "uiLabel4";
+            this.uiLabel4.Size = new System.Drawing.Size(357, 23);
+            this.uiLabel4.TabIndex = 16;
+            this.uiLabel4.Text = "开启/关闭模组";
+            this.uiLabel4.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
             // NodeInfo
             // 
             this.NodeInfo.Cursor = System.Windows.Forms.Cursors.Hand;
             this.NodeInfo.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.NodeInfo.Location = new System.Drawing.Point(832, 58);
+            this.NodeInfo.Location = new System.Drawing.Point(316, 60);
             this.NodeInfo.MinimumSize = new System.Drawing.Size(1, 1);
             this.NodeInfo.Name = "NodeInfo";
             this.NodeInfo.Size = new System.Drawing.Size(96, 35);
@@ -778,7 +810,7 @@ namespace LLC_MOD_Toolbox
             // 
             this.ResetNode.Cursor = System.Windows.Forms.Cursors.Hand;
             this.ResetNode.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.ResetNode.Location = new System.Drawing.Point(932, 58);
+            this.ResetNode.Location = new System.Drawing.Point(417, 60);
             this.ResetNode.MinimumSize = new System.Drawing.Size(1, 1);
             this.ResetNode.Name = "ResetNode";
             this.ResetNode.Size = new System.Drawing.Size(96, 35);
@@ -792,12 +824,16 @@ namespace LLC_MOD_Toolbox
             this.NodeComboBox.DataSource = null;
             this.NodeComboBox.FillColor = System.Drawing.Color.White;
             this.NodeComboBox.Font = new System.Drawing.Font("微软雅黑", 12F);
+            this.NodeComboBox.ItemHoverColor = System.Drawing.Color.FromArgb(((int)(((byte)(155)))), ((int)(((byte)(200)))), ((int)(((byte)(255)))));
             this.NodeComboBox.Items.AddRange(new object[] {
-            "镜像节点-1-高速",
-            "镜像节点-2-高速-联通优化",
-            "镜像节点-3-支持我们",
-            "镜像节点-4-韩国首尔"});
-            this.NodeComboBox.Location = new System.Drawing.Point(537, 56);
+            "镜像节点-1-天翼网盘",
+            "镜像节点-2-联通网盘",
+            "镜像节点-3-Onedrive For Business",
+            "镜像节点-4-韩国首尔",
+            "镜像节点-5-GhProxy",
+            "直接从Github下载"});
+            this.NodeComboBox.ItemSelectForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(235)))), ((int)(((byte)(243)))), ((int)(((byte)(255)))));
+            this.NodeComboBox.Location = new System.Drawing.Point(16, 58);
             this.NodeComboBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.NodeComboBox.MinimumSize = new System.Drawing.Size(63, 0);
             this.NodeComboBox.Name = "NodeComboBox";
@@ -811,8 +847,10 @@ namespace LLC_MOD_Toolbox
             // 
             // uiLine3
             // 
+            this.uiLine3.BackColor = System.Drawing.Color.Transparent;
             this.uiLine3.Direction = Sunny.UI.UILine.LineDirection.Vertical;
             this.uiLine3.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.uiLine3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
             this.uiLine3.Location = new System.Drawing.Point(510, 35);
             this.uiLine3.MinimumSize = new System.Drawing.Size(1, 1);
             this.uiLine3.Name = "uiLine3";
@@ -836,6 +874,7 @@ namespace LLC_MOD_Toolbox
             // config_open_text
             // 
             this.config_open_text.Font = new System.Drawing.Font("微软雅黑", 14F);
+            this.config_open_text.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
             this.config_open_text.Location = new System.Drawing.Point(16, 172);
             this.config_open_text.Name = "config_open_text";
             this.config_open_text.Size = new System.Drawing.Size(357, 23);
@@ -859,33 +898,13 @@ namespace LLC_MOD_Toolbox
             // uiLabel7
             // 
             this.uiLabel7.Font = new System.Drawing.Font("微软雅黑", 14F);
+            this.uiLabel7.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
             this.uiLabel7.Location = new System.Drawing.Point(17, 117);
             this.uiLabel7.Name = "uiLabel7";
             this.uiLabel7.Size = new System.Drawing.Size(357, 23);
             this.uiLabel7.TabIndex = 4;
             this.uiLabel7.Text = "删除汉化补丁";
             this.uiLabel7.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // useGithub
-            // 
-            this.useGithub.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.useGithub.Location = new System.Drawing.Point(430, 56);
-            this.useGithub.MinimumSize = new System.Drawing.Size(1, 1);
-            this.useGithub.Name = "useGithub";
-            this.useGithub.Size = new System.Drawing.Size(74, 29);
-            this.useGithub.SwitchShape = Sunny.UI.UISwitch.UISwitchShape.Square;
-            this.useGithub.TabIndex = 3;
-            this.useGithub.Text = "uiSwitch1";
-            // 
-            // uiLabel2
-            // 
-            this.uiLabel2.Font = new System.Drawing.Font("微软雅黑", 14F);
-            this.uiLabel2.Location = new System.Drawing.Point(17, 60);
-            this.uiLabel2.Name = "uiLabel2";
-            this.uiLabel2.Size = new System.Drawing.Size(357, 23);
-            this.uiLabel2.TabIndex = 2;
-            this.uiLabel2.Text = "从 Github 下载文件";
-            this.uiLabel2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // tabPage10
             // 
@@ -897,13 +916,15 @@ namespace LLC_MOD_Toolbox
             this.tabPage10.Controls.Add(this.dev_token);
             this.tabPage10.Location = new System.Drawing.Point(0, 40);
             this.tabPage10.Name = "tabPage10";
-            this.tabPage10.Size = new System.Drawing.Size(1077, 443);
+            this.tabPage10.Size = new System.Drawing.Size(200, 60);
             this.tabPage10.TabIndex = 2;
             this.tabPage10.Text = "灰度测试";
             // 
             // uiLine4
             // 
+            this.uiLine4.BackColor = System.Drawing.Color.Transparent;
             this.uiLine4.Font = new System.Drawing.Font("微软雅黑", 12F);
+            this.uiLine4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
             this.uiLine4.LineColor2 = System.Drawing.Color.FromArgb(((int)(((byte)(80)))), ((int)(((byte)(160)))), ((int)(((byte)(255)))));
             this.uiLine4.Location = new System.Drawing.Point(34, 221);
             this.uiLine4.MinimumSize = new System.Drawing.Size(1, 1);
@@ -915,6 +936,7 @@ namespace LLC_MOD_Toolbox
             // test_note
             // 
             this.test_note.Font = new System.Drawing.Font("微软雅黑", 12F);
+            this.test_note.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
             this.test_note.Location = new System.Drawing.Point(30, 257);
             this.test_note.Name = "test_note";
             this.test_note.Size = new System.Drawing.Size(816, 87);
@@ -937,6 +959,7 @@ namespace LLC_MOD_Toolbox
             // uiLabel3
             // 
             this.uiLabel3.Font = new System.Drawing.Font("微软雅黑", 12F);
+            this.uiLabel3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
             this.uiLabel3.Location = new System.Drawing.Point(35, 21);
             this.uiLabel3.Name = "uiLabel3";
             this.uiLabel3.Size = new System.Drawing.Size(988, 140);
@@ -977,16 +1000,18 @@ namespace LLC_MOD_Toolbox
             // uiLabel9
             // 
             this.uiLabel9.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.uiLabel9.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
             this.uiLabel9.Location = new System.Drawing.Point(18, 16);
             this.uiLabel9.Name = "uiLabel9";
             this.uiLabel9.Size = new System.Drawing.Size(502, 36);
             this.uiLabel9.TabIndex = 1;
-            this.uiLabel9.Text = "LLC_Toolbox 版本0.6.1";
+            this.uiLabel9.Text = "LLC_Toolbox 版本0.6.2";
             this.uiLabel9.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // uiLabel8
             // 
             this.uiLabel8.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.uiLabel8.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
             this.uiLabel8.Location = new System.Drawing.Point(18, 52);
             this.uiLabel8.Name = "uiLabel8";
             this.uiLabel8.Size = new System.Drawing.Size(996, 278);
@@ -1015,6 +1040,7 @@ namespace LLC_MOD_Toolbox
             this.refreshConfig.FillPressColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(152)))), ((int)(((byte)(138)))));
             this.refreshConfig.FillSelectedColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(152)))), ((int)(((byte)(138)))));
             this.refreshConfig.Font = new System.Drawing.Font("微软雅黑", 12F);
+            this.refreshConfig.LightColor = System.Drawing.Color.FromArgb(((int)(((byte)(238)))), ((int)(((byte)(251)))), ((int)(((byte)(250)))));
             this.refreshConfig.Location = new System.Drawing.Point(531, 379);
             this.refreshConfig.MinimumSize = new System.Drawing.Size(1, 1);
             this.refreshConfig.Name = "refreshConfig";
@@ -1023,7 +1049,7 @@ namespace LLC_MOD_Toolbox
             this.refreshConfig.RectPressColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(152)))), ((int)(((byte)(138)))));
             this.refreshConfig.RectSelectedColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(152)))), ((int)(((byte)(138)))));
             this.refreshConfig.Size = new System.Drawing.Size(134, 44);
-            this.refreshConfig.Style = Sunny.UI.UIStyle.Colorful;
+            this.refreshConfig.Style = Sunny.UI.UIStyle.Custom;
             this.refreshConfig.Symbol = 61787;
             this.refreshConfig.TabIndex = 15;
             this.refreshConfig.Text = "刷新配置";
@@ -1085,6 +1111,7 @@ namespace LLC_MOD_Toolbox
             // uiLabel15
             // 
             this.uiLabel15.Font = new System.Drawing.Font("微软雅黑", 14F);
+            this.uiLabel15.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
             this.uiLabel15.Location = new System.Drawing.Point(21, 112);
             this.uiLabel15.Name = "uiLabel15";
             this.uiLabel15.Size = new System.Drawing.Size(357, 23);
@@ -1109,6 +1136,7 @@ namespace LLC_MOD_Toolbox
             // uiLabel14
             // 
             this.uiLabel14.Font = new System.Drawing.Font("微软雅黑", 14F);
+            this.uiLabel14.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
             this.uiLabel14.Location = new System.Drawing.Point(21, 52);
             this.uiLabel14.Name = "uiLabel14";
             this.uiLabel14.Size = new System.Drawing.Size(357, 23);
@@ -1156,6 +1184,7 @@ namespace LLC_MOD_Toolbox
             // uiLabel13
             // 
             this.uiLabel13.Font = new System.Drawing.Font("微软雅黑", 14F);
+            this.uiLabel13.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
             this.uiLabel13.Location = new System.Drawing.Point(18, 178);
             this.uiLabel13.Name = "uiLabel13";
             this.uiLabel13.Size = new System.Drawing.Size(357, 23);
@@ -1180,6 +1209,7 @@ namespace LLC_MOD_Toolbox
             // uiLabel12
             // 
             this.uiLabel12.Font = new System.Drawing.Font("微软雅黑", 14F);
+            this.uiLabel12.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
             this.uiLabel12.Location = new System.Drawing.Point(18, 114);
             this.uiLabel12.Name = "uiLabel12";
             this.uiLabel12.Size = new System.Drawing.Size(357, 23);
@@ -1191,6 +1221,7 @@ namespace LLC_MOD_Toolbox
             // uiLabel11
             // 
             this.uiLabel11.Font = new System.Drawing.Font("微软雅黑", 14F);
+            this.uiLabel11.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
             this.uiLabel11.Location = new System.Drawing.Point(18, 54);
             this.uiLabel11.Name = "uiLabel11";
             this.uiLabel11.Size = new System.Drawing.Size(357, 23);
@@ -1226,29 +1257,6 @@ namespace LLC_MOD_Toolbox
             this.TipTimer.Interval = 6000;
             this.TipTimer.Tick += new System.EventHandler(this.tipsTick);
             // 
-            // uiLabel4
-            // 
-            this.uiLabel4.Font = new System.Drawing.Font("微软雅黑", 14F);
-            this.uiLabel4.Location = new System.Drawing.Point(17, 225);
-            this.uiLabel4.Name = "uiLabel4";
-            this.uiLabel4.Size = new System.Drawing.Size(357, 23);
-            this.uiLabel4.TabIndex = 16;
-            this.uiLabel4.Text = "开启/关闭模组";
-            this.uiLabel4.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // uiButton1
-            // 
-            this.uiButton1.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.uiButton1.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.uiButton1.Location = new System.Drawing.Point(430, 219);
-            this.uiButton1.MinimumSize = new System.Drawing.Size(1, 1);
-            this.uiButton1.Name = "uiButton1";
-            this.uiButton1.Size = new System.Drawing.Size(74, 35);
-            this.uiButton1.TabIndex = 17;
-            this.uiButton1.Text = "开关";
-            this.uiButton1.TipsFont = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.uiButton1.Click += new System.EventHandler(this.uiButton1_Click);
-            // 
             // MainPage
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
@@ -1259,10 +1267,9 @@ namespace LLC_MOD_Toolbox
             this.MaximizeBox = false;
             this.Name = "MainPage";
             this.Padding = new System.Windows.Forms.Padding(0, 40, 0, 0);
-            this.ShowRadius = false;
             this.ShowRect = false;
             this.ShowTitleIcon = true;
-            this.Text = "都市零协会模组工具箱 v0.6.1";
+            this.Text = "都市零协会模组工具箱 v0.6.2";
             this.TitleFont = new System.Drawing.Font("微软雅黑", 12F);
             this.TitleHeight = 40;
             this.ZoomScaleRect = new System.Drawing.Rectangle(15, 15, 800, 450);
@@ -1300,8 +1307,6 @@ namespace LLC_MOD_Toolbox
         private Sunny.UI.UISymbolButton installButton;
         private Sunny.UI.UILabel statu;
         private Sunny.UI.UIGroupBox uiGroupBox2;
-        private Sunny.UI.UISwitch useGithub;
-        private Sunny.UI.UILabel uiLabel2;
         private Sunny.UI.UIButton deleteButton;
         private Sunny.UI.UILabel uiLabel7;
         private Sunny.UI.UISymbolButton EnterQuestion;
