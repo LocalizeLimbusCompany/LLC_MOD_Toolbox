@@ -34,6 +34,7 @@ namespace LLC_MOD_Toolbox
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.uiTabControl1 = new Sunny.UI.UITabControl();
             this.tabPage8 = new System.Windows.Forms.TabPage();
+            this.PersonalButton = new Sunny.UI.UISymbolButton();
             this.TipText = new Sunny.UI.UILabel();
             this.statu = new Sunny.UI.UILabel();
             this.DownloadBar = new Sunny.UI.UIProcessBar();
@@ -180,6 +181,7 @@ namespace LLC_MOD_Toolbox
             // tabPage8
             // 
             this.tabPage8.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(243)))), ((int)(((byte)(249)))), ((int)(((byte)(255)))));
+            this.tabPage8.Controls.Add(this.PersonalButton);
             this.tabPage8.Controls.Add(this.TipText);
             this.tabPage8.Controls.Add(this.statu);
             this.tabPage8.Controls.Add(this.DownloadBar);
@@ -190,6 +192,20 @@ namespace LLC_MOD_Toolbox
             this.tabPage8.Size = new System.Drawing.Size(1071, 397);
             this.tabPage8.TabIndex = 0;
             this.tabPage8.Text = "自动安装（推荐）";
+            // 
+            // PersonalButton
+            // 
+            this.PersonalButton.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.PersonalButton.Font = new System.Drawing.Font("微软雅黑", 12F);
+            this.PersonalButton.Location = new System.Drawing.Point(856, 343);
+            this.PersonalButton.MinimumSize = new System.Drawing.Size(1, 1);
+            this.PersonalButton.Name = "PersonalButton";
+            this.PersonalButton.Size = new System.Drawing.Size(183, 43);
+            this.PersonalButton.Symbol = 262682;
+            this.PersonalButton.TabIndex = 5;
+            this.PersonalButton.Text = "抽卡模拟器";
+            this.PersonalButton.TipsFont = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.PersonalButton.Click += new System.EventHandler(this.PersonalButton_Click);
             // 
             // TipText
             // 
@@ -742,7 +758,7 @@ namespace LLC_MOD_Toolbox
             this.tabPage3.Controls.Add(this.uiGroupBox2);
             this.tabPage3.Location = new System.Drawing.Point(0, 40);
             this.tabPage3.Name = "tabPage3";
-            this.tabPage3.Size = new System.Drawing.Size(1077, 443);
+            this.tabPage3.Size = new System.Drawing.Size(200, 60);
             this.tabPage3.TabIndex = 1;
             this.tabPage3.Text = "设置";
             // 
@@ -993,7 +1009,7 @@ namespace LLC_MOD_Toolbox
             this.tabPage4.Controls.Add(this.uiLabel8);
             this.tabPage4.Location = new System.Drawing.Point(0, 40);
             this.tabPage4.Name = "tabPage4";
-            this.tabPage4.Size = new System.Drawing.Size(200, 60);
+            this.tabPage4.Size = new System.Drawing.Size(1077, 443);
             this.tabPage4.TabIndex = 1;
             this.tabPage4.Text = "关于";
             // 
@@ -1005,7 +1021,7 @@ namespace LLC_MOD_Toolbox
             this.uiLabel9.Name = "uiLabel9";
             this.uiLabel9.Size = new System.Drawing.Size(502, 36);
             this.uiLabel9.TabIndex = 1;
-            this.uiLabel9.Text = "LLC_Toolbox 版本0.6.2";
+            this.uiLabel9.Text = "LLC_Toolbox 版本0.6.3";
             this.uiLabel9.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // uiLabel8
@@ -1269,7 +1285,7 @@ namespace LLC_MOD_Toolbox
             this.Padding = new System.Windows.Forms.Padding(0, 40, 0, 0);
             this.ShowRect = false;
             this.ShowTitleIcon = true;
-            this.Text = "都市零协会模组工具箱 v0.6.2";
+            this.Text = "都市零协会模组工具箱 v0.6.3";
             this.TitleFont = new System.Drawing.Font("微软雅黑", 12F);
             this.TitleHeight = 40;
             this.ZoomScaleRect = new System.Drawing.Rectangle(15, 15, 800, 450);
@@ -1374,6 +1390,7 @@ namespace LLC_MOD_Toolbox
         private System.Windows.Forms.Timer TipTimer;
         private Sunny.UI.UIButton uiButton1;
         private Sunny.UI.UILabel uiLabel4;
+        private Sunny.UI.UISymbolButton PersonalButton;
     }
 }
 

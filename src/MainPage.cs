@@ -18,6 +18,7 @@ using SharpConfig;
 using SimpleJSON;
 using Sunny.UI;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Net;
@@ -28,14 +29,16 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace LLC_MOD_Toolbox
 {
 
     public partial class MainPage : UIForm
     {
-        public const string VERSION = "0.6.2";
+        public const string VERSION = "0.6.3";
         private string tipTexts;
+        private string personalTexts;
         private readonly string TipsPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Tips.txt");
         // 注册日志系统
         private static readonly ILog logger = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
@@ -136,9 +139,14 @@ namespace LLC_MOD_Toolbox
                 }
             }
             tipTexts = File.ReadAllText(TipsPath);
-            Application.DoEvents();
+            System.Windows.Forms.Application.DoEvents();
             TipTimer.Enabled = true;
             VERY_SECRET_APRIL_FOOL_METHOD();
+            personalTexts = GetWikiPersonalText();
+            if (personalTexts == null)
+            {
+                PersonalButton.Visible = false;
+            }
         }
 
         /// <summary>
@@ -544,6 +552,7 @@ namespace LLC_MOD_Toolbox
                 uiTabControl.Enabled = true;
                 installButton.Enabled = true;
                 deleteButton.Enabled = true;
+                PersonalButton.Enabled = true;
                 logger.Info("开启完成。");
             }
             else
@@ -552,6 +561,7 @@ namespace LLC_MOD_Toolbox
                 uiTabControl.Enabled = false;
                 installButton.Enabled = false;
                 deleteButton.Enabled = false;
+                PersonalButton.Enabled = false;
                 logger.Info("关闭完成。");
             }
         }
@@ -1599,9 +1609,126 @@ namespace LLC_MOD_Toolbox
             if (currentDate.Month == 4 && currentDate.Day == 1)
             {
                 logger.Info("您猜怎么着？今儿四月一！");
+                AprilFoolMode = true;
+                MessageBox.Show("抽卡模拟器的概率发生了一些微妙的变化……", "提示...?", MessageBoxButtons.OK, MessageBoxIcon.Question);
             }
         }
 
+        #endregion
+
+        #region 抽卡模拟器
+        /// <summary>
+        /// 从Wiki获得人格数据库Json
+        /// </summary>
+        /// <returns>页面原始数据</returns>
+        public static string GetWikiPersonalText()
+        {
+            logger.Info("获取Wiki人格数据。");
+            try
+            {
+                using WebClient client = new();
+                client.Headers.Add("User-Agent", "request");
+                string raw = string.Empty;
+                logger.Info("从Wiki获取原始文本");
+                raw = new StreamReader(client.OpenRead(new Uri("https://limbuscompany.huijiwiki.com/w/api.php?action=query&format=json&prop=revisions&rvprop=content&titles=Data:Identitychoose.tabx")), Encoding.UTF8).ReadToEnd();
+                var wikitext = JSONNode.Parse(raw).AsObject;
+                string originText = wikitext["query"]["pages"]["4338"]["revisions"][0]["*"].Value;
+                string resultText = originText.Replace("\\", "");
+                return resultText;
+            }
+            catch (Exception ex)
+            {
+                logger.Error("出现了问题。\n" + ex.ToString());
+                return null;
+            }
+        }
+        /// <summary>
+        /// 点击抽卡模拟器逻辑
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void PersonalButton_Click(object sender, EventArgs e)
+        {
+            int[] PersonalData = PersonalDataGen(AprilFoolMode);
+            var PersonalObject = JSONNode.Parse(personalTexts).AsObject;
+            int PersonalCount = PersonalObject["data"].Count;
+            string[] PersonalList = new string[10];
+            int CachePersonal;
+            Random rand = new Random();
+            // 高危代码。如果有问题先看看这里。
+            try
+            {
+                for (int i = 0; i < PersonalData.Length; i++)
+                {
+                    while (true)
+                    {
+                        CachePersonal = rand.Next(0, PersonalCount - 1);
+                        if (PersonalObject["data"][CachePersonal][6] == PersonalData[i])
+                        {
+                            PersonalList[i] = PersonalObject["data"][CachePersonal][6] + "★ | " + PersonalObject["data"][CachePersonal][0];
+                            break;
+                        }
+                    }
+                }
+                string message = "抽卡结果：\n";
+                for (int i = 0; i < PersonalData.Length; i++)
+                {
+                    message += PersonalList[i] + "\n";
+                }
+                message += "下次还抽吗？";
+                MessageBox.Show(message, "结果");
+            }
+            catch(Exception ex)
+            {
+                logger.Error("出现了问题。\n" + ex.ToString());
+                MessageBox.Show("出现了问题\n" + ex.ToString());
+            }
+        }
+        /// <summary>
+        /// 生成人格品质
+        /// </summary>
+        /// <param name="AprilMode">是否为愚人节，若为愚人节，只会生成1。</param>
+        /// <returns>一个int[]，内含有10个1,2,3，代表人格品质</returns>
+        public static int[] PersonalDataGen(bool AprilMode)
+        {
+            Random random = new Random();
+            int[] numbers = new int[10];
+
+            for (int i = 0; i < numbers.Length; i++)
+            {
+                int randomNumber = random.Next(1, 101);
+                if (!AprilMode)
+                {
+                    if (i == 9)
+                    {
+                        if (randomNumber <= 3)
+                        {
+                            numbers[i] = 3;
+                        }
+                        else
+                        {
+                            numbers[i] = 2;
+                        }
+                    }
+                    else
+                    {
+                        if (randomNumber <= 13)
+                        {
+                            numbers[i] = 2;
+                        }
+                        else
+                        {
+                            numbers[i] = 1;
+                        }
+                    }
+                }
+                else
+                {
+                    numbers[i] = 1;
+                }
+            }
+            return numbers;
+        }
         #endregion
         private void downloadFile_Click(object sender, EventArgs e)
         {
@@ -1640,8 +1767,6 @@ namespace LLC_MOD_Toolbox
                 MessageBox.Show("开关失败。是否还未安装模组？", "错误");
             }
         }
-        private bool isWindows10;
-
         private string node = string.Empty;
 
         private string limbusCompanyDir;
@@ -1657,5 +1782,6 @@ namespace LLC_MOD_Toolbox
 
         private bool mirrorGithub = false;
         private bool useGithub;
+        private bool AprilFoolMode = false;
     }
 }
