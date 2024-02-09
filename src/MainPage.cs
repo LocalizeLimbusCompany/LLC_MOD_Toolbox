@@ -1712,7 +1712,11 @@ namespace LLC_MOD_Toolbox
                     }
                     else
                     {
-                        if (randomNumber <= 13)
+                        if (randomNumber <= 4)
+                        {
+                            numbers[i] = 3;
+                        }
+                        else if (randomNumber <= 13)
                         {
                             numbers[i] = 2;
                         }
