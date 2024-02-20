@@ -36,7 +36,7 @@ namespace LLC_MOD_Toolbox
 
     public partial class MainPage : UIForm
     {
-        public const string VERSION = "0.6.3";
+        public const string VERSION = "0.6.4";
         private string tipTexts;
         private string personalTexts;
         private readonly string TipsPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Tips.txt");
@@ -1505,6 +1505,38 @@ namespace LLC_MOD_Toolbox
                 logger.Error("测试秘钥为空。");
                 return;
             }
+            if (token == "AllThirdOn")
+            {
+                logger.Info("开启全三星模式。");
+                if (UP_PROB_PERSONAL_MODE)
+                {
+                    logger.Warn("尝试开启多个金手指。");
+                    MessageBox.Show("仅能同时开启一个金手指。");
+                    return;
+                }
+                if (!ALL_THIRD_PERSONAL_MODE)
+                {
+                    this.Text += "[全三星模式]";
+                }
+                ALL_THIRD_PERSONAL_MODE = true;
+                return;
+            }
+            if (token == "ProbUp")
+            {
+                logger.Info("开启概率上升模式");
+                if (ALL_THIRD_PERSONAL_MODE)
+                {
+                    logger.Warn("尝试开启多个金手指。");
+                    MessageBox.Show("仅能同时开启一个金手指。");
+                    return;
+                }
+                if (!UP_PROB_PERSONAL_MODE)
+                {
+                    this.Text += "[概率上升模式]";
+                }
+                UP_PROB_PERSONAL_MODE = true;
+                return;
+            }
             try
             {
                 logger.Info("测试秘钥为：" + token);
@@ -1649,7 +1681,7 @@ namespace LLC_MOD_Toolbox
         /// <param name="e"></param>
         private void PersonalButton_Click(object sender, EventArgs e)
         {
-            int[] PersonalData = PersonalDataGen(AprilFoolMode);
+            int[] PersonalData = PersonalDataGen(AprilFoolMode, UP_PROB_PERSONAL_MODE, ALL_THIRD_PERSONAL_MODE);
             var PersonalObject = JSONNode.Parse(personalTexts).AsObject;
             int PersonalCount = PersonalObject["data"].Count;
             string[] PersonalList = new string[10];
@@ -1689,15 +1721,16 @@ namespace LLC_MOD_Toolbox
         /// </summary>
         /// <param name="AprilMode">是否为愚人节，若为愚人节，只会生成1。</param>
         /// <returns>一个int[]，内含有10个1,2,3，代表人格品质</returns>
-        public static int[] PersonalDataGen(bool AprilMode)
+        public static int[] PersonalDataGen(bool AprilMode, bool ProbUpMode, bool AllThirdMode)
         {
             Random random = new Random();
             int[] numbers = new int[10];
+            MainPage mainPage = new MainPage();
 
             for (int i = 0; i < numbers.Length; i++)
             {
                 int randomNumber = random.Next(1, 101);
-                if (!AprilMode)
+                if (!AprilMode && !ProbUpMode && !AllThirdMode)
                 {
                     if (i == 9)
                     {
@@ -1725,6 +1758,25 @@ namespace LLC_MOD_Toolbox
                             numbers[i] = 1;
                         }
                     }
+                }
+                else if (ProbUpMode)
+                {
+                    if (randomNumber <= 25)
+                    {
+                        numbers[i] = 3;
+                    }
+                    else if (randomNumber <= 70)
+                    {
+                        numbers[i] = 2;
+                    }
+                    else
+                    {
+                        numbers[i] = 1;
+                    }
+                }
+                else if (AllThirdMode)
+                {
+                    numbers[i] = 3;
                 }
                 else
                 {
@@ -1787,5 +1839,7 @@ namespace LLC_MOD_Toolbox
         private bool mirrorGithub = false;
         private bool useGithub;
         private bool AprilFoolMode = false;
+        private bool ALL_THIRD_PERSONAL_MODE = false;
+        private bool UP_PROB_PERSONAL_MODE = false;
     }
 }

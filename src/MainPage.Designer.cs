@@ -1021,7 +1021,7 @@ namespace LLC_MOD_Toolbox
             this.uiLabel9.Name = "uiLabel9";
             this.uiLabel9.Size = new System.Drawing.Size(502, 36);
             this.uiLabel9.TabIndex = 1;
-            this.uiLabel9.Text = "LLC_Toolbox 版本0.6.3";
+            this.uiLabel9.Text = "LLC_Toolbox 版本0.6.4";
             this.uiLabel9.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // uiLabel8
@@ -1285,7 +1285,7 @@ namespace LLC_MOD_Toolbox
             this.Padding = new System.Windows.Forms.Padding(0, 40, 0, 0);
             this.ShowRect = false;
             this.ShowTitleIcon = true;
-            this.Text = "都市零协会模组工具箱 v0.6.3";
+            this.Text = "都市零协会模组工具箱 v0.6.4";
             this.TitleFont = new System.Drawing.Font("微软雅黑", 12F);
             this.TitleHeight = 40;
             this.ZoomScaleRect = new System.Drawing.Rectangle(15, 15, 800, 450);
