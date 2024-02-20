@@ -18,18 +18,15 @@ using SharpConfig;
 using SimpleJSON;
 using Sunny.UI;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Net;
 using System.Net.Http;
-using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace LLC_MOD_Toolbox
 {
@@ -297,7 +294,7 @@ namespace LLC_MOD_Toolbox
                         if (new Version(versionInfo.FileVersion.Remove(5, 2)) < new Version("6.0.1"))
                         {
                             logger.Info("未检测到正确Bepinex。");
-                            MessageBox.Show("如果你安装了杀毒软件，接下来可能会提示工具箱正在修改关键dll。\n允许即可。如果不信任汉化补丁，可以退出本程序。", "警告");BepInExUrl = "https://github.com/LocalizeLimbusCompany/BepInEx_For_LLC/releases/download/v6.0.1-LLC/BepInEx-IL2CPP-x64-6.0.1.7z";
+                            MessageBox.Show("如果你安装了杀毒软件，接下来可能会提示工具箱正在修改关键dll。\n允许即可。如果不信任汉化补丁，可以退出本程序。", "警告"); BepInExUrl = "https://github.com/LocalizeLimbusCompany/BepInEx_For_LLC/releases/download/v6.0.1-LLC/BepInEx-IL2CPP-x64-6.0.1.7z";
                             BepInExZipPath = Path.Combine(limbusCompanyDir, "BepInEx-IL2CPP-x64-6.0.1.7z");
                             logger.Info("BepInEx Zip目录： " + BepInExZipPath);
                             await DownloadFileAsync(BepInExUrl, BepInExZipPath);
@@ -1508,7 +1505,7 @@ namespace LLC_MOD_Toolbox
             if (token == "AllThirdOn")
             {
                 logger.Info("开启全三星模式。");
-                if (UP_PROB_PERSONAL_MODE)
+                if (UP_PROB_PERSONAL_MODE || MIRROR_DUNGEON_MODE)
                 {
                     logger.Warn("尝试开启多个金手指。");
                     MessageBox.Show("仅能同时开启一个金手指。");
@@ -1524,7 +1521,7 @@ namespace LLC_MOD_Toolbox
             if (token == "ProbUp")
             {
                 logger.Info("开启概率上升模式");
-                if (ALL_THIRD_PERSONAL_MODE)
+                if (ALL_THIRD_PERSONAL_MODE || MIRROR_DUNGEON_MODE)
                 {
                     logger.Warn("尝试开启多个金手指。");
                     MessageBox.Show("仅能同时开启一个金手指。");
@@ -1535,6 +1532,23 @@ namespace LLC_MOD_Toolbox
                     this.Text += "[概率上升模式]";
                 }
                 UP_PROB_PERSONAL_MODE = true;
+                return;
+            }
+            if (token == "MirrorDungeon")
+            {
+                logger.Info("开启镜牢组队模式");
+                if (ALL_THIRD_PERSONAL_MODE || UP_PROB_PERSONAL_MODE)
+                {
+                    logger.Warn("尝试开启多个金手指。");
+                    MessageBox.Show("仅能同时开启一个金手指。");
+                    return;
+                }
+                if (!UP_PROB_PERSONAL_MODE)
+                {
+                    this.Text += "[镜牢组队模式]";
+                }
+                MIRROR_DUNGEON_MODE = true;
+                PersonalButton.Text = "镜牢组队器";
                 return;
             }
             try
@@ -1681,7 +1695,7 @@ namespace LLC_MOD_Toolbox
         /// <param name="e"></param>
         private void PersonalButton_Click(object sender, EventArgs e)
         {
-            int[] PersonalData = PersonalDataGen(AprilFoolMode, UP_PROB_PERSONAL_MODE, ALL_THIRD_PERSONAL_MODE);
+            int[] PersonalData = PersonalDataGen(AprilFoolMode, UP_PROB_PERSONAL_MODE, ALL_THIRD_PERSONAL_MODE, MIRROR_DUNGEON_MODE);
             var PersonalObject = JSONNode.Parse(personalTexts).AsObject;
             int PersonalCount = PersonalObject["data"].Count;
             string[] PersonalList = new string[10];
@@ -1702,15 +1716,58 @@ namespace LLC_MOD_Toolbox
                         }
                     }
                 }
-                string message = "抽卡结果：\n";
+                string message;
+                if (!UP_PROB_PERSONAL_MODE && !ALL_THIRD_PERSONAL_MODE)
+                {
+                    message = "抽卡结果：\n";
+                }
+                else if (MIRROR_DUNGEON_MODE)
+                {
+                    message = "！！！非抽卡模拟器结果！！！\n组队结果：\n";
+                }
+                else
+                {
+                    message = "真是杂鱼，可悲的作弊者！\n抽卡结果：\n";
+                }
                 for (int i = 0; i < PersonalData.Length; i++)
                 {
                     message += PersonalList[i] + "\n";
                 }
-                message += "下次还抽吗？";
+                if (!UP_PROB_PERSONAL_MODE && !ALL_THIRD_PERSONAL_MODE)
+                {
+                    int message_random = rand.Next(0, 10);
+                    if (message_random == 1)
+                    {
+                        message += "运气都这么差了还要抽吗？";
+                    }
+                    else if (message_random == 2)
+                    {
+                        message += "杂鱼~杂鱼~";
+                    }
+                    else if (message_random == 3)
+                    {
+                        message += "继续抽？";
+                    }
+                    else if (message_random == 4)
+                    {
+                        message += "没看，你抽出来的人格是不是特别强？";
+                    }
+                    else if (message_random == 5)
+                    {
+                        message += "要……要不算了吧？";
+                    }
+                    else
+                    {
+                        message += "下次还抽吗？";
+                    }
+                }
+                else
+                {
+                    message += "可悲的作弊者！\n大哥哥是不是什么都抽不出来了才用作弊代码的呀~\n真是，杂鱼~杂鱼~";
+                }
                 MessageBox.Show(message, "结果");
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 logger.Error("出现了问题。\n" + ex.ToString());
                 MessageBox.Show("出现了问题\n" + ex.ToString());
@@ -1721,16 +1778,15 @@ namespace LLC_MOD_Toolbox
         /// </summary>
         /// <param name="AprilMode">是否为愚人节，若为愚人节，只会生成1。</param>
         /// <returns>一个int[]，内含有10个1,2,3，代表人格品质</returns>
-        public static int[] PersonalDataGen(bool AprilMode, bool ProbUpMode, bool AllThirdMode)
+        public static int[] PersonalDataGen(bool AprilMode, bool ProbUpMode, bool AllThirdMode, bool MirrorDungeonMode)
         {
             Random random = new Random();
             int[] numbers = new int[10];
-            MainPage mainPage = new MainPage();
 
             for (int i = 0; i < numbers.Length; i++)
             {
                 int randomNumber = random.Next(1, 101);
-                if (!AprilMode && !ProbUpMode && !AllThirdMode)
+                if (!AprilMode && !ProbUpMode && !AllThirdMode && !MirrorDungeonMode)
                 {
                     if (i == 9)
                     {
@@ -1777,6 +1833,21 @@ namespace LLC_MOD_Toolbox
                 else if (AllThirdMode)
                 {
                     numbers[i] = 3;
+                }
+                else if (MirrorDungeonMode)
+                {
+                    if (randomNumber <= 33)
+                    {
+                        numbers[i] = 3;
+                    }
+                    else if (randomNumber <= 66)
+                    {
+                        numbers[i] = 2;
+                    }
+                    else
+                    {
+                        numbers[i] = 1;
+                    }
                 }
                 else
                 {
@@ -1841,5 +1912,6 @@ namespace LLC_MOD_Toolbox
         private bool AprilFoolMode = false;
         private bool ALL_THIRD_PERSONAL_MODE = false;
         private bool UP_PROB_PERSONAL_MODE = false;
+        private bool MIRROR_DUNGEON_MODE = false;
     }
 }
