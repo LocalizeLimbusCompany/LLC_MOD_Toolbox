@@ -18,22 +18,25 @@ using SharpConfig;
 using SimpleJSON;
 using Sunny.UI;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Net;
 using System.Net.Http;
+using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace LLC_MOD_Toolbox
 {
 
     public partial class MainPage : UIForm
     {
-        public const string VERSION = "0.6.4";
+        public const string VERSION = "0.6.3";
         private string tipTexts;
         private string personalTexts;
         private readonly string TipsPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Tips.txt");
@@ -294,7 +297,7 @@ namespace LLC_MOD_Toolbox
                         if (new Version(versionInfo.FileVersion.Remove(5, 2)) < new Version("6.0.1"))
                         {
                             logger.Info("未检测到正确Bepinex。");
-                            MessageBox.Show("如果你安装了杀毒软件，接下来可能会提示工具箱正在修改关键dll。\n允许即可。如果不信任汉化补丁，可以退出本程序。", "警告"); BepInExUrl = "https://github.com/LocalizeLimbusCompany/BepInEx_For_LLC/releases/download/v6.0.1-LLC/BepInEx-IL2CPP-x64-6.0.1.7z";
+                            MessageBox.Show("如果你安装了杀毒软件，接下来可能会提示工具箱正在修改关键dll。\n允许即可。如果不信任汉化补丁，可以退出本程序。", "警告");BepInExUrl = "https://github.com/LocalizeLimbusCompany/BepInEx_For_LLC/releases/download/v6.0.1-LLC/BepInEx-IL2CPP-x64-6.0.1.7z";
                             BepInExZipPath = Path.Combine(limbusCompanyDir, "BepInEx-IL2CPP-x64-6.0.1.7z");
                             logger.Info("BepInEx Zip目录： " + BepInExZipPath);
                             await DownloadFileAsync(BepInExUrl, BepInExZipPath);
@@ -1502,55 +1505,6 @@ namespace LLC_MOD_Toolbox
                 logger.Error("测试秘钥为空。");
                 return;
             }
-            if (token == "AllThirdOn")
-            {
-                logger.Info("开启全三星模式。");
-                if (UP_PROB_PERSONAL_MODE || MIRROR_DUNGEON_MODE)
-                {
-                    logger.Warn("尝试开启多个金手指。");
-                    MessageBox.Show("仅能同时开启一个金手指。");
-                    return;
-                }
-                if (!ALL_THIRD_PERSONAL_MODE)
-                {
-                    this.Text += "[全三星模式]";
-                }
-                ALL_THIRD_PERSONAL_MODE = true;
-                return;
-            }
-            if (token == "ProbUp")
-            {
-                logger.Info("开启概率上升模式");
-                if (ALL_THIRD_PERSONAL_MODE || MIRROR_DUNGEON_MODE)
-                {
-                    logger.Warn("尝试开启多个金手指。");
-                    MessageBox.Show("仅能同时开启一个金手指。");
-                    return;
-                }
-                if (!UP_PROB_PERSONAL_MODE)
-                {
-                    this.Text += "[概率上升模式]";
-                }
-                UP_PROB_PERSONAL_MODE = true;
-                return;
-            }
-            if (token == "MirrorDungeon")
-            {
-                logger.Info("开启镜牢组队模式");
-                if (ALL_THIRD_PERSONAL_MODE || UP_PROB_PERSONAL_MODE)
-                {
-                    logger.Warn("尝试开启多个金手指。");
-                    MessageBox.Show("仅能同时开启一个金手指。");
-                    return;
-                }
-                if (!UP_PROB_PERSONAL_MODE)
-                {
-                    this.Text += "[镜牢组队模式]";
-                }
-                MIRROR_DUNGEON_MODE = true;
-                PersonalButton.Text = "镜牢组队器";
-                return;
-            }
             try
             {
                 logger.Info("测试秘钥为：" + token);
@@ -1695,7 +1649,7 @@ namespace LLC_MOD_Toolbox
         /// <param name="e"></param>
         private void PersonalButton_Click(object sender, EventArgs e)
         {
-            int[] PersonalData = PersonalDataGen(AprilFoolMode, UP_PROB_PERSONAL_MODE, ALL_THIRD_PERSONAL_MODE, MIRROR_DUNGEON_MODE);
+            int[] PersonalData = PersonalDataGen(AprilFoolMode);
             var PersonalObject = JSONNode.Parse(personalTexts).AsObject;
             int PersonalCount = PersonalObject["data"].Count;
             string[] PersonalList = new string[10];
@@ -1716,58 +1670,15 @@ namespace LLC_MOD_Toolbox
                         }
                     }
                 }
-                string message;
-                if (!UP_PROB_PERSONAL_MODE && !ALL_THIRD_PERSONAL_MODE)
-                {
-                    message = "抽卡结果：\n";
-                }
-                else if (MIRROR_DUNGEON_MODE)
-                {
-                    message = "！！！非抽卡模拟器结果！！！\n组队结果：\n";
-                }
-                else
-                {
-                    message = "真是杂鱼，可悲的作弊者！\n抽卡结果：\n";
-                }
+                string message = "抽卡结果：\n";
                 for (int i = 0; i < PersonalData.Length; i++)
                 {
                     message += PersonalList[i] + "\n";
                 }
-                if (!UP_PROB_PERSONAL_MODE && !ALL_THIRD_PERSONAL_MODE)
-                {
-                    int message_random = rand.Next(0, 10);
-                    if (message_random == 1)
-                    {
-                        message += "运气都这么差了还要抽吗？";
-                    }
-                    else if (message_random == 2)
-                    {
-                        message += "杂鱼~杂鱼~";
-                    }
-                    else if (message_random == 3)
-                    {
-                        message += "继续抽？";
-                    }
-                    else if (message_random == 4)
-                    {
-                        message += "没看，你抽出来的人格是不是特别强？";
-                    }
-                    else if (message_random == 5)
-                    {
-                        message += "要……要不算了吧？";
-                    }
-                    else
-                    {
-                        message += "下次还抽吗？";
-                    }
-                }
-                else
-                {
-                    message += "可悲的作弊者！\n大哥哥是不是什么都抽不出来了才用作弊代码的呀~\n真是，杂鱼~杂鱼~";
-                }
+                message += "下次还抽吗？";
                 MessageBox.Show(message, "结果");
             }
-            catch (Exception ex)
+            catch(Exception ex)
             {
                 logger.Error("出现了问题。\n" + ex.ToString());
                 MessageBox.Show("出现了问题\n" + ex.ToString());
@@ -1778,7 +1689,7 @@ namespace LLC_MOD_Toolbox
         /// </summary>
         /// <param name="AprilMode">是否为愚人节，若为愚人节，只会生成1。</param>
         /// <returns>一个int[]，内含有10个1,2,3，代表人格品质</returns>
-        public static int[] PersonalDataGen(bool AprilMode, bool ProbUpMode, bool AllThirdMode, bool MirrorDungeonMode)
+        public static int[] PersonalDataGen(bool AprilMode)
         {
             Random random = new Random();
             int[] numbers = new int[10];
@@ -1786,7 +1697,7 @@ namespace LLC_MOD_Toolbox
             for (int i = 0; i < numbers.Length; i++)
             {
                 int randomNumber = random.Next(1, 101);
-                if (!AprilMode && !ProbUpMode && !AllThirdMode && !MirrorDungeonMode)
+                if (!AprilMode)
                 {
                     if (i == 9)
                     {
@@ -1801,11 +1712,7 @@ namespace LLC_MOD_Toolbox
                     }
                     else
                     {
-                        if (randomNumber <= 4)
-                        {
-                            numbers[i] = 3;
-                        }
-                        else if (randomNumber <= 13)
+                        if (randomNumber <= 13)
                         {
                             numbers[i] = 2;
                         }
@@ -1813,40 +1720,6 @@ namespace LLC_MOD_Toolbox
                         {
                             numbers[i] = 1;
                         }
-                    }
-                }
-                else if (ProbUpMode)
-                {
-                    if (randomNumber <= 25)
-                    {
-                        numbers[i] = 3;
-                    }
-                    else if (randomNumber <= 70)
-                    {
-                        numbers[i] = 2;
-                    }
-                    else
-                    {
-                        numbers[i] = 1;
-                    }
-                }
-                else if (AllThirdMode)
-                {
-                    numbers[i] = 3;
-                }
-                else if (MirrorDungeonMode)
-                {
-                    if (randomNumber <= 33)
-                    {
-                        numbers[i] = 3;
-                    }
-                    else if (randomNumber <= 66)
-                    {
-                        numbers[i] = 2;
-                    }
-                    else
-                    {
-                        numbers[i] = 1;
                     }
                 }
                 else
@@ -1859,7 +1732,7 @@ namespace LLC_MOD_Toolbox
         #endregion
         private void downloadFile_Click(object sender, EventArgs e)
         {
-            logger.Info("进入下载手动安装文件的链接。");
+            logger.Info("进入下载手动安装文件的链接（0协会下载站点）。");
             Openuri("http://alist.zeroasso.top:5244/od/sharefile");
         }
 
@@ -1910,8 +1783,11 @@ namespace LLC_MOD_Toolbox
         private bool mirrorGithub = false;
         private bool useGithub;
         private bool AprilFoolMode = false;
-        private bool ALL_THIRD_PERSONAL_MODE = false;
-        private bool UP_PROB_PERSONAL_MODE = false;
-        private bool MIRROR_DUNGEON_MODE = false;
+
+        private void NetDiskDownload_Click(object sender, EventArgs e)
+        {
+            logger.Info("进入下载手动安装文件的链接（天翼云盘）。");
+            Openuri("https://cloud.189.cn/web/share?code=7Jryq22yuQny");
+        }
     }
 }
