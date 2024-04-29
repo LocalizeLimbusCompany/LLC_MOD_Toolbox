@@ -1287,6 +1287,7 @@ namespace LLC_MOD_Toolbox
             this.NetDiskDownload.TabIndex = 12;
             this.NetDiskDownload.Text = "天翼云盘下载\n(提取码7iyk)";
             this.NetDiskDownload.TipsFont = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.NetDiskDownload.Click += new System.EventHandler(this.NetDiskDownload_Click);
             // 
             // MainPage
             // 
