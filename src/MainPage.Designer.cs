@@ -111,6 +111,7 @@ namespace LLC_MOD_Toolbox
             this.randomallcg = new Sunny.UI.UISwitch();
             this.tabPage9 = new System.Windows.Forms.TabPage();
             this.TipTimer = new System.Windows.Forms.Timer(this.components);
+            this.NetDiskDownload = new Sunny.UI.UISymbolButton();
             this.uiTabControl.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.uiTabControl1.SuspendLayout();
@@ -270,6 +271,7 @@ namespace LLC_MOD_Toolbox
             // tabPage5
             // 
             this.tabPage5.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(243)))), ((int)(((byte)(249)))), ((int)(((byte)(255)))));
+            this.tabPage5.Controls.Add(this.NetDiskDownload);
             this.tabPage5.Controls.Add(this.manualInstall);
             this.tabPage5.Controls.Add(this.SelectLLCFile);
             this.tabPage5.Controls.Add(this.llcfile);
@@ -285,7 +287,7 @@ namespace LLC_MOD_Toolbox
             this.tabPage5.Controls.Add(this.uiLabel1);
             this.tabPage5.Location = new System.Drawing.Point(0, 40);
             this.tabPage5.Name = "tabPage5";
-            this.tabPage5.Size = new System.Drawing.Size(200, 60);
+            this.tabPage5.Size = new System.Drawing.Size(1071, 397);
             this.tabPage5.TabIndex = 0;
             this.tabPage5.Text = "手动安装";
             // 
@@ -1009,7 +1011,7 @@ namespace LLC_MOD_Toolbox
             this.tabPage4.Controls.Add(this.uiLabel8);
             this.tabPage4.Location = new System.Drawing.Point(0, 40);
             this.tabPage4.Name = "tabPage4";
-            this.tabPage4.Size = new System.Drawing.Size(1077, 443);
+            this.tabPage4.Size = new System.Drawing.Size(200, 60);
             this.tabPage4.TabIndex = 1;
             this.tabPage4.Text = "关于";
             // 
@@ -1273,6 +1275,20 @@ namespace LLC_MOD_Toolbox
             this.TipTimer.Interval = 6000;
             this.TipTimer.Tick += new System.EventHandler(this.tipsTick);
             // 
+            // NetDiskDownload
+            // 
+            this.NetDiskDownload.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.NetDiskDownload.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.NetDiskDownload.Location = new System.Drawing.Point(678, 24);
+            this.NetDiskDownload.MinimumSize = new System.Drawing.Size(1, 1);
+            this.NetDiskDownload.Name = "NetDiskDownload";
+            this.NetDiskDownload.Size = new System.Drawing.Size(172, 88);
+            this.NetDiskDownload.Symbol = 61465;
+            this.NetDiskDownload.TabIndex = 12;
+            this.NetDiskDownload.Text = "天翼云盘下载\n(提取码7iyk)";
+            this.NetDiskDownload.TipsFont = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.NetDiskDownload.Click += new System.EventHandler(this.NetDiskDownload_Click);
+            // 
             // MainPage
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
@@ -1391,6 +1407,7 @@ namespace LLC_MOD_Toolbox
         private Sunny.UI.UIButton uiButton1;
         private Sunny.UI.UILabel uiLabel4;
         private Sunny.UI.UISymbolButton PersonalButton;
+        private Sunny.UI.UISymbolButton NetDiskDownload;
     }
 }
 

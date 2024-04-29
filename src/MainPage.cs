@@ -1859,8 +1859,15 @@ namespace LLC_MOD_Toolbox
         #endregion
         private void downloadFile_Click(object sender, EventArgs e)
         {
-            logger.Info("进入下载手动安装文件的链接。");
+            logger.Info("进入下载手动安装文件的链接。(零协会)");
             Openuri("http://alist.zeroasso.top:5244/od/sharefile");
+        }
+        private void NetDiskDownload_Click(object sender, EventArgs e)
+        {
+            logger.Info("进入下载手动安装文件的链接。(网盘)");
+            Clipboard.SetDataObject("7iyk");
+            MessageBox.Show("提取码已复制到您的剪贴板", "提示");
+            Openuri("https://cloud.189.cn/web/share?code=7Jryq22yuQny");
         }
 
         private void download_filereplace_Click(object sender, EventArgs e)
