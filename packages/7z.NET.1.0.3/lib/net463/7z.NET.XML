@@ -1,0 +1,521 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>7z.NET</name>
+    </assembly>
+    <members>
+        <member name="T:SevenZipNET.Attributes">
+            <summary>
+            The attributes associated with a file inside an archive.
+            </summary>
+        </member>
+        <member name="F:SevenZipNET.Attributes.None">
+            <summary>
+            There are no attributes. This is the default value.
+            </summary>
+        </member>
+        <member name="F:SevenZipNET.Attributes.Directory">
+            <summary>
+            This subfile is a directory.
+            </summary>
+        </member>
+        <member name="F:SevenZipNET.Attributes.Archived">
+            <summary>
+            This subfile has been archived.
+            </summary>
+        </member>
+        <member name="F:SevenZipNET.Attributes.ReadOnly">
+            <summary>
+            This subfile is read-only.
+            </summary>
+        </member>
+        <member name="F:SevenZipNET.Attributes.Hidden">
+            <summary>
+            This subfile is normally hidden.
+            </summary>
+        </member>
+        <member name="F:SevenZipNET.Attributes.System">
+            <summary>
+            This subfile is a system file.
+            </summary>
+        </member>
+        <member name="T:SevenZipNET.ArchiveFile">
+            <summary>
+            A class containing info about a file inside an archive.
+            </summary>
+        </member>
+        <member name="P:SevenZipNET.ArchiveFile.Filename">
+            <summary>
+            The name of the file.
+            </summary>
+        </member>
+        <member name="P:SevenZipNET.ArchiveFile.LastModified">
+            <summary>
+            The date and time the file was last modified.
+            </summary>
+        </member>
+        <member name="P:SevenZipNET.ArchiveFile.UnpackedSize">
+            <summary>
+            The unpacked size (in bytes) of the file.
+            </summary>
+        </member>
+        <member name="P:SevenZipNET.ArchiveFile.Attributes">
+            <summary>
+            The attributes of the packed file.
+            </summary>
+        </member>
+        <member name="M:SevenZipNET.ArchiveFile.#ctor(System.String,System.DateTime,System.UInt64,SevenZipNET.Attributes)">
+            <param name="filename">The name of the file.</param>
+            <param name="modified">The date and time the file was last modified.</param>
+            <param name="size">The unpacked size (in bytes) of the file.</param>
+            <param name="attributes">The attributes associated with this file.</param>
+        </member>
+        <member name="M:SevenZipNET.ArchiveFile.Parse(System.String)">
+            <summary>
+            Parses a line of output of the list command from 7z.
+            </summary>
+            <param name="s"></param>
+            <returns></returns>
+        </member>
+        <member name="T:SevenZipNET.Arguments.ArgumentParticle">
+            <summary>
+            A particle of a whole argument list.
+            </summary>
+        </member>
+        <member name="F:SevenZipNET.Arguments.ArgumentParticle.Separator">
+            <summary>
+            The separator to use to join the strings list when compiling. 
+            </summary>
+        </member>
+        <member name="F:SevenZipNET.Arguments.ArgumentParticle.strings">
+            <summary>
+            The list of strings that this particle consists of.
+            </summary>
+        </member>
+        <member name="M:SevenZipNET.Arguments.ArgumentParticle.#ctor(System.String)">
+            <param name="s">The initial string of this particle.</param>
+        </member>
+        <member name="M:SevenZipNET.Arguments.ArgumentParticle.Compile">
+            <summary>
+            Compiles the internal list of strings into a valid string.
+            </summary>
+            <returns>The string representation of this argument particle.</returns>
+        </member>
+        <member name="M:SevenZipNET.Arguments.ArgumentParticle.ToString">
+            <summary>
+            Returns the string representation of this object.
+            </summary>
+            <returns>The string representation of this object.</returns>
+        </member>
+        <member name="T:SevenZipNET.Arguments.ArgumentSwitch">
+            <summary>
+            A switch for when creating arguments.
+            </summary>
+        </member>
+        <member name="F:SevenZipNET.Arguments.ArgumentSwitch.Prefix">
+            <summary>
+            The prefix for this switch.
+            </summary>
+        </member>
+        <member name="M:SevenZipNET.Arguments.ArgumentSwitch.#ctor(System.String,System.String[])">
+            <param name="s">The inital string of this switch.</param>
+            <param name="extras">The following parts of this switch.</param>
+        </member>
+        <member name="M:SevenZipNET.Arguments.ArgumentSwitch.Compile">
+            <summary>
+            Compiles the internal list of strings into a valid string.
+            </summary>
+            <returns>The string representation of this argument particle.</returns>
+        </member>
+        <member name="T:SevenZipNET.Arguments.ArgumentCommand">
+            <summary>
+            A command for when creating arguments.
+            </summary>
+        </member>
+        <member name="M:SevenZipNET.Arguments.ArgumentCommand.#ctor(System.String,System.String[])">
+            <param name="s">The inital string of this command.</param>
+            <param name="extras">The following parts of this command.</param>
+        </member>
+        <member name="T:SevenZipNET.Arguments.ArgumentBuilder">
+            <summary>
+            A builder to combine argument particles into one string to be passed as arguments to a program.
+            </summary>
+        </member>
+        <member name="M:SevenZipNET.Arguments.ArgumentBuilder.Add(SevenZipNET.Arguments.ArgumentParticle)">
+            <summary>
+            Adds a particle to be compiled.
+            </summary>
+            <param name="p">The particle to add.</param>
+        </member>
+        <member name="M:SevenZipNET.Arguments.ArgumentBuilder.AddCommand(SevenZipNET.Arguments.ArgumentCommand)">
+            <summary>
+            Adds a command to be compiled.
+            </summary>
+            <param name="c">The command to add.</param>
+        </member>
+        <member name="M:SevenZipNET.Arguments.ArgumentBuilder.AddCommand(SevenZipNET.Arguments.SevenZipCommands,System.String)">
+            <summary>
+            Adds a command to be compiled.
+            </summary>
+            <param name="c">The specific command to be used.</param>
+            <param name="archive">The archive that is targeted.</param>
+        </member>
+        <member name="M:SevenZipNET.Arguments.ArgumentBuilder.AddSwitch(SevenZipNET.Arguments.ArgumentSwitch)">
+            <summary>
+            Adds a switch to be compiled.
+            </summary>
+            <param name="s">The switch to add.</param>
+        </member>
+        <member name="M:SevenZipNET.Arguments.ArgumentBuilder.AddTarget(System.String)">
+            <summary>
+            Adds a file target to be compiled.
+            </summary>
+            <param name="s">The file to target.</param>
+        </member>
+        <member name="M:SevenZipNET.Arguments.ArgumentBuilder.AddTargets(System.String[])">
+            <summary>
+            Adds multiple file targets to be compiled.
+            </summary>
+            <param name="s">The files to target.</param>
+        </member>
+        <member name="M:SevenZipNET.Arguments.ArgumentBuilder.Compile">
+            <summary>
+            Compiles the internal list of particles into a valid argument string.
+            </summary>
+            <returns>The string representation of all added particles.</returns>
+        </member>
+        <member name="M:SevenZipNET.Arguments.ArgumentBuilder.ToString">
+            <summary>
+            Returns the string representation of this object.
+            </summary>
+            <returns>The string representation of this object.</returns>
+        </member>
+        <member name="T:SevenZipNET.Arguments.SevenZipCommands">
+            <summary>
+            The list of commands that can be used with 7za.
+            </summary>
+        </member>
+        <member name="F:SevenZipNET.Arguments.SevenZipCommands.Add">
+            <summary>
+            Adds files to an archive.
+            </summary>
+        </member>
+        <member name="F:SevenZipNET.Arguments.SevenZipCommands.Extract">
+            <summary>
+            Extracts files from an archive.
+            </summary>
+        </member>
+        <member name="F:SevenZipNET.Arguments.SevenZipCommands.Delete">
+            <summary>
+            Deletes files from an archive.
+            </summary>
+        </member>
+        <member name="F:SevenZipNET.Arguments.SevenZipCommands.List">
+            <summary>
+            Lists files from an archive.
+            </summary>
+        </member>
+        <member name="F:SevenZipNET.Arguments.SevenZipCommands.Test">
+            <summary>
+            Tests and runs diagnostics on an archive.
+            </summary>
+        </member>
+        <member name="F:SevenZipNET.Arguments.SevenZipCommands.Update">
+            <summary>
+            Updates files inside of an archive.
+            </summary>
+        </member>
+        <member name="F:SevenZipNET.Arguments.SevenZipCommands.ExtractWithStructure">
+            <summary>
+            Extracts files from an archive, retaining internal directory structure.
+            </summary>
+        </member>
+        <member name="T:SevenZipNET.Arguments.ArgumentFactory">
+            <summary>
+            A class to generate arguments and argument particles from input.
+            </summary>
+        </member>
+        <member name="M:SevenZipNET.Arguments.ArgumentFactory.ToArgument(SevenZipNET.Arguments.SevenZipCommands,System.String)">
+            <summary>
+            Creates an ArgumentCommand from a valid 7z command and the archive for it to target.
+            </summary>
+            <param name="command">The command to use on the archive.</param>
+            <param name="archive">The filename of the archive.</param>
+        </member>
+        <member name="T:SevenZipNET.Arguments.SwitchCompression">
+            <summary>
+            A switch to indicate which compression to use when archiving.
+            </summary>
+        </member>
+        <member name="M:SevenZipNET.Arguments.SwitchCompression.#ctor(SevenZipNET.CompressionLevel)">
+            <param name="c">The compression level to use.</param>
+        </member>
+        <member name="T:SevenZipNET.Arguments.SwitchDestination">
+            <summary>
+            A switch to indicate the output directory to use when extracting an archive.
+            </summary>
+        </member>
+        <member name="M:SevenZipNET.Arguments.SwitchDestination.#ctor(System.String)">
+            <param name="destination">The path to the directory to extract to.</param>
+        </member>
+        <member name="T:SevenZipNET.Arguments.SwitchMultithread">
+            <summary>
+            A switch to enable multithreaded processing.
+            </summary>
+        </member>
+        <member name="M:SevenZipNET.Arguments.SwitchMultithread.#ctor">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:SevenZipNET.Arguments.SwitchPassword">
+            <summary>
+            A switch to add password for encryption.
+            </summary>
+        </member>
+        <member name="M:SevenZipNET.Arguments.SwitchPassword.#ctor(System.String)">
+            <param name="password">The password used in encryption.</param>
+        </member>
+        <member name="T:SevenZipNET.Arguments.SwitchEncryptHeaders">
+            <summary>
+            A switch to add password for encryption.
+            </summary>
+        </member>
+        <member name="T:SevenZipNET.Arguments.OutputStream">
+            <summary>
+            The streams that are outputted by 7z when executing.
+            </summary>
+        </member>
+        <member name="F:SevenZipNET.Arguments.OutputStream.Progress">
+            <summary>
+            The current progress.
+            </summary>
+        </member>
+        <member name="F:SevenZipNET.Arguments.OutputStream.Output">
+            <summary>
+            The general output.
+            </summary>
+        </member>
+        <member name="F:SevenZipNET.Arguments.OutputStream.Error">
+            <summary>
+            Any error information.
+            </summary>
+        </member>
+        <member name="T:SevenZipNET.Arguments.OutputStreamState">
+            <summary>
+            The states of which each stream can be.
+            </summary>
+        </member>
+        <member name="F:SevenZipNET.Arguments.OutputStreamState.Disabled">
+            <summary>
+            This stream will not be outputted at all.
+            </summary>
+        </member>
+        <member name="F:SevenZipNET.Arguments.OutputStreamState.Stdout">
+            <summary>
+            This stream will be redirected to stdout.
+            </summary>
+        </member>
+        <member name="F:SevenZipNET.Arguments.OutputStreamState.Stderr">
+            <summary>
+            This stream will be redirected to stderr.
+            </summary>
+        </member>
+        <member name="T:SevenZipNET.Arguments.SwitchOutputStream">
+            <summary>
+            A switch to change output stream behaviour.
+            </summary>
+        </member>
+        <member name="M:SevenZipNET.Arguments.SwitchOutputStream.#ctor(SevenZipNET.Arguments.OutputStream,SevenZipNET.Arguments.OutputStreamState)">
+            <param name="stream">The stream of which the state will be set.</param>
+            <param name="state">The state to set the stream to.</param>
+        </member>
+        <member name="T:SevenZipNET.Arguments.SwitchOverwrite">
+            <summary>
+            A switch to indicate if files being extracted will overwrite any existing.
+            </summary>
+        </member>
+        <member name="M:SevenZipNET.Arguments.SwitchOverwrite.#ctor(System.Boolean)">
+            <param name="overwrite">Wheter or not to overwrite any files.</param>
+        </member>
+        <member name="T:SevenZipNET.SevenZipBase">
+            <summary>
+            The base methods and settings for all SevenZip classes.
+            </summary>
+        </member>
+        <member name="T:SevenZipNET.SevenZipBase.ProgressUpdatedEventArgs">
+            <summary>
+            Event arguments which indicate the current progress of an operation.
+            </summary>
+            <param name="progress">The percentage of which the progress of the operation is at.</param>
+        </member>
+        <member name="P:SevenZipNET.SevenZipBase.Path7za">
+            <summary>
+            The path to the 7za.exe binary.
+            </summary>
+        </member>
+        <member name="T:SevenZipNET.CompressionLevel">
+            <summary>
+            The compression level to use when compressing an archive.
+            </summary>
+        </member>
+        <member name="F:SevenZipNET.CompressionLevel.Store">
+            <summary>
+            Stores files, performs no compression.
+            </summary>
+        </member>
+        <member name="F:SevenZipNET.CompressionLevel.Low">
+            <summary>
+            The lowest and fastest amount of compression.
+            </summary>
+        </member>
+        <member name="F:SevenZipNET.CompressionLevel.Fast">
+            <summary>
+            The second lowest and fastest amount of compression.
+            </summary>
+        </member>
+        <member name="F:SevenZipNET.CompressionLevel.Normal">
+            <summary>
+            The default amount of compression.
+            </summary>
+        </member>
+        <member name="F:SevenZipNET.CompressionLevel.High">
+            <summary>
+            The second highest and slowest amount of compression.
+            </summary>
+        </member>
+        <member name="F:SevenZipNET.CompressionLevel.Ultra">
+            <summary>
+            The highest and slowest amount of compression.
+            </summary>
+        </member>
+        <member name="T:SevenZipNET.SevenZipCompressor">
+            <summary>
+            A class to handle compressing files into an archive.
+            </summary>
+        </member>
+        <member name="M:SevenZipNET.SevenZipCompressor.#ctor(System.String)">
+            <param name="filename">The path to the file to be created.</param>
+        </member>
+        <member name="M:SevenZipNET.SevenZipCompressor.#ctor(System.String,System.String,System.Boolean)">
+            <param name="filename">The path to the file to be created.</param>
+            <param name="password">The password used in encryption.</param>
+            <param name="encryptHeaders">If set to true, encrypts file headers</param>
+        </member>
+        <member name="E:SevenZipNET.SevenZipCompressor.ProgressUpdated">
+            <summary>
+            Raised when progress of an operation has been updated.
+            </summary>
+        </member>
+        <member name="M:SevenZipNET.SevenZipCompressor.UpdateProgress(System.Int32)">
+            <summary>
+            Fires the ProgressUpdated event.
+            </summary>
+            <param name="progress">The current progress.</param>
+        </member>
+        <member name="M:SevenZipNET.SevenZipCompressor.CompressDirectory(System.String,SevenZipNET.CompressionLevel)">
+            <summary>
+            Adds a directory to the archive, compressing it in the process.
+            </summary>
+            <param name="dir">The directory to compress.</param>
+            <param name="level">The amount of compression to use.</param>
+        </member>
+        <member name="M:SevenZipNET.SevenZipCompressor.CompressDirectory(System.String,System.String,SevenZipNET.CompressionLevel)">
+            <summary>
+            Adds a directory to the archive, compressing it in the process.
+            </summary>
+            <param name="dir">The directory to compress.</param>
+            <param name="workingdir">The working directory to set.</param>
+            <param name="level">The amount of compression to use.</param>
+        </member>
+        <member name="M:SevenZipNET.SevenZipCompressor.GetCompressionArguments(SevenZipNET.CompressionLevel)">
+            <summary>
+            Returns default arguments for compression.
+            </summary>
+            <param name="level">The amount of compression to use.</param>
+            <returns>ArgumentBuilder with default compression parameters.</returns>
+        </member>
+        <member name="T:SevenZipNET.WProcess">
+            <summary>
+            A wrapper for the <c>Process</c> class.
+            </summary>
+            <seealso cref="T:System.Diagnostics.Process"/>
+        </member>
+        <member name="M:SevenZipNET.WProcess.#ctor(System.String)">
+            <param name="arguments">The string of arguments to start the process with.</param>
+        </member>
+        <member name="M:SevenZipNET.WProcess.#ctor(SevenZipNET.Arguments.ArgumentBuilder)">
+            <param name="builder">The argument builder to retrieve arguments from.</param>
+        </member>
+        <member name="M:SevenZipNET.WProcess.UpdateProgress(System.Int32)">
+            <summary>
+            Fires the ProgressUpdated event.
+            </summary>
+            <param name="progress">The current progress.</param>
+        </member>
+        <member name="M:SevenZipNET.WProcess.Execute">
+            <summary>
+            Starts a process and returns the stdout stream output.
+            </summary>
+            <returns>Output console data.</returns>
+        </member>
+        <member name="T:SevenZipNET.SevenZipExtractor">
+            <summary>
+            Provides reading and extraction functionality from an already existing archive.
+            </summary>
+        </member>
+        <member name="E:SevenZipNET.SevenZipExtractor.ProgressUpdated">
+            <summary>
+            Raised when progress of an operation has been updated.
+            </summary>
+        </member>
+        <member name="M:SevenZipNET.SevenZipExtractor.UpdateProgress(System.Int32)">
+            <summary>
+            Fires the ProgressUpdated event.
+            </summary>
+            <param name="progress">The current progress.</param>
+        </member>
+        <member name="M:SevenZipNET.SevenZipExtractor.#ctor(System.String)">
+            <param name="filename">Path to the archive.</param>
+        </member>
+        <member name="M:SevenZipNET.SevenZipExtractor.Index">
+            <summary>
+            Returns a list of files inside the archive.
+            </summary>
+            <returns>The list of files inside the archive.</returns>
+        </member>
+        <member name="P:SevenZipNET.SevenZipExtractor.Files">
+            <summary>
+            Information relating to each file stored inside the archive.
+            </summary>
+        </member>
+        <member name="P:SevenZipNET.SevenZipExtractor.UnpackedSize">
+            <summary>
+            The total size of the contents of the archive when unpacked.
+            </summary>
+        </member>
+        <member name="M:SevenZipNET.SevenZipExtractor.ExtractAll(System.String,System.Boolean,System.Boolean)">
+            <summary>
+            Extracts everything in the archive to the specified destination.
+            </summary>
+            <param name="destination">The directory to extract archive contents to.</param>
+            <param name="overwrite">Whether or not to overwrite existing files. Default false.</param>
+            <param name="keepStructure">Whether or not to retain folder structure in the archive. Default true.</param>
+        </member>
+        <member name="M:SevenZipNET.SevenZipExtractor.ExtractWildcard(System.String,System.String,System.Boolean,System.Boolean)">
+            <summary>
+            Extracts everything in the archive to the specified destination.
+            </summary>
+            <param name="destination">The directory to extract archive contents to.</param>
+            <param name="wildcard">The wildcard(s) to extract.</param>
+            <param name="overwrite">Whether or not to overwrite existing files. Default false.</param>
+            <param name="keepStructure">Whether or not to retain folder structure in the archive. Default true.</param>
+        </member>
+        <member name="M:SevenZipNET.SevenZipExtractor.TestArchive">
+            <summary>
+            Tests the archive to see if it is valid.
+            </summary>
+            <returns>If the archive is valid.</returns>
+        </member>
+    </members>
+</doc>
