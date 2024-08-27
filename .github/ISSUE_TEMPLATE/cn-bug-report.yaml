@@ -1,5 +1,5 @@
 name: Bug 反馈（使用中文）
-description: 闪退,无法进入游戏,缺字,乱码等
+description: 出现了一些小问题？
 labels: ['错误']
 body:
   - type: checkboxes
@@ -13,8 +13,6 @@ body:
         required: true
       - label: 我已查看最新测试版本的更新内容，并未提及该 bug 已被修复的情况
         required: true
-      - label: 我使用的汉化补丁版本已为最新版
-        required: true
   - type: textarea
     id: describe
     attributes:
@@ -27,11 +25,8 @@ body:
     attributes:
       label: 日志文件
       description: |
-        **模组问题 上传 游戏目录下的 `游戏日志.log`日志文件，并说明问题出现的大致位置**
-        **框架问题 上传 游戏目录下的 `框架日志.log`日志文件，并说明问题出现的大致位置**
-        **如果没有 上传 游戏目录\MelonLoader文件夹中的 `Latest.log`日志文件，并说明问题出现的大致位置**
+        **上传 /Logs 目录下的最新日志文件**
         **请直接将完整的文件拖拽进来，而非自己裁切的片段；若文件体积过大可压缩后再上传**
-        **这些日志文件每次关闭游戏都会刷新，请确保正确且有效**
     validations:
       required: true
   - type: textarea
