@@ -21,8 +21,10 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Net;
+using System.Net.Http;
 using System.Reflection;
 using System.Security.Cryptography;
+using System.Security.Policy;
 using System.Text;
 using System.Windows;
 using System.Windows.Threading;
@@ -42,16 +44,20 @@ namespace LLC_MOD_Toolbox
         public static int InstallPhase = 0;
         private DispatcherTimer progressTimer;
         private float progressPercentage = 0;
-        public const string VERSION = "0.7.0";
+        // GreyTest 灰度测试2.0
+        public static string greytestUrl = string.Empty;
+        public static bool greytestStatus = false;
+        public const string VERSION = "1.0.0";
         public MainWindow() => InitializeComponent();
 
-        private void WindowLoaded(object sender, RoutedEventArgs e)
+        private async void WindowLoaded(object sender, RoutedEventArgs e)
         {
             logger.Info("——————————");
             logger.Info("工具箱已进入加载流程。");
             logger.Info("We have a lift off.");
             logger.Info("WPF架构工具箱 版本：" + VERSION + " 。");
-            RefreshPage();
+            await RefreshPage();
+            await ChangeEEPic("https://dl.kr.zeroasso.top/ee_pic/public/public.png");
             CheckToolboxUpdate(VERSION);
             InitNode();
             CheckLimbusCompanyPath();
@@ -70,7 +76,7 @@ namespace LLC_MOD_Toolbox
             InstallPhase = 0;
             progressPercentage = 0;
             await ChangeProgressValue(progressPercentage);
-            RefreshPage();
+            await RefreshPage();
         }
         private async Task InstallBepInEx()
         {
@@ -530,7 +536,7 @@ namespace LLC_MOD_Toolbox
         /// </summary>
         /// <param name="Url">网址</param>
         /// <returns></returns>
-        public string GetURLText(string Url)
+        public static string GetURLText(string Url)
         {
             try
             {
@@ -549,7 +555,7 @@ namespace LLC_MOD_Toolbox
         /// 打开指定网址。
         /// </summary>
         /// <param name="Url">网址</param>
-        public void OpenUrl(string Url)
+        public static void OpenUrl(string Url)
         {
             logger.Info("打开了网址：" + Url);
             ProcessStartInfo psi = new(Url)
@@ -562,7 +568,7 @@ namespace LLC_MOD_Toolbox
         /// 用于错误处理。
         /// </summary>
         /// <param name="ex"></param>
-        public void ErrorReport(Exception ex)
+        public static void ErrorReport(Exception ex)
         {
             logger.Error("出现了问题：\n" + ex.ToString());
             System.Windows.MessageBox.Show("运行中出现了问题，若要反馈，请带上链接或日志。\n——————————\n" + ex.ToString(), "错误", MessageBoxButton.OK, MessageBoxImage.Error);
@@ -572,13 +578,13 @@ namespace LLC_MOD_Toolbox
         /// </summary>
         /// <param name="ex"></param>
         /// <param name="CloseWindow">是否关闭窗体。</param>
-        public void ErrorReport(Exception ex, bool CloseWindow)
+        public static void ErrorReport(Exception ex, bool CloseWindow)
         {
             logger.Error("出现了问题：\n" + ex.ToString());
             System.Windows.MessageBox.Show("运行中出现了问题，若要反馈，请带上链接或日志。\n——————————\n" + ex.ToString(), "错误", MessageBoxButton.OK, MessageBoxImage.Error);
             if (CloseWindow)
             {
-                Close();
+                System.Windows.Application.Current.Shutdown();
             }
         }
         /// <summary>
@@ -607,7 +613,7 @@ namespace LLC_MOD_Toolbox
                     logger.Info("安装器存在更新。");
                     System.Windows.MessageBox.Show("安装器存在更新。\n点击确定进入官网下载最新版本工具箱", "更新提醒", MessageBoxButton.OK, MessageBoxImage.Warning);
                     OpenUrl("https://www.zeroasso.top/docs/install/autoinstall");
-                    Close();
+                    System.Windows.Application.Current.Shutdown();
                 }
                 logger.Info("没有更新。");
             }
@@ -731,6 +737,106 @@ namespace LLC_MOD_Toolbox
                 DeleteFile(limbusCompanyDir + "/BepInEx-IL2CPP-x64.7z");
                 DeleteFile(limbusCompanyDir + "/LimbusLocalize_BIE.7z");
                 DeleteFile(limbusCompanyDir + "/tmpchinese_BIE.7z");
+        }
+        #endregion
+        #region 灰度测试
+        private async void StartGreytestButtonClick(object sender, RoutedEventArgs e)
+        {
+            logger.Info("Z-TECH 灰度测试客户端程序 v2.0 启动。（并不是");
+            if (!greytestStatus)
+            {
+                string token = await GetGreytestBoxText();
+                if (token == string.Empty || token == "请输入秘钥")
+                {
+                    logger.Info("Token为空。");
+                    System.Windows.MessageBox.Show("请输入有效的Token。", "提示", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
+                logger.Info("Token为：" + token);
+                string tokenUrl = "https://dev.zeroasso.top/api/" + token + ".json";
+                using (HttpClient client = new HttpClient())
+                {
+                    try
+                    {
+                        HttpResponseMessage response = await client.GetAsync(tokenUrl);
+                        if (response.StatusCode != System.Net.HttpStatusCode.NotFound)
+                        {
+                            logger.Info("秘钥有效。");
+                        }
+                        else
+                        {
+                            logger.Info("秘钥无效。");
+                            System.Windows.MessageBox.Show("请输入有效的Token。", "提示", MessageBoxButton.OK, MessageBoxImage.Error);
+                            return;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        ErrorReport(ex, false);
+                        return;
+                    }
+                }
+                try
+                {
+                    string tokenJson = GetURLText(tokenUrl);
+                    var tokenObject = JSONNode.Parse(tokenJson).AsObject;
+                    string runStatus = tokenObject["status"].Value;
+                    if (runStatus == "test")
+                    {
+                        logger.Info("Token状态正常。");
+                    }
+                    else
+                    {
+                        logger.Info("Token已停止测试。");
+                        System.Windows.MessageBox.Show("Token已停止测试。", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
+                        return;
+                    }
+                    string fileName = tokenObject["file_name"].Value;
+                    string note = tokenObject["note"].Value;
+                    logger.Info("Token信息：" + token + "混淆文件名：" + fileName + "备注：" + note);
+                    await ChangeLogoToTest();
+                    System.Windows.MessageBox.Show("目前Token有效。\n-------------\nToken信息：\n秘钥：" + token + "\n混淆文件名：" + fileName + "\n备注：" + note + "\n-------------\n灰度测试模式已开启。\n请在自动安装安装此秘钥对应版本汉化。\n秘钥信息请勿外传。", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
+                    greytestStatus = true;
+                    greytestUrl = "https://dev.zeroasso.top/files/LimbusLocalize_Dev_" + fileName + ".7z";
+                }
+                catch (Exception ex)
+                {
+                    ErrorReport(ex, false);
+                    return;
+                }
+            }
+            else
+            {
+                System.Windows.MessageBox.Show("灰度测试模式已开启。\n请在自动安装安装此秘钥对应版本汉化。\n若需要正常使用或更换秘钥，请重启工具箱。", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+        }
+        private async Task<string> GetGreytestBoxText()
+        {
+            string? text = string.Empty;
+            await this.Dispatcher.BeginInvoke(() =>
+            {
+                text = GreytestTokenBox.Text;
+            });
+            return text;
+        }
+        private async Task ChangeLogoToTest()
+        {
+            await this.Dispatcher.BeginInvoke(() =>
+            {
+                ZALogo.Visibility = Visibility.Visible;
+            });
+        }
+        private async Task InstallGreytestMod()
+        {
+            await Task.Run(async () =>
+            {
+                logger.Info("灰度测试模式已开启。开始安装灰度模组。");
+                InstallPhase = 3;
+                await DownloadFileAsync(greytestUrl, limbusCompanyDir + "/LimbusLocalize_Dev.7z");
+                Unarchive(limbusCompanyDir + "/LimbusLocalize_Dev.7z", limbusCompanyDir);
+                logger.Info("灰度模组安装完成。");
+            });
         }
         #endregion
     }

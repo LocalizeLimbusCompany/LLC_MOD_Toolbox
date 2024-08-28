@@ -32,6 +32,18 @@
                 </Setter.Value>
             </Setter>
         </Style>
+        <Style x:Key="BlackWhite" TargetType="Button">
+            <Setter Property="OverridesDefaultStyle" Value="True" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Name="border" BorderThickness="0" BorderBrush="Black" Background="{TemplateBinding Background}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
     </Window.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
@@ -104,6 +116,7 @@
         </Button>
         <Image Grid.Column="1" HorizontalAlignment="Left" Height="516" VerticalAlignment="Top" Width="796" Source="/Picture/ControlBoard.png" Margin="142,84,0,0" Grid.RowSpan="2" Grid.ColumnSpan="2"/>
         <Image Grid.Column="2" Opacity="1" HorizontalAlignment="Left" Height="17" Margin="569,18,0,0" Grid.Row="1" VerticalAlignment="Top" Width="91" Source="/Picture/DisableButton.png"/>
+        <Image x:Name="ZALogo"  Visibility="Collapsed" HorizontalAlignment="Left" Height="123" Margin="7,-8,0,0" VerticalAlignment="Top" Width="123" Source="/Picture/ZALogoA.png" Grid.Column="1"/>
         <Image x:Name="AutoInstallDisabled" Grid.Column="2" HorizontalAlignment="Left" Height="17" Margin="128,18,0,0" Grid.Row="1" VerticalAlignment="Top" Width="91" Source="/Picture/DisableButton.png"/>
         <Image x:Name="ManualInstallDisabled" Grid.Column="2" HorizontalAlignment="Left" Height="17" Margin="275,18,0,0" Grid.Row="1" VerticalAlignment="Top" Width="91" Source="/Picture/DisableButton.png"/>
         <Image x:Name="ReplaceInstallDisabled" Grid.Column="2" HorizontalAlignment="Left" Height="17" Margin="424,18,0,0" Grid.Row="1" VerticalAlignment="Top" Width="90" Source="/Picture/DisableButton.png"/>
@@ -286,13 +299,36 @@
                 </EventTrigger>
             </Button.Triggers>
         </Button>
+        <Button x:Name="EEOption" Visibility="Collapsed" IsHitTestVisible="False" Grid.Column="1" Content="收到文件传输" HorizontalAlignment="Left" Margin="10,305,0,0" Grid.Row="1" VerticalAlignment="Top" Height="33" Width="127" Background="Transparent" BorderBrush="Transparent" BorderThickness="0" FontFamily="/Fonts/#lianmengqiyilushuaizhengruiheiti" FontWeight="Regular" FontSize="20" Foreground="#FFFFEED4" Style="{StaticResource NoHover}" Click="EEOptionClick">
+            <Button.Triggers>
+                <EventTrigger RoutedEvent="Button.MouseEnter">
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation Storyboard.TargetName="EEHover"
+Storyboard.TargetProperty="Opacity"
+From="0" To="1" Duration="0:0:0.3"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger>
+                <EventTrigger RoutedEvent="Button.MouseLeave">
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation Storyboard.TargetName="EEHover"
+Storyboard.TargetProperty="Opacity"
+From="1" To="0" Duration="0:0:0.3"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger>
+            </Button.Triggers>
+        </Button>
         <Image x:Name="InstallHover" HorizontalAlignment="Left" IsHitTestVisible="False" Opacity="0" Height="49" Margin="15,47,0,0" Grid.Row="1" VerticalAlignment="Top" Width="168" Source="/Picture/ButtonHover.png" Grid.ColumnSpan="3"/>
         <Image x:Name="ConfigHover" HorizontalAlignment="Left" IsHitTestVisible="False" Opacity="0" Height="49" Margin="15,96,0,0" Grid.Row="1" VerticalAlignment="Top" Width="168" Source="/Picture/ButtonHover.png" Grid.ColumnSpan="3"/>
         <Image x:Name="GreytestHover" HorizontalAlignment="Left" IsHitTestVisible="False" Opacity="0" Height="49" Margin="15,146,0,0" Grid.Row="1" VerticalAlignment="Top" Width="168" Source="/Picture/ButtonHover.png" Grid.ColumnSpan="3"/>
         <Image x:Name="SettingHover" HorizontalAlignment="Left" IsHitTestVisible="False" Opacity="0" Height="48" Margin="15,197,0,0" Grid.Row="1" VerticalAlignment="Top" Width="168" Source="/Picture/ButtonHover.png" Grid.ColumnSpan="3"/>
         <Image x:Name="AboutHover" HorizontalAlignment="Left" IsHitTestVisible="False" Opacity="0" Height="49" Margin="15,247,0,0" Grid.Row="1" VerticalAlignment="Top" Width="168" Source="/Picture/ButtonHover.png" Grid.ColumnSpan="3"/>
+        <Image x:Name="EEHover" HorizontalAlignment="Left" IsHitTestVisible="False" Opacity="0" Height="49" Margin="15,296,0,0" Grid.Row="1" VerticalAlignment="Top" Width="168" Source="/Picture/ButtonHover.png" Grid.ColumnSpan="3"/>
         <Grid x:Name="AutoInstallPage" Visibility="Collapsed" Panel.ZIndex="5" Margin="62,55,54,32" Grid.Column="2" Grid.Row="1">
-            
+
             <Button x:Name="AutoInstallStartButton" HorizontalAlignment="Center" Margin="0,151,0,0" VerticalAlignment="Top" Panel.ZIndex="3" Width="196" Height="70" Background="Transparent" BorderBrush="Transparent" BorderThickness="0" Style="{StaticResource NoHover}" Click="InstallButtonClick">
                 <Button.Content>
                     <Image Height="70" Width="195" Source="/Picture/Install.png" />
@@ -342,7 +378,66 @@ From="1" To="0" Duration="0:0:0.3"/>
             <Label Content="THIS IS A Config TestLabel" HorizontalAlignment="Center" Margin="0,137,0,0" VerticalAlignment="Top" Height="61" Width="494" FontSize="20" Foreground="#FFFFEED4" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Medium"/>
         </Grid>
         <Grid x:Name="GreytestPage" Visibility="Collapsed" Panel.ZIndex="5" Margin="62,55,54,32" Grid.Column="2" Grid.Row="1">
-            <Label Content="THIS IS A Greytest TestLabel" HorizontalAlignment="Center" Margin="0,137,0,0" VerticalAlignment="Top" Height="61" Width="494" FontSize="20" Foreground="#FFFFEED4" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Medium"/>
+            <Label HorizontalAlignment="Center" Margin="0,30,0,0" VerticalAlignment="Top" Height="97" Width="644" FontSize="20" Foreground="#FFFFEED4" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Medium">
+                <TextBlock Text="请您在文本框当中输入提供的测试密钥，并点击确认。成功进入灰度测试模式之后，请使用自动安装页面进行安装。此时，自动安装的文件将会是密钥相对应的灰度测试文件。" TextWrapping="Wrap"/>
+            </Label>
+            <Image HorizontalAlignment="Left" Height="10" Margin="10,140,0,0" VerticalAlignment="Top" Width="626" Source="/Picture/NormalLine.png"/>
+            <Label Content="秘钥" HorizontalAlignment="Left" Margin="18,162,0,0" VerticalAlignment="Top" FontSize="20" Foreground="#FFFFEED4" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Bold"/>
+            <TextBox x:Name="GreytestTokenBox" HorizontalAlignment="Left" Margin="87,169,0,0" TextWrapping="Wrap" Text="请输入秘钥" VerticalAlignment="Top" Width="539" Height="25" FontSize="16" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Medium"/>
+            <Image x:Name="GreytestButtonHover" Panel.ZIndex="5" IsHitTestVisible="False" Opacity="0" HorizontalAlignment="Left" Height="34" Margin="548,199,0,0" VerticalAlignment="Top" Width="80" Source="/Picture/SettingButtonHover.png"/>
+            <Button HorizontalAlignment="Left" Margin="551,202,0,0" VerticalAlignment="Top" Height="28" Width="74" Style="{StaticResource NoHover}" Background="#FFFFEED4" Click="StartGreytestButtonClick">
+                <Button.Clip>
+                    <RectangleGeometry Rect="0,0,74,28" RadiusX="3" RadiusY="3"/>
+                </Button.Clip>
+                <Button.Triggers>
+                    <EventTrigger RoutedEvent="Button.MouseEnter">
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <DoubleAnimation Storyboard.TargetName="GreytestButtonHover"
+Storyboard.TargetProperty="Opacity"
+From="0" To="1" Duration="0:0:0.3"/>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </EventTrigger>
+                    <EventTrigger RoutedEvent="Button.MouseLeave">
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <DoubleAnimation Storyboard.TargetName="GreytestButtonHover"
+Storyboard.TargetProperty="Opacity"
+From="1" To="0" Duration="0:0:0.3"/>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </EventTrigger>
+                </Button.Triggers>
+            </Button>
+            <Label Content="校验" HorizontalAlignment="Left" IsHitTestVisible="False" Margin="568,199,0,0" VerticalAlignment="Top" Height="38" Width="52" FontSize="16" Foreground="Black" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Heavy"/>
+            <Image x:Name="GreytestInfoButtonHover" Panel.ZIndex="5" IsHitTestVisible="False" Opacity="0" HorizontalAlignment="Left" Height="34" Margin="447,199,0,0" VerticalAlignment="Top" Width="80" Source="/Picture/SettingButtonHover.png"/>
+            <Button HorizontalAlignment="Left" Margin="450,202,0,0" VerticalAlignment="Top" Height="28" Width="74" Style="{StaticResource NoHover}" Background="#FFFFEED4" Click="GreytestInfoButtonClick">
+                <Button.Clip>
+                    <RectangleGeometry Rect="0,0,74,28" RadiusX="3" RadiusY="3"/>
+                </Button.Clip>
+                <Button.Triggers>
+                    <EventTrigger RoutedEvent="Button.MouseEnter">
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <DoubleAnimation Storyboard.TargetName="GreytestInfoButtonHover"
+Storyboard.TargetProperty="Opacity"
+From="0" To="1" Duration="0:0:0.3"/>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </EventTrigger>
+                    <EventTrigger RoutedEvent="Button.MouseLeave">
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <DoubleAnimation Storyboard.TargetName="GreytestInfoButtonHover"
+Storyboard.TargetProperty="Opacity"
+From="1" To="0" Duration="0:0:0.3"/>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </EventTrigger>
+                </Button.Triggers>
+            </Button>
+            <Label Content="了解更多" HorizontalAlignment="Left" IsHitTestVisible="False" Margin="450,199,0,0" VerticalAlignment="Top" Height="38" Width="74" FontSize="16" Foreground="Black" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Heavy"/>
         </Grid>
         <Grid x:Name="SettingsPage" Visibility="Collapsed" Panel.ZIndex="5" Margin="62,55,54,32" Grid.Column="2" Grid.Row="1">
             <Label Content="切换节点" HorizontalAlignment="Left" Margin="100,28,0,0" VerticalAlignment="Top" Height="41" Width="494" FontSize="22" Foreground="#FFFFEED4" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Medium"/>
@@ -353,7 +448,7 @@ From="1" To="0" Duration="0:0:0.3"/>
             </ComboBox>
             <Label Content="卸载模组" HorizontalAlignment="Left" Margin="100,80,0,0" VerticalAlignment="Top" Height="41" Width="494" FontSize="22" Foreground="#FFFFEED4" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Medium"/>
             <Image HorizontalAlignment="Center" Height="249" VerticalAlignment="Center" Width="524" Source="/Picture/SettingsLine.png"/>
-            <Image x:Name="UninstallHover" IsHitTestVisible="False" Opacity="0" HorizontalAlignment="Left" Height="34" Margin="511,84,0,0" VerticalAlignment="Top" Width="80" Source="/Picture/SettingButtonHover.png"/>
+            <Image x:Name="UninstallHover" Panel.ZIndex="5" IsHitTestVisible="False" Opacity="0" HorizontalAlignment="Left" Height="34" Margin="511,84,0,0" VerticalAlignment="Top" Width="80" Source="/Picture/SettingButtonHover.png"/>
             <Button HorizontalAlignment="Left" Margin="514,87,0,0" VerticalAlignment="Top" Height="28" Width="74" Style="{StaticResource NoHover}" Background="#FFFFEED4" Click="UninstallButtonClick">
                 <Button.Clip>
                     <RectangleGeometry Rect="0,0,74,28" RadiusX="3" RadiusY="3"/>
@@ -384,6 +479,11 @@ From="1" To="0" Duration="0:0:0.3"/>
         <Grid x:Name="AboutPage" Visibility="Collapsed" Panel.ZIndex="5" Margin="62,55,54,32" Grid.Column="2" Grid.Row="1">
             <Label Content="THIS IS A About TestLabel" HorizontalAlignment="Center" Margin="0,137,0,0" VerticalAlignment="Top" Height="61" Width="494" FontSize="20" Foreground="#FFFFEED4" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Medium"/>
         </Grid>
+        <Grid x:Name="EEPage" Visibility="Visible" Panel.ZIndex="5" Margin="62,55,54,32" Grid.Column="2" Grid.Row="1">
+            <Image x:Name="EEPageImage" HorizontalAlignment="Left" Height="330" Margin="12,27,0,0" VerticalAlignment="Top" Width="630"/>
+        </Grid>
+        <Button Grid.Column="1" HorizontalAlignment="Center" Margin="0,350,0,0" Grid.Row="1" VerticalAlignment="Top" Height="41" Width="155" Style="{StaticResource BlackWhite}" Background="Transparent" BorderBrush="Transparent" BorderThickness="0" MouseDoubleClick="WhiteBlackClickDouble" />
+        <Button Grid.Column="1" HorizontalAlignment="Center" Margin="0,400,0,0" Grid.Row="1" VerticalAlignment="Top" Height="41" Width="155" Style="{StaticResource BlackWhite}" Background="Transparent" BorderBrush="Transparent" BorderThickness="0" MouseDoubleClick="WhiteBlackClickDouble"/>
     </Grid>
 </Window>
  

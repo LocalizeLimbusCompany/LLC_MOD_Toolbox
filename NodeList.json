@@ -5,6 +5,11 @@
     "isDefault": true
   },
   {
+    "name": "阿里云-零协会-韩国首尔",
+    "endpoint": "https://dl.kr.zeroasso.top/files/",
+    "isDefault": false
+  },
+  {
     "name": "天翼云盘",
     "endpoint": "https://node.zeroasso.top/d/tianyi/",
     "isDefault": false

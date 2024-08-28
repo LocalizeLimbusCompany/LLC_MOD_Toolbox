@@ -33,14 +33,19 @@
     <None Remove="Picture\Installing.png" />
     <None Remove="Picture\LittleBlack.png" />
     <None Remove="Picture\LittleWhite.png" />
+    <None Remove="Picture\NormalLine.png" />
+    <None Remove="Picture\SettingButton.png" />
     <None Remove="Picture\SettingButtonHover.png" />
     <None Remove="Picture\SettingsLine.png" />
     <None Remove="Picture\StartInstallBackground.png" />
+    <None Remove="Picture\ZALogoA.png" />
     <None Remove="TitleBar.png" />
   </ItemGroup>
 
   <ItemGroup>
     <Content Include="favicon.ico" />
+    <Resource Include="Picture\NormalLine.png" />
+    <Resource Include="Picture\SettingButton.png" />
     <Resource Include="Picture\SettingButtonHover.png" />
   </ItemGroup>
 
@@ -82,6 +87,7 @@
 
   <ItemGroup>
     <Resource Include="Picture\TitleBar.png" />
+    <Resource Include="Picture\ZALogoA.png" />
   </ItemGroup>
 
   <ItemGroup>

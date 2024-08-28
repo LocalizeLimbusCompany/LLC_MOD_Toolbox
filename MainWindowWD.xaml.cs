@@ -8,6 +8,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace LLC_MOD_Toolbox
@@ -17,10 +18,13 @@ namespace LLC_MOD_Toolbox
         public static string nowPage = "install";
         public static string nowInstallPage = "auto";
         public static bool isInstalling = false;
+        public static bool eeOpening = false;
+        public static bool eeEntered = false;
+        public static int meow1 = 0;
         /// <summary>
         /// 刷新页面状态。
         /// </summary>
-        public void RefreshPage()
+        public async Task RefreshPage()
         {
             logger.Info("刷新页面状态中。");
             // 隐藏按钮Hover
@@ -76,33 +80,37 @@ namespace LLC_MOD_Toolbox
             {
                 if (nowInstallPage == "auto")
                 {
-                    MakeGridStatuExceptSelf(AutoInstallPage);
+                    await MakeGridStatuExceptSelf(AutoInstallPage);
                 }
                 else if (nowInstallPage == "manual")
                 {
-                    MakeGridStatuExceptSelf(ManualInstallPage);
+                    await MakeGridStatuExceptSelf(ManualInstallPage);
                 }
                 else
                 {
-                    MakeGridStatuExceptSelf(ReplaceInstallPage);
+                    await MakeGridStatuExceptSelf(ReplaceInstallPage);
                 }
             }
             // 配置页面相关控件
             else if (nowPage == "config")
             {
-                MakeGridStatuExceptSelf(ConfigPage);
+                await MakeGridStatuExceptSelf(ConfigPage);
             }
             else if (nowPage == "greytest")
             {
-                MakeGridStatuExceptSelf(GreytestPage);
+                await MakeGridStatuExceptSelf(GreytestPage);
             }
             else if (nowPage == "settings")
             {
-                MakeGridStatuExceptSelf(SettingsPage);
+                await MakeGridStatuExceptSelf(SettingsPage);
+            }
+            else if (nowPage == "about")
+            {
+                await MakeGridStatuExceptSelf(AboutPage);
             }
             else
             {
-                MakeGridStatuExceptSelf(AboutPage);
+                await MakeGridStatuExceptSelf(EEPage);
             }
             logger.Info("刷新页面状态完成。");
         }
@@ -110,7 +118,7 @@ namespace LLC_MOD_Toolbox
         /// 使输入的Grid可见，隐藏其他Grid。
         /// </summary>
         /// <param name="g"></param>
-        public void MakeGridStatuExceptSelf(Grid g)
+        public async Task MakeGridStatuExceptSelf(Grid g)
         {
             List<Grid> gridList =
             [
@@ -121,6 +129,7 @@ namespace LLC_MOD_Toolbox
                 GreytestPage,
                 SettingsPage,
                 AboutPage,
+                EEPage
             ];
             if (gridList.Contains(g))
             {
@@ -131,9 +140,23 @@ namespace LLC_MOD_Toolbox
             {
                 return;
             }
-            foreach(Grid grid in gridList)
+            foreach (Grid grid in gridList)
             {
                 MakeGridStatu(grid, false);
+            }
+            if (g != EEPage && eeOpening == false && eeEntered == true)
+            {
+                await ChangeEEVB(false);
+                eeEntered = false;
+            }
+            if (g == EEPage)
+            {
+                eeOpening = false;
+                eeEntered = true;
+            }
+            else
+            {
+                eeEntered = false;
             }
         }
         /// <summary>
@@ -207,56 +230,61 @@ namespace LLC_MOD_Toolbox
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void AutoInstallButtonClick(object sender, RoutedEventArgs e)
+        private async void AutoInstallButtonClick(object sender, RoutedEventArgs e)
         {
             nowInstallPage = "auto";
-            RefreshPage();
+            await RefreshPage();
         }
-        private void ManualInstallButtonClick(object sender, RoutedEventArgs e)
+        private async void ManualInstallButtonClick(object sender, RoutedEventArgs e)
         {
             nowInstallPage = "manual";
-            RefreshPage();
+            await RefreshPage();
         }
-        private void ReplaceInstallButtonClick(object sender, RoutedEventArgs e)
+        private async void ReplaceInstallButtonClick(object sender, RoutedEventArgs e)
         {
             nowInstallPage = "replace";
-            RefreshPage();
+            await RefreshPage();
         }
         /// <summary>
         /// 处理安装选项按钮。
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void InstallOptionClick(object sender, RoutedEventArgs e)
+        private async void InstallOptionClick(object sender, RoutedEventArgs e)
         {
             nowPage = "install";
             nowInstallPage = "auto";
-            RefreshPage();
+            await RefreshPage();
         }
         /// <summary>
         /// 处理配置选项按钮。
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void ConfigOptionClick(object sender, RoutedEventArgs e)
+        private async void ConfigOptionClick(object sender, RoutedEventArgs e)
         {
             nowPage = "config";
-            RefreshPage();
+            await RefreshPage();
         }
-        private void GreytestOptionClick(object sender, RoutedEventArgs e)
+        private async void GreytestOptionClick(object sender, RoutedEventArgs e)
         {
             nowPage = "greytest";
-            RefreshPage();
+            await RefreshPage();
         }
-        private void SettingsOptionClick(object sender, RoutedEventArgs e)
+        private async void SettingsOptionClick(object sender, RoutedEventArgs e)
         {
             nowPage = "settings";
-            RefreshPage();
+            await RefreshPage();
         }
-        private void AboutOptionClick(object sender, RoutedEventArgs e)
+        private async void AboutOptionClick(object sender, RoutedEventArgs e)
         {
             nowPage = "about";
-            RefreshPage();
+            await RefreshPage();
+        }
+        private async void EEOptionClick(object sender, RoutedEventArgs e)
+        {
+            nowPage = "ee";
+            await RefreshPage();
         }
         /// <summary>
         /// 处理自动安装页面的安装按钮。
@@ -266,7 +294,7 @@ namespace LLC_MOD_Toolbox
         private async void InstallButtonClick(object sender, RoutedEventArgs e)
         {
             isInstalling = true;
-            RefreshPage();
+            await RefreshPage();
             logger.Info("开始安装。");
             InstallPhase = 0;
             Process[] limbusProcess = Process.GetProcessesByName("LimbusCompany");
@@ -292,7 +320,14 @@ namespace LLC_MOD_Toolbox
                     return;
                 }
                 await InstallTMP();
-                await InstallMod();
+                if (!greytestStatus)
+                {
+                    await InstallMod();
+                }
+                else
+                {
+                    await InstallGreytestMod();
+                }
             }
             catch (Exception ex)
             {
@@ -314,7 +349,9 @@ namespace LLC_MOD_Toolbox
                 }
             }
             isInstalling = false;
-            RefreshPage();
+            progressPercentage = 0;
+            await ChangeProgressValue(0);
+            await RefreshPage();
         }
         public async Task ChangeProgressValue(float value)
         {
@@ -327,6 +364,47 @@ namespace LLC_MOD_Toolbox
                 FullProgress.Clip = rectGeometry;
             });
             logger.Info("更改进度完成。");
+        }
+        private void GreytestInfoButtonClick(object sender, RoutedEventArgs e)
+        {
+            OpenUrl("https://www.zeroasso.top/docs/community/llcdev");
+        }
+        private async void WhiteBlackClickDouble(object sender, MouseButtonEventArgs e)
+        {
+            if (!eeOpening && !eeEntered)
+            {
+                logger.Info("不要点了>_<");
+                eeOpening = true;
+                eeEntered = false;
+                await ChangeEEVB(true);
+            }
+        }
+        public async Task ChangeEEVB(bool b)
+        {
+            if (b)
+            {
+                await this.Dispatcher.BeginInvoke(() =>
+                {
+                    EEOption.Visibility = Visibility.Visible;
+                    EEOption.IsHitTestVisible = true;
+                });
+            }
+            else
+            {
+                await this.Dispatcher.BeginInvoke(() =>
+                {
+                    EEOption.Visibility = Visibility.Collapsed;
+                    EEOption.IsHitTestVisible = false;
+                });
+            }
+        }
+        public async Task ChangeEEPic(string url)
+        {
+            logger.Info("更改彩蛋图片为： " + url);
+            await this.Dispatcher.BeginInvoke(() =>
+            {
+                EEPageImage.Source = BitmapFrame.Create(new Uri(url), BitmapCreateOptions.None, BitmapCacheOption.Default);
+            });
         }
     }
 }
