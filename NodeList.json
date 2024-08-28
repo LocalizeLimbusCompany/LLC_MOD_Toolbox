@@ -1,0 +1,22 @@
+﻿[
+  {
+    "name": "Onedrive For Business",
+    "endpoint": "https://node.zeroasso.top/d/od/",
+    "isDefault": true
+  },
+  {
+    "name": "天翼云盘",
+    "endpoint": "https://node.zeroasso.top/d/tianyi/",
+    "isDefault": false
+  },
+  {
+    "name": "联通云盘",
+    "endpoint": "https://node.zeroasso.top/d/unicom/",
+    "isDefault": false
+  },
+  {
+    "name": "移动云盘",
+    "endpoint": "https://node.zeroasso.top/d/mobile/",
+    "isDefault": false
+  }
+]

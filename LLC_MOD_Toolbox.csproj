@@ -7,6 +7,8 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
     <SupportedOSPlatformVersion>7.0</SupportedOSPlatformVersion>
+    <ApplicationIcon>favicon.ico</ApplicationIcon>
+    <UseWindowsForms>True</UseWindowsForms>
   </PropertyGroup>
 
   <ItemGroup>
@@ -23,11 +25,30 @@
     <None Remove="Minimize.png" />
     <None Remove="MinimizeHover.png" />
     <None Remove="Picture\ButtonHover.png" />
+    <None Remove="Picture\EmptyProgress.png" />
+    <None Remove="Picture\favicon.ico" />
+    <None Remove="Picture\FullProgress.png" />
+    <None Remove="Picture\Install.png" />
+    <None Remove="Picture\InstallHover.png" />
+    <None Remove="Picture\Installing.png" />
+    <None Remove="Picture\LittleBlack.png" />
+    <None Remove="Picture\LittleWhite.png" />
+    <None Remove="Picture\SettingButtonHover.png" />
+    <None Remove="Picture\SettingsLine.png" />
+    <None Remove="Picture\StartInstallBackground.png" />
     <None Remove="TitleBar.png" />
   </ItemGroup>
 
   <ItemGroup>
+    <Content Include="favicon.ico" />
+    <Resource Include="Picture\SettingButtonHover.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Downloader" Version="3.1.2" />
     <PackageReference Include="log4net" Version="2.0.17" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="Squid-Box.SevenZipSharp" Version="1.6.2.24" />
   </ItemGroup>
 
   <ItemGroup>
@@ -45,8 +66,18 @@
     <Resource Include="Picture\ControlBoard.png" />
     <Resource Include="Picture\ControlBoardHover.png" />
     <Resource Include="Picture\DisableButton.png" />
+    <Resource Include="Picture\EmptyProgress.png" />
+    <Resource Include="favicon.ico" />
+    <Resource Include="Picture\FullProgress.png" />
+    <Resource Include="Picture\Install.png" />
+    <Resource Include="Picture\InstallHover.png" />
+    <Resource Include="Picture\Installing.png" />
+    <Resource Include="Picture\LittleBlack.png" />
+    <Resource Include="Picture\LittleWhite.png" />
     <Resource Include="Picture\Minimize.png" />
     <Resource Include="Picture\MinimizeHover.png" />
+    <Resource Include="Picture\SettingsLine.png" />
+    <Resource Include="Picture\StartInstallBackground.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -54,7 +85,13 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="7z.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="App.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="NodeList.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
