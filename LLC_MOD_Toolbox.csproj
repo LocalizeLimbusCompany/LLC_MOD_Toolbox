@@ -9,6 +9,21 @@
     <SupportedOSPlatformVersion>7.0</SupportedOSPlatformVersion>
     <ApplicationIcon>favicon.ico</ApplicationIcon>
     <UseWindowsForms>True</UseWindowsForms>
+    <Configurations>Debug;Release;LLC_MOD_Toolbox;ReleaseLLCMT</Configurations>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'" />
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <Optimize>False</Optimize>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='LLC_MOD_Toolbox|AnyCPU'">
+    <Optimize>False</Optimize>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseLLCMT|AnyCPU'">
+    <Optimize>True</Optimize>
   </PropertyGroup>
 
   <ItemGroup>
@@ -31,6 +46,8 @@
     <None Remove="Picture\Install.png" />
     <None Remove="Picture\InstallHover.png" />
     <None Remove="Picture\Installing.png" />
+    <None Remove="Picture\LinkBT.png" />
+    <None Remove="Picture\LinkBTHover.png" />
     <None Remove="Picture\LittleBlack.png" />
     <None Remove="Picture\LittleWhite.png" />
     <None Remove="Picture\NormalLine.png" />
@@ -44,6 +61,8 @@
 
   <ItemGroup>
     <Content Include="favicon.ico" />
+    <Resource Include="Picture\LinkBT.png" />
+    <Resource Include="Picture\LinkBTHover.png" />
     <Resource Include="Picture\NormalLine.png" />
     <Resource Include="Picture\SettingButton.png" />
     <Resource Include="Picture\SettingButtonHover.png" />
@@ -95,6 +114,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="App.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="config.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="NodeList.json">

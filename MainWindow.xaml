@@ -123,7 +123,7 @@
         <Image x:Name="AutoInstallHover" Grid.Column="2" Opacity="0" HorizontalAlignment="Left" Height="46" Margin="105,4,0,0" Grid.Row="1" VerticalAlignment="Top" Width="134" Source="/Picture/ControlBoardHover.png"/>
         <Image x:Name="ManualInstallHover" Grid.Column="2" Opacity="0" HorizontalAlignment="Left" Height="46" Margin="252,4,0,0" Grid.Row="1" VerticalAlignment="Top" Width="134" Source="/Picture/ControlBoardHover.png"/>
         <Image x:Name="ReplaceInstallHover" Grid.Column="2" Opacity="0" HorizontalAlignment="Left" Height="46" Margin="400,4,0,0" Grid.Row="1" VerticalAlignment="Top" Width="134" Source="/Picture/ControlBoardHover.png"/>
-        <Button x:Name="AutoInstallButton" Grid.Column="2" Content="自动安装" HorizontalAlignment="Left" Margin="122,4,0,0" Grid.Row="1" VerticalAlignment="Top" Height="40" Width="101" Background="Transparent" BorderBrush="Transparent" BorderThickness="0" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Bold" Foreground="#FFFFEED4" FontSize="18" Style="{StaticResource NoHover}" Click="AutoInstallButtonClick">
+        <Button x:Name="AutoInstallButton" Grid.Column="2" Visibility="Collapsed" Content="自动安装" HorizontalAlignment="Left" Margin="122,4,0,0" Grid.Row="1" VerticalAlignment="Top" Height="40" Width="101" Background="Transparent" BorderBrush="Transparent" BorderThickness="0" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Bold" Foreground="#FFFFEED4" FontSize="18" Style="{StaticResource NoHover}" Click="AutoInstallButtonClick">
             <Button.Triggers>
                 <EventTrigger RoutedEvent="Button.MouseEnter">
                     <BeginStoryboard>
@@ -145,7 +145,7 @@
                 </EventTrigger>
             </Button.Triggers>
         </Button>
-        <Button x:Name="ManualInstallButton" Grid.Column="2" Content="手动安装" HorizontalAlignment="Left" Margin="268,4,0,0" Grid.Row="1" VerticalAlignment="Top" Height="40" Width="102" Background="Transparent" BorderBrush="Transparent" BorderThickness="0" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Bold" Foreground="#FFFFEED4" FontSize="18" Style="{StaticResource NoHover}" Click="ManualInstallButtonClick">
+        <Button x:Name="ManualInstallButton" Visibility="Collapsed" Grid.Column="2" Content="手动安装" HorizontalAlignment="Left" Margin="268,4,0,0" Grid.Row="1" VerticalAlignment="Top" Height="40" Width="102" Background="Transparent" BorderBrush="Transparent" BorderThickness="0" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Bold" Foreground="#FFFFEED4" FontSize="18" Style="{StaticResource NoHover}" Click="ManualInstallButtonClick">
             <Button.Triggers>
                 <EventTrigger RoutedEvent="Button.MouseEnter">
                     <BeginStoryboard>
@@ -167,7 +167,7 @@
                 </EventTrigger>
             </Button.Triggers>
         </Button>
-        <Button x:Name="ReplaceInstallButton" Grid.Column="2" Content="文件覆盖" HorizontalAlignment="Left" Margin="416,4,0,0" Grid.Row="1" VerticalAlignment="Top" Height="40" Width="102" Background="Transparent" BorderBrush="Transparent" BorderThickness="0" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Bold" Foreground="#FFFFEED4" FontSize="18" Style="{StaticResource NoHover}" Click="ReplaceInstallButtonClick">
+        <Button x:Name="ReplaceInstallButton" Grid.Column="2" Visibility="Collapsed" Content="文件覆盖" HorizontalAlignment="Left" Margin="416,4,0,0" Grid.Row="1" VerticalAlignment="Top" Height="40" Width="102" Background="Transparent" BorderBrush="Transparent" BorderThickness="0" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Bold" Foreground="#FFFFEED4" FontSize="18" Style="{StaticResource NoHover}" Click="ReplaceInstallButtonClick">
             <Button.Triggers>
                 <EventTrigger RoutedEvent="Button.MouseEnter">
                     <BeginStoryboard>
@@ -211,12 +211,12 @@
                 </EventTrigger>
             </Button.Triggers>
         </Button>
-        <Button x:Name="ConfigOption" Grid.Column="1" Content="模组配置" HorizontalAlignment="Left" Margin="10,105,0,0" Grid.Row="1" VerticalAlignment="Top" Height="33" Width="127" Background="Transparent" BorderBrush="Transparent" BorderThickness="0" FontFamily="/Fonts/#lianmengqiyilushuaizhengruiheiti" FontWeight="Regular" FontSize="20" Foreground="#FFFFEED4" Style="{StaticResource NoHover}" Click="ConfigOptionClick">
+        <Button x:Name="LinkOption" Grid.Column="1" Content="链   接" HorizontalAlignment="Left" Margin="10,105,0,0" Grid.Row="1" VerticalAlignment="Top" Height="33" Width="127" Background="Transparent" BorderBrush="Transparent" BorderThickness="0" FontFamily="/Fonts/#lianmengqiyilushuaizhengruiheiti" FontWeight="Regular" FontSize="20" Foreground="#FFFFEED4" Style="{StaticResource NoHover}" Click="LinkOptionClick">
             <Button.Triggers>
                 <EventTrigger RoutedEvent="Button.MouseEnter">
                     <BeginStoryboard>
                         <Storyboard>
-                            <DoubleAnimation Storyboard.TargetName="ConfigHover"
+                            <DoubleAnimation Storyboard.TargetName="LinkHover"
  Storyboard.TargetProperty="Opacity"
  From="0" To="1" Duration="0:0:0.3"/>
                         </Storyboard>
@@ -225,7 +225,7 @@
                 <EventTrigger RoutedEvent="Button.MouseLeave">
                     <BeginStoryboard>
                         <Storyboard>
-                            <DoubleAnimation Storyboard.TargetName="ConfigHover"
+                            <DoubleAnimation Storyboard.TargetName="LinkHover"
  Storyboard.TargetProperty="Opacity"
  From="1" To="0" Duration="0:0:0.3"/>
                         </Storyboard>
@@ -299,7 +299,7 @@
                 </EventTrigger>
             </Button.Triggers>
         </Button>
-        <Button x:Name="EEOption" Visibility="Collapsed" IsHitTestVisible="False" Grid.Column="1" Content="收到文件传输" HorizontalAlignment="Left" Margin="10,305,0,0" Grid.Row="1" VerticalAlignment="Top" Height="33" Width="127" Background="Transparent" BorderBrush="Transparent" BorderThickness="0" FontFamily="/Fonts/#lianmengqiyilushuaizhengruiheiti" FontWeight="Regular" FontSize="20" Foreground="#FFFFEED4" Style="{StaticResource NoHover}" Click="EEOptionClick">
+        <Button x:Name="EEOption" Visibility="Collapsed" IsHitTestVisible="False" Grid.Column="1" Content="画   廊" HorizontalAlignment="Left" Margin="10,305,0,0" Grid.Row="1" VerticalAlignment="Top" Height="33" Width="127" Background="Transparent" BorderBrush="Transparent" BorderThickness="0" FontFamily="/Fonts/#lianmengqiyilushuaizhengruiheiti" FontWeight="Regular" FontSize="20" Foreground="#FFFFEED4" Style="{StaticResource NoHover}" Click="EEOptionClick">
             <Button.Triggers>
                 <EventTrigger RoutedEvent="Button.MouseEnter">
                     <BeginStoryboard>
@@ -322,7 +322,7 @@ From="1" To="0" Duration="0:0:0.3"/>
             </Button.Triggers>
         </Button>
         <Image x:Name="InstallHover" HorizontalAlignment="Left" IsHitTestVisible="False" Opacity="0" Height="49" Margin="15,47,0,0" Grid.Row="1" VerticalAlignment="Top" Width="168" Source="/Picture/ButtonHover.png" Grid.ColumnSpan="3"/>
-        <Image x:Name="ConfigHover" HorizontalAlignment="Left" IsHitTestVisible="False" Opacity="0" Height="49" Margin="15,96,0,0" Grid.Row="1" VerticalAlignment="Top" Width="168" Source="/Picture/ButtonHover.png" Grid.ColumnSpan="3"/>
+        <Image x:Name="LinkHover" HorizontalAlignment="Left" IsHitTestVisible="False" Opacity="0" Height="49" Margin="15,96,0,0" Grid.Row="1" VerticalAlignment="Top" Width="168" Source="/Picture/ButtonHover.png" Grid.ColumnSpan="3"/>
         <Image x:Name="GreytestHover" HorizontalAlignment="Left" IsHitTestVisible="False" Opacity="0" Height="49" Margin="15,146,0,0" Grid.Row="1" VerticalAlignment="Top" Width="168" Source="/Picture/ButtonHover.png" Grid.ColumnSpan="3"/>
         <Image x:Name="SettingHover" HorizontalAlignment="Left" IsHitTestVisible="False" Opacity="0" Height="48" Margin="15,197,0,0" Grid.Row="1" VerticalAlignment="Top" Width="168" Source="/Picture/ButtonHover.png" Grid.ColumnSpan="3"/>
         <Image x:Name="AboutHover" HorizontalAlignment="Left" IsHitTestVisible="False" Opacity="0" Height="49" Margin="15,247,0,0" Grid.Row="1" VerticalAlignment="Top" Width="168" Source="/Picture/ButtonHover.png" Grid.ColumnSpan="3"/>
@@ -369,13 +369,258 @@ From="1" To="0" Duration="0:0:0.3"/>
             <Image HorizontalAlignment="Left" Height="92" Margin="530,238,0,0" VerticalAlignment="Top" Width="104" Source="/Picture/LittleWhite.png"/>
         </Grid>
         <Grid x:Name="ManualInstallPage" Visibility="Collapsed" Panel.ZIndex="5" Margin="62,55,54,32" Grid.Column="2" Grid.Row="1">
-            <Label Content="THIS IS A ManualInstall TestLabel" HorizontalAlignment="Center" Margin="0,137,0,0" VerticalAlignment="Top" Height="61" Width="494" FontSize="20" Foreground="#FFFFEED4" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Medium"/>
+            <Label Content="手动安装功能尚未开启，敬请期待后续版本。" HorizontalAlignment="Center" Margin="0,137,0,0" VerticalAlignment="Top" Height="61" Width="494" FontSize="20" Foreground="#FFFFEED4" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Medium"/>
         </Grid>
         <Grid x:Name="ReplaceInstallPage" Visibility="Collapsed" Panel.ZIndex="5" Margin="62,55,54,32" Grid.Column="2" Grid.Row="1">
-            <Label Content="THIS IS A ReplaceInstall TestLabel" HorizontalAlignment="Center" Margin="0,137,0,0" VerticalAlignment="Top" Height="61" Width="494" FontSize="20" Foreground="#FFFFEED4" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Medium"/>
+            <Label Content="文件覆盖功能尚未开启，敬请期待后续版本。" HorizontalAlignment="Center" Margin="0,137,0,0" VerticalAlignment="Top" Height="61" Width="494" FontSize="20" Foreground="#FFFFEED4" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Medium"/>
         </Grid>
-        <Grid x:Name="ConfigPage" Visibility="Collapsed" Panel.ZIndex="5" Margin="62,55,54,32" Grid.Column="2" Grid.Row="1">
-            <Label Content="THIS IS A Config TestLabel" HorizontalAlignment="Center" Margin="0,137,0,0" VerticalAlignment="Top" Height="61" Width="494" FontSize="20" Foreground="#FFFFEED4" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Medium"/>
+        <Grid x:Name="LinkPage" Visibility="Visible" Panel.ZIndex="5" Margin="62,55,54,32" Grid.Column="2" Grid.Row="1">
+            <Button x:Name="LinkButton1" HorizontalAlignment="Left" Margin="37,40,0,0" VerticalAlignment="Top" Height="40" Width="262" Opacity="1" Background="Transparent" BorderBrush="Transparent" BorderThickness="0" Style="{StaticResource NoHover}" Click="LinkButtonClick">
+                <Button.Content>
+                    <Image Height="40" Width="262" Source="/Picture/LinkBT.png"/>
+                </Button.Content>
+                <Button.Triggers>
+                    <EventTrigger RoutedEvent="Button.MouseEnter">
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <DoubleAnimation Storyboard.TargetName="LinkButtonHover1"
+Storyboard.TargetProperty="Opacity"
+From="0" To="1" Duration="0:0:0.3"/>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </EventTrigger>
+                    <EventTrigger RoutedEvent="Button.MouseLeave">
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <DoubleAnimation Storyboard.TargetName="LinkButtonHover1"
+Storyboard.TargetProperty="Opacity"
+From="1" To="0" Duration="0:0:0.3"/>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </EventTrigger>
+                </Button.Triggers>
+            </Button>
+            <Button x:Name="LinkButton3" Grid.Column="2" HorizontalAlignment="Left" Margin="37,85,0,0" VerticalAlignment="Top" Height="40" Width="262" Opacity="1" Background="Transparent" BorderBrush="Transparent" BorderThickness="0" Style="{StaticResource NoHover}" Click="LinkButtonClick">
+                <Button.Content>
+                    <Image Height="40" Width="262" Source="/Picture/LinkBT.png"/>
+                </Button.Content>
+                <Button.Triggers>
+                    <EventTrigger RoutedEvent="Button.MouseEnter">
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <DoubleAnimation Storyboard.TargetName="LinkButtonHover3"
+Storyboard.TargetProperty="Opacity"
+From="0" To="1" Duration="0:0:0.3"/>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </EventTrigger>
+                    <EventTrigger RoutedEvent="Button.MouseLeave">
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <DoubleAnimation Storyboard.TargetName="LinkButtonHover3"
+Storyboard.TargetProperty="Opacity"
+From="1" To="0" Duration="0:0:0.3"/>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </EventTrigger>
+                </Button.Triggers>
+            </Button>
+            <Button x:Name="LinkButton5" Grid.Column="2" HorizontalAlignment="Left" Margin="37,130,0,0" VerticalAlignment="Top" Height="40" Width="262" Opacity="1" Background="Transparent" BorderBrush="Transparent" BorderThickness="0" Style="{StaticResource NoHover}" Click="LinkButtonClick">
+                <Button.Content>
+                    <Image Height="40" Width="262" Source="/Picture/LinkBT.png"/>
+                </Button.Content>
+                <Button.Triggers>
+                    <EventTrigger RoutedEvent="Button.MouseEnter">
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <DoubleAnimation Storyboard.TargetName="LinkButtonHover5"
+Storyboard.TargetProperty="Opacity"
+From="0" To="1" Duration="0:0:0.3"/>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </EventTrigger>
+                    <EventTrigger RoutedEvent="Button.MouseLeave">
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <DoubleAnimation Storyboard.TargetName="LinkButtonHover5"
+Storyboard.TargetProperty="Opacity"
+From="1" To="0" Duration="0:0:0.3"/>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </EventTrigger>
+                </Button.Triggers>
+            </Button>
+            <Button x:Name="LinkButton7" Grid.Column="2" HorizontalAlignment="Left" Margin="37,175,0,0" VerticalAlignment="Top" Height="40" Width="262" Opacity="1" Background="Transparent" BorderBrush="Transparent" BorderThickness="0" Style="{StaticResource NoHover}" Click="LinkButtonClick">
+                <Button.Content>
+                    <Image Height="40" Width="262" Source="/Picture/LinkBT.png"/>
+                </Button.Content>
+                <Button.Triggers>
+                    <EventTrigger RoutedEvent="Button.MouseEnter">
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <DoubleAnimation Storyboard.TargetName="LinkButtonHover7"
+Storyboard.TargetProperty="Opacity"
+From="0" To="1" Duration="0:0:0.3"/>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </EventTrigger>
+                    <EventTrigger RoutedEvent="Button.MouseLeave">
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <DoubleAnimation Storyboard.TargetName="LinkButtonHover7"
+Storyboard.TargetProperty="Opacity"
+From="1" To="0" Duration="0:0:0.3"/>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </EventTrigger>
+                </Button.Triggers>
+            </Button>
+            <Button Grid.Column="2" HorizontalAlignment="Left" Margin="37,220,0,0" VerticalAlignment="Top" Height="40" Width="262" Opacity="1" Background="Transparent" BorderBrush="Transparent" BorderThickness="0" Style="{StaticResource BlackWhite}">
+                <Button.Content>
+                    <Image Height="40" Width="262" Source="/Picture/LinkBT.png"/>
+                </Button.Content>
+            </Button>
+            <Button Grid.Column="2" HorizontalAlignment="Left" Margin="37,265,0,0" VerticalAlignment="Top" Height="40" Width="262" Opacity="1" Background="Transparent" BorderBrush="Transparent" BorderThickness="0" Style="{StaticResource BlackWhite}">
+                <Button.Content>
+                    <Image Height="40" Width="262" Source="/Picture/LinkBT.png"/>
+                </Button.Content>
+            </Button>
+            <Button Grid.Column="2" HorizontalAlignment="Left" Margin="37,310,0,0" VerticalAlignment="Top" Height="40" Width="262" Opacity="1" Background="Transparent" BorderBrush="Transparent" BorderThickness="0" Style="{StaticResource BlackWhite}">
+                <Button.Content>
+                    <Image Height="40" Width="262" Source="/Picture/LinkBT.png"/>
+                </Button.Content>
+            </Button>
+            <Button x:Name="LinkButton2" Grid.Column="2" HorizontalAlignment="Left" Margin="352,40,0,0" VerticalAlignment="Top" Height="40" Width="262" Opacity="1" Background="Transparent" BorderBrush="Transparent" BorderThickness="0" Style="{StaticResource NoHover}" Click="LinkButtonClick">
+                <Button.Content>
+                    <Image Height="40" Width="262" Source="/Picture/LinkBT.png"/>
+                </Button.Content>
+                <Button.Triggers>
+                    <EventTrigger RoutedEvent="Button.MouseEnter">
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <DoubleAnimation Storyboard.TargetName="LinkButtonHover2"
+Storyboard.TargetProperty="Opacity"
+From="0" To="1" Duration="0:0:0.3"/>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </EventTrigger>
+                    <EventTrigger RoutedEvent="Button.MouseLeave">
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <DoubleAnimation Storyboard.TargetName="LinkButtonHover2"
+Storyboard.TargetProperty="Opacity"
+From="1" To="0" Duration="0:0:0.3"/>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </EventTrigger>
+                </Button.Triggers>
+            </Button>
+            <Button x:Name="LinkButton4" Grid.Column="2" HorizontalAlignment="Left" Margin="352,85,0,0" VerticalAlignment="Top" Height="40" Width="262" Opacity="1" Background="Transparent" BorderBrush="Transparent" BorderThickness="0" Style="{StaticResource NoHover}" Click="LinkButtonClick">
+                <Button.Content>
+                    <Image Height="40" Width="262" Source="/Picture/LinkBT.png"/>
+                </Button.Content>
+                <Button.Triggers>
+                    <EventTrigger RoutedEvent="Button.MouseEnter">
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <DoubleAnimation Storyboard.TargetName="LinkButtonHover4"
+Storyboard.TargetProperty="Opacity"
+From="0" To="1" Duration="0:0:0.3"/>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </EventTrigger>
+                    <EventTrigger RoutedEvent="Button.MouseLeave">
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <DoubleAnimation Storyboard.TargetName="LinkButtonHover4"
+Storyboard.TargetProperty="Opacity"
+From="1" To="0" Duration="0:0:0.3"/>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </EventTrigger>
+                </Button.Triggers>
+            </Button>
+            <Button x:Name="LinkButton6" Grid.Column="2" HorizontalAlignment="Left" Margin="352,130,0,0" VerticalAlignment="Top" Height="40" Width="262" Opacity="1" Background="Transparent" BorderBrush="Transparent" BorderThickness="0" Style="{StaticResource NoHover}" Click="LinkButtonClick">
+                <Button.Content>
+                    <Image Height="40" Width="262" Source="/Picture/LinkBT.png"/>
+                </Button.Content>
+                <Button.Triggers>
+                    <EventTrigger RoutedEvent="Button.MouseEnter">
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <DoubleAnimation Storyboard.TargetName="LinkButtonHover6"
+Storyboard.TargetProperty="Opacity"
+From="0" To="1" Duration="0:0:0.3"/>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </EventTrigger>
+                    <EventTrigger RoutedEvent="Button.MouseLeave">
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <DoubleAnimation Storyboard.TargetName="LinkButtonHover6"
+Storyboard.TargetProperty="Opacity"
+From="1" To="0" Duration="0:0:0.3"/>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </EventTrigger>
+                </Button.Triggers>
+            </Button>
+            <Button x:Name="LinkButton8" Grid.Column="2" HorizontalAlignment="Left" Margin="352,175,0,0" VerticalAlignment="Top" Height="40" Width="262" Opacity="1" Background="Transparent" BorderBrush="Transparent" BorderThickness="0" Style="{StaticResource NoHover}" Click="LinkButtonClick">
+                <Button.Content>
+                    <Image Height="40" Width="262" Source="/Picture/LinkBT.png"/>
+                </Button.Content>
+                <Button.Triggers>
+                    <EventTrigger RoutedEvent="Button.MouseEnter">
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <DoubleAnimation Storyboard.TargetName="LinkButtonHover8"
+Storyboard.TargetProperty="Opacity"
+From="0" To="1" Duration="0:0:0.3"/>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </EventTrigger>
+                    <EventTrigger RoutedEvent="Button.MouseLeave">
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <DoubleAnimation Storyboard.TargetName="LinkButtonHover8"
+Storyboard.TargetProperty="Opacity"
+From="1" To="0" Duration="0:0:0.3"/>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </EventTrigger>
+                </Button.Triggers>
+            </Button>
+            <Button Grid.Column="2" HorizontalAlignment="Left" Margin="352,220,0,0" VerticalAlignment="Top" Height="40" Width="262" Opacity="1" Background="Transparent" BorderBrush="Transparent" BorderThickness="0" Style="{StaticResource BlackWhite}">
+                <Button.Content>
+                    <Image Height="40" Width="262" Source="/Picture/LinkBT.png"/>
+                </Button.Content>
+            </Button>
+            <Button Grid.Column="2" HorizontalAlignment="Left" Margin="352,265,0,0" VerticalAlignment="Top" Height="40" Width="262" Opacity="1" Background="Transparent" BorderBrush="Transparent" BorderThickness="0" Style="{StaticResource BlackWhite}">
+                <Button.Content>
+                    <Image Height="40" Width="262" Source="/Picture/LinkBT.png"/>
+                </Button.Content>
+            </Button>
+            <Button Grid.Column="2" HorizontalAlignment="Left" Margin="352,310,0,0" VerticalAlignment="Top" Height="40" Width="262" Opacity="1" Background="Transparent" BorderBrush="Transparent" BorderThickness="0" Style="{StaticResource BlackWhite}">
+                <Button.Content>
+                    <Image Height="40" Width="262" Source="/Picture/LinkBT.png"/>
+                </Button.Content>
+            </Button>
+            <Image x:Name="LinkButtonHover1" IsHitTestVisible="False" Opacity="0" HorizontalAlignment="Left" Height="46" Margin="34,38,0,0" VerticalAlignment="Top" Width="268" Source="/Picture/LinkBTHover.png"/>
+            <Image x:Name="LinkButtonHover2" IsHitTestVisible="False" Opacity="0" HorizontalAlignment="Left" Height="46" Margin="349,37,0,0" VerticalAlignment="Top" Width="268" Source="/Picture/LinkBTHover.png"/>
+            <Image x:Name="LinkButtonHover3" IsHitTestVisible="False" Opacity="0" HorizontalAlignment="Left" Height="46" Margin="34,82,0,0" VerticalAlignment="Top" Width="268" Source="/Picture/LinkBTHover.png"/>
+            <Image x:Name="LinkButtonHover4" IsHitTestVisible="False" Opacity="0" HorizontalAlignment="Left" Height="46" Margin="349,82,0,0" VerticalAlignment="Top" Width="268" Source="/Picture/LinkBTHover.png"/>
+            <Image x:Name="LinkButtonHover5" IsHitTestVisible="False" Opacity="0" HorizontalAlignment="Left" Height="46" Margin="34,127,0,0" VerticalAlignment="Top" Width="268" Source="/Picture/LinkBTHover.png"/>
+            <Image x:Name="LinkButtonHover6" IsHitTestVisible="False" Opacity="0" HorizontalAlignment="Left" Height="46" Margin="349,127,0,0" VerticalAlignment="Top" Width="268" Source="/Picture/LinkBTHover.png"/>
+            <Image x:Name="LinkButtonHover7" IsHitTestVisible="False" Opacity="0" HorizontalAlignment="Left" Height="46" Margin="34,172,0,0" VerticalAlignment="Top" Width="268" Source="/Picture/LinkBTHover.png"/>
+            <Image x:Name="LinkButtonHover8" IsHitTestVisible="False" Opacity="0" HorizontalAlignment="Left" Height="46" Margin="349,172,0,0" VerticalAlignment="Top" Width="268" Source="/Picture/LinkBTHover.png"/>
+            <Label Content="都市零协会文档站" IsHitTestVisible="False" HorizontalAlignment="Left" Margin="37,40,0,0" VerticalAlignment="Top" FontSize="20" Foreground="#FFFFEED4" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Bold" Height="37" Width="262" HorizontalContentAlignment="Center"/>
+            <Label Content="LLC on GitHub" IsHitTestVisible="False" HorizontalAlignment="Left" Margin="37,85,0,0" VerticalAlignment="Top" FontSize="20" Foreground="#FFFFEED4" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Bold" Height="37" Width="262" HorizontalContentAlignment="Center"/>
+            <Label Content="翻译项目译者" IsHitTestVisible="False" HorizontalAlignment="Left" Margin="37,130,0,0" VerticalAlignment="Top" FontSize="20" Foreground="#FFFFEED4" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Bold" Height="37" Width="262" HorizontalContentAlignment="Center"/>
+            <Label Content="零协会周边微店(柔造)" IsHitTestVisible="False" HorizontalAlignment="Left" Margin="37,175,0,0" VerticalAlignment="Top" FontSize="20" Foreground="#FFFFEED4" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Bold" Height="37" Width="262" HorizontalContentAlignment="Center"/>
+            <Label Content="都市零协会 BiliBili" IsHitTestVisible="False" HorizontalAlignment="Left" Margin="352,40,0,0" VerticalAlignment="Top" FontSize="20" Foreground="#FFFFEED4" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Bold" Height="37" Width="262" HorizontalContentAlignment="Center"/>
+            <Label Content="爱发电主页" IsHitTestVisible="False" HorizontalAlignment="Left" Margin="352,85,0,0" VerticalAlignment="Top" FontSize="20" Foreground="#FFFFEED4" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Bold" Height="37" Width="262" HorizontalContentAlignment="Center"/>
+            <Label Content="翻译平台Paratranz" IsHitTestVisible="False" HorizontalAlignment="Left" Margin="352,130,0,0" VerticalAlignment="Top" FontSize="20" Foreground="#FFFFEED4" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Bold" Height="37" Width="262" HorizontalContentAlignment="Center"/>
+            <Label Content="边狱公司灰机Wiki" IsHitTestVisible="False" HorizontalAlignment="Left" Margin="352,175,0,0" VerticalAlignment="Top" FontSize="20" Foreground="#FFFFEED4" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Bold" Height="37" Width="262" HorizontalContentAlignment="Center"/>
         </Grid>
         <Grid x:Name="GreytestPage" Visibility="Collapsed" Panel.ZIndex="5" Margin="62,55,54,32" Grid.Column="2" Grid.Row="1">
             <Label HorizontalAlignment="Center" Margin="0,30,0,0" VerticalAlignment="Top" Height="97" Width="644" FontSize="20" Foreground="#FFFFEED4" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Medium">
@@ -477,7 +722,9 @@ From="1" To="0" Duration="0:0:0.3"/>
             <Label Content="卸载" HorizontalAlignment="Left" IsHitTestVisible="False" Margin="531,83,0,0" VerticalAlignment="Top" Height="38" Width="52" FontSize="16" Foreground="Black" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Heavy"/>
         </Grid>
         <Grid x:Name="AboutPage" Visibility="Collapsed" Panel.ZIndex="5" Margin="62,55,54,32" Grid.Column="2" Grid.Row="1">
-            <Label Content="THIS IS A About TestLabel" HorizontalAlignment="Center" Margin="0,137,0,0" VerticalAlignment="Top" Height="61" Width="494" FontSize="20" Foreground="#FFFFEED4" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Medium"/>
+            <Label HorizontalAlignment="Center" Margin="0,15,0,0" VerticalAlignment="Top" Height="357" Width="644" FontSize="15" Foreground="#FFFFEED4" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Medium">
+                <TextBlock Text="都市零协会工具箱 (LLC_MOD_Toolbox) 是服务于都市零协会汉化模组 (LocalizeLimbusCompany) 的自动化安装工具。本软件使用库的许可证请于零协会官网 (https://www.zeroasso.top) 查看。&#10;- LLCMT工具箱&#10;  - 代码实现：曾小皮、10291029&#10;  - 美术设计：记得保存&#10;- LLC翻译模组&#10;  - 翻译文本：零协会翻译组全体译者&#10;  - 汉化模组代码：奈芙Nephthys&#10;  - 汉化模组字体：茜、北岚&#10;- 特别鸣谢&#10;  - 服务器运维 &amp; 开发：曾小皮 &#10;  - 零协会广播局全体创作者&#10;  - 翻译工具：Paratranz&#10;&#10;人无语言则茫然无依。" TextWrapping="Wrap" Height="351"/>
+            </Label>
         </Grid>
         <Grid x:Name="EEPage" Visibility="Visible" Panel.ZIndex="5" Margin="62,55,54,32" Grid.Column="2" Grid.Row="1">
             <Image x:Name="EEPageImage" HorizontalAlignment="Left" Height="330" Margin="12,27,0,0" VerticalAlignment="Top" Width="630"/>

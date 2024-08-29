@@ -15,12 +15,11 @@ namespace LLC_MOD_Toolbox
 {
     public partial class MainWindow : Window
     {
-        public static string nowPage = "install";
-        public static string nowInstallPage = "auto";
-        public static bool isInstalling = false;
-        public static bool eeOpening = false;
-        public static bool eeEntered = false;
-        public static int meow1 = 0;
+        private static string nowPage = "install";
+        private static string nowInstallPage = "auto";
+        private static bool isInstalling = false;
+        private static bool eeOpening = false;
+        private static bool eeEntered = false;
         /// <summary>
         /// 刷新页面状态。
         /// </summary>
@@ -92,9 +91,9 @@ namespace LLC_MOD_Toolbox
                 }
             }
             // 配置页面相关控件
-            else if (nowPage == "config")
+            else if (nowPage == "link")
             {
-                await MakeGridStatuExceptSelf(ConfigPage);
+                await MakeGridStatuExceptSelf(LinkPage);
             }
             else if (nowPage == "greytest")
             {
@@ -125,7 +124,7 @@ namespace LLC_MOD_Toolbox
                 AutoInstallPage,
                 ManualInstallPage,
                 ReplaceInstallPage,
-                ConfigPage,
+                LinkPage,
                 GreytestPage,
                 SettingsPage,
                 AboutPage,
@@ -261,9 +260,9 @@ namespace LLC_MOD_Toolbox
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private async void ConfigOptionClick(object sender, RoutedEventArgs e)
+        private async void LinkOptionClick(object sender, RoutedEventArgs e)
         {
-            nowPage = "config";
+            nowPage = "link";
             await RefreshPage();
         }
         private async void GreytestOptionClick(object sender, RoutedEventArgs e)
@@ -286,89 +285,25 @@ namespace LLC_MOD_Toolbox
             nowPage = "ee";
             await RefreshPage();
         }
-        /// <summary>
-        /// 处理自动安装页面的安装按钮。
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private async void InstallButtonClick(object sender, RoutedEventArgs e)
-        {
-            isInstalling = true;
-            await RefreshPage();
-            logger.Info("开始安装。");
-            InstallPhase = 0;
-            Process[] limbusProcess = Process.GetProcessesByName("LimbusCompany");
-            if (limbusProcess.Length > 0)
-            {
-                logger.Warn("LimbusCompany仍然开启。");
-                MessageBoxResult DialogResult = System.Windows.MessageBox.Show("检测到 Limbus Company 仍然处于开启状态！\n建议您关闭游戏后继续安装模组。\n若您已经关闭了 Limbus Company，请点击确定，否则请点击取消返回。", "警告", MessageBoxButton.OKCancel, MessageBoxImage.Hand);
-                if (DialogResult == MessageBoxResult.Cancel)
-                {
-                    return;
-                }
-                logger.Warn("用户选择无视警告。");
-            }
-            try
-            {
-                StartProgressTimer();
-                await InstallBepInEx();
-                if (!File.Exists(Path.Combine(limbusCompanyDir, "winhttp.dll")))
-                {
-                    logger.Error("winhttp.dll不存在。");
-                    System.Windows.MessageBox.Show("winhttp.dll不存在。\n请尝试关闭杀毒软件后再次安装。");
-                    await StopInstall();
-                    return;
-                }
-                await InstallTMP();
-                if (!greytestStatus)
-                {
-                    await InstallMod();
-                }
-                else
-                {
-                    await InstallGreytestMod();
-                }
-            }
-            catch (Exception ex)
-            {
-                ErrorReport(ex, true);
-            }
-            InstallPhase = 0;
-            logger.Info("安装完成。");
-            MessageBoxResult RunResult = System.Windows.MessageBox.Show("安装已完成！\n点击“确定”立刻运行边狱公司。\n点击“取消”关闭弹窗。\n加载时请耐心等待。", "完成", MessageBoxButton.OKCancel);
-            if (RunResult == MessageBoxResult.OK)
-            {
-                try
-                {
-                    Process.Start("steam://rungameid/1973530");
-                }
-                catch (Exception ex)
-                {
-                    logger.Error("出现了问题： " + ex.ToString());
-                    System.Windows.MessageBox.Show("出现了问题。\n" + ex.ToString());
-                }
-            }
-            isInstalling = false;
-            progressPercentage = 0;
-            await ChangeProgressValue(0);
-            await RefreshPage();
-        }
         public async Task ChangeProgressValue(float value)
         {
             value = (float)Math.Round(value, 1);
-            logger.Info("安装进度：" + value + "%");
-            RectangleGeometry rectGeometry = new RectangleGeometry();
-            rectGeometry.Rect = new Rect(0, 0, 6.24 * value, 50);
+            logger.Debug("安装进度：" + value + "%");
+            RectangleGeometry rectGeometry = new RectangleGeometry
+            {
+                Rect = new Rect(0, 0, 6.24 * value, 50)
+            };
             await this.Dispatcher.BeginInvoke(() =>
             {
                 FullProgress.Clip = rectGeometry;
             });
-            logger.Info("更改进度完成。");
+            logger.Debug("更改进度完成。");
         }
         private void GreytestInfoButtonClick(object sender, RoutedEventArgs e)
         {
             OpenUrl("https://www.zeroasso.top/docs/community/llcdev");
         }
+        #region 彩蛋
         private async void WhiteBlackClickDouble(object sender, MouseButtonEventArgs e)
         {
             if (!eeOpening && !eeEntered)
@@ -400,11 +335,57 @@ namespace LLC_MOD_Toolbox
         }
         public async Task ChangeEEPic(string url)
         {
-            logger.Info("更改彩蛋图片为： " + url);
+            logger.Debug("更改彩蛋图片为： " + url);
             await this.Dispatcher.BeginInvoke(() =>
             {
                 EEPageImage.Source = BitmapFrame.Create(new Uri(url), BitmapCreateOptions.None, BitmapCacheOption.Default);
             });
         }
+        #endregion
+        #region 链接
+        public Dictionary<string, string> linkDictionary = new();
+        private void InitLink()
+        {
+            linkDictionary.Add("LinkButton1", "https://www.zeroasso.top");
+            linkDictionary.Add("LinkButton2", "https://space.bilibili.com/1247764479");
+            linkDictionary.Add("LinkButton3", "https://github.com/LocalizeLimbusCompany");
+            linkDictionary.Add("LinkButton4", "https://afdian.com/a/Limbus_zero");
+            linkDictionary.Add("LinkButton5", "https://paratranz.cn/projects/6860/leaderboard");
+            linkDictionary.Add("LinkButton6", "https://paratranz.cn");
+            linkDictionary.Add("LinkButton7", "https://weidian.com/?userid=1655827241");
+            linkDictionary.Add("LinkButton8", "https://limbuscompany.huijiwiki.com");
+        }
+        private async Task<string?> GetSenderName(System.Windows.Controls.Control? control)
+        {
+            if (control != null)
+            {
+                string name = string.Empty;
+                await this.Dispatcher.BeginInvoke(() =>
+                {
+                    name = control.Name;
+                });
+                return name;
+            }
+            else
+            {
+                return string.Empty;
+            }
+        }
+        private async void LinkButtonClick(object sender, RoutedEventArgs e)
+        {
+            if (sender != null)
+            {
+                string name = await GetSenderName(sender as System.Windows.Controls.Control);
+                string url = string.Empty;
+                if (!string.IsNullOrEmpty(name) && linkDictionary.TryGetValue(name, out url))
+                {
+                    if (linkDictionary.TryGetValue(name, out url))
+                    {
+                        OpenUrl(url);
+                    }
+                }
+            }
+        }
+        #endregion
     }
 }
