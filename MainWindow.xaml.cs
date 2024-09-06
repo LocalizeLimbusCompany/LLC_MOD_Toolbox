@@ -44,7 +44,7 @@ namespace LLC_MOD_Toolbox
         // GreyTest 灰度测试2.0
         private static string greytestUrl = string.Empty;
         private static bool greytestStatus = false;
-        private const string VERSION = "1.0.0";
+        private const string VERSION = "1.0.1";
         public MainWindow()
         {
             InitializeComponent();
@@ -160,7 +160,7 @@ namespace LLC_MOD_Toolbox
             }
             catch (Exception ex)
             {
-                ErrorReport(ex, true);
+                ErrorReport(ex, true, true);
             }
             installPhase = 0;
             logger.Info("安装完成。");
@@ -766,6 +766,20 @@ namespace LLC_MOD_Toolbox
             }
         }
         /// <summary>
+        /// 用于错误处理。（专用于安装）
+        /// </summary>
+        /// <param name="ex"></param>
+        /// <param name="CloseWindow">是否关闭窗体。</param>
+        public static void ErrorReport(Exception ex, bool CloseWindow, bool InstallFailed)
+        {
+            logger.Error("出现了问题：\n" + ex.ToString());
+            System.Windows.MessageBox.Show("运行中出现了问题。\n您可以尝试在设置中切换节点。\n若要反馈，请带上链接或日志。\n——————————\n" + ex.ToString(), "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+            if (CloseWindow)
+            {
+                System.Windows.Application.Current.Shutdown();
+            }
+        }
+        /// <summary>
         /// 检查工具箱更新
         /// </summary>
         /// <param name="version">当前版本</param>
@@ -1111,6 +1125,31 @@ namespace LLC_MOD_Toolbox
             catch (Exception ex)
             {
                 ErrorReport(ex, false);
+            }
+        }
+        #endregion
+        #region 开关模组
+        // 我也不知道为什么这个功能这么多人想要，不过既然那么多人要，那我就写了
+        private void ChangeStatuButtonClick(object sender, RoutedEventArgs e)
+        {
+            logger.Info("点击开关模组按钮。");
+            if (!File.Exists(limbusCompanyDir + "/winhttp.dll") && !File.Exists(limbusCompanyDir + "/winhttp.dll.disabled"))
+            {
+                logger.Info("模组未安装。");
+                System.Windows.MessageBox.Show("模组未安装。", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+            if (File.Exists(limbusCompanyDir + "/winhttp.dll.disabled"))
+            {
+                logger.Info("检测到 winhttp.dll.disabled，进行开启。");
+                File.Move(limbusCompanyDir + "/winhttp.dll.disabled", limbusCompanyDir + "/winhttp.dll");
+                System.Windows.MessageBox.Show("模组已开启。", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            else if (File.Exists(limbusCompanyDir + "/winhttp.dll"))
+            {
+                logger.Info("检测到 winhttp.dll，进行关闭。");
+                File.Move(limbusCompanyDir + "/winhttp.dll", limbusCompanyDir + "/winhttp.dll.disabled");
+                System.Windows.MessageBox.Show("模组已关闭。", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
             }
         }
         #endregion

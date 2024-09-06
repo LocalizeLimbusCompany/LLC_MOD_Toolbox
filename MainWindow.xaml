@@ -374,7 +374,7 @@ From="1" To="0" Duration="0:0:0.3"/>
         <Grid x:Name="ReplaceInstallPage" Visibility="Collapsed" Panel.ZIndex="5" Margin="62,55,54,32" Grid.Column="2" Grid.Row="1">
             <Label Content="文件覆盖功能尚未开启，敬请期待后续版本。" HorizontalAlignment="Center" Margin="0,137,0,0" VerticalAlignment="Top" Height="61" Width="494" FontSize="20" Foreground="#FFFFEED4" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Medium"/>
         </Grid>
-        <Grid x:Name="LinkPage" Visibility="Visible" Panel.ZIndex="5" Margin="62,55,54,32" Grid.Column="2" Grid.Row="1">
+        <Grid x:Name="LinkPage" Visibility="Collapsed" Panel.ZIndex="5" Margin="62,55,54,32" Grid.Column="2" Grid.Row="1">
             <Button x:Name="LinkButton1" HorizontalAlignment="Left" Margin="37,40,0,0" VerticalAlignment="Top" Height="40" Width="262" Opacity="1" Background="Transparent" BorderBrush="Transparent" BorderThickness="0" Style="{StaticResource NoHover}" Click="LinkButtonClick">
                 <Button.Content>
                     <Image Height="40" Width="262" Source="/Picture/LinkBT.png"/>
@@ -684,7 +684,7 @@ From="1" To="0" Duration="0:0:0.3"/>
             </Button>
             <Label Content="了解更多" HorizontalAlignment="Left" IsHitTestVisible="False" Margin="450,199,0,0" VerticalAlignment="Top" Height="38" Width="74" FontSize="16" Foreground="Black" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Heavy"/>
         </Grid>
-        <Grid x:Name="SettingsPage" Visibility="Collapsed" Panel.ZIndex="5" Margin="62,55,54,32" Grid.Column="2" Grid.Row="1">
+        <Grid x:Name="SettingsPage" Visibility="Visible" Panel.ZIndex="5" Margin="62,55,54,32" Grid.Column="2" Grid.Row="1">
             <Label Content="切换节点" HorizontalAlignment="Left" Margin="100,28,0,0" VerticalAlignment="Top" Height="41" Width="494" FontSize="22" Foreground="#FFFFEED4" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Medium"/>
             <ComboBox x:Name="NodeCombobox" Margin="304,35,70,330" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Medium" Foreground="Black" FontSize="16" SelectionChanged="NodeComboboxSelectionChanged" >
                 <ComboBox.Clip>
@@ -720,6 +720,34 @@ From="1" To="0" Duration="0:0:0.3"/>
                 </Button.Triggers>
             </Button>
             <Label Content="卸载" HorizontalAlignment="Left" IsHitTestVisible="False" Margin="531,83,0,0" VerticalAlignment="Top" Height="38" Width="52" FontSize="16" Foreground="Black" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Heavy"/>
+            <Label Content="切换模组开关状态" HorizontalAlignment="Left" Margin="100,128,0,0" VerticalAlignment="Top" Height="41" Width="494" FontSize="22" Foreground="#FFFFEED4" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Medium"/>
+            <Image x:Name="ChangeStatuHover" Panel.ZIndex="5" IsHitTestVisible="False" Opacity="0" HorizontalAlignment="Left" Height="34" Margin="511,131,0,0" VerticalAlignment="Top" Width="80" Source="/Picture/SettingButtonHover.png"/>
+            <Button HorizontalAlignment="Left" Margin="514,134,0,0" VerticalAlignment="Top" Height="28" Width="74" Style="{StaticResource NoHover}" Background="#FFFFEED4" Click="ChangeStatuButtonClick">
+                <Button.Clip>
+                    <RectangleGeometry Rect="0,0,74,28" RadiusX="3" RadiusY="3"/>
+                </Button.Clip>
+                <Button.Triggers>
+                    <EventTrigger RoutedEvent="Button.MouseEnter">
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <DoubleAnimation Storyboard.TargetName="ChangeStatuHover"
+Storyboard.TargetProperty="Opacity"
+From="0" To="1" Duration="0:0:0.3"/>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </EventTrigger>
+                    <EventTrigger RoutedEvent="Button.MouseLeave">
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <DoubleAnimation Storyboard.TargetName="ChangeStatuHover"
+Storyboard.TargetProperty="Opacity"
+From="1" To="0" Duration="0:0:0.3"/>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </EventTrigger>
+                </Button.Triggers>
+            </Button>
+            <Label Content="开关" HorizontalAlignment="Left" IsHitTestVisible="False" Margin="531,130,0,0" VerticalAlignment="Top" Height="38" Width="52" FontSize="16" Foreground="Black" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Heavy"/>
         </Grid>
         <Grid x:Name="AboutPage" Visibility="Collapsed" Panel.ZIndex="5" Margin="62,55,54,32" Grid.Column="2" Grid.Row="1">
             <Label HorizontalAlignment="Center" Margin="0,15,0,0" VerticalAlignment="Top" Height="357" Width="644" FontSize="15" Foreground="#FFFFEED4" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Medium">
