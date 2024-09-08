@@ -115,7 +115,7 @@
             </Button.Triggers>
         </Button>
         <Image Grid.Column="1" HorizontalAlignment="Left" Height="516" VerticalAlignment="Top" Width="796" Source="/Picture/ControlBoard.png" Margin="142,84,0,0" Grid.RowSpan="2" Grid.ColumnSpan="2"/>
-        <Image Grid.Column="2" Opacity="1" HorizontalAlignment="Left" Height="17" Margin="569,18,0,0" Grid.Row="1" VerticalAlignment="Top" Width="91" Source="/Picture/DisableButton.png"/>
+        <Image x:Name="GachaSimDisabled" Grid.Column="2" Opacity="1" HorizontalAlignment="Left" Height="17" Margin="569,18,0,0" Grid.Row="1" VerticalAlignment="Top" Width="91" Source="/Picture/DisableButton.png"/>
         <Image x:Name="ZALogo"  Visibility="Collapsed" HorizontalAlignment="Left" Height="123" Margin="7,-8,0,0" VerticalAlignment="Top" Width="123" Source="/Picture/ZALogoA.png" Grid.Column="1"/>
         <Image x:Name="AutoInstallDisabled" Grid.Column="2" HorizontalAlignment="Left" Height="17" Margin="128,18,0,0" Grid.Row="1" VerticalAlignment="Top" Width="91" Source="/Picture/DisableButton.png"/>
         <Image x:Name="ManualInstallDisabled" Grid.Column="2" HorizontalAlignment="Left" Height="17" Margin="275,18,0,0" Grid.Row="1" VerticalAlignment="Top" Width="91" Source="/Picture/DisableButton.png"/>
@@ -123,6 +123,7 @@
         <Image x:Name="AutoInstallHover" Grid.Column="2" Opacity="0" HorizontalAlignment="Left" Height="46" Margin="105,4,0,0" Grid.Row="1" VerticalAlignment="Top" Width="134" Source="/Picture/ControlBoardHover.png"/>
         <Image x:Name="ManualInstallHover" Grid.Column="2" Opacity="0" HorizontalAlignment="Left" Height="46" Margin="252,4,0,0" Grid.Row="1" VerticalAlignment="Top" Width="134" Source="/Picture/ControlBoardHover.png"/>
         <Image x:Name="ReplaceInstallHover" Grid.Column="2" Opacity="0" HorizontalAlignment="Left" Height="46" Margin="400,4,0,0" Grid.Row="1" VerticalAlignment="Top" Width="134" Source="/Picture/ControlBoardHover.png"/>
+        <Image x:Name="GachaSimHover" Grid.Column="2" Opacity="0" HorizontalAlignment="Left" Height="46" Margin="548,4,0,0" Grid.Row="1" VerticalAlignment="Top" Width="134" Source="/Picture/ControlBoardHover.png"/>
         <Button x:Name="AutoInstallButton" Grid.Column="2" Visibility="Collapsed" Content="自动安装" HorizontalAlignment="Left" Margin="122,4,0,0" Grid.Row="1" VerticalAlignment="Top" Height="40" Width="101" Background="Transparent" BorderBrush="Transparent" BorderThickness="0" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Bold" Foreground="#FFFFEED4" FontSize="18" Style="{StaticResource NoHover}" Click="AutoInstallButtonClick">
             <Button.Triggers>
                 <EventTrigger RoutedEvent="Button.MouseEnter">
@@ -145,7 +146,7 @@
                 </EventTrigger>
             </Button.Triggers>
         </Button>
-        <Button x:Name="ManualInstallButton" Visibility="Collapsed" Grid.Column="2" Content="手动安装" HorizontalAlignment="Left" Margin="268,4,0,0" Grid.Row="1" VerticalAlignment="Top" Height="40" Width="102" Background="Transparent" BorderBrush="Transparent" BorderThickness="0" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Bold" Foreground="#FFFFEED4" FontSize="18" Style="{StaticResource NoHover}" Click="ManualInstallButtonClick">
+        <Button x:Name="ManualInstallButton" Visibility="Collapsed" Grid.Column="2" Content="手动安装" HorizontalAlignment="Left" Margin="270,5,0,0" Grid.Row="1" VerticalAlignment="Top" Height="40" Width="102" Background="Transparent" BorderBrush="Transparent" BorderThickness="0" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Bold" Foreground="#FFFFEED4" FontSize="18" Style="{StaticResource NoHover}" Click="ManualInstallButtonClick">
             <Button.Triggers>
                 <EventTrigger RoutedEvent="Button.MouseEnter">
                     <BeginStoryboard>
@@ -167,7 +168,7 @@
                 </EventTrigger>
             </Button.Triggers>
         </Button>
-        <Button x:Name="ReplaceInstallButton" Grid.Column="2" Visibility="Collapsed" Content="文件覆盖" HorizontalAlignment="Left" Margin="416,4,0,0" Grid.Row="1" VerticalAlignment="Top" Height="40" Width="102" Background="Transparent" BorderBrush="Transparent" BorderThickness="0" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Bold" Foreground="#FFFFEED4" FontSize="18" Style="{StaticResource NoHover}" Click="ReplaceInstallButtonClick">
+        <Button x:Name="ReplaceInstallButton" Grid.Column="2" Visibility="Collapsed" Content="文件覆盖" HorizontalAlignment="Left" Margin="418,5,0,0" Grid.Row="1" VerticalAlignment="Top" Height="40" Width="102" Background="Transparent" BorderBrush="Transparent" BorderThickness="0" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Bold" Foreground="#FFFFEED4" FontSize="18" Style="{StaticResource NoHover}" Click="ReplaceInstallButtonClick">
             <Button.Triggers>
                 <EventTrigger RoutedEvent="Button.MouseEnter">
                     <BeginStoryboard>
@@ -184,6 +185,28 @@
                             <DoubleAnimation Storyboard.TargetName="ReplaceInstallHover"
              Storyboard.TargetProperty="Opacity"
              From="1" To="0" Duration="0:0:0.3"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger>
+            </Button.Triggers>
+        </Button>
+        <Button x:Name="GachaSimInstallButton" Grid.Column="2" Visibility="Visible" Content="抽卡模拟器" HorizontalAlignment="Left" Margin="564,5,0,0" Grid.Row="1" VerticalAlignment="Top" Height="40" Width="102" Background="Transparent" BorderBrush="Transparent" BorderThickness="0" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Bold" Foreground="#FFFFEED4" FontSize="18" Style="{StaticResource NoHover}" Click="GachaSimButtonClick">
+            <Button.Triggers>
+                <EventTrigger RoutedEvent="Button.MouseEnter">
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation Storyboard.TargetName="GachaSimHover"
+ Storyboard.TargetProperty="Opacity"
+ From="0" To="1" Duration="0:0:0.3"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger>
+                <EventTrigger RoutedEvent="Button.MouseLeave">
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation Storyboard.TargetName="GachaSimHover"
+ Storyboard.TargetProperty="Opacity"
+ From="1" To="0" Duration="0:0:0.3"/>
                         </Storyboard>
                     </BeginStoryboard>
                 </EventTrigger>
@@ -684,7 +707,7 @@ From="1" To="0" Duration="0:0:0.3"/>
             </Button>
             <Label Content="了解更多" HorizontalAlignment="Left" IsHitTestVisible="False" Margin="450,199,0,0" VerticalAlignment="Top" Height="38" Width="74" FontSize="16" Foreground="Black" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Heavy"/>
         </Grid>
-        <Grid x:Name="SettingsPage" Visibility="Visible" Panel.ZIndex="5" Margin="62,55,54,32" Grid.Column="2" Grid.Row="1">
+        <Grid x:Name="SettingsPage" Visibility="Collapsed" Panel.ZIndex="5" Margin="62,55,54,32" Grid.Column="2" Grid.Row="1">
             <Label Content="切换节点" HorizontalAlignment="Left" Margin="100,28,0,0" VerticalAlignment="Top" Height="41" Width="494" FontSize="22" Foreground="#FFFFEED4" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Medium"/>
             <ComboBox x:Name="NodeCombobox" Margin="304,35,70,330" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Medium" Foreground="Black" FontSize="16" SelectionChanged="NodeComboboxSelectionChanged" >
                 <ComboBox.Clip>
@@ -754,8 +777,91 @@ From="1" To="0" Duration="0:0:0.3"/>
                 <TextBlock Text="都市零协会工具箱 (LLC_MOD_Toolbox) 是服务于都市零协会汉化模组 (LocalizeLimbusCompany) 的自动化安装工具。本软件使用库的许可证请于零协会官网 (https://www.zeroasso.top) 查看。&#10;- LLCMT工具箱&#10;  - 代码实现：曾小皮、10291029&#10;  - 美术设计：记得保存&#10;- LLC翻译模组&#10;  - 翻译文本：零协会翻译组全体译者&#10;  - 汉化模组代码：奈芙Nephthys&#10;  - 汉化模组字体：茜、北岚&#10;- 特别鸣谢&#10;  - 服务器运维 &amp; 开发：曾小皮 &#10;  - 零协会广播局全体创作者&#10;  - 翻译工具：Paratranz&#10;&#10;人无语言则茫然无依。" TextWrapping="Wrap" Height="351"/>
             </Label>
         </Grid>
-        <Grid x:Name="EEPage" Visibility="Visible" Panel.ZIndex="5" Margin="62,55,54,32" Grid.Column="2" Grid.Row="1">
+        <Grid x:Name="EEPage" Visibility="Collapsed" Panel.ZIndex="5" Margin="62,55,54,32" Grid.Column="2" Grid.Row="1">
             <Image x:Name="EEPageImage" HorizontalAlignment="Left" Height="330" Margin="12,27,0,0" VerticalAlignment="Top" Width="630"/>
+        </Grid>
+        <Grid x:Name="GachaPage" Visibility="Visible" Panel.ZIndex="5" Margin="62,55,54,32" Grid.Column="2" Grid.Row="1">
+            <Image HorizontalAlignment="Left" Height="330" Margin="12,27,0,0" VerticalAlignment="Top" Width="630" Source="/Picture/GachaBackground.png"/>
+            <Image Panel.ZIndex="5" IsHitTestVisible="False" HorizontalAlignment="Left" Height="30" Margin="43,325,0,0" VerticalAlignment="Top" Width="30" Source="/Picture/Lunacy.png"/>
+            <Image x:Name="GachaButtonHover" Panel.ZIndex="5" IsHitTestVisible="False" Opacity="0" HorizontalAlignment="Left" Height="53" Margin="25,312,0,0" VerticalAlignment="Top" Width="125" Source="/Picture/SettingButtonHover.png"/>
+            <Button x:Name="InGachaButton" HorizontalAlignment="Left" Margin="31,318,0,0" VerticalAlignment="Top" Height="42" Width="113" Style="{StaticResource NoHover}" Background="#FFFFEED4" Click="InGachaButtonClick">
+                <Button.Clip>
+                    <RectangleGeometry Rect="0,0,113,42" RadiusX="3" RadiusY="3"/>
+                </Button.Clip>
+                <Button.Triggers>
+                    <EventTrigger RoutedEvent="Button.MouseEnter">
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <DoubleAnimation Storyboard.TargetName="GachaButtonHover"
+Storyboard.TargetProperty="Opacity"
+From="0" To="1" Duration="0:0:0.3"/>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </EventTrigger>
+                    <EventTrigger RoutedEvent="Button.MouseLeave">
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <DoubleAnimation Storyboard.TargetName="GachaButtonHover"
+Storyboard.TargetProperty="Opacity"
+From="1" To="0" Duration="0:0:0.3"/>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </EventTrigger>
+                </Button.Triggers>
+            </Button>
+            <Label Content="x1300" HorizontalAlignment="Left" IsHitTestVisible="False" Margin="78,319,0,0" VerticalAlignment="Top" Height="38" Width="62" FontSize="16" Foreground="Black" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Heavy"/>
+            <Label Content="十连" HorizontalAlignment="Left" IsHitTestVisible="False" Margin="94,337,0,0" VerticalAlignment="Top" Height="21" Width="26" FontSize="8" Foreground="Black" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Heavy"/>
+            <!---->
+            <Label x:Name="GachaText1" Visibility="Collapsed" HorizontalAlignment="Left" IsHitTestVisible="False" Margin="124,80,0,0" VerticalAlignment="Top" Height="28" Width="357" HorizontalContentAlignment="Center">
+                <Label.Content>
+                    <TextBlock Text="[★]边狱公司EGO::罪人 希斯克利夫" FontSize="14" Foreground="#B88345" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Bold"/>
+                </Label.Content>
+            </Label>
+            <Label x:Name="GachaText2" Visibility="Collapsed" HorizontalAlignment="Left" IsHitTestVisible="False" Margin="124,97,0,0" VerticalAlignment="Top" Height="28" Width="357" HorizontalContentAlignment="Center">
+                <Label.Content>
+                    <TextBlock Text="[★★]边狱公司EGO::罪人 希斯克利夫" FontSize="14" Foreground="#CA1400" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Bold"/>
+                </Label.Content>
+            </Label>
+            <Label x:Name="GachaText3" Visibility="Collapsed" HorizontalAlignment="Left" IsHitTestVisible="False" Margin="124,114,0,0" VerticalAlignment="Top" Height="28" Width="357" HorizontalContentAlignment="Center">
+                <Label.Content>
+                    <TextBlock Text="[★★]边狱公司EGO::罪人 希斯克利夫" FontSize="14" Foreground="#FCC404" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Bold"/>
+                </Label.Content>
+            </Label>
+            <Label x:Name="GachaText4" Visibility="Collapsed" HorizontalAlignment="Left" IsHitTestVisible="False" Margin="124,131,0,0" VerticalAlignment="Top" Height="28" Width="357" HorizontalContentAlignment="Center">
+                <Label.Content>
+                    <TextBlock Text="[★★]边狱公司EGO::罪人 希斯克利夫" FontSize="14" Foreground="#B88345" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Bold"/>
+                </Label.Content>
+            </Label>
+            <Label x:Name="GachaText5" Visibility="Collapsed" HorizontalAlignment="Left" IsHitTestVisible="False" Margin="124,148,0,0" VerticalAlignment="Top" Height="28" Width="357" HorizontalContentAlignment="Center">
+                <Label.Content>
+                    <TextBlock Text="[★★]边狱公司EGO::罪人 希斯克利夫" FontSize="14" Foreground="#B88345" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Bold"/>
+                </Label.Content>
+            </Label>
+            <Label x:Name="GachaText6" Visibility="Collapsed" HorizontalAlignment="Left" IsHitTestVisible="False" Margin="124,165,0,0" VerticalAlignment="Top" Height="28" Width="357" HorizontalContentAlignment="Center">
+                <Label.Content>
+                    <TextBlock Text="[★★]边狱公司EGO::罪人 希斯克利夫" FontSize="14" Foreground="#B88345" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Bold"/>
+                </Label.Content>
+            </Label>
+            <Label x:Name="GachaText7" Visibility="Collapsed" HorizontalAlignment="Left" IsHitTestVisible="False" Margin="124,182,0,0" VerticalAlignment="Top" Height="28" Width="357" HorizontalContentAlignment="Center">
+                <Label.Content>
+                    <TextBlock Text="[★★]边狱公司EGO::罪人 希斯克利夫" FontSize="14" Foreground="#B88345" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Bold"/>
+                </Label.Content>
+            </Label>
+            <Label x:Name="GachaText8" Visibility="Collapsed" HorizontalAlignment="Left" IsHitTestVisible="False" Margin="124,199,0,0" VerticalAlignment="Top" Height="28" Width="357" HorizontalContentAlignment="Center">
+                <Label.Content>
+                    <TextBlock Text="[★★]边狱公司EGO::罪人 希斯克利夫" FontSize="14" Foreground="#B88345" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Bold"/>
+                </Label.Content>
+            </Label>
+            <Label x:Name="GachaText9" Visibility="Collapsed" HorizontalAlignment="Left" IsHitTestVisible="False" Margin="124,216,0,0" VerticalAlignment="Top" Height="28" Width="357" HorizontalContentAlignment="Center">
+                <Label.Content>
+                    <TextBlock Text="[★★]边狱公司EGO::罪人 希斯克利夫" FontSize="14" Foreground="#B88345" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Bold"/>
+                </Label.Content>
+            </Label>
+            <Label x:Name="GachaText10" Visibility="Collapsed" HorizontalAlignment="Left" IsHitTestVisible="False" Margin="124,232,0,0" VerticalAlignment="Top" Height="28" Width="357" HorizontalContentAlignment="Center">
+                <Label.Content>
+                    <TextBlock Text="[★★]边狱公司EGO::罪人 希斯克利夫" FontSize="14" Foreground="#B88345" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Bold"/>
+                </Label.Content>
+            </Label>
         </Grid>
         <Button Grid.Column="1" HorizontalAlignment="Center" Margin="0,350,0,0" Grid.Row="1" VerticalAlignment="Top" Height="41" Width="155" Style="{StaticResource BlackWhite}" Background="Transparent" BorderBrush="Transparent" BorderThickness="0" MouseDoubleClick="WhiteBlackClickDouble" />
         <Button Grid.Column="1" HorizontalAlignment="Center" Margin="0,400,0,0" Grid.Row="1" VerticalAlignment="Top" Height="41" Width="155" Style="{StaticResource BlackWhite}" Background="Transparent" BorderBrush="Transparent" BorderThickness="0" MouseDoubleClick="WhiteBlackClickDouble"/>

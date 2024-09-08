@@ -23,6 +23,8 @@ using System.Net.Http;
 using System.Reflection;
 using System.Security.Cryptography;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Media;
 using System.Windows.Threading;
 
 namespace LLC_MOD_Toolbox
@@ -1151,6 +1153,410 @@ namespace LLC_MOD_Toolbox
                 File.Move(limbusCompanyDir + "/winhttp.dll", limbusCompanyDir + "/winhttp.dll.disabled");
                 System.Windows.MessageBox.Show("模组已关闭。", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
             }
+        }
+        #endregion
+        #region 抽卡模拟器
+        private static bool isInitGacha = false;
+        private static bool isInitGachaFailed = false;
+        private static int gachaCount = 0;
+        private static List<PersonalInfo> personalInfos1star = new();
+        private static List<PersonalInfo> personalInfos2star = new();
+        private static List<PersonalInfo> personalInfos3star = new();
+        private DispatcherTimer? gachaTimer;
+        private int _currentIndex = 0;
+        private int[]? uniqueCount;
+        private class PersonalInfo()
+        {
+            public required string Name { get; set; }
+            public required int Unique { get; set; }
+        }
+        private async Task InitGacha()
+        {
+            string gachaText = await GetURLText("https://api.kr.zeroasso.top/wiki/wiki_personal.json");
+            if (string.IsNullOrEmpty(gachaText))
+            {
+                logger.Error("初始化失败。");
+                System.Windows.MessageBox.Show("初始化失败。请检查网络情况。","提示");
+                isInitGachaFailed = true;
+            }
+            else
+            {
+                gachaTimer = new DispatcherTimer();
+                gachaTimer.Interval = TimeSpan.FromSeconds(0.07);
+                gachaTimer.Tick += GachaTimerTick;
+                List<PersonalInfo> personalInfos = TranformTextToList(gachaText);
+                logger.Info("人格数量：" + personalInfos.Count);
+                personalInfos1star = personalInfos.Where(p => p.Unique == 1).ToList();
+                personalInfos2star = personalInfos.Where(p => p.Unique == 2).ToList();
+                personalInfos3star = personalInfos.Where(p => p.Unique == 3).ToList();
+                System.Windows.MessageBox.Show("初始化完成。", "提示");
+                isInitGacha = true;
+            }
+        }
+        private async void InGachaButtonClick(object sender, RoutedEventArgs e)
+        {
+            logger.Info("点击抽卡。");
+            await CollapsedAllGacha();
+            if (isInitGachaFailed)
+            {
+                logger.Info("初始化失败。");
+                System.Windows.MessageBox.Show("初始化失败，无法进行抽卡操作。", "提示");
+                return;
+            }
+            try
+            {
+                List<PersonalInfo> personals = GenPersonalList();
+                await StartChangeLabel(personals);
+            }
+            catch(Exception ex)
+            {
+                logger.Info("出现了问题。" + ex.ToString());
+                System.Windows.MessageBox.Show("出了点小问题！\n要不再试一次？\n————————\n" + ex.ToString());
+                if (gachaTimer != null)
+                {
+                    gachaTimer.Stop();
+                }
+                _currentIndex = 0;
+                await this.Dispatcher.BeginInvoke(() =>
+                {
+                    InGachaButton.IsHitTestVisible = true;
+                });
+                return;
+            }
+            if (gachaTimer != null)
+            {
+                _currentIndex = 0;
+                gachaTimer.Start();
+            }
+        }
+        private int[] GetPersonalUniqueCount(List<PersonalInfo> personals)
+        {
+            int[] uniqueCount = new int[3];
+            uniqueCount[0] = 0;
+            uniqueCount[1] = 0;
+            uniqueCount[2] = 0;
+            foreach (PersonalInfo personal in personals)
+            {
+                if (personal.Unique == 1)
+                {
+                    uniqueCount[0] += 1;
+                }
+                else if (personal.Unique == 2)
+                {
+                    uniqueCount[1] += 1;
+                }
+                else if (personal.Unique == 3)
+                {
+                    uniqueCount[2] += 1;
+                }
+            }
+            return uniqueCount;
+        }
+        private async Task StartChangeLabel(List<PersonalInfo> personals)
+        {
+            await ChangeLabelColorAndPersonal(personals[0], GachaText1);
+            await ChangeLabelColorAndPersonal(personals[1], GachaText2);
+            await ChangeLabelColorAndPersonal(personals[2], GachaText3);
+            await ChangeLabelColorAndPersonal(personals[3], GachaText4);
+            await ChangeLabelColorAndPersonal(personals[4], GachaText5);
+            await ChangeLabelColorAndPersonal(personals[5], GachaText6);
+            await ChangeLabelColorAndPersonal(personals[6], GachaText7);
+            await ChangeLabelColorAndPersonal(personals[7], GachaText8);
+            await ChangeLabelColorAndPersonal(personals[8], GachaText9);
+            await ChangeLabelColorAndPersonal(personals[9], GachaText10);
+        }
+        private async Task ChangeLabelColorAndPersonal(PersonalInfo personal, System.Windows.Controls.Label label)
+        {
+            await this.Dispatcher.BeginInvoke(() =>
+            {
+                if (label.Content is TextBlock textBlock)
+                {
+                    if (personal.Unique == 1)
+                    {
+                        textBlock.Text = "[★]" + personal.Name;
+                        textBlock.Foreground = new SolidColorBrush((System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString("#B88345"));
+                    }
+                    if (personal.Unique == 2)
+                    {
+                        textBlock.Text = "[★★]" + personal.Name;
+                        textBlock.Foreground = new SolidColorBrush((System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString("#CA1400"));
+                    }
+                    if (personal.Unique == 3)
+                    {
+                        textBlock.Text = "[★★★]" + personal.Name;
+                        textBlock.Foreground = new SolidColorBrush((System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString("#FCC404"));
+                    }
+                }
+            });
+        }
+        private List<PersonalInfo> GenPersonalList()
+        {
+            Random random = new Random();
+            List<PersonalInfo> genPersonalInfos = new();
+            for (int i = 0; i < 10; i++) // 循环十次
+            {
+                int chance = random.Next(1, 101);
+                if (i != 9)
+                {
+                    if (chance <= 84) // 一星
+                    {
+                        int randomIndex = random.Next(personalInfos1star.Count);
+                        genPersonalInfos.Add(personalInfos1star[randomIndex]);
+                    }
+                    else if (chance <= 97) // 二星
+                    {
+                        int randomIndex = random.Next(personalInfos2star.Count);
+                        genPersonalInfos.Add(personalInfos2star[randomIndex]);
+                    }
+                    else // 三星
+                    {
+                        int randomIndex = random.Next(personalInfos3star.Count);
+                        genPersonalInfos.Add(personalInfos3star[randomIndex]);
+                    }
+                }
+                else
+                {
+                    if (chance <= 84) // 二星
+                    {
+                        int randomIndex = random.Next(personalInfos2star.Count);
+                        genPersonalInfos.Add(personalInfos2star[randomIndex]);
+                    }
+                    else if (chance <= 97) // 三星
+                    {
+                        int randomIndex = random.Next(personalInfos3star.Count);
+                        genPersonalInfos.Add(personalInfos3star[randomIndex]);
+                    }
+                }
+            }
+            uniqueCount = GetPersonalUniqueCount(genPersonalInfos);
+            return genPersonalInfos;
+        }
+        private List<PersonalInfo> TranformTextToList(string gachaText)
+        {
+            logger.Info("开始转换文本。");
+            var gachaObject = JSONNode.Parse(gachaText);
+            List<PersonalInfo> personalInfoList = new();
+            for (int i = 0; i < gachaObject["data"].Count; i++)
+            {
+                PersonalInfo personalInfo = new()
+                {
+                    Name = "NullName",
+                    Unique = 1,
+                };
+                personalInfo.Name = BeautifyText(gachaObject["data"][i][0].Value, gachaObject["data"][i][1].Value);
+                personalInfo.Unique = gachaObject["data"][i][7].AsInt;
+                personalInfoList.Add(personalInfo);
+            }
+            return personalInfoList;
+        }
+        private static string BeautifyText(string input, string prefix)
+        {
+            if (input.StartsWith(prefix))
+            {
+                string title = input.Substring(prefix.Length);
+                return $"{title} {prefix}";
+            }
+            else
+            {
+                return input;
+            }
+        }
+        private async void GachaTimerTick(object? sender, EventArgs? e)
+        {
+            if (_currentIndex < 10)
+            {
+                var label = (System.Windows.Controls.Label)this.FindName($"GachaText{_currentIndex + 1}");
+                await this.Dispatcher.BeginInvoke(() =>
+                {
+                    label.Visibility = Visibility.Visible;
+                });
+                _currentIndex++;
+            }
+            else if (gachaTimer != null)
+            {
+                gachaTimer.Stop();
+                await this.Dispatcher.BeginInvoke(() =>
+                {
+                    InGachaButton.IsHitTestVisible = true;
+                });
+                Random random = new Random();
+                gachaCount += 1;
+                if (gachaCount == 10)
+                {
+                    System.Windows.MessageBox.Show("你已经抽了100抽了，你上头了？", "提示");
+                    return;
+                }
+                else if (gachaCount == 20)
+                {
+                    System.Windows.MessageBox.Show("恭喜你，你已经抽了一个井了！\n珍爱生命，远离抽卡啊亲！", "提示");
+                    return;
+                }
+                else if (gachaCount == 40)
+                {
+                    System.Windows.MessageBox.Show("两个井了，你算算已经砸了多少狂气了？", "提示");
+                    return;
+                }
+                else if (gachaCount == 60)
+                {
+                    System.Windows.MessageBox.Show("收手吧！你不算砸了多少狂气我算了！\n你已经砸了60x1300=78000狂气了！", "提示");
+                    return;
+                }
+                else if (gachaCount == 100)
+                {
+                    System.Windows.MessageBox.Show("我是来恭喜你，你已经扔进去1000抽，简称130000狂气了。\n你花了多少时间到这里？", "提示");
+                    return;
+                }
+                if (uniqueCount == null)
+                {
+                    System.Windows.MessageBox.Show("抽卡完成。", "提示");
+                    return;
+                }
+                else if (uniqueCount[0] == 9 && uniqueCount[1] == 1)
+                {
+                    int choice = random.Next(1, 4);
+                    if (choice == 1)
+                    {
+                        System.Windows.MessageBox.Show("恭喜九白一红~！", "提示");
+                    }
+                    else if (choice == 2)
+                    {
+                        System.Windows.MessageBox.Show("正常发挥正常发挥~", "提示");
+                    }
+                    else
+                    {
+                        System.Windows.MessageBox.Show("还好没拿真狂气抽吧！", "提示");
+                    }
+                }
+                else if (uniqueCount[0] == 8 && uniqueCount[1] == 2)
+                {
+                    int choice = random.Next(1, 4);
+                    if (choice == 1)
+                    {
+                        System.Windows.MessageBox.Show("至少比九白一红好一点，不是么？", "提示");
+                    }
+                    else if (choice == 2)
+                    {
+                        System.Windows.MessageBox.Show("你要不先去洗洗手？", "提示");
+                    }
+                    else
+                    {
+                        System.Windows.MessageBox.Show("真是可惜，看来这次运气没有站在你这边.jpg", "提示");
+                    }
+                }
+                else if (uniqueCount[0] == 7 && uniqueCount[1] == 3)
+                {
+                    int choice = random.Next(1, 4);
+                    if (choice == 1)
+                    {
+                        System.Windows.MessageBox.Show("三个二星！这是多少碎片来着？", "提示");
+                    }
+                    else if (choice == 2)
+                    {
+                        System.Windows.MessageBox.Show("工具箱的概率可是十分严谨的！\n所以肯定不是工具箱的问题！", "提示");
+                    }
+                    else
+                    {
+                        System.Windows.MessageBox.Show("要是抽不中就算了吧，散伙散伙！", "提示");
+                    }
+                }
+                else if (uniqueCount[2] == 1)
+                {
+                    int choice = random.Next(1, 4);
+                    if (choice == 1)
+                    {
+                        System.Windows.MessageBox.Show("金色传说！虽然说就一个。", "提示");
+                    }
+                    else if (choice == 2)
+                    {
+                        System.Windows.MessageBox.Show("恭喜恭喜~不知道抽了多少次了？", "提示");
+                    }
+                    else
+                    {
+                        System.Windows.MessageBox.Show("ALL IN！", "提示");
+                    }
+                }
+                else if (uniqueCount[2] == 2)
+                {
+                    int choice = random.Next(1, 4);
+                    if (choice == 1)
+                    {
+                        System.Windows.MessageBox.Show("双黄蛋？希望你瓦夜的时候也能这样。", "提示");
+                    }
+                    else if (choice == 2)
+                    {
+                        System.Windows.MessageBox.Show("100碎片而已，我一点都不羡慕！", "提示");
+                    }
+                    else
+                    {
+                        System.Windows.MessageBox.Show("恭喜恭喜~", "提示");
+                    }
+                }
+                else if (uniqueCount[2] == 3)
+                {
+                    int choice = random.Next(1, 4);
+                    if (choice == 1)
+                    {
+                        System.Windows.MessageBox.Show("真的假的三黄。。？", "提示");
+                    }
+                    else if (choice == 2)
+                    {
+                        System.Windows.MessageBox.Show("你平时运气也这么好？！", "提示");
+                    }
+                    else
+                    {
+                        System.Windows.MessageBox.Show("爽了，再来再来！", "提示");
+                    }
+                }
+                else if (uniqueCount[2] >= 4)
+                {
+                    int choice = random.Next(1, 4);
+                    if (choice == 1)
+                    {
+                        System.Windows.MessageBox.Show("不可能……不可能啊？！", "提示");
+                    }
+                    else if (choice == 2)
+                    {
+                        System.Windows.MessageBox.Show("欧吃矛！", "提示");
+                    }
+                    else
+                    {
+                        System.Windows.MessageBox.Show("再抽池子就要空了！", "提示");
+                    }
+                }
+                else
+                {
+                    int choice = random.Next(1, 4);
+                    if (choice == 1)
+                    {
+                        System.Windows.MessageBox.Show("怎么样？再来一次么？", "提示");
+                    }
+                    else if (choice == 2)
+                    {
+                        System.Windows.MessageBox.Show("冷知识：概率真的完全真实。", "提示");
+                    }
+                    else
+                    {
+                        System.Windows.MessageBox.Show("你平时抽卡也这个结果吗？", "提示");
+                    }
+                }
+            }
+        }
+        private async Task CollapsedAllGacha()
+        {
+            await this.Dispatcher.BeginInvoke(() =>
+            {
+                GachaText1.Visibility = Visibility.Collapsed;
+                GachaText2.Visibility = Visibility.Collapsed;
+                GachaText3.Visibility = Visibility.Collapsed;
+                GachaText4.Visibility = Visibility.Collapsed;
+                GachaText5.Visibility = Visibility.Collapsed;
+                GachaText6.Visibility = Visibility.Collapsed;
+                GachaText7.Visibility = Visibility.Collapsed;
+                GachaText8.Visibility = Visibility.Collapsed;
+                GachaText9.Visibility = Visibility.Collapsed;
+                GachaText10.Visibility = Visibility.Collapsed;
+                InGachaButton.IsHitTestVisible = false;
+            });
         }
         #endregion
     }

@@ -42,9 +42,11 @@ namespace LLC_MOD_Toolbox
                 AutoInstallDisabled.Visibility = Visibility.Hidden;
                 ManualInstallDisabled.Visibility = Visibility.Hidden;
                 ReplaceInstallDisabled.Visibility = Visibility.Hidden;
+                GachaSimDisabled.Visibility = Visibility.Hidden;
                 AutoInstallButton.Visibility = Visibility.Visible;
                 ManualInstallButton.Visibility = Visibility.Visible;
                 ReplaceInstallButton.Visibility = Visibility.Visible;
+                GachaSimInstallButton.Visibility = Visibility.Visible;
                 AutoInstallButton.IsHitTestVisible = true;
                 ManualInstallButton.IsHitTestVisible = true;
                 ReplaceInstallButton.IsHitTestVisible = true;
@@ -54,9 +56,11 @@ namespace LLC_MOD_Toolbox
                 AutoInstallDisabled.Visibility = Visibility.Visible;
                 ManualInstallDisabled.Visibility = Visibility.Visible;
                 ReplaceInstallDisabled.Visibility = Visibility.Visible;
+                GachaSimDisabled.Visibility = Visibility.Visible;
                 AutoInstallButton.Visibility = Visibility.Hidden;
                 ManualInstallButton.Visibility = Visibility.Hidden;
                 ReplaceInstallButton.Visibility = Visibility.Hidden;
+                GachaSimInstallButton.Visibility = Visibility.Hidden;
                 AutoInstallButton.IsHitTestVisible = false;
                 ManualInstallButton.IsHitTestVisible = false;
                 ReplaceInstallButton.IsHitTestVisible = false;
@@ -85,9 +89,13 @@ namespace LLC_MOD_Toolbox
                 {
                     await MakeGridStatuExceptSelf(ManualInstallPage);
                 }
-                else
+                else if (nowInstallPage == "replace")
                 {
                     await MakeGridStatuExceptSelf(ReplaceInstallPage);
+                }
+                else if (nowInstallPage == "gacha")
+                {
+                    await MakeGridStatuExceptSelf(GachaPage);
                 }
             }
             // 配置页面相关控件
@@ -128,7 +136,8 @@ namespace LLC_MOD_Toolbox
                 GreytestPage,
                 SettingsPage,
                 AboutPage,
-                EEPage
+                EEPage,
+                GachaPage
             ];
             if (gridList.Contains(g))
             {
@@ -243,6 +252,24 @@ namespace LLC_MOD_Toolbox
         {
             nowInstallPage = "replace";
             await RefreshPage();
+        }
+        private async void GachaSimButtonClick(object sender, RoutedEventArgs e)
+        {
+            if (!isInitGacha)
+            {
+                MessageBoxResult messageBoxResult = System.Windows.MessageBox.Show("本抽卡模拟器资源来源自维基，可能信息更新不准时。\n本模拟器 不 会 对您的游戏数据造成任何影响。\n若您已知悉，请点击“确定”进行初始化。", "提示", MessageBoxButton.OKCancel, MessageBoxImage.Information);
+                if (messageBoxResult == MessageBoxResult.OK)
+                {
+                    nowInstallPage = "gacha";
+                    await InitGacha();
+                    await RefreshPage();
+                }
+            }
+            else
+            {
+                nowInstallPage = "gacha";
+                await RefreshPage();
+            }
         }
         /// <summary>
         /// 处理安装选项按钮。

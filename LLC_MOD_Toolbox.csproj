@@ -43,6 +43,7 @@
     <None Remove="Picture\EmptyProgress.png" />
     <None Remove="Picture\favicon.ico" />
     <None Remove="Picture\FullProgress.png" />
+    <None Remove="Picture\GachaBackground.png" />
     <None Remove="Picture\Install.png" />
     <None Remove="Picture\InstallHover.png" />
     <None Remove="Picture\Installing.png" />
@@ -50,6 +51,7 @@
     <None Remove="Picture\LinkBTHover.png" />
     <None Remove="Picture\LittleBlack.png" />
     <None Remove="Picture\LittleWhite.png" />
+    <None Remove="Picture\Lunacy.png" />
     <None Remove="Picture\NormalLine.png" />
     <None Remove="Picture\SettingButton.png" />
     <None Remove="Picture\SettingButtonHover.png" />
@@ -61,8 +63,10 @@
 
   <ItemGroup>
     <Content Include="favicon.ico" />
+    <Resource Include="Picture\GachaBackground.png" />
     <Resource Include="Picture\LinkBT.png" />
     <Resource Include="Picture\LinkBTHover.png" />
+    <Resource Include="Picture\Lunacy.png" />
     <Resource Include="Picture\NormalLine.png" />
     <Resource Include="Picture\SettingButton.png" />
     <Resource Include="Picture\SettingButtonHover.png" />
