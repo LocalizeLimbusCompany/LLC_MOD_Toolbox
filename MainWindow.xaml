@@ -715,7 +715,7 @@ From="1" To="0" Duration="0:0:0.3"/>
                 </ComboBox.Clip>
             </ComboBox>
             <Label Content="切换API节点" HorizontalAlignment="Left" Margin="100,80,0,0" VerticalAlignment="Top" Height="41" Width="494" FontSize="22" Foreground="#FFFFEED4" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Medium"/>
-            <ComboBox x:Name="APICombobox" Margin="304,85,70,280" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Medium" Foreground="Black" FontSize="16" SelectionChanged="APIComboboxSelectionChanged" >
+            <ComboBox x:Name="APICombobox" Panel.ZIndex="5" Margin="304,85,70,280" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Medium" Foreground="Black" FontSize="16" SelectionChanged="APIComboboxSelectionChanged">
                 <ComboBox.Clip>
                     <RectangleGeometry Rect="0,0,290,31" RadiusX="3" RadiusY="3"/>
                 </ComboBox.Clip>

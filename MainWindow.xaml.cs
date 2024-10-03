@@ -383,6 +383,7 @@ namespace LLC_MOD_Toolbox
         }
         #endregion
         #region 读取节点
+        private static bool APPChangeAPIUI = false;
         public class Node
         {
             public required string Name { get; set; }
@@ -411,6 +412,7 @@ namespace LLC_MOD_Toolbox
                 if(api.IsDefault == true)
                 {
                     defaultAPIEndPoint = api.Endpoint;
+                    useAPIEndPoint = defaultAPIEndPoint;
                 }
                 APICombobox.Items.Add(api.Name);
             }
@@ -462,6 +464,16 @@ namespace LLC_MOD_Toolbox
             });
             return combotext;
         }
+        public async Task<string> SetAPIComboboxText(string text)
+        {
+            APPChangeAPIUI = true;
+            string combotext = string.Empty;
+            await this.Dispatcher.BeginInvoke(() =>
+            {
+                APICombobox.SelectedItem = text;
+            });
+            return combotext;
+        }
         private async void NodeComboboxSelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
             string nodeComboboxText = await GetNodeComboboxText();
@@ -506,7 +518,7 @@ namespace LLC_MOD_Toolbox
         }
         private async void APIComboboxSelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
-            if (useGithub)
+            if (!useGithub)
             {
                 string apiComboboxText = await GetAPIComboboxText();
                 logger.Info("选择API节点。");
@@ -514,7 +526,7 @@ namespace LLC_MOD_Toolbox
                 {
                     if (apiComboboxText == "恢复默认")
                     {
-                        useAPIEndPoint = string.Empty;
+                        useAPIEndPoint = defaultAPIEndPoint;
                         logger.Info("已恢复默认API Endpoint。");
                     }
                     else
@@ -529,11 +541,13 @@ namespace LLC_MOD_Toolbox
                     logger.Info("APIComboboxText 为 null。");
                 }
             }
-            else
+            else if (APPChangeAPIUI == false)
             {
+                await SetAPIComboboxText("恢复默认");
                 logger.Info("已开启Github。无法切换API。");
                 System.Windows.MessageBox.Show("切换失败。\n无法在节点为Github直连的情况下切换API。", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
             }
+            APPChangeAPIUI = false;
         }
         #endregion
         #region 常用方法
@@ -678,7 +692,7 @@ namespace LLC_MOD_Toolbox
             }
             catch (Exception ex)
             {
-                logger.Warn(ex+"：游戏未下载或未Steam");
+                ErrorReport(ex, true);
                 return null;
             }
         }
@@ -1230,7 +1244,7 @@ namespace LLC_MOD_Toolbox
             else
             {
                 gachaTimer = new DispatcherTimer();
-                gachaTimer.Interval = TimeSpan.FromSeconds(0.07);
+                gachaTimer.Interval = TimeSpan.FromSeconds(0.15);
                 gachaTimer.Tick += GachaTimerTick;
                 List<PersonalInfo> personalInfos = TranformTextToList(gachaText);
                 logger.Info("人格数量：" + personalInfos.Count);
