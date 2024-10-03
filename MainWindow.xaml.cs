@@ -11,6 +11,7 @@
  * 现在请关闭这个文件去玩点别的吧。
 */
 using Downloader;
+using LLC_MOD_Toolbox.Datas;
 using log4net;
 using Microsoft.Win32;
 using Newtonsoft.Json;
@@ -20,6 +21,7 @@ using SimpleJSON;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Net.Http;
 using System.Reflection;
 using System.Security.Cryptography;
@@ -645,14 +647,14 @@ namespace LLC_MOD_Toolbox
         /// <summary>
         /// 获取LCB路径
         /// </summary>
-        /// <returns>返回路径。</returns>
+        /// <returns>String 路径</returns>
         private static string? FindlimbusCompanyDirectory()
         {
             logger.Info("使用自动查找边狱公司方法。");
-            if (string.IsNullOrEmpty(LCBPath))
+            if (!string.IsNullOrEmpty(LCBPath))
             {
                 logger.Info("找到了之前获取的路径，检查可用性。");
-                if (File.Exists(LCBPath + "/LimbusCompany.exe"))
+                if (File.Exists(Path.Combine(LCBPath + @"\LimbusCompany.exe")))
                 {
                     logger.Info("路径可用，返回路径。");
                     return LCBPath;
@@ -663,42 +665,22 @@ namespace LLC_MOD_Toolbox
                 }
             }
             string? steamPath = Registry.GetValue(@"HKEY_CURRENT_USER\Software\Valve\Steam", "SteamPath", null) as string;
-            if (steamPath != null)
-            {
-                string libraryFoldersPath = Path.Combine(steamPath, "steamapps", "libraryfolders.vdf");
-                if (File.Exists(libraryFoldersPath))
-                {
-                    string[] lines = File.ReadAllLines(libraryFoldersPath);
-                    foreach (string line in lines)
-                    {
-                        if (line.Contains("\t\"path\"\t\t"))
-                        {
-                            string libraryPath = line.Split('\t')[4].Trim('\"');
-
-                            DirectoryInfo[] steamapps = new DirectoryInfo(libraryPath).GetDirectories("steamapps");
-                            if (steamapps.Length > 0)
-                            {
-                                string commonDir = Path.Combine(steamapps[0].FullName, "common");
-                                if (Directory.Exists(commonDir))
-                                {
-                                    DirectoryInfo[] gameDirs = new DirectoryInfo(commonDir).GetDirectories("Limbus Company");
-                                    if (gameDirs.Length > 0)
-                                    {
-                                        var FullName = gameDirs[0].FullName;
-                                        if (File.Exists(FullName + "/LimbusCompany.exe"))
-                                        {
-                                            logger.Info("已自动查找到边狱公司路径，返回路径并保存。");
-                                            return FullName;
-                                        }
-                                    }
-                                }
-                            }
-
-                        }
-                    }
-                }
+            if (steamPath == null) return null;
+            string libraryFoldersPath = Path.Combine(steamPath, "steamapps", "libraryfolders.vdf");
+            //查找libraryfolders.vdf，中""1973530"\t\t"，并向上找到最近的path
+            try {
+                return Path.Combine(
+                    File.ReadAllLines(libraryFoldersPath).Reverse()
+                    .SkipWhile(n => !n.Contains($"\"{Constants.GAME_APPID}\"\t\t"))
+                    .First(n => n.Contains("path"))
+                    .Split('"')[^2].Replace(@"\\", @"\"),
+                "steamapps","common", "Limbus Company");
             }
-            return null;
+            catch (Exception ex)
+            {
+                logger.Warn(ex+"：游戏未下载或未Steam");
+                return null;
+            }
         }
         /// <summary>
         /// 处理使用Downloader下载文件的事件。
