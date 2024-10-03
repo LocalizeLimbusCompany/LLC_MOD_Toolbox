@@ -11,7 +11,6 @@
  * 现在请关闭这个文件去玩点别的吧。
 */
 using Downloader;
-using LLC_MOD_Toolbox.Datas;
 using log4net;
 using Microsoft.Win32;
 using Newtonsoft.Json;
@@ -549,6 +548,10 @@ namespace LLC_MOD_Toolbox
             }
             APPChangeAPIUI = false;
         }
+        private void WhyShouldIUseThis(object sender, RoutedEventArgs e)
+        {
+            OpenUrl("https://www.zeroasso.top/docs/installer/nodes");
+        }
         #endregion
         #region 常用方法
         public static void Unarchive(string archivePath, string output)
@@ -685,7 +688,7 @@ namespace LLC_MOD_Toolbox
             try {
                 return Path.Combine(
                     File.ReadAllLines(libraryFoldersPath).Reverse()
-                    .SkipWhile(n => !n.Contains($"\"{Constants.GAME_APPID}\"\t\t"))
+                    .SkipWhile(n => !n.Contains($"\"1973530\"\t\t"))
                     .First(n => n.Contains("path"))
                     .Split('"')[^2].Replace(@"\\", @"\"),
                 "steamapps","common", "Limbus Company");

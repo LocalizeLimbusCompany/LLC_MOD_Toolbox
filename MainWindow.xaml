@@ -12,6 +12,7 @@
         MouseDown="WindowDragMove"
         MouseLeftButtonDown="Window_MouseLeftButtonDown"
         MouseLeftButtonUp="Window_MouseLeftButtonUp"
+        ResizeMode="CanMinimize"
         Loaded="WindowLoaded">
     <Window.Resources>
         <Style x:Key="NoHover" TargetType="Button">
@@ -715,7 +716,7 @@ From="1" To="0" Duration="0:0:0.3"/>
                 </ComboBox.Clip>
             </ComboBox>
             <Label Content="切换API节点" HorizontalAlignment="Left" Margin="100,80,0,0" VerticalAlignment="Top" Height="41" Width="494" FontSize="22" Foreground="#FFFFEED4" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Medium"/>
-            <ComboBox x:Name="APICombobox" Panel.ZIndex="5" Margin="304,85,70,280" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Medium" Foreground="Black" FontSize="16" SelectionChanged="APIComboboxSelectionChanged">
+            <ComboBox x:Name="APICombobox" Panel.ZIndex="5" Margin="304,87,70,278" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Medium" Foreground="Black" FontSize="16" SelectionChanged="APIComboboxSelectionChanged">
                 <ComboBox.Clip>
                     <RectangleGeometry Rect="0,0,290,31" RadiusX="3" RadiusY="3"/>
                 </ComboBox.Clip>
@@ -748,6 +749,16 @@ From="1" To="0" Duration="0:0:0.3"/>
                     </EventTrigger>
                 </Button.Triggers>
             </Button>
+            <Button HorizontalAlignment="Left" Margin="271,37,0,0" VerticalAlignment="Top" Height="28" Width="28" Style="{StaticResource NoHover}" Background="#FFFFEED4" Click="WhyShouldIUseThis">
+                <Button.Clip>
+                    <RectangleGeometry Rect="0,0,28,28" RadiusX="14" RadiusY="14"/>
+                </Button.Clip>
+            </Button>
+            <Button HorizontalAlignment="Left" Margin="271,88,0,0" VerticalAlignment="Top" Height="28" Width="28" Style="{StaticResource NoHover}" Background="#FFFFEED4" Click="WhyShouldIUseThis">
+                <Button.Clip>
+                    <RectangleGeometry Rect="0,0,28,28" RadiusX="14" RadiusY="14"/>
+                </Button.Clip>
+            </Button>
             <Label Content="卸载" HorizontalAlignment="Left" IsHitTestVisible="False" Margin="531,130,0,0" VerticalAlignment="Top" Height="38" Width="52" FontSize="16" Foreground="Black" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Heavy"/>
             <Label Content="切换模组开关状态" HorizontalAlignment="Left" Margin="100,179,0,0" VerticalAlignment="Top" Height="41" Width="494" FontSize="22" Foreground="#FFFFEED4" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Medium"/>
             <Image x:Name="ChangeStatuHover" Panel.ZIndex="5" IsHitTestVisible="False" Opacity="0" HorizontalAlignment="Left" Height="34" Margin="512,184,0,0" VerticalAlignment="Top" Width="80" Source="/Picture/SettingButtonHover.png"/>
@@ -777,6 +788,8 @@ From="1" To="0" Duration="0:0:0.3"/>
                 </Button.Triggers>
             </Button>
             <Label Content="开关" HorizontalAlignment="Left" IsHitTestVisible="False" Margin="531,183,0,0" VerticalAlignment="Top" Height="38" Width="52" FontSize="16" Foreground="Black" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Heavy"/>
+            <Label Content="?" HorizontalAlignment="Left" IsHitTestVisible="False" Margin="276,34,0,0" VerticalAlignment="Top" Height="38" Width="52" FontSize="16" Foreground="Black" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Heavy"/>
+            <Label Content="?" HorizontalAlignment="Left" IsHitTestVisible="False" Margin="276,85,0,0" VerticalAlignment="Top" Height="38" Width="52" FontSize="16" Foreground="Black" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Heavy"/>
         </Grid>
         <Grid x:Name="AboutPage" Visibility="Collapsed" Panel.ZIndex="5" Margin="62,55,54,32" Grid.Column="2" Grid.Row="1">
             <Label HorizontalAlignment="Center" Margin="0,15,0,0" VerticalAlignment="Top" Height="357" Width="644" FontSize="15" Foreground="#FFFFEED4" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Medium">
