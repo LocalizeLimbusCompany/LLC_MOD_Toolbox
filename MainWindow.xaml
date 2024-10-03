@@ -707,17 +707,23 @@ From="1" To="0" Duration="0:0:0.3"/>
             </Button>
             <Label Content="了解更多" HorizontalAlignment="Left" IsHitTestVisible="False" Margin="450,199,0,0" VerticalAlignment="Top" Height="38" Width="74" FontSize="16" Foreground="Black" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Heavy"/>
         </Grid>
-        <Grid x:Name="SettingsPage" Visibility="Collapsed" Panel.ZIndex="5" Margin="62,55,54,32" Grid.Column="2" Grid.Row="1">
+        <Grid x:Name="SettingsPage" Visibility="Visible" Panel.ZIndex="5" Margin="62,55,54,32" Grid.Column="2" Grid.Row="1">
             <Label Content="切换节点" HorizontalAlignment="Left" Margin="100,28,0,0" VerticalAlignment="Top" Height="41" Width="494" FontSize="22" Foreground="#FFFFEED4" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Medium"/>
             <ComboBox x:Name="NodeCombobox" Margin="304,35,70,330" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Medium" Foreground="Black" FontSize="16" SelectionChanged="NodeComboboxSelectionChanged" >
                 <ComboBox.Clip>
                     <RectangleGeometry Rect="0,0,290,31" RadiusX="3" RadiusY="3"/>
                 </ComboBox.Clip>
             </ComboBox>
-            <Label Content="卸载模组" HorizontalAlignment="Left" Margin="100,80,0,0" VerticalAlignment="Top" Height="41" Width="494" FontSize="22" Foreground="#FFFFEED4" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Medium"/>
+            <Label Content="切换API节点" HorizontalAlignment="Left" Margin="100,80,0,0" VerticalAlignment="Top" Height="41" Width="494" FontSize="22" Foreground="#FFFFEED4" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Medium"/>
+            <ComboBox x:Name="APICombobox" Margin="304,85,70,280" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Medium" Foreground="Black" FontSize="16" SelectionChanged="APIComboboxSelectionChanged" >
+                <ComboBox.Clip>
+                    <RectangleGeometry Rect="0,0,290,31" RadiusX="3" RadiusY="3"/>
+                </ComboBox.Clip>
+            </ComboBox>
+            <Label Content="卸载模组" HorizontalAlignment="Left" Margin="100,128,0,0" VerticalAlignment="Top" Height="41" Width="494" FontSize="22" Foreground="#FFFFEED4" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Medium"/>
             <Image HorizontalAlignment="Center" Height="249" VerticalAlignment="Center" Width="524" Source="/Picture/SettingsLine.png"/>
-            <Image x:Name="UninstallHover" Panel.ZIndex="5" IsHitTestVisible="False" Opacity="0" HorizontalAlignment="Left" Height="34" Margin="511,84,0,0" VerticalAlignment="Top" Width="80" Source="/Picture/SettingButtonHover.png"/>
-            <Button HorizontalAlignment="Left" Margin="514,87,0,0" VerticalAlignment="Top" Height="28" Width="74" Style="{StaticResource NoHover}" Background="#FFFFEED4" Click="UninstallButtonClick">
+            <Image x:Name="UninstallHover" Panel.ZIndex="5" IsHitTestVisible="False" Opacity="0" HorizontalAlignment="Left" Height="34" Margin="511,131,0,0" VerticalAlignment="Top" Width="80" Source="/Picture/SettingButtonHover.png"/>
+            <Button HorizontalAlignment="Left" Margin="514,134,0,0" VerticalAlignment="Top" Height="28" Width="74" Style="{StaticResource NoHover}" Background="#FFFFEED4" Click="UninstallButtonClick">
                 <Button.Clip>
                     <RectangleGeometry Rect="0,0,74,28" RadiusX="3" RadiusY="3"/>
                 </Button.Clip>
@@ -742,10 +748,10 @@ From="1" To="0" Duration="0:0:0.3"/>
                     </EventTrigger>
                 </Button.Triggers>
             </Button>
-            <Label Content="卸载" HorizontalAlignment="Left" IsHitTestVisible="False" Margin="531,83,0,0" VerticalAlignment="Top" Height="38" Width="52" FontSize="16" Foreground="Black" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Heavy"/>
-            <Label Content="切换模组开关状态" HorizontalAlignment="Left" Margin="100,128,0,0" VerticalAlignment="Top" Height="41" Width="494" FontSize="22" Foreground="#FFFFEED4" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Medium"/>
-            <Image x:Name="ChangeStatuHover" Panel.ZIndex="5" IsHitTestVisible="False" Opacity="0" HorizontalAlignment="Left" Height="34" Margin="511,131,0,0" VerticalAlignment="Top" Width="80" Source="/Picture/SettingButtonHover.png"/>
-            <Button HorizontalAlignment="Left" Margin="514,134,0,0" VerticalAlignment="Top" Height="28" Width="74" Style="{StaticResource NoHover}" Background="#FFFFEED4" Click="ChangeStatuButtonClick">
+            <Label Content="卸载" HorizontalAlignment="Left" IsHitTestVisible="False" Margin="531,130,0,0" VerticalAlignment="Top" Height="38" Width="52" FontSize="16" Foreground="Black" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Heavy"/>
+            <Label Content="切换模组开关状态" HorizontalAlignment="Left" Margin="100,179,0,0" VerticalAlignment="Top" Height="41" Width="494" FontSize="22" Foreground="#FFFFEED4" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Medium"/>
+            <Image x:Name="ChangeStatuHover" Panel.ZIndex="5" IsHitTestVisible="False" Opacity="0" HorizontalAlignment="Left" Height="34" Margin="512,184,0,0" VerticalAlignment="Top" Width="80" Source="/Picture/SettingButtonHover.png"/>
+            <Button HorizontalAlignment="Left" Margin="515,187,0,0" VerticalAlignment="Top" Height="28" Width="74" Style="{StaticResource NoHover}" Background="#FFFFEED4" Click="ChangeStatuButtonClick">
                 <Button.Clip>
                     <RectangleGeometry Rect="0,0,74,28" RadiusX="3" RadiusY="3"/>
                 </Button.Clip>
@@ -770,9 +776,9 @@ From="1" To="0" Duration="0:0:0.3"/>
                     </EventTrigger>
                 </Button.Triggers>
             </Button>
-            <Label Content="开关" HorizontalAlignment="Left" IsHitTestVisible="False" Margin="531,130,0,0" VerticalAlignment="Top" Height="38" Width="52" FontSize="16" Foreground="Black" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Heavy"/>
+            <Label Content="开关" HorizontalAlignment="Left" IsHitTestVisible="False" Margin="531,183,0,0" VerticalAlignment="Top" Height="38" Width="52" FontSize="16" Foreground="Black" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Heavy"/>
         </Grid>
-        <Grid x:Name="AboutPage" Visibility="Visible" Panel.ZIndex="5" Margin="62,55,54,32" Grid.Column="2" Grid.Row="1">
+        <Grid x:Name="AboutPage" Visibility="Collapsed" Panel.ZIndex="5" Margin="62,55,54,32" Grid.Column="2" Grid.Row="1">
             <Label HorizontalAlignment="Center" Margin="0,15,0,0" VerticalAlignment="Top" Height="357" Width="644" FontSize="15" Foreground="#FFFFEED4" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Medium">
                 <TextBlock Text="都市零协会工具箱 (LLC_MOD_Toolbox) 是服务于都市零协会汉化模组 (LocalizeLimbusCompany) 的自动化安装工具。本软件使用库的许可证请于零协会官网 (https://www.zeroasso.top) 查看。&#10;- LLCMT工具箱&#10;  - 代码实现：曾小皮、10291029&#10;  - 美术设计：记得保存、玉佩（抽卡模拟器）&#10;- LLC翻译模组&#10;  - 翻译文本：零协会翻译组全体译者&#10;  - 汉化模组代码：奈芙Nephthys&#10;  - 汉化模组字体：茜、北岚&#10;- 特别鸣谢&#10;  - 服务器运维 &amp; 开发：曾小皮 &#10;  - 零协会广播局全体创作者&#10;  - 翻译工具：Paratranz&#10;&#10;人无语言则茫然无依。" TextWrapping="Wrap" Height="351"/>
             </Label>

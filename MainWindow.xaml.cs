@@ -14,6 +14,7 @@ using Downloader;
 using log4net;
 using Microsoft.Win32;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using SevenZip;
 using SimpleJSON;
 using System.ComponentModel;
@@ -33,20 +34,23 @@ namespace LLC_MOD_Toolbox
     {
         private static readonly ILog logger = LogManager.GetLogger(MethodBase.GetCurrentMethod()!.DeclaringType);
         private static string useEndPoint = string.Empty;
+        private static string useAPIEndPoint = string.Empty;
         private static bool useGithub = false;
         private static bool useMirrorGithub = false;
         private static string limbusCompanyDir = string.Empty;
         private static string limbusCompanyGameDir = string.Empty;
         private static string currentDir = AppDomain.CurrentDomain.BaseDirectory;
         private static List<Node> nodeList = [];
+        private static List<Node> apiList = [];
         private static string defaultEndPoint = "https://node.zeroasso.top/d/od/";
+        private static string defaultAPIEndPoint = "https://api.kr.zeroasso.top/";
         private static int installPhase = 0;
         private readonly DispatcherTimer progressTimer;
         private float progressPercentage = 0;
         // GreyTest 灰度测试2.0
         private static string greytestUrl = string.Empty;
         private static bool greytestStatus = false;
-        private const string VERSION = "1.0.1";
+        private const string VERSION = "1.0.2";
         public MainWindow()
         {
             InitializeComponent();
@@ -63,10 +67,10 @@ namespace LLC_MOD_Toolbox
             logger.Info("工具箱已进入加载流程。");
             logger.Info("We have a lift off.");
             logger.Info("WPF架构工具箱 版本：" + VERSION + " 。");
+            InitNode();
             await RefreshPage();
             await ChangeEEPic("https://dl.kr.zeroasso.top/ee_pic/public/public.png");
             CheckToolboxUpdate(VERSION);
-            InitNode();
             LoadConfig();
             InitLink();
             CheckLimbusCompanyPath();
@@ -398,19 +402,42 @@ namespace LLC_MOD_Toolbox
             }
             NodeCombobox.Items.Add("Github直连");
             NodeCombobox.Items.Add("Mirror Github");
+            // API
+            APICombobox.Items.Add("恢复默认");
+            foreach (var api in apiList)
+            {
+                if(api.IsDefault == true)
+                {
+                    defaultAPIEndPoint = api.Endpoint;
+                }
+                APICombobox.Items.Add(api.Name);
+            }
         }
         public static void ReadNodeJsonFile()
         {
             string nodeListRaw = File.ReadAllText(currentDir + "/nodeList.json");
-            nodeList = JsonConvert.DeserializeObject<List<Node>>(nodeListRaw) ?? new List<Node>();
+            var jsonObject = JObject.Parse(nodeListRaw);
+            nodeList = jsonObject["downloadNode"].ToObject<List<Node>>();
+            apiList = jsonObject["apiNode"].ToObject<List<Node>>();
         }
-        private static string FindEndpoint(string Name)
+        private static string FindNodeEndpoint(string Name)
         {
-            foreach (var Node in nodeList)
+            foreach (var node in nodeList)
             {
-                if (Node.Name == Name)
+                if (node.Name == Name)
                 {
-                    return Node.Endpoint;
+                    return node.Endpoint;
+                }
+            }
+            return string.Empty;
+        }
+        private static string FindAPIEndpoint(string Name)
+        {
+            foreach (var api in apiList)
+            {
+                if (api.Name == Name)
+                {
+                    return api.Endpoint;
                 }
             }
             return string.Empty;
@@ -421,6 +448,15 @@ namespace LLC_MOD_Toolbox
             await this.Dispatcher.BeginInvoke(() =>
             {
                 combotext = NodeCombobox.SelectedItem.ToString();
+            });
+            return combotext;
+        }
+        public async Task<string> GetAPIComboboxText()
+        {
+            string combotext = string.Empty;
+            await this.Dispatcher.BeginInvoke(() =>
+            {
+                combotext = APICombobox.SelectedItem.ToString();
             });
             return combotext;
         }
@@ -454,7 +490,7 @@ namespace LLC_MOD_Toolbox
                 }
                 else
                 {
-                    useEndPoint = FindEndpoint(nodeComboboxText);
+                    useEndPoint = FindNodeEndpoint(nodeComboboxText);
                     useMirrorGithub = false;
                     useGithub = false;
                     logger.Info("当前Endpoint：" + useEndPoint);
@@ -464,6 +500,37 @@ namespace LLC_MOD_Toolbox
             else
             {
                 logger.Info("NodeComboboxText 为 null。");
+            }
+        }
+        private async void APIComboboxSelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        {
+            if (useGithub)
+            {
+                string apiComboboxText = await GetAPIComboboxText();
+                logger.Info("选择API节点。");
+                if (apiComboboxText != string.Empty)
+                {
+                    if (apiComboboxText == "恢复默认")
+                    {
+                        useAPIEndPoint = string.Empty;
+                        logger.Info("已恢复默认API Endpoint。");
+                    }
+                    else
+                    {
+                        useAPIEndPoint = FindAPIEndpoint(apiComboboxText);
+                        logger.Info("当前API Endpoint：" + useAPIEndPoint);
+                        System.Windows.MessageBox.Show("切换成功。", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
+                    }
+                }
+                else
+                {
+                    logger.Info("APIComboboxText 为 null。");
+                }
+            }
+            else
+            {
+                logger.Info("已开启Github。无法切换API。");
+                System.Windows.MessageBox.Show("切换失败。\n无法在节点为Github直连的情况下切换API。", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
             }
         }
         #endregion
@@ -484,9 +551,7 @@ namespace LLC_MOD_Toolbox
             }
             else
             {
-#pragma warning disable CS8601 // 引用类型赋值可能为 null。
                 limbusCompanyDir = FindlimbusCompanyDirectory();
-#pragma warning restore CS8601 // 引用类型赋值可能为 null。
                 MessageBoxResult CheckLCBPathResult = MessageBoxResult.OK;
                 if (!string.IsNullOrEmpty(limbusCompanyDir))
                 {
@@ -699,7 +764,7 @@ namespace LLC_MOD_Toolbox
             string raw;
             if (!useGithub)
             {
-                raw = await GetURLText("https://api.kr.zeroasso.top/Mod_Release.json");
+                raw = await GetURLText(useAPIEndPoint + "Mod_Release.json");
             }
             else
             {
@@ -792,7 +857,7 @@ namespace LLC_MOD_Toolbox
             try
             {
                 logger.Info("正在检查工具箱更新。");
-                string raw = await GetURLText("https://api.kr.zeroasso.top/Toolbox_Release.json");
+                string raw = await GetURLText(useAPIEndPoint + "Toolbox_Release.json");
                 var JsonObject = JSONNode.Parse(raw).AsObject;
                 string latestReleaseTagRaw = JsonObject["tag_name"].Value;
                 string latestReleaseTag = latestReleaseTagRaw.Remove(0, 1);
@@ -837,7 +902,7 @@ namespace LLC_MOD_Toolbox
                 }
                 else
                 {
-                    raw = await GetURLText("https://api.kr.zeroasso.top/LatestTmp_Release.json");
+                    raw = await GetURLText(useAPIEndPoint + "LatestTmp_Release.json");
                 }
                 var JsonObject = JSONNode.Parse(raw).AsObject;
                 string latestReleaseTag = JsonObject["tag_name"].Value;
@@ -935,6 +1000,7 @@ namespace LLC_MOD_Toolbox
             DeleteFile(limbusCompanyDir + "/Latest(框架日志).log");
             DeleteFile(limbusCompanyDir + "/Player(游戏日志).log");
             DeleteFile(limbusCompanyDir + "/winhttp.dll");
+            DeleteFile(limbusCompanyDir + "/winhttp.dll.disabled");
             DeleteFile(limbusCompanyDir + "/changelog.txt");
             DeleteFile(limbusCompanyDir + "/BepInEx-IL2CPP-x64.7z");
             DeleteFile(limbusCompanyDir + "/LimbusLocalize_BIE.7z");
@@ -1176,7 +1242,7 @@ namespace LLC_MOD_Toolbox
             if (string.IsNullOrEmpty(gachaText))
             {
                 logger.Error("初始化失败。");
-                System.Windows.MessageBox.Show("初始化失败。请检查网络情况。","提示");
+                System.Windows.MessageBox.Show("初始化失败。请检查网络情况。", "提示");
                 isInitGachaFailed = true;
             }
             else
@@ -1208,7 +1274,7 @@ namespace LLC_MOD_Toolbox
                 List<PersonalInfo> personals = GenPersonalList();
                 await StartChangeLabel(personals);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 logger.Info("出现了问题。" + ex.ToString());
                 System.Windows.MessageBox.Show("出了点小问题！\n要不再试一次？\n————————\n" + ex.ToString());
