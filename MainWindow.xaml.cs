@@ -28,6 +28,13 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Threading;
+using Downloader;
+using LLC_MOD_Toolbox.Datas;
+using log4net;
+using Microsoft.Win32;
+using Newtonsoft.Json;
+using SevenZip;
+using SimpleJSON;
 
 namespace LLC_MOD_Toolbox
 {
@@ -656,6 +663,8 @@ namespace LLC_MOD_Toolbox
             logger.Info("计算位置为 " + filePath + " 的文件的Hash结果为：" + BitConverter.ToString(hashBytes).Replace("-", "").ToLower());
             return BitConverter.ToString(hashBytes).Replace("-", "").ToLower();
         }
+
+        /// <summary>
 
         /// <summary>
         /// 处理使用Downloader下载文件的事件。
