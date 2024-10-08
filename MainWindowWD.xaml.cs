@@ -2,14 +2,11 @@
 // 我恨XML，这辈子都不想写XML了。
 // （而且内存占用好多
 
-using System.Diagnostics;
-using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace LLC_MOD_Toolbox
 {

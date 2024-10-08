@@ -10,17 +10,9 @@
  * 要是你尝试玩弄这段代码的话，你将会在无尽的通宵中不断地咒骂自己为什么会认为自己聪明到可以优化这段代码。
  * 现在请关闭这个文件去玩点别的吧。
 */
-using Downloader;
-using LLC_MOD_Toolbox.Datas;
-using log4net;
-using Microsoft.Win32;
-using Newtonsoft.Json;
-using SevenZip;
-using SimpleJSON;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Net.Http;
 using System.Reflection;
 using System.Security.Cryptography;
@@ -28,6 +20,13 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Threading;
+using Downloader;
+using LLC_MOD_Toolbox.Datas;
+using log4net;
+using Microsoft.Win32;
+using Newtonsoft.Json;
+using SevenZip;
+using SimpleJSON;
 
 namespace LLC_MOD_Toolbox
 {
@@ -37,9 +36,9 @@ namespace LLC_MOD_Toolbox
         private static string useEndPoint = string.Empty;
         private static bool useGithub = false;
         private static bool useMirrorGithub = false;
-        private static string limbusCompanyDir = string.Empty;
+        private static string  limbusCompanyDir = Registry.GetValue(@$"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Steam App {Constants.GAME_APPID}", "InstallLocation", string.Empty) as string ?? string.Empty;
         private static string limbusCompanyGameDir = string.Empty;
-        private static string currentDir = AppDomain.CurrentDomain.BaseDirectory;
+        private static readonly string currentDir = AppDomain.CurrentDomain.BaseDirectory;
         private static List<Node> nodeList = [];
         private static string defaultEndPoint = "https://node.zeroasso.top/d/od/";
         private static int installPhase = 0;
@@ -404,7 +403,7 @@ namespace LLC_MOD_Toolbox
         public static void ReadNodeJsonFile()
         {
             string nodeListRaw = File.ReadAllText(currentDir + "/nodeList.json");
-            nodeList = JsonConvert.DeserializeObject<List<Node>>(nodeListRaw) ?? new List<Node>();
+            nodeList = JsonConvert.DeserializeObject<List<Node>>(nodeListRaw) ?? [];
         }
         private static string FindEndpoint(string Name)
         {
@@ -472,23 +471,12 @@ namespace LLC_MOD_Toolbox
         #region 常用方法
         public static void Unarchive(string archivePath, string output)
         {
-            using (SevenZipExtractor extractor = new SevenZipExtractor(archivePath))
-            {
-                extractor.ExtractArchive(output);
-            }
+            using SevenZipExtractor extractor = new(archivePath);
+            extractor.ExtractArchive(output);
         }
         private static void CheckLimbusCompanyPath()
         {
-            if (skipLCBPathCheck && !string.IsNullOrEmpty(LCBPath))
-            {
-                limbusCompanyDir = LCBPath;
-                logger.Info("跳过检查路径。");
-            }
-            else
-            {
-#pragma warning disable CS8601 // 引用类型赋值可能为 null。
-                limbusCompanyDir = FindlimbusCompanyDirectory();
-#pragma warning restore CS8601 // 引用类型赋值可能为 null。
+
                 MessageBoxResult CheckLCBPathResult = MessageBoxResult.OK;
                 if (!string.IsNullOrEmpty(limbusCompanyDir))
                 {
@@ -537,7 +525,7 @@ namespace LLC_MOD_Toolbox
                         ChangeLCBPathConfig(limbusCompanyDir);
                     }
                 }
-            }
+            
             limbusCompanyGameDir = limbusCompanyDir + "/LimbusCompany.exe";
             logger.Info("边狱公司路径：" + limbusCompanyDir);
         }
@@ -579,44 +567,7 @@ namespace LLC_MOD_Toolbox
             logger.Info("计算位置为 " + filePath + " 的文件的Hash结果为：" + BitConverter.ToString(hashBytes).Replace("-", "").ToLower());
             return BitConverter.ToString(hashBytes).Replace("-", "").ToLower();
         }
-        /// <summary>
-        /// 获取LCB路径
-        /// </summary>
-        /// <returns>String 路径</returns>
-        private static string? FindlimbusCompanyDirectory()
-        {
-            logger.Info("使用自动查找边狱公司方法。");
-            if (!string.IsNullOrEmpty(LCBPath))
-            {
-                logger.Info("找到了之前获取的路径，检查可用性。");
-                if (File.Exists(Path.Combine(LCBPath + @"\LimbusCompany.exe")))
-                {
-                    logger.Info("路径可用，返回路径。");
-                    return LCBPath;
-                }
-                else
-                {
-                    logger.Info("路径不可用，重新进行查找。");
-                }
-            }
-            string? steamPath = Registry.GetValue(@"HKEY_CURRENT_USER\Software\Valve\Steam", "SteamPath", null) as string;
-            if (steamPath == null) return null;
-            string libraryFoldersPath = Path.Combine(steamPath, "steamapps", "libraryfolders.vdf");
-            //查找libraryfolders.vdf，中""1973530"\t\t"，并向上找到最近的path
-            try {
-                return Path.Combine(
-                    File.ReadAllLines(libraryFoldersPath).Reverse()
-                    .SkipWhile(n => !n.Contains($"\"{Constants.GAME_APPID}\"\t\t"))
-                    .First(n => n.Contains("path"))
-                    .Split('"')[^2].Replace(@"\\", @"\"),
-                "steamapps","common", "Limbus Company");
-            }
-            catch (Exception ex)
-            {
-                logger.Warn(ex+"：游戏未下载或未Steam");
-                return null;
-            }
-        }
+
         /// <summary>
         /// 处理使用Downloader下载文件的事件。
         /// </summary>
@@ -1141,9 +1092,9 @@ namespace LLC_MOD_Toolbox
         private static bool isInitGacha = false;
         private static bool isInitGachaFailed = false;
         private static int gachaCount = 0;
-        private static List<PersonalInfo> personalInfos1star = new();
-        private static List<PersonalInfo> personalInfos2star = new();
-        private static List<PersonalInfo> personalInfos3star = new();
+        private static List<PersonalInfo> personalInfos1star = [];
+        private static List<PersonalInfo> personalInfos2star = [];
+        private static List<PersonalInfo> personalInfos3star = [];
         private DispatcherTimer? gachaTimer;
         private int _currentIndex = 0;
         private int[]? uniqueCount;
@@ -1158,13 +1109,15 @@ namespace LLC_MOD_Toolbox
             if (string.IsNullOrEmpty(gachaText))
             {
                 logger.Error("初始化失败。");
-                System.Windows.MessageBox.Show("初始化失败。请检查网络情况。","提示");
+                System.Windows.MessageBox.Show("初始化失败。请检查网络情况。", "提示");
                 isInitGachaFailed = true;
             }
             else
             {
-                gachaTimer = new DispatcherTimer();
-                gachaTimer.Interval = TimeSpan.FromSeconds(0.07);
+                gachaTimer = new DispatcherTimer
+                {
+                    Interval = TimeSpan.FromSeconds(0.07)
+                };
                 gachaTimer.Tick += GachaTimerTick;
                 List<PersonalInfo> personalInfos = TranformTextToList(gachaText);
                 logger.Info("人格数量：" + personalInfos.Count);
@@ -1190,7 +1143,7 @@ namespace LLC_MOD_Toolbox
                 List<PersonalInfo> personals = GenPersonalList();
                 await StartChangeLabel(personals);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 logger.Info("出现了问题。" + ex.ToString());
                 System.Windows.MessageBox.Show("出了点小问题！\n要不再试一次？\n————————\n" + ex.ToString());
@@ -1213,10 +1166,7 @@ namespace LLC_MOD_Toolbox
         }
         private int[] GetPersonalUniqueCount(List<PersonalInfo> personals)
         {
-            int[] uniqueCount = new int[3];
-            uniqueCount[0] = 0;
-            uniqueCount[1] = 0;
-            uniqueCount[2] = 0;
+            int[] uniqueCount = [0, 0, 0];
             foreach (PersonalInfo personal in personals)
             {
                 if (personal.Unique == 1)
@@ -1273,8 +1223,8 @@ namespace LLC_MOD_Toolbox
         }
         private List<PersonalInfo> GenPersonalList()
         {
-            Random random = new Random();
-            List<PersonalInfo> genPersonalInfos = new();
+            Random random = new();
+            List<PersonalInfo> genPersonalInfos = [];
             for (int i = 0; i < 10; i++) // 循环十次
             {
                 int chance = random.Next(1, 101);
@@ -1317,7 +1267,7 @@ namespace LLC_MOD_Toolbox
         {
             logger.Info("开始转换文本。");
             var gachaObject = JSONNode.Parse(gachaText);
-            List<PersonalInfo> personalInfoList = new();
+            List<PersonalInfo> personalInfoList = [];
             for (int i = 0; i < gachaObject["data"].Count; i++)
             {
                 PersonalInfo personalInfo = new()
@@ -1335,7 +1285,7 @@ namespace LLC_MOD_Toolbox
         {
             if (input.StartsWith(prefix))
             {
-                string title = input.Substring(prefix.Length);
+                string title = input[prefix.Length..];
                 return $"{title} {prefix}";
             }
             else
@@ -1361,32 +1311,25 @@ namespace LLC_MOD_Toolbox
                 {
                     InGachaButton.IsHitTestVisible = true;
                 });
-                Random random = new Random();
+                Random random = new();
                 gachaCount += 1;
-                if (gachaCount == 10)
+                switch (gachaCount)
                 {
-                    System.Windows.MessageBox.Show("你已经抽了100抽了，你上头了？", "提示");
-                    return;
-                }
-                else if (gachaCount == 20)
-                {
-                    System.Windows.MessageBox.Show("恭喜你，你已经抽了一个井了！\n珍爱生命，远离抽卡啊亲！", "提示");
-                    return;
-                }
-                else if (gachaCount == 40)
-                {
-                    System.Windows.MessageBox.Show("两个井了，你算算已经砸了多少狂气了？", "提示");
-                    return;
-                }
-                else if (gachaCount == 60)
-                {
-                    System.Windows.MessageBox.Show("收手吧！你不算砸了多少狂气我算了！\n你已经砸了60x1300=78000狂气了！", "提示");
-                    return;
-                }
-                else if (gachaCount == 100)
-                {
-                    System.Windows.MessageBox.Show("我是来恭喜你，你已经扔进去1000抽，简称130000狂气了。\n你花了多少时间到这里？", "提示");
-                    return;
+                    case 10:
+                        System.Windows.MessageBox.Show("你已经抽了100抽了，你上头了？", "提示");
+                        return;
+                    case 20:
+                        System.Windows.MessageBox.Show("恭喜你，你已经抽了一个井了！\n珍爱生命，远离抽卡啊亲！", "提示");
+                        return;
+                    case 40:
+                        System.Windows.MessageBox.Show("两个井了，你算算已经砸了多少狂气了？", "提示");
+                        return;
+                    case 60:
+                        System.Windows.MessageBox.Show("收手吧！你不算砸了多少狂气我算了！\n你已经砸了60x1300=78000狂气了！", "提示");
+                        return;
+                    case 100:
+                        System.Windows.MessageBox.Show("我是来恭喜你，你已经扔进去1000抽，简称130000狂气了。\n你花了多少时间到这里？", "提示");
+                        return;
                 }
                 if (uniqueCount == null)
                 {
