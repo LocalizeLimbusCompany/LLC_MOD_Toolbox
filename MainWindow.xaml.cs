@@ -51,7 +51,7 @@ namespace LLC_MOD_Toolbox
         // GreyTest 灰度测试2.0
         private static string greytestUrl = string.Empty;
         private static bool greytestStatus = false;
-        private const string VERSION = "1.0.2";
+        private const string VERSION = "1.0.3";
         public MainWindow()
         {
             InitializeComponent();
@@ -78,7 +78,7 @@ namespace LLC_MOD_Toolbox
             SevenZipBase.SetLibraryPath(Path.Combine(currentDir, "7z.dll"));
             logger.Info("加载流程完成。");
         }
-        private static void PrintInstallInfo(string promptInfo, int intObject)
+        private static void PrintInstallInfo(string promptInfo, int? intObject)
         {
             if (useEndPoint != null)
             {
@@ -89,7 +89,7 @@ namespace LLC_MOD_Toolbox
                 logger.Info(promptInfo + "：空");
             }
         }
-        private static void PrintInstallInfo(string promptInfo, string stringObject)
+        private static void PrintInstallInfo(string promptInfo, string? stringObject)
         {
             if (!string.IsNullOrEmpty(useEndPoint))
             {
@@ -550,7 +550,7 @@ namespace LLC_MOD_Toolbox
         }
         private void WhyShouldIUseThis(object sender, RoutedEventArgs e)
         {
-            OpenUrl("https://www.zeroasso.top/docs/installer/nodes");
+            OpenUrl("https://www.zeroasso.top/docs/configuration/nodes");
         }
         #endregion
         #region 常用方法
@@ -651,11 +651,6 @@ namespace LLC_MOD_Toolbox
             return BitConverter.ToString(hashBytes).Replace("-", "").ToLower();
         }
         /// <summary>
-        /// 获取LCB路径
-        /// </summary>
-        /// <returns>String 路径</returns>
-
-        /// <summary>
         /// 处理使用Downloader下载文件的事件。
         /// </summary>
         /// <param name="sender"></param>
@@ -739,6 +734,7 @@ namespace LLC_MOD_Toolbox
         {
             try
             {
+                logger.Info($"获取 {Url} 文本内容。");
                 using HttpClient client = new();
                 client.DefaultRequestHeaders.Add("User-Agent", "LLC_MOD_Toolbox");
                 string raw = string.Empty;
