@@ -81,21 +81,20 @@ namespace LLC_MOD_Toolbox
             // 安装页面相关控件
             if (nowPage == "install")
             {
-                if (nowInstallPage == "auto")
+                switch (nowInstallPage)
                 {
-                    await MakeGridStatuExceptSelf(AutoInstallPage);
-                }
-                else if (nowInstallPage == "manual")
-                {
-                    await MakeGridStatuExceptSelf(ManualInstallPage);
-                }
-                else if (nowInstallPage == "replace")
-                {
-                    await MakeGridStatuExceptSelf(ReplaceInstallPage);
-                }
-                else if (nowInstallPage == "gacha")
-                {
-                    await MakeGridStatuExceptSelf(GachaPage);
+                    case "auto":
+                        await MakeGridStatuExceptSelf(AutoInstallPage);
+                        break;
+                    case "manual":
+                        await MakeGridStatuExceptSelf(ManualInstallPage);
+                        break;
+                    case "replace":
+                        await MakeGridStatuExceptSelf(ReplaceInstallPage);
+                        break;
+                    case "gacha":
+                        await MakeGridStatuExceptSelf(GachaPage);
+                        break;
                 }
             }
             // 配置页面相关控件
@@ -316,7 +315,7 @@ namespace LLC_MOD_Toolbox
         {
             value = (float)Math.Round(value, 1);
             logger.Debug("安装进度：" + value + "%");
-            RectangleGeometry rectGeometry = new RectangleGeometry
+            RectangleGeometry rectGeometry = new()
             {
                 Rect = new Rect(0, 0, 6.24 * value, 50)
             };
@@ -370,7 +369,7 @@ namespace LLC_MOD_Toolbox
         }
         #endregion
         #region 链接
-        public Dictionary<string, string> linkDictionary = new();
+        public Dictionary<string, string> linkDictionary = [];
         private void InitLink()
         {
             linkDictionary.Add("LinkButton1", "https://www.zeroasso.top");
