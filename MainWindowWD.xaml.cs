@@ -138,15 +138,8 @@ namespace LLC_MOD_Toolbox
                 EEPage,
                 GachaPage
             ];
-            if (gridList.Contains(g))
-            {
-                gridList.Remove(g);
-                MakeGridStatu(g, true);
-            }
-            else
-            {
-                return;
-            }
+            gridList.Remove(g);
+            MakeGridStatu(g, true);
             foreach (Grid grid in gridList)
             {
                 MakeGridStatu(grid, false);
@@ -402,13 +395,10 @@ namespace LLC_MOD_Toolbox
             if (sender != null)
             {
                 string name = await GetSenderName(sender as System.Windows.Controls.Control);
-                string url = string.Empty;
-                if (!string.IsNullOrEmpty(name) && linkDictionary.TryGetValue(name, out url))
+                if (!string.IsNullOrEmpty(name) && linkDictionary.TryGetValue(name, out string url))
                 {
-                    if (linkDictionary.TryGetValue(name, out url))
-                    {
-                        OpenUrl(url);
-                    }
+
+                    OpenUrl(url);
                 }
             }
         }

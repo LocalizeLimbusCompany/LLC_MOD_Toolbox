@@ -8,8 +8,9 @@
     <UseWPF>true</UseWPF>
     <SupportedOSPlatformVersion>7.0</SupportedOSPlatformVersion>
     <ApplicationIcon>favicon.ico</ApplicationIcon>
-    <UseWindowsForms>True</UseWindowsForms>
+    <UseWindowsForms>False</UseWindowsForms>
     <Configurations>Debug;Release;LLC_MOD_Toolbox;ReleaseLLCMT</Configurations>
+	<Version>1.0.3</Version>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'" />
@@ -73,8 +74,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Downloader" Version="3.1.2" />
-    <PackageReference Include="log4net" Version="2.0.17" />
+    <PackageReference Include="Downloader" Version="3.2.1" />
+    <PackageReference Include="log4net" Version="3.0.1" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="Squid-Box.SevenZipSharp" Version="1.6.2.24" />
   </ItemGroup>
