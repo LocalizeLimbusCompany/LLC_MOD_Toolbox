@@ -826,8 +826,8 @@ namespace SimpleJSON
         {
             get
             {
-                if (m_Dict.ContainsKey(aKey))
-                    return m_Dict[aKey];
+                if (m_Dict.TryGetValue(aKey, out JSONNode? value))
+                    return value;
                 else
                     return new JSONLazyCreator(this, aKey);
             }
@@ -884,9 +884,9 @@ namespace SimpleJSON
 
         public override JSONNode Remove(string aKey)
         {
-            if (!m_Dict.ContainsKey(aKey))
+            if (!m_Dict.TryGetValue(aKey, out JSONNode? value))
                 return null;
-            JSONNode tmp = m_Dict[aKey];
+            JSONNode tmp = value;
             m_Dict.Remove(aKey);
             return tmp;
         }
