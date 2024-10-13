@@ -37,7 +37,8 @@ namespace LLC_MOD_Toolbox
         private static string? useAPIEndPoint;
         private static bool useGithub = false;
         private static bool useMirrorGithub = false;
-        private static string limbusCompanyDir = Registry.GetValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Steam App 1973530", "InstallLocation", null) as string ?? string.Empty;
+        private static string limbusCompanyDir = Registry.GetValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Steam App 1973530", "InstallLocation", null) as string
+            ?? string.Empty;
         private static string limbusCompanyGameDir = Path.Combine(limbusCompanyDir, "LimbusCompany.exe");
         private static readonly string currentDir = AppDomain.CurrentDomain.BaseDirectory;
         private static List<Node> nodeList = [];
@@ -77,38 +78,25 @@ namespace LLC_MOD_Toolbox
             SevenZipBase.SetLibraryPath(Path.Combine(currentDir, "7z.dll"));
             logger.Info("加载流程完成。");
         }
-        private static void PrintInstallInfo(string promptInfo, int? intObject)
+
+        /// <summary>
+        /// 按某格式打印log4net，毫无意义的封装，建议弃用，尽快切换写法
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="promptInfo"></param>
+        /// <param name="someObject"></param>
+        [Obsolete]
+        private static void PrintInstallInfo<T>(string promptInfo, T someObject)
         {
-            if (useEndPoint != null)
+            if (someObject == null)
             {
-                logger.Info(promptInfo + "：" + intObject);
+                logger.Info($"{promptInfo}：空");
             }
             else
             {
-                logger.Info(promptInfo + "：空");
+                logger.Info($"{promptInfo}{someObject}");
             }
-        }
-        private static void PrintInstallInfo(string promptInfo, string? stringObject)
-        {
-            if (!string.IsNullOrEmpty(useEndPoint))
-            {
-                logger.Info($"{promptInfo}：{stringObject}");
-            }
-            else
-            {
-                logger.Info(promptInfo + "：空");
-            }
-        }
-        private static void PrintInstallInfo(string promptInfo, bool boolObject)
-        {
-            if (boolObject)
-            {
-                logger.Info(promptInfo + "：True");
-            }
-            else
-            {
-                logger.Info(promptInfo + "：False");
-            }
+
         }
         #region 安装功能
         /// <summary>
@@ -123,6 +111,7 @@ namespace LLC_MOD_Toolbox
             logger.Info("开始安装。");
             logger.Info("**********安装信息打印**********");
             logger.Info("本次安装信息：");
+            //请勿抑制警告，尽快设计更好的处理方法
             PrintInstallInfo("是否使用Github：", useGithub);
             PrintInstallInfo("是否使用Mirror Github：", useMirrorGithub);
             PrintInstallInfo("Limbus公司目录：", limbusCompanyDir);
@@ -590,19 +579,20 @@ namespace LLC_MOD_Toolbox
                     {
                         logger.Warn("用户否认 Limbus Company 目录正确性。");
                     }
-                    var folderDialog = new OpenFolderDialog
+                    var fileDialog = new OpenFileDialog
                     {
-                        Title = "请选择你的边狱公司游戏路径（steam目录/steamapps/common/Limbus Company）请不要选择LimbusCompany_Data！",
+                        Title = "请选择你的边狱公司游戏文件",
                         Multiselect = false,
-                        InitialDirectory = limbusCompanyDir
-
+                        InitialDirectory = limbusCompanyDir,
+                        Filter = "LimbusCompany.exe|LimbusCompany.exe",
+                        FileName = "LimbusCompany.exe"
                     };
-                    if (folderDialog.ShowDialog() == true)
+                    if (fileDialog.ShowDialog() == true)
                     {
-                        limbusCompanyDir = folderDialog.SafeFolderName;
+                        limbusCompanyDir = Path.GetDirectoryName(fileDialog.FileName) ?? limbusCompanyDir;
+                        limbusCompanyGameDir = Path.GetFullPath(fileDialog.FileName);
                     }
 
-                    limbusCompanyGameDir = Path.Combine(limbusCompanyDir, "LimbusCompany.exe");
                     if (!File.Exists(limbusCompanyGameDir))
                     {
                         logger.Error("选择了错误目录，关闭游戏。");
@@ -626,7 +616,7 @@ namespace LLC_MOD_Toolbox
         /// <returns>返回Sha256</returns>
         private static async Task<string> GetLimbusLocalizeHash()
         {
-            string HashRaw = await GetURLText( $"{useEndPoint ?? defaultEndPoint}LimbusLocalizeHash.json");
+            string HashRaw = await GetURLText($"{useEndPoint ?? defaultEndPoint}LimbusLocalizeHash.json");
             dynamic JsonObject = JsonConvert.DeserializeObject(HashRaw);
             if (JsonObject == null)
             {
