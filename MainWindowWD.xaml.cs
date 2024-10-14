@@ -22,12 +22,13 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Threading;
 using Downloader;
+using LLC_MOD_Toolbox.Models;
 using log4net;
 using Microsoft.Win32;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Newtonsoft.Json.Serialization;
 using SevenZip;
-using SimpleJSON;
 
 namespace LLC_MOD_Toolbox
 {
@@ -373,16 +374,20 @@ namespace LLC_MOD_Toolbox
         #endregion
         #region 读取节点
         private static bool APPChangeAPIUI = false;
-        public class Node
-        {
-            public required string Name { get; set; }
-            public required string Endpoint { get; set; }
-            public required bool IsDefault { get; set; }
-        }
 
         public void InitNode()
         {
-            ReadNodeJsonFile();
+            var _jsonSettings = new JsonSerializerSettings
+            {
+                NullValueHandling = NullValueHandling.Ignore,
+                ContractResolver = new DefaultContractResolver
+                {
+                    NamingStrategy = new CamelCaseNamingStrategy()
+                }
+            };
+            var json = JsonConvert.DeserializeObject<RootModel>(File.ReadAllText($"NodeList.json"),_jsonSettings);
+            nodeList = json.DownloadNode;
+            apiList = json.ApiNode;
             NodeCombobox.Items.Add("恢复默认");
             foreach (var Node in nodeList)
             {
@@ -405,13 +410,6 @@ namespace LLC_MOD_Toolbox
                 }
                 APICombobox.Items.Add(api.Name);
             }
-        }
-        public static void ReadNodeJsonFile()
-        {
-            string nodeListRaw = File.ReadAllText(currentDir + "/nodeList.json");
-            var jsonObject = JObject.Parse(nodeListRaw);
-            nodeList = jsonObject["downloadNode"].ToObject<List<Node>>();
-            apiList = jsonObject["apiNode"].ToObject<List<Node>>();
         }
         private static string FindNodeEndpoint(string Name)
         {
@@ -711,8 +709,8 @@ namespace LLC_MOD_Toolbox
             {
                 raw = await GetURLText("https://api.github.com/repos/LocalizeLimbusCompany/LocalizeLimbusCompany/releases");
             }
-            JSONArray releases = JSONNode.Parse(raw).AsArray;
-            string latestReleaseTag = releases[0]["tag_name"].Value;
+            var output = JObject.Parse(raw);
+            string latestReleaseTag = output[0]["tag_name"].Value<string>();
             logger.Info("汉化模组最后标签为： " + latestReleaseTag);
             return latestReleaseTag;
         }
@@ -778,8 +776,8 @@ namespace LLC_MOD_Toolbox
             {
                 logger.Info("正在检查工具箱更新。");
                 string raw = await GetURLText(useAPIEndPoint + "Toolbox_Release.json");
-                var JsonObject = JSONNode.Parse(raw).AsObject;
-                string latestReleaseTagRaw = JsonObject["tag_name"].Value;
+                var JsonObject = JObject.Parse(raw);
+                string latestReleaseTagRaw = JsonObject["tag_name"].Value<string>();
                 string latestReleaseTag = latestReleaseTagRaw.Remove(0, 1);
                 logger.Info("最新安装器tag：" + latestReleaseTag);
                 if (new Version(latestReleaseTag) > Assembly.GetExecutingAssembly().GetName().Version)
@@ -820,8 +818,8 @@ namespace LLC_MOD_Toolbox
                 {
                     raw = await GetURLText(useAPIEndPoint + "LatestTmp_Release.json");
                 }
-                var JsonObject = JSONNode.Parse(raw).AsObject;
-                string latestReleaseTag = JsonObject["tag_name"].Value;
+                var JsonObject = JObject.Parse(raw);
+                string latestReleaseTag = JsonObject["tag_name"].Value<string>();
                 if (latestReleaseTag != version)
                 {
                     tag = latestReleaseTag;
@@ -955,8 +953,8 @@ namespace LLC_MOD_Toolbox
                 try
                 {
                     string tokenJson = await GetURLText(tokenUrl);
-                    var tokenObject = JSONNode.Parse(tokenJson).AsObject;
-                    string runStatus = tokenObject["status"].Value;
+                    var tokenObject = JObject.Parse(tokenJson);
+                    string runStatus = tokenObject["status"].Value<string>();
                     if (runStatus == "test")
                     {
                         logger.Info("Token状态正常。");
@@ -967,8 +965,8 @@ namespace LLC_MOD_Toolbox
                         System.Windows.MessageBox.Show("Token已停止测试。", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
                         return;
                     }
-                    string fileName = tokenObject["file_name"].Value;
-                    string note = tokenObject["note"].Value;
+                    string fileName = tokenObject["file_name"].Value<string>();
+                    string note = tokenObject["note"].Value<string>();
                     logger.Info($"Token信息：{token}\n混淆文件名：{fileName}\n备注：{note}");
                     await ChangeLogoToTest();
                     var a = $"""目前Token有效。\n-------------\nToken信息：\n秘钥：{token}\n混淆文件名：{fileName}\n备注：{note}\n-------------\n灰度测试模式已开启。\n请在自动安装安装此秘钥对应版本汉化。\n秘钥信息请勿外传。""";
@@ -1129,11 +1127,6 @@ namespace LLC_MOD_Toolbox
         private DispatcherTimer? gachaTimer;
         private int _currentIndex = 0;
         private int[]? uniqueCount;
-        private class PersonalInfo()
-        {
-            public required string Name { get; set; }
-            public required int Unique { get; set; }
-        }
         private async Task InitGacha()
         {
             string gachaText = await GetURLText("https://api.kr.zeroasso.top/wiki/wiki_personal.json");
@@ -1284,17 +1277,17 @@ namespace LLC_MOD_Toolbox
         private static List<PersonalInfo> TranformTextToList(string gachaText)
         {
             logger.Info("开始转换文本。");
-            var gachaObject = JSONNode.Parse(gachaText);
+            var gachaObject = JObject.Parse(gachaText);
             List<PersonalInfo> personalInfoList = [];
-            for (int i = 0; i < gachaObject["data"].Count; i++)
+            for (int i = 0; i < gachaObject["data"].Count(); i++)
             {
                 PersonalInfo personalInfo = new()
                 {
                     Name = "NullName",
                     Unique = 1,
                 };
-                personalInfo.Name = BeautifyText(gachaObject["data"][i][0].Value, gachaObject["data"][i][1].Value);
-                personalInfo.Unique = gachaObject["data"][i][7].AsInt;
+                personalInfo.Name = BeautifyText(gachaObject["data"][i][0].Value<string>(), gachaObject["data"][i][1].Value<string>());
+                personalInfo.Unique = gachaObject["data"][i][7].Value<int>();
                 personalInfoList.Add(personalInfo);
             }
             return personalInfoList;
