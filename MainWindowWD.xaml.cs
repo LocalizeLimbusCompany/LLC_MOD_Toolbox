@@ -709,10 +709,15 @@ namespace LLC_MOD_Toolbox
             {
                 raw = await GetURLText("https://api.github.com/repos/LocalizeLimbusCompany/LocalizeLimbusCompany/releases");
             }
-            var output = JObject.Parse(raw);
-            string latestReleaseTag = output[0]["tag_name"].Value<string>();
-            logger.Info("汉化模组最后标签为： " + latestReleaseTag);
-            return latestReleaseTag;
+            var output = JArray.Parse(raw)[0].Value<JObject>();
+            if (output.TryGetValue("tag_name", out var jtag))
+            {
+                var latestVersionTag= jtag.Value<string>();
+                logger.Info($"汉化模组最后标签为： {latestVersionTag}");
+                return latestVersionTag;
+            }
+            logger.Info("未能获取到汉化模组最后标签。");
+            return string.Empty;
         }
         /// <summary>
         /// 获取该网址的文本，通常用于API。
