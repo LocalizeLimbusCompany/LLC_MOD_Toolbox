@@ -6,9 +6,11 @@ namespace LLC_MOD_Toolbox.Models;
 
 public class RootModel
 {
-    public static RootModel NodeList => new();
+    private static readonly RootModel _instance = new();
+    public static RootModel NodeList => _instance;
 
-    public static readonly JsonSerializerSettings _jsonSettings = new()
+
+    public static readonly JsonSerializerSettings JsonSettings = new()
     {
         NullValueHandling = NullValueHandling.Include,
         ContractResolver = new DefaultContractResolver
@@ -16,19 +18,20 @@ public class RootModel
             NamingStrategy = new CamelCaseNamingStrategy(),
         }
     };
-    public List<ApiNodeInfo> DownloadNode { get; set; } = new List<ApiNodeInfo>();
-    public List<ApiNodeInfo> ApiNode { get; set; } = new List<ApiNodeInfo>();
+    public List<ApiNodeInfo> DownloadNode { get; set; } = [];
+    public List<ApiNodeInfo> ApiNode { get; set; } = [];
 
     private RootModel()
     {
-        NodeList.DownloadNode.Add(new ApiNodeInfo("默认", "https://node.zeroasso.top/d/od/"));
-        NodeList.ApiNode.Add(new ApiNodeInfo("默认", "https://api.kr.zeroasso.top/"));
+
+        DownloadNode.Add(new ApiNodeInfo("默认", "https://node.zeroasso.top/d/od/"));
+        ApiNode.Add(new ApiNodeInfo("默认", "https://api.kr.zeroasso.top/"));
     }
 
-    public RootModel(RootModel rootModel)
+    public void AddNodes(RootModel rootModel)
     {
-        NodeList.DownloadNode.AddRange(rootModel.DownloadNode);
-        NodeList.ApiNode.AddRange(rootModel.ApiNode);
+        DownloadNode.AddRange(rootModel.DownloadNode);
+        ApiNode.AddRange(rootModel.ApiNode);
     }
 }
 /// <summary>

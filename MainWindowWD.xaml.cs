@@ -386,8 +386,9 @@ namespace LLC_MOD_Toolbox
                 }
             };
             var json = JsonConvert.DeserializeObject<RootModel>(File.ReadAllText($"NodeList.json"),_jsonSettings);
-            nodeList = json.DownloadNode;
-            apiList = json.ApiNode;
+            RootModel.NodeList.AddNodes(json);
+            nodeList = RootModel.NodeList.DownloadNode;
+            apiList = RootModel.NodeList.ApiNode;
             NodeCombobox.Items.Add("恢复默认");
             foreach (var Node in nodeList)
             {

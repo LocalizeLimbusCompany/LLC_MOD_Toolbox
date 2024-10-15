@@ -5,6 +5,7 @@ using System.Net.Http;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
+using LLC_MOD_Toolbox.Models;
 
 namespace LLC_MOD_Toolbox.Helpers;
 
