@@ -22,12 +22,12 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Threading;
 using Downloader;
+using LLC_MOD_Toolbox.Helpers;
 using LLC_MOD_Toolbox.Models;
 using log4net;
 using Microsoft.Win32;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using Newtonsoft.Json.Serialization;
 using SevenZip;
 
 namespace LLC_MOD_Toolbox
@@ -54,15 +54,7 @@ namespace LLC_MOD_Toolbox
         private static string greytestUrl = string.Empty;
         private static bool greytestStatus = false;
         private readonly string VERSION = Assembly.GetExecutingAssembly().GetName().Version?.ToString() ?? "Unknown";
-        public MainWindow()
-        {
-            InitializeComponent();
-            progressTimer = new DispatcherTimer
-            {
-                Interval = TimeSpan.FromSeconds(0.05)
-            };
-            progressTimer.Tick += ProgressTime_Tick;
-        }
+
 
         private async void WindowLoaded(object sender, RoutedEventArgs e)
         {
@@ -375,33 +367,18 @@ namespace LLC_MOD_Toolbox
         #region 读取节点
         private static bool APPChangeAPIUI = false;
 
-        public void InitNode()
+        public static void InitNode()
         {
-            var _jsonSettings = new JsonSerializerSettings
-            {
-                NullValueHandling = NullValueHandling.Include,
-                ContractResolver = new DefaultContractResolver
-                {
-                    NamingStrategy = new CamelCaseNamingStrategy()
-                }
-            };
-            var json = JsonConvert.DeserializeObject<RootModel>(File.ReadAllText($"NodeList.json"),_jsonSettings);
-            RootModel.NodeList.AddNodes(json);
-            nodeList = RootModel.NodeList.DownloadNode;
-            apiList = RootModel.NodeList.ApiNode;
-            NodeCombobox.Items.Add("恢复默认");
+            nodeList = PrimaryNodeList.NodeList.DownloadNode;
+            apiList = PrimaryNodeList.NodeList.ApiNode;
             foreach (var Node in nodeList)
             {
                 if (Node.IsDefault == true)
                 {
                     defaultEndPoint = Node.Endpoint;
                 }
-                NodeCombobox.Items.Add(Node.Name);
             }
-            NodeCombobox.Items.Add("Github直连");
-            NodeCombobox.Items.Add("Mirror Github");
             // API
-            APICombobox.Items.Add("恢复默认");
             foreach (var api in apiList)
             {
                 if (api.IsDefault == true)
@@ -409,7 +386,6 @@ namespace LLC_MOD_Toolbox
                     defaultAPIEndPoint = api.Endpoint;
                     useAPIEndPoint = defaultAPIEndPoint;
                 }
-                APICombobox.Items.Add(api.Name);
             }
         }
         private static string FindNodeEndpoint(string Name)
@@ -461,81 +437,6 @@ namespace LLC_MOD_Toolbox
                 APICombobox.SelectedItem = text;
             });
             return combotext;
-        }
-        private async void NodeComboboxSelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
-        {
-            string nodeComboboxText = await GetNodeComboboxText();
-            logger.Info("选择节点。");
-            if (nodeComboboxText != string.Empty)
-            {
-                if (nodeComboboxText == "恢复默认")
-                {
-                    useEndPoint = string.Empty;
-                    useMirrorGithub = false;
-                    useGithub = false;
-                    logger.Info("已恢复默认Endpoint。");
-                }
-                else if (nodeComboboxText == "Github直连")
-                {
-                    logger.Info("选择Github节点。");
-                    System.Windows.MessageBox.Show("如果您没有使用代理软件（包括Watt Toolkit）\n请不要使用此节点。\nGithub由于不可抗力因素，对国内网络十分不友好。\n如果您是国外用户，才应该使用此选项。", "警告", MessageBoxButton.OK, MessageBoxImage.Warning);
-                    useEndPoint = string.Empty;
-                    useGithub = true;
-                    useMirrorGithub = false;
-                }
-                else if (nodeComboboxText == "Mirror Github")
-                {
-                    logger.Info("选择镜像Github节点。");
-                    System.Windows.MessageBox.Show("Mirror Github服务由【mirror.ghproxy.com】提供。\n零协会不对其可能造成的任何问题（包括不可使用，安全性相关）负责。", "警告", MessageBoxButton.OK, MessageBoxImage.Warning);
-                    useMirrorGithub = true;
-                    useGithub = false;
-                }
-                else
-                {
-                    useEndPoint = FindNodeEndpoint(nodeComboboxText);
-                    useMirrorGithub = false;
-                    useGithub = false;
-                    logger.Info("当前Endpoint：" + useEndPoint);
-                    System.Windows.MessageBox.Show("切换成功。", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
-                }
-            }
-            else
-            {
-                logger.Info("NodeComboboxText 为 null。");
-            }
-        }
-        private async void APIComboboxSelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
-        {
-            if (!useGithub)
-            {
-                string apiComboboxText = await GetAPIComboboxText();
-                logger.Info("选择API节点。");
-                if (apiComboboxText != string.Empty)
-                {
-                    if (apiComboboxText == "恢复默认")
-                    {
-                        useAPIEndPoint = defaultAPIEndPoint;
-                        logger.Info("已恢复默认API Endpoint。");
-                    }
-                    else
-                    {
-                        useAPIEndPoint = FindAPIEndpoint(apiComboboxText);
-                        logger.Info("当前API Endpoint：" + useAPIEndPoint);
-                        System.Windows.MessageBox.Show("切换成功。", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
-                    }
-                }
-                else
-                {
-                    logger.Info("APIComboboxText 为 null。");
-                }
-            }
-            else if (APPChangeAPIUI == false)
-            {
-                await SetAPIComboboxText("恢复默认");
-                logger.Info("已开启Github。无法切换API。");
-                System.Windows.MessageBox.Show("切换失败。\n无法在节点为Github直连的情况下切换API。", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
-            }
-            APPChangeAPIUI = false;
         }
         private void WhyShouldIUseThis(object sender, RoutedEventArgs e)
         {
@@ -645,7 +546,7 @@ namespace LLC_MOD_Toolbox
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void NewOnDownloadProgressChanged(object? sender, Downloader.DownloadProgressChangedEventArgs e)
+        private void NewOnDownloadProgressChanged(object? sender, DownloadProgressChangedEventArgs e)
         {
             logger.Debug("ProgressPercentage: " + e.ProgressPercentage + " ProgressPercentage(Int): " + (int)(e.ProgressPercentage));
             if (installPhase != 0)
@@ -713,7 +614,7 @@ namespace LLC_MOD_Toolbox
             var output = JArray.Parse(raw)[0].Value<JObject>();
             if (output.TryGetValue("tag_name", out var jtag))
             {
-                var latestVersionTag= jtag.Value<string>();
+                var latestVersionTag = jtag.Value<string>();
                 logger.Info($"汉化模组最后标签为： {latestVersionTag}");
                 return latestVersionTag;
             }

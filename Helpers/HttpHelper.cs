@@ -1,17 +1,13 @@
-﻿using System;
-using System.Diagnostics.CodeAnalysis;
-using System.IO;
+﻿using System.IO;
 using System.Net.Http;
 using System.Runtime.InteropServices;
-using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
-using LLC_MOD_Toolbox.Models;
 
 namespace LLC_MOD_Toolbox.Helpers;
 
 public static class HttpHelper
 {
-    private static HttpClient httpClient = new();
+    private static readonly HttpClient httpClient = new();
 
     /// <summary>
     /// Get an http response from sending request to a specific url
@@ -20,7 +16,7 @@ public static class HttpHelper
     /// <param name="url"></param>
     /// <param name="method">Http method being used (default: <see cref="HttpMethod.Get"/>)</param>
     /// <returns></returns>
-    public static async Task<HttpResponseMessage> GetResponseAsync(string url, [Optional]HttpMethod method)
+    public static async Task<HttpResponseMessage> GetResponseAsync(string url, [Optional] HttpMethod method)
     {
         using var request = new HttpRequestMessage
         {
@@ -55,6 +51,20 @@ public static class HttpHelper
         image.CacheOption = BitmapCacheOption.OnLoad;
         image.EndInit();
         return image;
+    }
+
+    public static async Task<Stream> GetStreamAsync(string url)
+    {
+        using var response = await GetResponseAsync(url);
+        response.EnsureSuccessStatusCode();
+        return await response.Content.ReadAsStreamAsync();
+    }
+
+    public static async Task GetFileAsync(string url, string path)
+    {
+        Stream stream = await GetStreamAsync(url);
+        await using var fileStream = new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.None);
+        await stream.CopyToAsync(fileStream);
     }
 
 }

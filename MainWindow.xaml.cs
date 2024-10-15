@@ -2,17 +2,44 @@
 // 我恨XML，这辈子都不想写XML了。
 // （而且内存占用好多
 
+using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Threading;
+using LLC_MOD_Toolbox.Helpers;
 
 namespace LLC_MOD_Toolbox
 {
 
     public partial class MainWindow : Window
     {
+        public MainWindow()
+        {
+            try
+            {
+                JsonHelper.DeserializeRootModel(File.ReadAllText("NodeList.json"));
+            }
+            catch (FileNotFoundException ex)
+            {
+                logger.Warn("配置文件(NodeList.json)不存在或命名不正确",ex);
+            }
+            catch (Exception ex)
+            {
+                logger.Error("配置文件由于多种可能原因无法加载，请检查抛出的异常",ex);
+            }
+
+            InitializeComponent();
+            progressTimer = new DispatcherTimer
+            {
+                Interval = TimeSpan.FromSeconds(0.05)
+            };
+            progressTimer.Tick += ProgressTime_Tick;
+        }
+
+
         private static string nowPage = "install";
         private static string nowInstallPage = "auto";
         private static bool isInstalling = false;

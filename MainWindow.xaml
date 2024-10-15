@@ -4,6 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:LLC_MOD_Toolbox"
+    xmlns:localvm="clr-namespace:LLC_MOD_Toolbox.ViewModels"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     Title="都市零协会工具箱"
     Width="960"
@@ -17,6 +18,9 @@
     ResizeMode="CanMinimize"
     WindowStyle="None"
     mc:Ignorable="d">
+    <Window.DataContext>
+        <localvm:AutoInstallerViewModel />
+    </Window.DataContext>
     <Window.Resources>
         <Style x:Key="NoHover" TargetType="Button">
             <Setter Property="OverridesDefaultStyle" Value="True" />
@@ -479,7 +483,12 @@
                         Margin="62,55,54,32"
                         Panel.ZIndex="5"
                         Visibility="Visible">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="523*" />
+                            <ColumnDefinition Width="108*" />
+                        </Grid.ColumnDefinitions>
                         <Label
+                            Grid.ColumnSpan="2"
                             Width="494"
                             Height="41"
                             Margin="100,28,0,0"
@@ -492,14 +501,17 @@
                             Foreground="#FFFFEED4" />
                         <ComboBox
                             x:Name="NodeCombobox"
-                            Margin="304,35,70,236"
+                            Width="257"
+                            Margin="304,35,-38,236"
                             Panel.ZIndex="5"
+                            DisplayMemberPath="Name"
                             FontFamily="/Fonts/#Source Han Sans CN"
                             FontSize="16"
                             FontWeight="Medium"
                             Foreground="Black"
-                            SelectionChanged="NodeComboboxSelectionChanged"
-                            ItemsSource="{Binding }">
+                            ItemsSource="{Binding NodeList}"
+                            SelectedIndex="0"
+                            SelectedItem="{Binding SelectedEndPoint}">
                             <ComboBox.Clip>
                                 <RectangleGeometry
                                     RadiusX="3"
@@ -508,6 +520,7 @@
                             </ComboBox.Clip>
                         </ComboBox>
                         <Label
+                            Grid.ColumnSpan="2"
                             Width="494"
                             Height="41"
                             Margin="100,80,0,0"
@@ -520,13 +533,17 @@
                             Foreground="#FFFFEED4" />
                         <ComboBox
                             x:Name="APICombobox"
-                            Margin="304,87,70,185"
+                            Width="257"
+                            Margin="304,87,-38,185"
                             Panel.ZIndex="5"
+                            DisplayMemberPath="Name"
                             FontFamily="/Fonts/#Source Han Sans CN"
                             FontSize="16"
                             FontWeight="Medium"
                             Foreground="Black"
-                            SelectionChanged="APIComboboxSelectionChanged">
+                            ItemsSource="{Binding ApiList}"
+                            SelectedIndex="0"
+                            SelectedItem="{Binding SelectedAPIEndPoint}">
                             <ComboBox.Clip>
                                 <RectangleGeometry
                                     RadiusX="3"
@@ -535,6 +552,7 @@
                             </ComboBox.Clip>
                         </ComboBox>
                         <Label
+                            Grid.ColumnSpan="2"
                             Width="494"
                             Height="41"
                             Margin="100,128,0,0"
@@ -546,15 +564,17 @@
                             FontWeight="Medium"
                             Foreground="#FFFFEED4" />
                         <Image
+                            Grid.ColumnSpan="2"
                             Margin="70,28,0,0"
                             HorizontalAlignment="Left"
                             VerticalAlignment="Top"
                             Source="/Picture/SettingsLine.png" />
                         <Image
                             x:Name="UninstallHover"
+                            Grid.Column="1"
                             Width="80"
                             Height="34"
-                            Margin="511,131,0,0"
+                            Margin="-12,131,0,0"
                             HorizontalAlignment="Left"
                             VerticalAlignment="Top"
                             Panel.ZIndex="5"
@@ -562,9 +582,10 @@
                             Opacity="0"
                             Source="/Picture/SettingButtonHover.png" />
                         <Button
+                            Grid.Column="1"
                             Width="74"
                             Height="28"
-                            Margin="514,134,0,0"
+                            Margin="-9,134,0,0"
                             HorizontalAlignment="Left"
                             VerticalAlignment="Top"
                             Background="#FFFFEED4"
@@ -636,9 +657,10 @@
                             </Button.Clip>
                         </Button>
                         <Label
+                            Grid.Column="1"
                             Width="52"
                             Height="38"
-                            Margin="531,130,0,0"
+                            Margin="8,130,0,0"
                             HorizontalAlignment="Left"
                             VerticalAlignment="Top"
                             Content="卸载"
@@ -648,6 +670,7 @@
                             Foreground="Black"
                             IsHitTestVisible="False" />
                         <Label
+                            Grid.ColumnSpan="2"
                             Width="494"
                             Height="41"
                             Margin="100,179,0,0"
@@ -660,9 +683,10 @@
                             Foreground="#FFFFEED4" />
                         <Image
                             x:Name="ChangeStatuHover"
+                            Grid.Column="1"
                             Width="80"
                             Height="34"
-                            Margin="512,184,0,0"
+                            Margin="-11,184,0,0"
                             HorizontalAlignment="Left"
                             VerticalAlignment="Top"
                             Panel.ZIndex="5"
@@ -670,9 +694,10 @@
                             Opacity="0"
                             Source="/Picture/SettingButtonHover.png" />
                         <Button
+                            Grid.Column="1"
                             Width="74"
                             Height="28"
-                            Margin="515,187,0,0"
+                            Margin="-8,187,0,0"
                             HorizontalAlignment="Left"
                             VerticalAlignment="Top"
                             Background="#FFFFEED4"
@@ -712,9 +737,10 @@
                             </Button.Triggers>
                         </Button>
                         <Label
+                            Grid.Column="1"
                             Width="52"
                             Height="38"
-                            Margin="531,183,0,0"
+                            Margin="8,183,0,0"
                             HorizontalAlignment="Left"
                             VerticalAlignment="Top"
                             Content="开关"
