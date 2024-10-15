@@ -34,7 +34,7 @@ namespace LLC_MOD_Toolbox
 {
     public partial class MainWindow : Window
     {
-        private static readonly ILog logger = LogManager.GetLogger(MethodBase.GetCurrentMethod()?.DeclaringType ?? typeof(MainWindow));
+        public static readonly ILog logger = LogManager.GetLogger(MethodBase.GetCurrentMethod()?.DeclaringType ?? typeof(MainWindow));
         private static string? useEndPoint;
         private static string? useAPIEndPoint;
         private static bool useGithub = false;
@@ -43,8 +43,8 @@ namespace LLC_MOD_Toolbox
             ?? string.Empty;
         private static string limbusCompanyGameDir = Path.Combine(limbusCompanyDir, "LimbusCompany.exe");
         private static readonly string currentDir = AppDomain.CurrentDomain.BaseDirectory;
-        private static List<Node> nodeList = [];
-        private static List<Node> apiList = [];
+        private static List<ApiNodeInfo> nodeList = [];
+        private static List<ApiNodeInfo> apiList = [];
         private static string defaultEndPoint = "https://node.zeroasso.top/d/od/";
         private static string defaultAPIEndPoint = "https://api.kr.zeroasso.top/";
         private static int installPhase = 0;
@@ -379,7 +379,7 @@ namespace LLC_MOD_Toolbox
         {
             var _jsonSettings = new JsonSerializerSettings
             {
-                NullValueHandling = NullValueHandling.Ignore,
+                NullValueHandling = NullValueHandling.Include,
                 ContractResolver = new DefaultContractResolver
                 {
                     NamingStrategy = new CamelCaseNamingStrategy()
@@ -1176,10 +1176,10 @@ namespace LLC_MOD_Toolbox
             catch (Exception ex)
             {
                 logger.Info("出现了问题。", ex);
-                System.Windows.MessageBox.Show("出了点小问题！\n要不再试一次？\n————————\n" + ex.ToString());
+                MessageBox.Show("出了点小问题！\n要不再试一次？\n————————\n" + ex.ToString());
                 gachaTimer?.Stop();
                 _currentIndex = 0;
-                await this.Dispatcher.BeginInvoke(() =>
+                await Dispatcher.BeginInvoke(() =>
                 {
                     InGachaButton.IsHitTestVisible = true;
                 });
@@ -1219,20 +1219,20 @@ namespace LLC_MOD_Toolbox
             {
                 if (label.Content is TextBlock textBlock)
                 {
-                    if (personal.Unique == 1)
+                    switch (personal.Unique)
                     {
-                        textBlock.Text = "[★]" + personal.Name;
-                        textBlock.Foreground = new SolidColorBrush((System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString("#B88345"));
-                    }
-                    if (personal.Unique == 2)
-                    {
-                        textBlock.Text = "[★★]" + personal.Name;
-                        textBlock.Foreground = new SolidColorBrush((System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString("#CA1400"));
-                    }
-                    if (personal.Unique == 3)
-                    {
-                        textBlock.Text = "[★★★]" + personal.Name;
-                        textBlock.Foreground = new SolidColorBrush((System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString("#FCC404"));
+                        case 1:
+                            textBlock.Text = "[★]" + personal.Name;
+                            textBlock.Foreground = new SolidColorBrush((System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString("#B88345"));
+                            break;
+                        case 2:
+                            textBlock.Text = "[★★]" + personal.Name;
+                            textBlock.Foreground = new SolidColorBrush((System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString("#CA1400"));
+                            break;
+                        case 3:
+                            textBlock.Text = "[★★★]" + personal.Name;
+                            textBlock.Foreground = new SolidColorBrush((System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString("#FCC404"));
+                            break;
                     }
                 }
             });

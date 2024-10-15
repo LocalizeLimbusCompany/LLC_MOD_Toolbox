@@ -498,7 +498,8 @@
                             FontSize="16"
                             FontWeight="Medium"
                             Foreground="Black"
-                            SelectionChanged="NodeComboboxSelectionChanged">
+                            SelectionChanged="NodeComboboxSelectionChanged"
+                            ItemsSource="{Binding }">
                             <ComboBox.Clip>
                                 <RectangleGeometry
                                     RadiusX="3"
