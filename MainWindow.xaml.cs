@@ -20,15 +20,15 @@ namespace LLC_MOD_Toolbox
         {
             try
             {
-                JsonHelper.DeserializeRootModel(File.ReadAllText("NodeList.json"));
+                JsonHelper.DeserializePrimaryNodeList(File.ReadAllText("NodeList.json"));
             }
             catch (FileNotFoundException ex)
             {
-                logger.Warn("配置文件(NodeList.json)不存在或命名不正确",ex);
+                logger.Warn("配置文件(NodeList.json)不存在或命名不正确", ex);
             }
             catch (Exception ex)
             {
-                logger.Error("配置文件由于多种可能原因无法加载，请检查抛出的异常",ex);
+                logger.Error("配置文件由于多种可能原因无法加载，请检查抛出的异常", ex);
             }
 
             InitializeComponent();

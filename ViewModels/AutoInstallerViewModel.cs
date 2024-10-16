@@ -6,19 +6,19 @@ namespace LLC_MOD_Toolbox.ViewModels;
 partial class AutoInstallerViewModel : ObservableObject
 {
     [ObservableProperty]
-    List<ApiNodeInfo> nodeList = PrimaryNodeList.NodeList.DownloadNode;
+    List<NodeInformation> downloadList = PrimaryNodeList.NodeInstance.DownloadNode;
     [ObservableProperty]
-    List<ApiNodeInfo> apiList = PrimaryNodeList.NodeList.ApiNode;
+    List<NodeInformation> apiList = PrimaryNodeList.NodeInstance.ApiNode;
     [ObservableProperty]
-    static ApiNodeInfo defaultAPIEndPoint = PrimaryNodeList.NodeList.DownloadNode
+    static NodeInformation defaultAPIEndPoint = PrimaryNodeList.NodeInstance.DownloadNode
         .First(x => x.IsDefault == true);
     [ObservableProperty]
-    static ApiNodeInfo defaultEndPoint = PrimaryNodeList.NodeList.ApiNode
+    static NodeInformation defaultEndPoint = PrimaryNodeList.NodeInstance.ApiNode
         .First(x => x.IsDefault == true);
 
     [ObservableProperty]
-    static ApiNodeInfo selectedEndPoint = defaultEndPoint;
+    static NodeInformation selectedEndPoint = defaultEndPoint;
     [ObservableProperty]
-    static ApiNodeInfo selectedAPIEndPoint = defaultAPIEndPoint;
+    static NodeInformation selectedAPIEndPoint = defaultAPIEndPoint;
 
 }

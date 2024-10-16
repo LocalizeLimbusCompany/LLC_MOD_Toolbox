@@ -22,7 +22,6 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Threading;
 using Downloader;
-using LLC_MOD_Toolbox.Helpers;
 using LLC_MOD_Toolbox.Models;
 using log4net;
 using Microsoft.Win32;
@@ -43,8 +42,8 @@ namespace LLC_MOD_Toolbox
             ?? string.Empty;
         private static string limbusCompanyGameDir = Path.Combine(limbusCompanyDir, "LimbusCompany.exe");
         private static readonly string currentDir = AppDomain.CurrentDomain.BaseDirectory;
-        private static List<ApiNodeInfo> nodeList = [];
-        private static List<ApiNodeInfo> apiList = [];
+        private static List<NodeInformation> nodeList = [];
+        private static List<NodeInformation> apiList = [];
         private static string defaultEndPoint = "https://node.zeroasso.top/d/od/";
         private static string defaultAPIEndPoint = "https://api.kr.zeroasso.top/";
         private static int installPhase = 0;
@@ -369,8 +368,8 @@ namespace LLC_MOD_Toolbox
 
         public static void InitNode()
         {
-            nodeList = PrimaryNodeList.NodeList.DownloadNode;
-            apiList = PrimaryNodeList.NodeList.ApiNode;
+            nodeList = PrimaryNodeList.NodeInstance.DownloadNode;
+            apiList = PrimaryNodeList.NodeInstance.ApiNode;
             foreach (var Node in nodeList)
             {
                 if (Node.IsDefault == true)

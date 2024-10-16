@@ -509,7 +509,7 @@
                             FontSize="16"
                             FontWeight="Medium"
                             Foreground="Black"
-                            ItemsSource="{Binding NodeList}"
+                            ItemsSource="{Binding DownloadList}"
                             SelectedIndex="0"
                             SelectedItem="{Binding SelectedEndPoint}">
                             <ComboBox.Clip>

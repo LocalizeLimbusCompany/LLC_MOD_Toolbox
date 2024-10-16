@@ -7,7 +7,7 @@ namespace LLC_MOD_Toolbox.Helpers
 {
     public static class JsonHelper
     {
-        public static readonly JsonSerializerSettings JsonSettings = new()
+        private static readonly JsonSerializerSettings JsonSettings = new()
         {
             NullValueHandling = NullValueHandling.Ignore,
             ContractResolver = new DefaultContractResolver
@@ -16,18 +16,20 @@ namespace LLC_MOD_Toolbox.Helpers
             }
         };
 
-        public static Task<bool> DeserializeRootModel(string jsonPayload)
+        public static async Task DeserializePrimaryNodeList(string jsonPayload)
         {
-            var rootModel = JsonConvert.DeserializeObject<PrimaryNodeList>(jsonPayload, JsonSettings);
-            PrimaryNodeList.NodeList = rootModel ?? PrimaryNodeList.NodeList;
-            return Task.FromResult(rootModel != null);
+            var _ = JsonConvert.DeserializeObject<PrimaryNodeList>(jsonPayload, JsonSettings);
+            await Task.CompletedTask;
         }
 
         public static Task<string> DeserializeTagName(string jsonPayload)
         {
             var output = JObject.Parse(jsonPayload);
-            var latestVersionTag = output.GetValue("tag_name")?.ToString() ?? string.Empty;
-            return Task.FromResult(latestVersionTag);
+            if (output.TryGetValue("tag_name", out var latestVersionTag))
+            {
+                return Task.FromResult(latestVersionTag.ToString());
+            }
+            return Task.FromResult(string.Empty);
         }
     }
 }

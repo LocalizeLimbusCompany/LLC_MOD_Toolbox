@@ -1,5 +1,4 @@
-﻿using System.IO;
-using System.Net.Http;
+﻿using System.Net.Http;
 using System.Runtime.InteropServices;
 using System.Windows.Media.Imaging;
 
@@ -53,18 +52,5 @@ public static class HttpHelper
         return image;
     }
 
-    public static async Task<Stream> GetStreamAsync(string url)
-    {
-        using var response = await GetResponseAsync(url);
-        response.EnsureSuccessStatusCode();
-        return await response.Content.ReadAsStreamAsync();
-    }
-
-    public static async Task GetFileAsync(string url, string path)
-    {
-        Stream stream = await GetStreamAsync(url);
-        await using var fileStream = new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.None);
-        await stream.CopyToAsync(fileStream);
-    }
 
 }
