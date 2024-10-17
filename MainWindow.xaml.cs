@@ -2,7 +2,6 @@
 // 我恨XML，这辈子都不想写XML了。
 // （而且内存占用好多
 
-using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -18,20 +17,8 @@ namespace LLC_MOD_Toolbox
     {
         public MainWindow()
         {
-            try
-            {
-                JsonHelper.DeserializePrimaryNodeList(File.ReadAllText("NodeList.json"));
-            }
-            catch (FileNotFoundException ex)
-            {
-                logger.Warn("配置文件(NodeList.json)不存在或命名不正确", ex);
-            }
-            catch (Exception ex)
-            {
-                logger.Error("配置文件由于多种可能原因无法加载，请检查抛出的异常", ex);
-            }
+                InitializeComponent();
 
-            InitializeComponent();
             progressTimer = new DispatcherTimer
             {
                 Interval = TimeSpan.FromSeconds(0.05)
@@ -345,7 +332,7 @@ namespace LLC_MOD_Toolbox
         }
         private void GreytestInfoButtonClick(object sender, RoutedEventArgs e)
         {
-            OpenUrl("https://www.zeroasso.top/docs/community/llcdev");
+            HttpHelper.LaunchUrl("https://www.zeroasso.top/docs/community/llcdev");
         }
         #region 彩蛋
         private async void WhiteBlackClickDouble(object sender, MouseButtonEventArgs e)
@@ -422,11 +409,11 @@ namespace LLC_MOD_Toolbox
                 string name = await GetSenderName(sender as System.Windows.Controls.Control);
                 if (!string.IsNullOrEmpty(name) && linkDictionary.TryGetValue(name, out string url))
                 {
-
-                    OpenUrl(url);
+                    HttpHelper.LaunchUrl(url);
                 }
             }
         }
         #endregion
+
     }
 }

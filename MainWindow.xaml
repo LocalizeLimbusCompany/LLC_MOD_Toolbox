@@ -510,7 +510,6 @@
                             FontWeight="Medium"
                             Foreground="Black"
                             ItemsSource="{Binding DownloadList}"
-                            SelectedIndex="0"
                             SelectedItem="{Binding SelectedEndPoint}">
                             <ComboBox.Clip>
                                 <RectangleGeometry
@@ -542,7 +541,6 @@
                             FontWeight="Medium"
                             Foreground="Black"
                             ItemsSource="{Binding ApiList}"
-                            SelectedIndex="0"
                             SelectedItem="{Binding SelectedAPIEndPoint}">
                             <ComboBox.Clip>
                                 <RectangleGeometry

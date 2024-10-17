@@ -23,13 +23,8 @@ namespace LLC_MOD_Toolbox.Helpers
         }
 
         public static Task<string> DeserializeTagName(string jsonPayload)
-        {
-            var output = JObject.Parse(jsonPayload);
-            if (output.TryGetValue("tag_name", out var latestVersionTag))
-            {
-                return Task.FromResult(latestVersionTag.ToString());
-            }
-            return Task.FromResult(string.Empty);
-        }
+            => Task.FromResult(
+                JObject.Parse(jsonPayload).GetValue("tag_name")?.ToString()
+                ?? string.Empty);
     }
 }

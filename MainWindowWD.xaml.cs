@@ -22,6 +22,7 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Threading;
 using Downloader;
+using LLC_MOD_Toolbox.Helpers;
 using LLC_MOD_Toolbox.Models;
 using log4net;
 using Microsoft.Win32;
@@ -158,7 +159,7 @@ namespace LLC_MOD_Toolbox
             {
                 try
                 {
-                    OpenUrl("steam://rungameid/1973530");
+                    HttpHelper.LaunchUrl("steam://rungameid/1973530");
                 }
                 catch (Exception ex)
                 {
@@ -439,7 +440,7 @@ namespace LLC_MOD_Toolbox
         }
         private void WhyShouldIUseThis(object sender, RoutedEventArgs e)
         {
-            OpenUrl("https://www.zeroasso.top/docs/configuration/nodes");
+            HttpHelper.LaunchUrl("https://www.zeroasso.top/docs/configuration/nodes");
         }
         #endregion
         #region 常用方法
@@ -569,16 +570,7 @@ namespace LLC_MOD_Toolbox
         public async Task DownloadFileAsync(string Url, string Path)
         {
             logger.Info($"下载 {Url} 到 {Path}");
-            var downloadOpt = new DownloadConfiguration()
-            {
-                BufferBlockSize = 10240,
-                ChunkCount = 8,
-                MaxTryAgainOnFailover = 5,
-            };
-            var downloader = new DownloadService(downloadOpt);
-            downloader.DownloadProgressChanged += NewOnDownloadProgressChanged;
-            downloader.DownloadFileCompleted += NewOnDownloadProgressCompleted;
-            await downloader.DownloadFileTaskAsync(Url, Path);
+            await FileHelper.DownloadFileAsync(Url, Path, NewOnDownloadProgressChanged, NewOnDownloadProgressCompleted);
         }
         public async Task DownloadFileAutoAsync(string File, string Path)
         {
@@ -643,19 +635,6 @@ namespace LLC_MOD_Toolbox
             }
         }
         /// <summary>
-        /// 打开指定网址。
-        /// </summary>
-        /// <param name="Url">网址</param>
-        public static void OpenUrl(string Url)
-        {
-            logger.Info("打开了网址：" + Url);
-            ProcessStartInfo psi = new(Url)
-            {
-                UseShellExecute = true
-            };
-            Process.Start(psi);
-        }
-        /// <summary>
         /// 用于错误处理。
         /// </summary>
         /// <param name="ex"></param>
@@ -681,17 +660,15 @@ namespace LLC_MOD_Toolbox
             try
             {
                 logger.Info("正在检查工具箱更新。");
-                string raw = await GetURLText(useAPIEndPoint + "Toolbox_Release.json");
-                var JsonObject = JObject.Parse(raw);
-                string latestReleaseTagRaw = JsonObject["tag_name"].Value<string>();
-                string latestReleaseTag = latestReleaseTagRaw.Remove(0, 1);
-                logger.Info("最新安装器tag：" + latestReleaseTag);
-                if (new Version(latestReleaseTag) > Assembly.GetExecutingAssembly().GetName().Version)
+
+                var latestReleaseTag = await UpdateHelper.FetchLatestVersion("https://api.github.com/repos/LocalizeLimbusCompany/LLC_MOD_Toolbox/releases/latest");
+                logger.Info($"最新安装器tag：{latestReleaseTag}");
+                if (latestReleaseTag > Assembly.GetExecutingAssembly().GetName().Version)
                 {
                     logger.Info("安装器存在更新。");
-                    System.Windows.MessageBox.Show("安装器存在更新。\n点击确定进入官网下载最新版本工具箱", "更新提醒", MessageBoxButton.OK, MessageBoxImage.Warning);
-                    OpenUrl("https://www.zeroasso.top/docs/install/autoinstall");
-                    System.Windows.Application.Current.Shutdown();
+                    MessageBox.Show("安装器存在更新。\n点击确定进入官网下载最新版本工具箱", "更新提醒", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    HttpHelper.LaunchUrl("https://www.zeroasso.top/docs/install/autoinstall");
+                    Application.Current.Shutdown();
                 }
                 logger.Info("没有更新。");
             }
@@ -735,7 +712,7 @@ namespace LLC_MOD_Toolbox
             catch (Exception ex)
             {
                 System.Windows.MessageBox.Show("出现了问题。\n" + ex.ToString());
-                logger.Error("出现了问题。\n" + ex.ToString());
+                logger.Error("出现了问题。\n", ex);
             }
             return new FontUpdateResult(null, false);
         }
@@ -875,7 +852,6 @@ namespace LLC_MOD_Toolbox
                     string note = tokenObject["note"].Value<string>();
                     logger.Info($"Token信息：{token}\n混淆文件名：{fileName}\n备注：{note}");
                     await ChangeLogoToTest();
-                    var a = $"""目前Token有效。\n-------------\nToken信息：\n秘钥：{token}\n混淆文件名：{fileName}\n备注：{note}\n-------------\n灰度测试模式已开启。\n请在自动安装安装此秘钥对应版本汉化。\n秘钥信息请勿外传。""";
                     System.Windows.MessageBox.Show(
                         $"目前Token有效。\n-------------\nToken信息：\n秘钥：{token}\n混淆文件名：{fileName}\n备注：{note}\n-------------\n灰度测试模式已开启。\n请在自动安装安装此秘钥对应版本汉化。\n秘钥信息请勿外传。", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
                     greytestStatus = true;
@@ -916,7 +892,7 @@ namespace LLC_MOD_Toolbox
                 logger.Info("灰度测试模式已开启。开始安装灰度模组。");
                 installPhase = 3;
                 await DownloadFileAsync(greytestUrl, limbusCompanyDir + "/LimbusLocalize_Dev.7z");
-                Unarchive(limbusCompanyDir + "/LimbusLocalize_Dev.7z", limbusCompanyDir);
+                Unarchive($"{limbusCompanyDir}/LimbusLocalize_Dev.7z", limbusCompanyDir);
                 logger.Info("灰度模组安装完成。");
             });
         }
@@ -1187,13 +1163,7 @@ namespace LLC_MOD_Toolbox
             List<PersonalInfo> personalInfoList = [];
             for (int i = 0; i < gachaObject["data"].Count(); i++)
             {
-                PersonalInfo personalInfo = new()
-                {
-                    Name = "NullName",
-                    Unique = 1,
-                };
-                personalInfo.Name = BeautifyText(gachaObject["data"][i][0].Value<string>(), gachaObject["data"][i][1].Value<string>());
-                personalInfo.Unique = gachaObject["data"][i][7].Value<int>();
+                PersonalInfo personalInfo = new(BeautifyText(gachaObject["data"][i][0].Value<string>(), gachaObject["data"][i][1].Value<string>()), gachaObject["data"][i][7].Value<int>());
                 personalInfoList.Add(personalInfo);
             }
             return personalInfoList;
