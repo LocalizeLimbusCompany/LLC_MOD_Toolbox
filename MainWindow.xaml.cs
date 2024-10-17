@@ -2,26 +2,15 @@
 // 我恨XML，这辈子都不想写XML了。
 // （而且内存占用好多
 
-using System.ComponentModel;
-using System.Diagnostics;
-using System.IO;
-using System.Net.Http;
-using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using Downloader;
-using log4net;
-using Microsoft.Win32;
-using Newtonsoft.Json.Linq;
-using Newtonsoft.Json;
-using SevenZip;
-using System.Windows.Threading;
 
 namespace LLC_MOD_Toolbox
 {
+
     public partial class MainWindow : Window
     {
         private static string nowPage = "install";

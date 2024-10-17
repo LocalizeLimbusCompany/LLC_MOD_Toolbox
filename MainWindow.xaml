@@ -82,6 +82,7 @@
                     Margin="31,0,0,5"
                     HorizontalAlignment="Left"
                     VerticalAlignment="Center"
+                    d:Visibility="Visible"
                     Source="/Picture/ZALogoA.png"
                     Visibility="Collapsed" />
                 <Image
@@ -491,7 +492,8 @@
                             Foreground="#FFFFEED4" />
                         <ComboBox
                             x:Name="NodeCombobox"
-                            Margin="304,35,70,330"
+                            Margin="304,35,70,236"
+                            Panel.ZIndex="5"
                             FontFamily="/Fonts/#Source Han Sans CN"
                             FontSize="16"
                             FontWeight="Medium"
@@ -517,7 +519,7 @@
                             Foreground="#FFFFEED4" />
                         <ComboBox
                             x:Name="APICombobox"
-                            Margin="304,87,70,278"
+                            Margin="304,87,70,185"
                             Panel.ZIndex="5"
                             FontFamily="/Fonts/#Source Han Sans CN"
                             FontSize="16"
@@ -543,10 +545,9 @@
                             FontWeight="Medium"
                             Foreground="#FFFFEED4" />
                         <Image
-                            Width="524"
-                            Height="249"
-                            HorizontalAlignment="Center"
-                            VerticalAlignment="Center"
+                            Margin="70,28,0,0"
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Top"
                             Source="/Picture/SettingsLine.png" />
                         <Image
                             x:Name="UninstallHover"
