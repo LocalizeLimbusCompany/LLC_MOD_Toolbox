@@ -28,6 +28,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="ViewModels\**" />
+    <EmbeddedResource Remove="ViewModels\**" />
+    <None Remove="ViewModels\**" />
+    <Page Remove="ViewModels\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Remove="Background.png" />
     <None Remove="ButtonBackground.png" />
     <None Remove="Close.png" />
@@ -41,6 +48,7 @@
     <None Remove="Minimize.png" />
     <None Remove="MinimizeHover.png" />
     <None Remove="Picture\ButtonHover.png" />
+    <None Remove="Picture\ControlBoardHover.png" />
     <None Remove="Picture\EmptyProgress.png" />
     <None Remove="Picture\favicon.ico" />
     <None Remove="Picture\FullProgress.png" />
@@ -64,6 +72,7 @@
 
   <ItemGroup>
     <Content Include="favicon.ico" />
+    <Resource Include="Picture\ControlBoardHover.png" />
     <Resource Include="Picture\GachaBackground.png" />
     <Resource Include="Picture\LinkBT.png" />
     <Resource Include="Picture\LinkBTHover.png" />
@@ -93,7 +102,6 @@
     <Resource Include="Picture\ButtonHover.png" />
     <Resource Include="Picture\Close.png" />
     <Resource Include="Picture\ControlBoard.png" />
-    <Resource Include="Picture\ControlBoardHover.png" />
     <Resource Include="Picture\DisableButton.png" />
     <Resource Include="Picture\EmptyProgress.png" />
     <Resource Include="favicon.ico" />
@@ -127,10 +135,6 @@
     <None Update="NodeList.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="ViewModels\" />
   </ItemGroup>
 
 </Project>

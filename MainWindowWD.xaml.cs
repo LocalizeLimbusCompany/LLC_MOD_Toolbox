@@ -80,14 +80,12 @@ namespace LLC_MOD_Toolbox
             SevenZipBase.SetLibraryPath(Path.Combine(currentDir, "7z.dll"));
             logger.Info("加载流程完成。");
         }
-
         /// <summary>
-        /// 按某格式打印log4net，毫无意义的封装，建议弃用，尽快切换写法
+        /// 安装时输出统一格式日志。
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="promptInfo"></param>
         /// <param name="someObject"></param>
-        [Obsolete]
         private static void PrintInstallInfo<T>(string promptInfo, T someObject)
         {
             if (someObject == null)
@@ -113,15 +111,18 @@ namespace LLC_MOD_Toolbox
             logger.Info("开始安装。");
             logger.Info("**********安装信息打印**********");
             logger.Info("本次安装信息：");
-            //请勿抑制警告，尽快设计更好的处理方法
             PrintInstallInfo("是否使用Github：", useGithub);
             PrintInstallInfo("是否使用Mirror Github：", useMirrorGithub);
             PrintInstallInfo("Limbus公司目录：", limbusCompanyDir);
             PrintInstallInfo("Limbus公司游戏目录：", limbusCompanyGameDir);
             PrintInstallInfo("节点列表数量：", nodeList.Count);
-            PrintInstallInfo("使用节点：", useEndPoint);
+            PrintInstallInfo("使用节点", useEndPoint);
             PrintInstallInfo("灰度测试状态：", greytestStatus);
             logger.Info("**********安装信息打印**********");
+            if (useEndPoint == null)
+            {
+                logger.Warn("下载节点为空。");
+            }
             installPhase = 0;
             Process[] limbusProcess = Process.GetProcessesByName("LimbusCompany");
             if (limbusProcess.Length > 0)
@@ -410,6 +411,8 @@ namespace LLC_MOD_Toolbox
                 }
                 APICombobox.Items.Add(api.Name);
             }
+            logger.Info("API数量：" + apiList.Count);
+            logger.Info("节点数量：" + nodeList.Count);
         }
         private static string FindNodeEndpoint(string Name)
         {
