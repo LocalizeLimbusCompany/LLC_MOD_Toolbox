@@ -18,7 +18,6 @@ namespace LLC_MOD_Toolbox.Helpers
 
         public static async Task DownloadFileAsync(string url, string path, EventHandler<DownloadProgressChangedEventArgs> onDownloadProgressChanged, EventHandler<AsyncCompletedEventArgs> onDownloadFileCompleted)
         {
-            //downloader.AddLogger(); //回头记得把ILogger传进来
             downloader.DownloadProgressChanged += onDownloadProgressChanged;
             downloader.DownloadFileCompleted += onDownloadFileCompleted;
             await downloader.DownloadFileTaskAsync(url, path);
@@ -32,11 +31,27 @@ namespace LLC_MOD_Toolbox.Helpers
             return BitConverter.ToString(hash).Replace("-", "").ToLowerInvariant();
         }
 
-        public static Task<string> GetLimbusCompanyPathAsync()
+        /// <summary>
+        /// 解压文件 7z 文件
+        /// </summary>
+        public static async Task Extract7zAsync(string source, string destination)
         {
-            //仅在 Windows 下有效，不过这个项目也只在 Windows 下有效
-            var path = Registry.GetValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Steam App 1973530", "InstallLocation", null) as string;
-            return Task.FromResult(path??string.Empty);
+            await Task.Run(() =>
+            {
+                SevenZip.SevenZipBase.SetLibraryPath("7z.dll");
+                using var extractor = new SevenZip.SevenZipExtractor(source);
+                extractor.ExtractArchive(destination);
+            });
         }
+
+        /// <summary>
+        /// 仅在 Windows 下有效，不过这个项目也只在 Windows 下有效
+        /// </summary>
+        /// <returns cref="string?">边狱公司路径</returns>
+        public static Task<string?> GetLimbusCompanyPathAsync() =>
+            Task.FromResult(Registry.GetValue(
+                @"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Steam App 1973530",
+                "InstallLocation",
+                null)?.ToString());
     }
 }

@@ -9,6 +9,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using LLC_MOD_Toolbox.Helpers;
+using LLC_MOD_Toolbox.ViewModels;
 
 namespace LLC_MOD_Toolbox
 {
@@ -17,177 +18,13 @@ namespace LLC_MOD_Toolbox
     {
         public MainWindow()
         {
-                InitializeComponent();
+            InitializeComponent();
 
             progressTimer = new DispatcherTimer
             {
                 Interval = TimeSpan.FromSeconds(0.05)
             };
             progressTimer.Tick += ProgressTime_Tick;
-        }
-
-
-        private static string nowPage = "install";
-        private static string nowInstallPage = "auto";
-        private static bool isInstalling = false;
-        private static bool eeOpening = false;
-        private static bool eeEntered = false;
-        /// <summary>
-        /// 刷新页面状态。
-        /// </summary>
-        public async Task RefreshPage()
-        {
-            logger.Info("刷新页面状态中。");
-            // 隐藏按钮Hover
-            CloseHover.Opacity = 0;
-            MinimizeHover.Opacity = 0;
-            // 隐藏面板按钮Hover
-            AutoInstallHover.Opacity = 0;
-            ManualInstallHover.Opacity = 0;
-            ReplaceInstallHover.Opacity = 0;
-            // 隐藏自动安装页面Hover
-            AutoInstallBTHover.Opacity = 0;
-            // 若在安装页面，则隐藏禁用标识
-            // 反之，则显示
-            if (nowPage == "install")
-            {
-                AutoInstallDisabled.Visibility = Visibility.Hidden;
-                ManualInstallDisabled.Visibility = Visibility.Hidden;
-                ReplaceInstallDisabled.Visibility = Visibility.Hidden;
-                GachaSimDisabled.Visibility = Visibility.Hidden;
-                AutoInstallButton.Visibility = Visibility.Visible;
-                ManualInstallButton.Visibility = Visibility.Visible;
-                ReplaceInstallButton.Visibility = Visibility.Visible;
-                GachaSimInstallButton.Visibility = Visibility.Visible;
-                AutoInstallButton.IsHitTestVisible = true;
-                ManualInstallButton.IsHitTestVisible = true;
-                ReplaceInstallButton.IsHitTestVisible = true;
-            }
-            else
-            {
-                AutoInstallDisabled.Visibility = Visibility.Visible;
-                ManualInstallDisabled.Visibility = Visibility.Visible;
-                ReplaceInstallDisabled.Visibility = Visibility.Visible;
-                GachaSimDisabled.Visibility = Visibility.Visible;
-                AutoInstallButton.Visibility = Visibility.Hidden;
-                ManualInstallButton.Visibility = Visibility.Hidden;
-                ReplaceInstallButton.Visibility = Visibility.Hidden;
-                GachaSimInstallButton.Visibility = Visibility.Hidden;
-                AutoInstallButton.IsHitTestVisible = false;
-                ManualInstallButton.IsHitTestVisible = false;
-                ReplaceInstallButton.IsHitTestVisible = false;
-            }
-            // 安装中相关控件
-            if (isInstalling)
-            {
-                AutoInstallStartButton.Visibility = Visibility.Hidden;
-                AutoInstallStartButton.IsHitTestVisible = false;
-                AutoInstallBTIng.Visibility = Visibility.Visible;
-            }
-            else
-            {
-                AutoInstallStartButton.Visibility = Visibility.Visible;
-                AutoInstallStartButton.IsHitTestVisible = true;
-                AutoInstallBTIng.Visibility = Visibility.Hidden;
-            }
-            // 安装页面相关控件
-            if (nowPage == "install")
-            {
-                switch (nowInstallPage)
-                {
-                    case "auto":
-                        await MakeGridStatuExceptSelf(AutoInstallPage);
-                        break;
-                    case "manual":
-                        await MakeGridStatuExceptSelf(ManualInstallPage);
-                        break;
-                    case "replace":
-                        await MakeGridStatuExceptSelf(ReplaceInstallPage);
-                        break;
-                    case "gacha":
-                        await MakeGridStatuExceptSelf(GachaPage);
-                        break;
-                }
-            }
-            // 配置页面相关控件
-            else if (nowPage == "link")
-            {
-                await MakeGridStatuExceptSelf(LinkPage);
-            }
-            else if (nowPage == "greytest")
-            {
-                await MakeGridStatuExceptSelf(GreytestPage);
-            }
-            else if (nowPage == "settings")
-            {
-                await MakeGridStatuExceptSelf(SettingsPage);
-            }
-            else if (nowPage == "about")
-            {
-                await MakeGridStatuExceptSelf(AboutPage);
-            }
-            else
-            {
-                await MakeGridStatuExceptSelf(EEPage);
-            }
-            logger.Info("刷新页面状态完成。");
-        }
-        /// <summary>
-        /// 使输入的Grid可见，隐藏其他Grid。
-        /// </summary>
-        /// <param name="g"></param>
-        public async Task MakeGridStatuExceptSelf(Grid g)
-        {
-            List<Grid> gridList =
-            [
-                AutoInstallPage,
-                ManualInstallPage,
-                ReplaceInstallPage,
-                LinkPage,
-                GreytestPage,
-                SettingsPage,
-                AboutPage,
-                EEPage,
-                GachaPage
-            ];
-            gridList.Remove(g);
-            MakeGridStatu(g, true);
-            foreach (Grid grid in gridList)
-            {
-                MakeGridStatu(grid, false);
-            }
-            if (g != EEPage && eeOpening == false && eeEntered == true)
-            {
-                await ChangeEEVB(false);
-                eeEntered = false;
-            }
-            if (g == EEPage)
-            {
-                eeOpening = false;
-                eeEntered = true;
-            }
-            else
-            {
-                eeEntered = false;
-            }
-        }
-        /// <summary>
-        /// 切换Grid状态
-        /// </summary>
-        /// <param name="g">要操作的Grid</param>
-        /// <param name="statu">状态（True为显示，False为隐藏）</param>
-        private static void MakeGridStatu(Grid g, bool statu)
-        {
-            if (!statu)
-            {
-                g.Visibility = Visibility.Collapsed;
-                g.IsEnabled = false;
-            }
-            else
-            {
-                g.Visibility = Visibility.Visible;
-                g.IsEnabled = true;
-            }
         }
         /// <summary>
         /// 处理窗口拖拽。
@@ -242,7 +79,7 @@ namespace LLC_MOD_Toolbox
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private async void AutoInstallButtonClick(object sender, RoutedEventArgs e)
+/*        private async void AutoInstallButtonClick(object sender, RoutedEventArgs e)
         {
             nowInstallPage = "auto";
             await RefreshPage();
@@ -256,7 +93,7 @@ namespace LLC_MOD_Toolbox
         {
             nowInstallPage = "replace";
             await RefreshPage();
-        }
+        }*/
         private async void GachaSimButtonClick(object sender, RoutedEventArgs e)
         {
             if (!isInitGacha)
@@ -264,15 +101,15 @@ namespace LLC_MOD_Toolbox
                 MessageBoxResult messageBoxResult = System.Windows.MessageBox.Show("本抽卡模拟器资源来源自维基，可能信息更新不准时。\n本模拟器 不 会 对您的游戏数据造成任何影响。\n若您已知悉，请点击“确定”进行初始化。", "提示", MessageBoxButton.OKCancel, MessageBoxImage.Information);
                 if (messageBoxResult == MessageBoxResult.OK)
                 {
-                    nowInstallPage = "gacha";
+                    //nowInstallPage = "gacha";
                     await InitGacha();
-                    await RefreshPage();
+                    //await RefreshPage();
                 }
             }
             else
             {
-                nowInstallPage = "gacha";
-                await RefreshPage();
+                //nowInstallPage = "gacha";
+                //await RefreshPage();
             }
         }
         /// <summary>
@@ -280,18 +117,18 @@ namespace LLC_MOD_Toolbox
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private async void InstallOptionClick(object sender, RoutedEventArgs e)
+/*        private async void InstallOptionClick(object sender, RoutedEventArgs e)
         {
             nowPage = "install";
             nowInstallPage = "auto";
             await RefreshPage();
-        }
+        }*/
         /// <summary>
         /// 处理配置选项按钮。
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private async void LinkOptionClick(object sender, RoutedEventArgs e)
+/*        private async void LinkOptionClick(object sender, RoutedEventArgs e)
         {
             nowPage = "link";
             await RefreshPage();
@@ -315,11 +152,11 @@ namespace LLC_MOD_Toolbox
         {
             nowPage = "ee";
             await RefreshPage();
-        }
+        }*/
         public async Task ChangeProgressValue(float value)
         {
             value = (float)Math.Round(value, 1);
-            logger.Debug("安装进度：" + value + "%");
+            logger.Debug($"安装进度：{value}%");
             RectangleGeometry rectGeometry = new()
             {
                 Rect = new Rect(0, 0, 6.24 * value, 50)
@@ -335,7 +172,7 @@ namespace LLC_MOD_Toolbox
             HttpHelper.LaunchUrl("https://www.zeroasso.top/docs/community/llcdev");
         }
         #region 彩蛋
-        private async void WhiteBlackClickDouble(object sender, MouseButtonEventArgs e)
+/*        private async void WhiteBlackClickDouble(object sender, MouseButtonEventArgs e)
         {
             if (!eeOpening && !eeEntered)
             {
@@ -344,7 +181,7 @@ namespace LLC_MOD_Toolbox
                 eeEntered = false;
                 await ChangeEEVB(true);
             }
-        }
+        }*/
         public async Task ChangeEEVB(bool b)
         {
             if (b)

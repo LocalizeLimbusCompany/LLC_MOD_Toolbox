@@ -24,6 +24,7 @@ using System.Windows.Threading;
 using Downloader;
 using LLC_MOD_Toolbox.Helpers;
 using LLC_MOD_Toolbox.Models;
+using LLC_MOD_Toolbox.ViewModels;
 using log4net;
 using Microsoft.Win32;
 using Newtonsoft.Json;
@@ -43,8 +44,6 @@ namespace LLC_MOD_Toolbox
             ?? string.Empty;
         private static string limbusCompanyGameDir = Path.Combine(limbusCompanyDir, "LimbusCompany.exe");
         private static readonly string currentDir = AppDomain.CurrentDomain.BaseDirectory;
-        private static List<NodeInformation> nodeList = [];
-        private static List<NodeInformation> apiList = [];
         private static string defaultEndPoint = "https://node.zeroasso.top/d/od/";
         private static string defaultAPIEndPoint = "https://api.kr.zeroasso.top/";
         private static int installPhase = 0;
@@ -62,8 +61,7 @@ namespace LLC_MOD_Toolbox
             logger.Info("工具箱已进入加载流程。");
             logger.Info("We have a lift off.");
             logger.Info($"WPF架构工具箱 版本：{VERSION} 。");
-            InitNode();
-            await RefreshPage();
+            //await RefreshPage();
             await ChangeEEPic("https://dl.kr.zeroasso.top/ee_pic/public/public.png");
             CheckToolboxUpdate();
             LoadConfig();
@@ -100,8 +98,6 @@ namespace LLC_MOD_Toolbox
         /// <param name="e"></param>
         private async void InstallButtonClick(object sender, RoutedEventArgs e)
         {
-            isInstalling = true;
-            await RefreshPage();
             logger.Info("开始安装。");
             logger.Info("**********安装信息打印**********");
             logger.Info("本次安装信息：");
@@ -110,7 +106,7 @@ namespace LLC_MOD_Toolbox
             PrintInstallInfo("是否使用Mirror Github：", useMirrorGithub);
             PrintInstallInfo("Limbus公司目录：", limbusCompanyDir);
             PrintInstallInfo("Limbus公司游戏目录：", limbusCompanyGameDir);
-            PrintInstallInfo("节点列表数量：", nodeList.Count);
+            PrintInstallInfo("节点列表数量：", 0);
             PrintInstallInfo("使用节点：", useEndPoint);
             PrintInstallInfo("灰度测试状态：", greytestStatus);
             logger.Info("**********安装信息打印**********");
@@ -119,7 +115,7 @@ namespace LLC_MOD_Toolbox
             if (limbusProcess.Length > 0)
             {
                 logger.Warn("LimbusCompany仍然开启。");
-                MessageBoxResult DialogResult = System.Windows.MessageBox.Show("检测到 Limbus Company 仍然处于开启状态！\n建议您关闭游戏后继续安装模组。\n若您已经关闭了 Limbus Company，请点击确定，否则请点击取消返回。", "警告", MessageBoxButton.OKCancel, MessageBoxImage.Hand);
+                MessageBoxResult DialogResult = MessageBox.Show("检测到 Limbus Company 仍然处于开启状态！\n建议您关闭游戏后继续安装模组。\n若您已经关闭了 Limbus Company，请点击确定，否则请点击取消返回。", "警告", MessageBoxButton.OKCancel, MessageBoxImage.Hand);
                 if (DialogResult == MessageBoxResult.Cancel)
                 {
                     return;
@@ -167,18 +163,18 @@ namespace LLC_MOD_Toolbox
                     System.Windows.MessageBox.Show("出现了问题。\n" + ex.ToString());
                 }
             }
-            isInstalling = false;
+/*            isInstalling = false;
             progressPercentage = 0;
             await ChangeProgressValue(0);
-            await RefreshPage();
+            await RefreshPage();*/
         }
         private async Task StopInstall()
         {
-            isInstalling = false;
+            //isInstalling = false;
             installPhase = 0;
             progressPercentage = 0;
             await ChangeProgressValue(progressPercentage);
-            await RefreshPage();
+            //await RefreshPage();
         }
         private async Task InstallBepInEx()
         {
@@ -320,7 +316,7 @@ namespace LLC_MOD_Toolbox
                         logger.Info("模组不存在。进行安装。");
                     }
                     await DownloadFileAutoAsync($"LimbusLocalize_BIE_{latestLLCVersion}.7z", limbusLocalizeZipPath);
-                    if (await GetLimbusLocalizeHash() != CalculateSHA256(limbusLocalizeZipPath))
+                    if (await GetLimbusLocalizeHash() != await FileHelper.GetHashAsync(limbusLocalizeZipPath))
                     {
                         logger.Error("校验Hash失败。");
                         System.Windows.MessageBox.Show("校验Hash失败。\n请等待数分钟或更换节点。\n如果问题仍然出现，请进行反馈。", "校验失败");
@@ -367,49 +363,6 @@ namespace LLC_MOD_Toolbox
         #region 读取节点
         private static bool APPChangeAPIUI = false;
 
-        public static void InitNode()
-        {
-            nodeList = PrimaryNodeList.NodeInstance.DownloadNode;
-            apiList = PrimaryNodeList.NodeInstance.ApiNode;
-            foreach (var Node in nodeList)
-            {
-                if (Node.IsDefault == true)
-                {
-                    defaultEndPoint = Node.Endpoint;
-                }
-            }
-            // API
-            foreach (var api in apiList)
-            {
-                if (api.IsDefault == true)
-                {
-                    defaultAPIEndPoint = api.Endpoint;
-                    useAPIEndPoint = defaultAPIEndPoint;
-                }
-            }
-        }
-        private static string FindNodeEndpoint(string Name)
-        {
-            foreach (var node in nodeList)
-            {
-                if (node.Name == Name)
-                {
-                    return node.Endpoint;
-                }
-            }
-            return string.Empty;
-        }
-        private static string FindAPIEndpoint(string Name)
-        {
-            foreach (var api in apiList)
-            {
-                if (api.Name == Name)
-                {
-                    return api.Endpoint;
-                }
-            }
-            return string.Empty;
-        }
         public async Task<string> GetNodeComboboxText()
         {
             string combotext = string.Empty;
@@ -527,19 +480,6 @@ namespace LLC_MOD_Toolbox
             string Hash = JsonObject.hash;
             logger.Info("获取到的最新Hash为：" + Hash);
             return Hash;
-        }
-        /// <summary>
-        /// 计算文件Sha256
-        /// </summary>
-        /// <param name="filePath">文件地址</param>
-        /// <returns>返回Sha256</returns>
-        public static string CalculateSHA256(string filePath)
-        {
-            using var sha256 = SHA256.Create();
-            using var fileStream = File.OpenRead(filePath);
-            byte[] hashBytes = sha256.ComputeHash(fileStream);
-            logger.Info($"计算位置为 {filePath} 的文件的Hash结果为：{BitConverter.ToString(hashBytes).Replace("-", "").ToLower()}");
-            return BitConverter.ToString(hashBytes).Replace("-", "").ToLower();
         }
         /// <summary>
         /// 处理使用Downloader下载文件的事件。
@@ -661,7 +601,7 @@ namespace LLC_MOD_Toolbox
             {
                 logger.Info("正在检查工具箱更新。");
 
-                var latestReleaseTag = await UpdateHelper.FetchLatestVersion("https://api.github.com/repos/LocalizeLimbusCompany/LLC_MOD_Toolbox/releases/latest");
+                var latestReleaseTag = await UpdateHelper.GetLatestVersionAsync("https://api.github.com/repos/LocalizeLimbusCompany/LLC_MOD_Toolbox/releases/latest");
                 logger.Info($"最新安装器tag：{latestReleaseTag}");
                 if (latestReleaseTag > Assembly.GetExecutingAssembly().GetName().Version)
                 {

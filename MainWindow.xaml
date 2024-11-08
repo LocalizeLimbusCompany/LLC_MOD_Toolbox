@@ -9,6 +9,7 @@
     Title="都市零协会工具箱"
     Width="960"
     Height="600"
+    d:DataContext="{d:DesignInstance Type=localvm:MainViewModel}"
     AllowsTransparency="True"
     Background="Transparent"
     Loaded="WindowLoaded"
@@ -219,6 +220,439 @@
                         <RowDefinition Height="1*" />
                         <RowDefinition Height="5*" />
                     </Grid.RowDefinitions>
+                    <TabControl Grid.RowSpan="2" Background="Transparent">
+                        <TabItem Header="安装">
+                            <TabControl Background="Transparent">
+                                <TabItem Header="自动安装">
+                                    <Grid x:Name="AutoInstallPage" Cursor="">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="8*"/>
+                                            <ColumnDefinition Width="139*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="*" />
+                                            <RowDefinition Height="auto" />
+                                        </Grid.RowDefinitions>
+                                        <Button
+                                            x:Name="AutoInstallStartButton"
+                                            Grid.Row="0"
+                                            Width="196"
+                                            Height="70"
+                                            Background="Transparent"
+                                            BorderBrush="Transparent"
+                                            BorderThickness="0"
+                                            Click="InstallButtonClick"
+                                            Cursor="Hand"
+                                            Style="{StaticResource NoHover}" Grid.Column="1" Margin="229,179,270,180">
+                                            <Button.Content>
+                                                <Image
+                                                    Width="195"
+                                                    Height="70"
+                                                    Source="/Picture/Install.png" />
+                                            </Button.Content>
+                                            <Button.Triggers>
+                                                <EventTrigger RoutedEvent="Button.MouseEnter">
+                                                    <BeginStoryboard>
+                                                        <Storyboard>
+                                                            <DoubleAnimation
+                                                                Storyboard.TargetName="AutoInstallBTHover"
+                                                                Storyboard.TargetProperty="Opacity"
+                                                                From="0"
+                                                                To="1"
+                                                                Duration="0:0:0.3" />
+                                                        </Storyboard>
+                                                    </BeginStoryboard>
+                                                </EventTrigger>
+                                                <EventTrigger RoutedEvent="Button.MouseLeave">
+                                                    <BeginStoryboard>
+                                                        <Storyboard>
+                                                            <DoubleAnimation
+                                                                Storyboard.TargetName="AutoInstallBTHover"
+                                                                Storyboard.TargetProperty="Opacity"
+                                                                From="1"
+                                                                To="0"
+                                                                Duration="0:0:0.3" />
+                                                        </Storyboard>
+                                                    </BeginStoryboard>
+                                                </EventTrigger>
+                                            </Button.Triggers>
+                                        </Button>
+                                        <Image
+                                            x:Name="AutoInstallBTHover"
+                                            Width="196"
+                                            Height="70"
+                                            HorizontalAlignment="Left"
+                                            VerticalAlignment="Center"
+                                            IsHitTestVisible="False"
+                                            Opacity="0"
+                                            Source="/Picture/InstallHover.png" Grid.Column="1" Margin="229,0,0,0" />
+                                        <Image
+                                            x:Name="AutoInstallBTIng"
+                                            Width="196"
+                                            Height="70"
+                                            IsHitTestVisible="False"
+                                            Opacity="1"
+                                            Source="/Picture/Installing.png" Grid.Column="1" Margin="229,179,270,180" />
+                                        <Canvas Grid.Row="1" Grid.ColumnSpan="2">
+                                            <Image
+                                                x:Name="FullProgress"
+                                                Width="624"
+                                                Height="50"
+                                                HorizontalAlignment="Center"
+                                                VerticalAlignment="Bottom"
+                                                Source="/Picture/FullProgress.png">
+                                                <Image.Clip>
+                                                    <RectangleGeometry Rect="0,0,0,50" />
+                                                </Image.Clip>
+                                            </Image>
+                                            <Image
+                                                x:Name="EmptyProgress"
+                                                Width="624"
+                                                Height="50"
+                                                HorizontalAlignment="Center"
+                                                VerticalAlignment="Bottom"
+                                                Source="/Picture/EmptyProgress.png" />
+                                        </Canvas>
+                                        <Image
+                                            Width="84"
+                                            Height="81"
+                                            Margin="-16,249,0,0"
+                                            HorizontalAlignment="Left"
+                                            VerticalAlignment="Top"
+                                            Source="/Picture/LittleBlack.png" Grid.Column="1" />
+                                        <Image
+                                            Width="104"
+                                            Height="92"
+                                            Margin="490,238,0,0"
+                                            HorizontalAlignment="Left"
+                                            VerticalAlignment="Top"
+                                            Source="/Picture/LittleWhite.png" Grid.Column="1" />
+                                    </Grid>
+                                </TabItem>
+                                <TabItem Header="手动安装">
+                                    <Grid x:Name="ManualInstallPage">
+                                        <Label
+                                            HorizontalContentAlignment="Center"
+                                            VerticalContentAlignment="Center"
+                                            Content="手动安装功能尚未开启，敬请期待后续版本。"
+                                            FontFamily="/Fonts/#Source Han Sans CN"
+                                            FontSize="20"
+                                            FontWeight="Medium"
+                                            Foreground="#FFFFEED4" />
+                                    </Grid>
+                                </TabItem>
+                                <TabItem Header="覆盖安装">
+                                    <Grid x:Name="ReplaceInstallPage">
+                                        <Label
+                                            HorizontalContentAlignment="Center"
+                                            VerticalContentAlignment="Center"
+                                            Content="文件覆盖功能尚未开启，敬请期待后续版本。"
+                                            FontFamily="/Fonts/#Source Han Sans CN"
+                                            FontSize="20"
+                                            FontWeight="Medium"
+                                            Foreground="#FFFFEED4" />
+                                    </Grid>
+
+                                </TabItem>
+                                <TabItem Header="抽卡模拟器" />
+                            </TabControl>
+                        </TabItem>
+                        <TabItem Header="设置">
+                            <Grid x:Name="SettingsPage">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="523*" />
+                                    <ColumnDefinition Width="108*" />
+                                </Grid.ColumnDefinitions>
+                                <ListBox Background="Transparent">
+                                    <ListBoxItem>
+                                        <Label Content="切换节点" />
+                                    </ListBoxItem>
+                                </ListBox>
+                                <Label
+                                    Grid.ColumnSpan="2"
+                                    Width="494"
+                                    Height="41"
+                                    Content="切换节点"
+                                    FontFamily="/Fonts/#Source Han Sans CN"
+                                    FontSize="22"
+                                    FontWeight="Medium"
+                                    Foreground="#FFFFEED4" />
+                                <ComboBox
+                                    x:Name="NodeCombobox"
+                                    Width="257"
+                                    Margin="304,35,-38,236"
+                                    Panel.ZIndex="5"
+                                    DisplayMemberPath="Name"
+                                    FontFamily="/Fonts/#Source Han Sans CN"
+                                    FontSize="16"
+                                    FontWeight="Medium"
+                                    Foreground="Black"
+                                    ItemsSource="{Binding DownloadList}"
+                                    SelectedItem="{Binding SelectedEndPoint}">
+                                    <ComboBox.Clip>
+                                        <RectangleGeometry
+                                            RadiusX="3"
+                                            RadiusY="3"
+                                            Rect="0,0,290,31" />
+                                    </ComboBox.Clip>
+                                </ComboBox>
+                                <Label
+                                    Grid.ColumnSpan="2"
+                                    Width="494"
+                                    Height="41"
+                                    Margin="100,80,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    Content="切换API节点"
+                                    FontFamily="/Fonts/#Source Han Sans CN"
+                                    FontSize="22"
+                                    FontWeight="Medium"
+                                    Foreground="#FFFFEED4" />
+                                <ComboBox
+                                    x:Name="APICombobox"
+                                    Width="257"
+                                    Margin="304,87,-38,185"
+                                    Panel.ZIndex="5"
+                                    DisplayMemberPath="Name"
+                                    FontFamily="/Fonts/#Source Han Sans CN"
+                                    FontSize="16"
+                                    FontWeight="Medium"
+                                    Foreground="Black"
+                                    ItemsSource="{Binding ApiList}"
+                                    SelectedItem="{Binding SelectedAPIEndPoint}">
+                                    <ComboBox.Clip>
+                                        <RectangleGeometry
+                                            RadiusX="3"
+                                            RadiusY="3"
+                                            Rect="0,0,290,31" />
+                                    </ComboBox.Clip>
+                                </ComboBox>
+                                <Label
+                                    Grid.ColumnSpan="2"
+                                    Width="494"
+                                    Height="41"
+                                    Margin="100,128,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    Content="卸载模组"
+                                    FontFamily="/Fonts/#Source Han Sans CN"
+                                    FontSize="22"
+                                    FontWeight="Medium"
+                                    Foreground="#FFFFEED4" />
+                                <Image
+                                    Grid.ColumnSpan="2"
+                                    Margin="70,28,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    Source="/Picture/SettingsLine.png" />
+                                <Image
+                                    x:Name="UninstallHover"
+                                    Grid.Column="1"
+                                    Width="80"
+                                    Height="34"
+                                    Margin="-12,131,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    Panel.ZIndex="5"
+                                    IsHitTestVisible="False"
+                                    Opacity="0"
+                                    Source="/Picture/SettingButtonHover.png" />
+                                <Button
+                                    Grid.Column="1"
+                                    Width="74"
+                                    Height="28"
+                                    Margin="-9,134,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    Background="#FFFFEED4"
+                                    Click="UninstallButtonClick"
+                                    Style="{StaticResource NoHover}">
+                                    <Button.Clip>
+                                        <RectangleGeometry
+                                            RadiusX="3"
+                                            RadiusY="3"
+                                            Rect="0,0,74,28" />
+                                    </Button.Clip>
+                                    <Button.Triggers>
+                                        <EventTrigger RoutedEvent="Button.MouseEnter">
+                                            <BeginStoryboard>
+                                                <Storyboard>
+                                                    <DoubleAnimation
+                                                        Storyboard.TargetName="UninstallHover"
+                                                        Storyboard.TargetProperty="Opacity"
+                                                        From="0"
+                                                        To="1"
+                                                        Duration="0:0:0.3" />
+                                                </Storyboard>
+                                            </BeginStoryboard>
+                                        </EventTrigger>
+                                        <EventTrigger RoutedEvent="Button.MouseLeave">
+                                            <BeginStoryboard>
+                                                <Storyboard>
+                                                    <DoubleAnimation
+                                                        Storyboard.TargetName="UninstallHover"
+                                                        Storyboard.TargetProperty="Opacity"
+                                                        From="1"
+                                                        To="0"
+                                                        Duration="0:0:0.3" />
+                                                </Storyboard>
+                                            </BeginStoryboard>
+                                        </EventTrigger>
+                                    </Button.Triggers>
+                                </Button>
+                                <Button
+                                    Width="28"
+                                    Height="28"
+                                    Margin="271,37,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    Background="#FFFFEED4"
+                                    Click="WhyShouldIUseThis"
+                                    Style="{StaticResource NoHover}">
+                                    <Button.Clip>
+                                        <RectangleGeometry
+                                            RadiusX="14"
+                                            RadiusY="14"
+                                            Rect="0,0,28,28" />
+                                    </Button.Clip>
+                                </Button>
+                                <Button
+                                    Width="28"
+                                    Height="28"
+                                    Margin="271,88,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    Background="#FFFFEED4"
+                                    Click="WhyShouldIUseThis"
+                                    Style="{StaticResource NoHover}">
+                                    <Button.Clip>
+                                        <RectangleGeometry
+                                            RadiusX="14"
+                                            RadiusY="14"
+                                            Rect="0,0,28,28" />
+                                    </Button.Clip>
+                                </Button>
+                                <Label
+                                    Grid.Column="1"
+                                    Width="52"
+                                    Height="38"
+                                    Margin="8,130,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    Content="卸载"
+                                    FontFamily="/Fonts/#Source Han Sans CN"
+                                    FontSize="16"
+                                    FontWeight="Heavy"
+                                    Foreground="Black"
+                                    IsHitTestVisible="False" />
+                                <Label
+                                    Grid.ColumnSpan="2"
+                                    Width="494"
+                                    Height="41"
+                                    Margin="100,179,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    Content="切换模组开关状态"
+                                    FontFamily="/Fonts/#Source Han Sans CN"
+                                    FontSize="22"
+                                    FontWeight="Medium"
+                                    Foreground="#FFFFEED4" />
+                                <Image
+                                    x:Name="ChangeStatuHover"
+                                    Grid.Column="1"
+                                    Width="80"
+                                    Height="34"
+                                    Margin="-11,184,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    Panel.ZIndex="5"
+                                    IsHitTestVisible="False"
+                                    Opacity="0"
+                                    Source="/Picture/SettingButtonHover.png" />
+                                <Button
+                                    Grid.Column="1"
+                                    Width="74"
+                                    Height="28"
+                                    Margin="-8,187,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    Background="#FFFFEED4"
+                                    Click="ChangeStatuButtonClick"
+                                    Style="{StaticResource NoHover}">
+                                    <Button.Clip>
+                                        <RectangleGeometry
+                                            RadiusX="3"
+                                            RadiusY="3"
+                                            Rect="0,0,74,28" />
+                                    </Button.Clip>
+                                    <Button.Triggers>
+                                        <EventTrigger RoutedEvent="Button.MouseEnter">
+                                            <BeginStoryboard>
+                                                <Storyboard>
+                                                    <DoubleAnimation
+                                                        Storyboard.TargetName="ChangeStatuHover"
+                                                        Storyboard.TargetProperty="Opacity"
+                                                        From="0"
+                                                        To="1"
+                                                        Duration="0:0:0.3" />
+                                                </Storyboard>
+                                            </BeginStoryboard>
+                                        </EventTrigger>
+                                        <EventTrigger RoutedEvent="Button.MouseLeave">
+                                            <BeginStoryboard>
+                                                <Storyboard>
+                                                    <DoubleAnimation
+                                                        Storyboard.TargetName="ChangeStatuHover"
+                                                        Storyboard.TargetProperty="Opacity"
+                                                        From="1"
+                                                        To="0"
+                                                        Duration="0:0:0.3" />
+                                                </Storyboard>
+                                            </BeginStoryboard>
+                                        </EventTrigger>
+                                    </Button.Triggers>
+                                </Button>
+                                <Label
+                                    Grid.Column="1"
+                                    Width="52"
+                                    Height="38"
+                                    Margin="8,183,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    Content="开关"
+                                    FontFamily="/Fonts/#Source Han Sans CN"
+                                    FontSize="16"
+                                    FontWeight="Heavy"
+                                    Foreground="Black"
+                                    IsHitTestVisible="False" />
+                                <Label
+                                    Width="52"
+                                    Height="38"
+                                    Margin="276,34,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    Content="?"
+                                    FontFamily="/Fonts/#Source Han Sans CN"
+                                    FontSize="16"
+                                    FontWeight="Heavy"
+                                    Foreground="Black"
+                                    IsHitTestVisible="False" />
+                                <Label
+                                    Width="52"
+                                    Height="38"
+                                    Margin="276,85,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    Content="?"
+                                    FontFamily="/Fonts/#Source Han Sans CN"
+                                    FontSize="16"
+                                    FontWeight="Heavy"
+                                    Foreground="Black"
+                                    IsHitTestVisible="False" />
+                            </Grid>
+
+                        </TabItem>
+                    </TabControl>
                     <Grid Grid.Row="0" Margin="108,23,86,15">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" />
@@ -305,7 +739,6 @@
                             Background="Transparent"
                             BorderBrush="Transparent"
                             BorderThickness="0"
-                            Click="AutoInstallButtonClick"
                             Content="自动安装"
                             FontFamily="/Fonts/#Source Han Sans CN"
                             FontSize="18"
@@ -350,7 +783,6 @@
                             Background="Transparent"
                             BorderBrush="Transparent"
                             BorderThickness="0"
-                            Click="ManualInstallButtonClick"
                             Content="手动安装"
                             FontFamily="/Fonts/#Source Han Sans CN"
                             FontSize="18"
@@ -395,7 +827,6 @@
                             Background="Transparent"
                             BorderBrush="Transparent"
                             BorderThickness="0"
-                            Click="ReplaceInstallButtonClick"
                             Content="文件覆盖"
                             FontFamily="/Fonts/#Source Han Sans CN"
                             FontSize="18"
@@ -477,461 +908,7 @@
                         </Button>
 
                     </Grid>
-                    <Grid
-                        x:Name="SettingsPage"
-                        Grid.Row="1"
-                        Margin="62,55,54,32"
-                        Panel.ZIndex="5"
-                        Visibility="Visible">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="523*" />
-                            <ColumnDefinition Width="108*" />
-                        </Grid.ColumnDefinitions>
-                        <Label
-                            Grid.ColumnSpan="2"
-                            Width="494"
-                            Height="41"
-                            Margin="100,28,0,0"
-                            HorizontalAlignment="Left"
-                            VerticalAlignment="Top"
-                            Content="切换节点"
-                            FontFamily="/Fonts/#Source Han Sans CN"
-                            FontSize="22"
-                            FontWeight="Medium"
-                            Foreground="#FFFFEED4" />
-                        <ComboBox
-                            x:Name="NodeCombobox"
-                            Width="257"
-                            Margin="304,35,-38,236"
-                            Panel.ZIndex="5"
-                            DisplayMemberPath="Name"
-                            FontFamily="/Fonts/#Source Han Sans CN"
-                            FontSize="16"
-                            FontWeight="Medium"
-                            Foreground="Black"
-                            ItemsSource="{Binding DownloadList}"
-                            SelectedItem="{Binding SelectedEndPoint}">
-                            <ComboBox.Clip>
-                                <RectangleGeometry
-                                    RadiusX="3"
-                                    RadiusY="3"
-                                    Rect="0,0,290,31" />
-                            </ComboBox.Clip>
-                        </ComboBox>
-                        <Label
-                            Grid.ColumnSpan="2"
-                            Width="494"
-                            Height="41"
-                            Margin="100,80,0,0"
-                            HorizontalAlignment="Left"
-                            VerticalAlignment="Top"
-                            Content="切换API节点"
-                            FontFamily="/Fonts/#Source Han Sans CN"
-                            FontSize="22"
-                            FontWeight="Medium"
-                            Foreground="#FFFFEED4" />
-                        <ComboBox
-                            x:Name="APICombobox"
-                            Width="257"
-                            Margin="304,87,-38,185"
-                            Panel.ZIndex="5"
-                            DisplayMemberPath="Name"
-                            FontFamily="/Fonts/#Source Han Sans CN"
-                            FontSize="16"
-                            FontWeight="Medium"
-                            Foreground="Black"
-                            ItemsSource="{Binding ApiList}"
-                            SelectedItem="{Binding SelectedAPIEndPoint}">
-                            <ComboBox.Clip>
-                                <RectangleGeometry
-                                    RadiusX="3"
-                                    RadiusY="3"
-                                    Rect="0,0,290,31" />
-                            </ComboBox.Clip>
-                        </ComboBox>
-                        <Label
-                            Grid.ColumnSpan="2"
-                            Width="494"
-                            Height="41"
-                            Margin="100,128,0,0"
-                            HorizontalAlignment="Left"
-                            VerticalAlignment="Top"
-                            Content="卸载模组"
-                            FontFamily="/Fonts/#Source Han Sans CN"
-                            FontSize="22"
-                            FontWeight="Medium"
-                            Foreground="#FFFFEED4" />
-                        <Image
-                            Grid.ColumnSpan="2"
-                            Margin="70,28,0,0"
-                            HorizontalAlignment="Left"
-                            VerticalAlignment="Top"
-                            Source="/Picture/SettingsLine.png" />
-                        <Image
-                            x:Name="UninstallHover"
-                            Grid.Column="1"
-                            Width="80"
-                            Height="34"
-                            Margin="-12,131,0,0"
-                            HorizontalAlignment="Left"
-                            VerticalAlignment="Top"
-                            Panel.ZIndex="5"
-                            IsHitTestVisible="False"
-                            Opacity="0"
-                            Source="/Picture/SettingButtonHover.png" />
-                        <Button
-                            Grid.Column="1"
-                            Width="74"
-                            Height="28"
-                            Margin="-9,134,0,0"
-                            HorizontalAlignment="Left"
-                            VerticalAlignment="Top"
-                            Background="#FFFFEED4"
-                            Click="UninstallButtonClick"
-                            Style="{StaticResource NoHover}">
-                            <Button.Clip>
-                                <RectangleGeometry
-                                    RadiusX="3"
-                                    RadiusY="3"
-                                    Rect="0,0,74,28" />
-                            </Button.Clip>
-                            <Button.Triggers>
-                                <EventTrigger RoutedEvent="Button.MouseEnter">
-                                    <BeginStoryboard>
-                                        <Storyboard>
-                                            <DoubleAnimation
-                                                Storyboard.TargetName="UninstallHover"
-                                                Storyboard.TargetProperty="Opacity"
-                                                From="0"
-                                                To="1"
-                                                Duration="0:0:0.3" />
-                                        </Storyboard>
-                                    </BeginStoryboard>
-                                </EventTrigger>
-                                <EventTrigger RoutedEvent="Button.MouseLeave">
-                                    <BeginStoryboard>
-                                        <Storyboard>
-                                            <DoubleAnimation
-                                                Storyboard.TargetName="UninstallHover"
-                                                Storyboard.TargetProperty="Opacity"
-                                                From="1"
-                                                To="0"
-                                                Duration="0:0:0.3" />
-                                        </Storyboard>
-                                    </BeginStoryboard>
-                                </EventTrigger>
-                            </Button.Triggers>
-                        </Button>
-                        <Button
-                            Width="28"
-                            Height="28"
-                            Margin="271,37,0,0"
-                            HorizontalAlignment="Left"
-                            VerticalAlignment="Top"
-                            Background="#FFFFEED4"
-                            Click="WhyShouldIUseThis"
-                            Style="{StaticResource NoHover}">
-                            <Button.Clip>
-                                <RectangleGeometry
-                                    RadiusX="14"
-                                    RadiusY="14"
-                                    Rect="0,0,28,28" />
-                            </Button.Clip>
-                        </Button>
-                        <Button
-                            Width="28"
-                            Height="28"
-                            Margin="271,88,0,0"
-                            HorizontalAlignment="Left"
-                            VerticalAlignment="Top"
-                            Background="#FFFFEED4"
-                            Click="WhyShouldIUseThis"
-                            Style="{StaticResource NoHover}">
-                            <Button.Clip>
-                                <RectangleGeometry
-                                    RadiusX="14"
-                                    RadiusY="14"
-                                    Rect="0,0,28,28" />
-                            </Button.Clip>
-                        </Button>
-                        <Label
-                            Grid.Column="1"
-                            Width="52"
-                            Height="38"
-                            Margin="8,130,0,0"
-                            HorizontalAlignment="Left"
-                            VerticalAlignment="Top"
-                            Content="卸载"
-                            FontFamily="/Fonts/#Source Han Sans CN"
-                            FontSize="16"
-                            FontWeight="Heavy"
-                            Foreground="Black"
-                            IsHitTestVisible="False" />
-                        <Label
-                            Grid.ColumnSpan="2"
-                            Width="494"
-                            Height="41"
-                            Margin="100,179,0,0"
-                            HorizontalAlignment="Left"
-                            VerticalAlignment="Top"
-                            Content="切换模组开关状态"
-                            FontFamily="/Fonts/#Source Han Sans CN"
-                            FontSize="22"
-                            FontWeight="Medium"
-                            Foreground="#FFFFEED4" />
-                        <Image
-                            x:Name="ChangeStatuHover"
-                            Grid.Column="1"
-                            Width="80"
-                            Height="34"
-                            Margin="-11,184,0,0"
-                            HorizontalAlignment="Left"
-                            VerticalAlignment="Top"
-                            Panel.ZIndex="5"
-                            IsHitTestVisible="False"
-                            Opacity="0"
-                            Source="/Picture/SettingButtonHover.png" />
-                        <Button
-                            Grid.Column="1"
-                            Width="74"
-                            Height="28"
-                            Margin="-8,187,0,0"
-                            HorizontalAlignment="Left"
-                            VerticalAlignment="Top"
-                            Background="#FFFFEED4"
-                            Click="ChangeStatuButtonClick"
-                            Style="{StaticResource NoHover}">
-                            <Button.Clip>
-                                <RectangleGeometry
-                                    RadiusX="3"
-                                    RadiusY="3"
-                                    Rect="0,0,74,28" />
-                            </Button.Clip>
-                            <Button.Triggers>
-                                <EventTrigger RoutedEvent="Button.MouseEnter">
-                                    <BeginStoryboard>
-                                        <Storyboard>
-                                            <DoubleAnimation
-                                                Storyboard.TargetName="ChangeStatuHover"
-                                                Storyboard.TargetProperty="Opacity"
-                                                From="0"
-                                                To="1"
-                                                Duration="0:0:0.3" />
-                                        </Storyboard>
-                                    </BeginStoryboard>
-                                </EventTrigger>
-                                <EventTrigger RoutedEvent="Button.MouseLeave">
-                                    <BeginStoryboard>
-                                        <Storyboard>
-                                            <DoubleAnimation
-                                                Storyboard.TargetName="ChangeStatuHover"
-                                                Storyboard.TargetProperty="Opacity"
-                                                From="1"
-                                                To="0"
-                                                Duration="0:0:0.3" />
-                                        </Storyboard>
-                                    </BeginStoryboard>
-                                </EventTrigger>
-                            </Button.Triggers>
-                        </Button>
-                        <Label
-                            Grid.Column="1"
-                            Width="52"
-                            Height="38"
-                            Margin="8,183,0,0"
-                            HorizontalAlignment="Left"
-                            VerticalAlignment="Top"
-                            Content="开关"
-                            FontFamily="/Fonts/#Source Han Sans CN"
-                            FontSize="16"
-                            FontWeight="Heavy"
-                            Foreground="Black"
-                            IsHitTestVisible="False" />
-                        <Label
-                            Width="52"
-                            Height="38"
-                            Margin="276,34,0,0"
-                            HorizontalAlignment="Left"
-                            VerticalAlignment="Top"
-                            Content="?"
-                            FontFamily="/Fonts/#Source Han Sans CN"
-                            FontSize="16"
-                            FontWeight="Heavy"
-                            Foreground="Black"
-                            IsHitTestVisible="False" />
-                        <Label
-                            Width="52"
-                            Height="38"
-                            Margin="276,85,0,0"
-                            HorizontalAlignment="Left"
-                            VerticalAlignment="Top"
-                            Content="?"
-                            FontFamily="/Fonts/#Source Han Sans CN"
-                            FontSize="16"
-                            FontWeight="Heavy"
-                            Foreground="Black"
-                            IsHitTestVisible="False" />
-                    </Grid>
-                    <Grid
-                        x:Name="AutoInstallPage"
-                        Grid.Row="1"
-                        Margin="62,55,54,32"
-                        Panel.ZIndex="5"
-                        Visibility="Collapsed">
 
-                        <Button
-                            x:Name="AutoInstallStartButton"
-                            Width="196"
-                            Height="70"
-                            Margin="0,151,0,0"
-                            HorizontalAlignment="Center"
-                            VerticalAlignment="Top"
-                            Panel.ZIndex="3"
-                            Background="Transparent"
-                            BorderBrush="Transparent"
-                            BorderThickness="0"
-                            Click="InstallButtonClick"
-                            Style="{StaticResource NoHover}">
-                            <Button.Content>
-                                <Image
-                                    Width="195"
-                                    Height="70"
-                                    Source="/Picture/Install.png" />
-                            </Button.Content>
-                            <Button.Triggers>
-                                <EventTrigger RoutedEvent="Button.MouseEnter">
-                                    <BeginStoryboard>
-                                        <Storyboard>
-                                            <DoubleAnimation
-                                                Storyboard.TargetName="AutoInstallBTHover"
-                                                Storyboard.TargetProperty="Opacity"
-                                                From="0"
-                                                To="1"
-                                                Duration="0:0:0.3" />
-                                        </Storyboard>
-                                    </BeginStoryboard>
-                                </EventTrigger>
-                                <EventTrigger RoutedEvent="Button.MouseLeave">
-                                    <BeginStoryboard>
-                                        <Storyboard>
-                                            <DoubleAnimation
-                                                Storyboard.TargetName="AutoInstallBTHover"
-                                                Storyboard.TargetProperty="Opacity"
-                                                From="1"
-                                                To="0"
-                                                Duration="0:0:0.3" />
-                                        </Storyboard>
-                                    </BeginStoryboard>
-                                </EventTrigger>
-                            </Button.Triggers>
-                        </Button>
-                        <Image
-                            x:Name="AutoInstallBTHover"
-                            Width="196"
-                            Height="70"
-                            Margin="0,151,0,0"
-                            HorizontalAlignment="Center"
-                            VerticalAlignment="Top"
-                            Panel.ZIndex="5"
-                            IsHitTestVisible="False"
-                            Opacity="0"
-                            Source="/Picture/InstallHover.png" />
-                        <Image
-                            x:Name="AutoInstallBTIng"
-                            Width="196"
-                            Height="70"
-                            Margin="0,151,0,0"
-                            HorizontalAlignment="Center"
-                            VerticalAlignment="Top"
-                            Panel.ZIndex="10"
-                            IsHitTestVisible="False"
-                            Opacity="1"
-                            Source="/Picture/Installing.png" />
-                        <Image
-                            Width="482"
-                            Height="123"
-                            Margin="0,127,0,0"
-                            HorizontalAlignment="Center"
-                            VerticalAlignment="Top"
-                            IsHitTestVisible="False"
-                            Source="/Picture/StartInstallBackground.png" />
-                        <Canvas Margin="-10,294,10,22">
-                            <Image
-                                x:Name="FullProgress"
-                                Canvas.Left="26"
-                                Canvas.Top="30"
-                                Width="624"
-                                Height="50"
-                                HorizontalAlignment="Left"
-                                VerticalAlignment="Center"
-                                Panel.ZIndex="5"
-                                Source="/Picture/FullProgress.png">
-                                <Image.Clip>
-                                    <RectangleGeometry Rect="0,0,0,50" />
-                                </Image.Clip>
-                            </Image>
-                            <Image
-                                x:Name="EmptyProgress"
-                                Canvas.Left="26"
-                                Canvas.Top="30"
-                                Width="624"
-                                Height="50"
-                                HorizontalAlignment="Left"
-                                VerticalAlignment="Center"
-                                Panel.ZIndex="3"
-                                Source="/Picture/EmptyProgress.png" />
-                        </Canvas>
-                        <Image
-                            Width="84"
-                            Height="81"
-                            Margin="24,249,0,0"
-                            HorizontalAlignment="Left"
-                            VerticalAlignment="Top"
-                            Source="/Picture/LittleBlack.png" />
-                        <Image
-                            Width="104"
-                            Height="92"
-                            Margin="530,238,0,0"
-                            HorizontalAlignment="Left"
-                            VerticalAlignment="Top"
-                            Source="/Picture/LittleWhite.png" />
-                    </Grid>
-                    <Grid
-                        x:Name="ManualInstallPage"
-                        Grid.Row="1"
-                        Margin="62,55,54,32"
-                        Panel.ZIndex="5"
-                        Visibility="Collapsed">
-                        <Label
-                            Width="494"
-                            Height="61"
-                            Margin="0,137,0,0"
-                            HorizontalAlignment="Center"
-                            VerticalAlignment="Top"
-                            Content="手动安装功能尚未开启，敬请期待后续版本。"
-                            FontFamily="/Fonts/#Source Han Sans CN"
-                            FontSize="20"
-                            FontWeight="Medium"
-                            Foreground="#FFFFEED4" />
-                    </Grid>
-                    <Grid
-                        x:Name="ReplaceInstallPage"
-                        Grid.Row="1"
-                        Margin="62,55,54,32"
-                        Panel.ZIndex="5"
-                        Visibility="Collapsed">
-                        <Label
-                            Width="494"
-                            Height="61"
-                            Margin="0,137,0,0"
-                            HorizontalAlignment="Center"
-                            VerticalAlignment="Top"
-                            Content="文件覆盖功能尚未开启，敬请期待后续版本。"
-                            FontFamily="/Fonts/#Source Han Sans CN"
-                            FontSize="20"
-                            FontWeight="Medium"
-                            Foreground="#FFFFEED4" />
-                    </Grid>
                     <Grid
                         x:Name="LinkPage"
                         Grid.Row="1"
@@ -2146,7 +2123,6 @@
                         Background="Transparent"
                         BorderBrush="Transparent"
                         BorderThickness="0"
-                        Click="InstallOptionClick"
                         Content="安   装"
                         FontFamily="/Fonts/#lianmengqiyilushuaizhengruiheiti"
                         FontSize="20"
@@ -2190,7 +2166,6 @@
                         Background="Transparent"
                         BorderBrush="Transparent"
                         BorderThickness="0"
-                        Click="LinkOptionClick"
                         Content="链   接"
                         FontFamily="/Fonts/#lianmengqiyilushuaizhengruiheiti"
                         FontSize="20"
@@ -2234,7 +2209,6 @@
                         Background="Transparent"
                         BorderBrush="Transparent"
                         BorderThickness="0"
-                        Click="GreytestOptionClick"
                         Content="灰度测试"
                         FontFamily="/Fonts/#lianmengqiyilushuaizhengruiheiti"
                         FontSize="20"
@@ -2278,7 +2252,6 @@
                         Background="Transparent"
                         BorderBrush="Transparent"
                         BorderThickness="0"
-                        Click="SettingsOptionClick"
                         Content="设   置"
                         FontFamily="/Fonts/#lianmengqiyilushuaizhengruiheiti"
                         FontSize="20"
@@ -2322,7 +2295,6 @@
                         Background="Transparent"
                         BorderBrush="Transparent"
                         BorderThickness="0"
-                        Click="AboutOptionClick"
                         Content="关   于"
                         FontFamily="/Fonts/#lianmengqiyilushuaizhengruiheiti"
                         FontSize="20"
@@ -2366,7 +2338,6 @@
                         Background="Transparent"
                         BorderBrush="Transparent"
                         BorderThickness="0"
-                        Click="EEOptionClick"
                         Content="画   廊"
                         FontFamily="/Fonts/#lianmengqiyilushuaizhengruiheiti"
                         FontSize="20"
@@ -2475,7 +2446,6 @@
                         Background="Transparent"
                         BorderBrush="Transparent"
                         BorderThickness="0"
-                        MouseDoubleClick="WhiteBlackClickDouble"
                         Style="{StaticResource BlackWhite}" />
                     <Button
                         Grid.Row="6"
@@ -2487,7 +2457,6 @@
                         Background="Transparent"
                         BorderBrush="Transparent"
                         BorderThickness="0"
-                        MouseDoubleClick="WhiteBlackClickDouble"
                         Style="{StaticResource BlackWhite}" />
                 </Grid>
             </Grid>

@@ -5,22 +5,28 @@ using LLC_MOD_Toolbox.Models;
 
 namespace LLC_MOD_Toolbox.ViewModels;
 
-partial class AutoInstallerViewModel : ObservableObject
+public partial class AutoInstallerViewModel : ObservableObject
 {
+    private readonly PrimaryNodeList primaryNodeList;
     [ObservableProperty]
-    List<NodeInformation> downloadList = PrimaryNodeList.NodeInstance.DownloadNode;
+    List<NodeInformation> downloadList;
     [ObservableProperty]
-    List<NodeInformation> apiList = PrimaryNodeList.NodeInstance.ApiNode;
+    List<NodeInformation> apiList;
 
     [ObservableProperty]
-    static NodeInformation selectedEndPoint = PrimaryNodeList.NodeInstance.DownloadNode
-        .Last(x => x.IsDefault == true);
+    NodeInformation selectedEndPoint;
     [ObservableProperty]
-    static NodeInformation selectedAPIEndPoint = PrimaryNodeList.NodeInstance.ApiNode
-        .Last(x => x.IsDefault == true);
+    NodeInformation selectedAPIEndPoint;
 
     public AutoInstallerViewModel()
     {
-        _ = JsonHelper.DeserializePrimaryNodeList(File.ReadAllText("NodeList.json"));
+        primaryNodeList = JsonHelper.DeserializePrimaryNodeList(
+            File.ReadAllText("NodeList.json"))
+            .Result;
+        downloadList = primaryNodeList.DownloadNode;
+        apiList = primaryNodeList.ApiNode;
+        selectedEndPoint = downloadList.Last(x => x.IsDefault);
+        selectedAPIEndPoint = apiList.Last(x => x.IsDefault);
     }
+
 }
