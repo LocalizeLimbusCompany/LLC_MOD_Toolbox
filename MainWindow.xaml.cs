@@ -153,7 +153,7 @@ namespace LLC_MOD_Toolbox
             nowPage = "ee";
             await RefreshPage();
         }*/
-        public async Task ChangeProgressValue(float value)
+/*        public async Task ChangeProgressValue(float value)
         {
             value = (float)Math.Round(value, 1);
             logger.Debug($"安装进度：{value}%");
@@ -166,7 +166,7 @@ namespace LLC_MOD_Toolbox
                 FullProgress.Clip = rectGeometry;
             });
             logger.Debug("更改进度完成。");
-        }
+        }*/
         private void GreytestInfoButtonClick(object sender, RoutedEventArgs e)
         {
             HttpHelper.LaunchUrl("https://www.zeroasso.top/docs/community/llcdev");

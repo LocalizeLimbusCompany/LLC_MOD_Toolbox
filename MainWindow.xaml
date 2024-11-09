@@ -6,6 +6,7 @@
     xmlns:local="clr-namespace:LLC_MOD_Toolbox"
     xmlns:localvm="clr-namespace:LLC_MOD_Toolbox.ViewModels"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:views="clr-namespace:LLC_MOD_Toolbox.Views"
     Title="都市零协会工具箱"
     Width="960"
     Height="600"
@@ -224,110 +225,7 @@
                         <TabItem Header="安装">
                             <TabControl Background="Transparent">
                                 <TabItem Header="自动安装">
-                                    <Grid x:Name="AutoInstallPage" Cursor="">
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="8*"/>
-                                            <ColumnDefinition Width="139*"/>
-                                        </Grid.ColumnDefinitions>
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition Height="*" />
-                                            <RowDefinition Height="auto" />
-                                        </Grid.RowDefinitions>
-                                        <Button
-                                            x:Name="AutoInstallStartButton"
-                                            Grid.Row="0"
-                                            Width="196"
-                                            Height="70"
-                                            Background="Transparent"
-                                            BorderBrush="Transparent"
-                                            BorderThickness="0"
-                                            Click="InstallButtonClick"
-                                            Cursor="Hand"
-                                            Style="{StaticResource NoHover}" Grid.Column="1" Margin="229,179,270,180">
-                                            <Button.Content>
-                                                <Image
-                                                    Width="195"
-                                                    Height="70"
-                                                    Source="/Picture/Install.png" />
-                                            </Button.Content>
-                                            <Button.Triggers>
-                                                <EventTrigger RoutedEvent="Button.MouseEnter">
-                                                    <BeginStoryboard>
-                                                        <Storyboard>
-                                                            <DoubleAnimation
-                                                                Storyboard.TargetName="AutoInstallBTHover"
-                                                                Storyboard.TargetProperty="Opacity"
-                                                                From="0"
-                                                                To="1"
-                                                                Duration="0:0:0.3" />
-                                                        </Storyboard>
-                                                    </BeginStoryboard>
-                                                </EventTrigger>
-                                                <EventTrigger RoutedEvent="Button.MouseLeave">
-                                                    <BeginStoryboard>
-                                                        <Storyboard>
-                                                            <DoubleAnimation
-                                                                Storyboard.TargetName="AutoInstallBTHover"
-                                                                Storyboard.TargetProperty="Opacity"
-                                                                From="1"
-                                                                To="0"
-                                                                Duration="0:0:0.3" />
-                                                        </Storyboard>
-                                                    </BeginStoryboard>
-                                                </EventTrigger>
-                                            </Button.Triggers>
-                                        </Button>
-                                        <Image
-                                            x:Name="AutoInstallBTHover"
-                                            Width="196"
-                                            Height="70"
-                                            HorizontalAlignment="Left"
-                                            VerticalAlignment="Center"
-                                            IsHitTestVisible="False"
-                                            Opacity="0"
-                                            Source="/Picture/InstallHover.png" Grid.Column="1" Margin="229,0,0,0" />
-                                        <Image
-                                            x:Name="AutoInstallBTIng"
-                                            Width="196"
-                                            Height="70"
-                                            IsHitTestVisible="False"
-                                            Opacity="1"
-                                            Source="/Picture/Installing.png" Grid.Column="1" Margin="229,179,270,180" />
-                                        <Canvas Grid.Row="1" Grid.ColumnSpan="2">
-                                            <Image
-                                                x:Name="FullProgress"
-                                                Width="624"
-                                                Height="50"
-                                                HorizontalAlignment="Center"
-                                                VerticalAlignment="Bottom"
-                                                Source="/Picture/FullProgress.png">
-                                                <Image.Clip>
-                                                    <RectangleGeometry Rect="0,0,0,50" />
-                                                </Image.Clip>
-                                            </Image>
-                                            <Image
-                                                x:Name="EmptyProgress"
-                                                Width="624"
-                                                Height="50"
-                                                HorizontalAlignment="Center"
-                                                VerticalAlignment="Bottom"
-                                                Source="/Picture/EmptyProgress.png" />
-                                        </Canvas>
-                                        <Image
-                                            Width="84"
-                                            Height="81"
-                                            Margin="-16,249,0,0"
-                                            HorizontalAlignment="Left"
-                                            VerticalAlignment="Top"
-                                            Source="/Picture/LittleBlack.png" Grid.Column="1" />
-                                        <Image
-                                            Width="104"
-                                            Height="92"
-                                            Margin="490,238,0,0"
-                                            HorizontalAlignment="Left"
-                                            VerticalAlignment="Top"
-                                            Source="/Picture/LittleWhite.png" Grid.Column="1" />
-                                    </Grid>
+                                    <views:AutoInstaller />
                                 </TabItem>
                                 <TabItem Header="手动安装">
                                     <Grid x:Name="ManualInstallPage">

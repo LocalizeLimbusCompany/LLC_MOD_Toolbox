@@ -9,16 +9,20 @@
     d:DataContext="{d:DesignInstance Type=viewmodels:AutoInstallerViewModel}"
     d:DesignHeight="450"
     d:DesignWidth="800"
+    Background="Transparent"
     mc:Ignorable="d">
-    <Grid>
+    <Grid Background="Transparent">
         <Grid.RowDefinitions>
             <RowDefinition Height="auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        <Button Grid.Row="0">
+        <Button Grid.Row="0" Background="Transparent">
             <Image Source="/Picture/Install.png" />
         </Button>
-        <ProgressBar Grid.Row="1" d:Value="100">
+        <ProgressBar
+            Grid.Row="1"
+            d:Value="100"
+            Background="Transparent">
             <ProgressBar.Foreground>
                 <ImageBrush ImageSource="pack://application:,,,/LLC_MOD_Toolbox;component/Picture/FullProgress.png" Stretch="Uniform" />
             </ProgressBar.Foreground>

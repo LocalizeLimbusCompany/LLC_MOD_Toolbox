@@ -173,7 +173,7 @@ namespace LLC_MOD_Toolbox
             //isInstalling = false;
             installPhase = 0;
             progressPercentage = 0;
-            await ChangeProgressValue(progressPercentage);
+            //await ChangeProgressValue(progressPercentage);
             //await RefreshPage();
         }
         private async Task InstallBepInEx()
@@ -660,7 +660,7 @@ namespace LLC_MOD_Toolbox
         #region 进度条系统
         public async void ProgressTime_Tick(object? sender, EventArgs e)
         {
-            await ChangeProgressValue(progressPercentage);
+            //await ChangeProgressValue(progressPercentage);
         }
         public void StartProgressTimer()
         {
