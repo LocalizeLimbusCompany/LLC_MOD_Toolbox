@@ -361,36 +361,7 @@ namespace LLC_MOD_Toolbox
         }
         #endregion
         #region 读取节点
-        private static bool APPChangeAPIUI = false;
 
-        public async Task<string> GetNodeComboboxText()
-        {
-            string combotext = string.Empty;
-            await this.Dispatcher.BeginInvoke(() =>
-            {
-                combotext = NodeCombobox.SelectedItem.ToString();
-            });
-            return combotext;
-        }
-        public async Task<string> GetAPIComboboxText()
-        {
-            string combotext = string.Empty;
-            await this.Dispatcher.BeginInvoke(() =>
-            {
-                combotext = APICombobox.SelectedItem.ToString();
-            });
-            return combotext;
-        }
-        public async Task<string> SetAPIComboboxText(string text)
-        {
-            APPChangeAPIUI = true;
-            string combotext = string.Empty;
-            await this.Dispatcher.BeginInvoke(() =>
-            {
-                APICombobox.SelectedItem = text;
-            });
-            return combotext;
-        }
         private void WhyShouldIUseThis(object sender, RoutedEventArgs e)
         {
             HttpHelper.LaunchUrl("https://www.zeroasso.top/docs/configuration/nodes");
