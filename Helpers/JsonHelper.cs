@@ -16,10 +16,9 @@ namespace LLC_MOD_Toolbox.Helpers
             }
         };
 
-        public static Task<PrimaryNodeList> DeserializePrimaryNodeList(string jsonPayload) 
-            => Task.FromResult(
-                JsonConvert.DeserializeObject<PrimaryNodeList>(jsonPayload, JsonSettings)
-                ?? new PrimaryNodeList());
+        public static PrimaryNodeList DeserializePrimaryNodeList(string jsonPayload)
+            => JsonConvert.DeserializeObject<PrimaryNodeList>(jsonPayload, JsonSettings)
+                ?? new PrimaryNodeList();
 
 
         public static Task<string> DeserializeTagName(string jsonPayload)

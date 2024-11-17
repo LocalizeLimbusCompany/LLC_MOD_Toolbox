@@ -14,5 +14,10 @@
         <Grid.Background>
             <ImageBrush ImageSource="pack://application:,,,/LLC_MOD_Toolbox;component/Picture/GachaBackground.png" Stretch="Uniform" />
         </Grid.Background>
+        <ListBox Background="Transparent" />
+        <Button
+            Width="190"
+            Height="60"
+            Content="开始抽卡" />
     </Grid>
 </UserControl>

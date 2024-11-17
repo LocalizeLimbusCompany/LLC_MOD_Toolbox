@@ -55,21 +55,7 @@ namespace LLC_MOD_Toolbox
         private readonly string VERSION = Assembly.GetExecutingAssembly().GetName().Version?.ToString() ?? "Unknown";
 
 
-        private async void WindowLoaded(object sender, RoutedEventArgs e)
-        {
-            logger.Info("—————新日志分割线—————");
-            logger.Info("工具箱已进入加载流程。");
-            logger.Info("We have a lift off.");
-            logger.Info($"WPF架构工具箱 版本：{VERSION} 。");
-            //await RefreshPage();
-            await ChangeEEPic("https://dl.kr.zeroasso.top/ee_pic/public/public.png");
-            CheckToolboxUpdate();
-            LoadConfig();
-            InitLink();
-            CheckLimbusCompanyPath();
-            SevenZipBase.SetLibraryPath(Path.Combine(currentDir, "7z.dll"));
-            logger.Info("加载流程完成。");
-        }
+
 
         /// <summary>
         /// 按某格式打印log4net，毫无意义的封装，建议弃用，尽快切换写法

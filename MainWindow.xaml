@@ -13,7 +13,7 @@
     d:DataContext="{d:DesignInstance Type=localvm:MainViewModel}"
     AllowsTransparency="True"
     Background="Transparent"
-    Loaded="WindowLoaded"
+    Loaded="Window_Loaded"
     MouseDown="WindowDragMove"
     MouseLeftButtonDown="Window_MouseLeftButtonDown"
     MouseLeftButtonUp="Window_MouseLeftButtonUp"

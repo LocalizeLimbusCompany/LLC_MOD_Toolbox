@@ -10,20 +10,21 @@
     d:DesignHeight="450"
     d:DesignWidth="800"
     mc:Ignorable="d">
+
     <Grid x:Name="SettingsPage">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="523*" />
-            <ColumnDefinition Width="108*" />
+            <ColumnDefinition Width="1*" />
+            <ColumnDefinition Width="2*" />
         </Grid.ColumnDefinitions>
-        <ListBox Background="Transparent">
-            <ListBoxItem>
-                <Label Content="切换节点" />
-            </ListBoxItem>
-        </ListBox>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
         <Label
-            Grid.ColumnSpan="2"
-            Width="494"
-            Height="41"
+            Grid.Row="0"
+            Grid.Column="0"
             Content="切换节点"
             FontFamily="/Fonts/#Source Han Sans CN"
             FontSize="22"
@@ -31,39 +32,21 @@
             Foreground="#FFFFEED4" />
         <ComboBox
             x:Name="NodeCombobox"
+            Grid.Row="0"
+            Grid.Column="1"
             Width="257"
             Height="32"
-            Margin="374,37,32,381"
             DisplayMemberPath="Name"
             FontFamily="/Fonts/#Source Han Sans CN"
             FontSize="16"
             FontWeight="Medium"
             Foreground="Black"
             ItemsSource="{Binding DownloadList}"
-            RenderTransformOrigin="0.5,0.5"
-            SelectedItem="{Binding SelectedEndPoint}">
-            <ComboBox.RenderTransform>
-                <TransformGroup>
-                    <ScaleTransform />
-                    <SkewTransform AngleX="0.085" />
-                    <RotateTransform />
-                    <TranslateTransform X="0.332" />
-                </TransformGroup>
-            </ComboBox.RenderTransform>
-            <ComboBox.Clip>
-                <RectangleGeometry
-                    RadiusX="3"
-                    RadiusY="3"
-                    Rect="0,0,290,31" />
-            </ComboBox.Clip>
-        </ComboBox>
+            SelectedItem="{Binding SelectedEndPoint}" />
+
         <Label
-            Grid.ColumnSpan="2"
-            Width="494"
-            Height="41"
-            Margin="100,80,0,0"
-            HorizontalAlignment="Left"
-            VerticalAlignment="Top"
+            Grid.Row="1"
+            Grid.Column="0"
             Content="切换API节点"
             FontFamily="/Fonts/#Source Han Sans CN"
             FontSize="22"
@@ -71,36 +54,36 @@
             Foreground="#FFFFEED4" />
         <ComboBox
             x:Name="APICombobox"
+            Grid.Row="1"
+            Grid.Column="1"
             Width="257"
             Height="34"
-            Margin="358,162,48,254"
-            Panel.ZIndex="5"
             DisplayMemberPath="Name"
             FontFamily="/Fonts/#Source Han Sans CN"
             FontSize="16"
             FontWeight="Medium"
             Foreground="Black"
             ItemsSource="{Binding ApiList}"
-            SelectedItem="{Binding SelectedAPIEndPoint}">
-            <ComboBox.Clip>
-                <RectangleGeometry
-                    RadiusX="3"
-                    RadiusY="3"
-                    Rect="0,0,290,31" />
-            </ComboBox.Clip>
-        </ComboBox>
+            SelectedItem="{Binding SelectedAPIEndPoint}" />
+
         <Label
-            Grid.ColumnSpan="2"
-            Width="494"
-            Height="41"
-            Margin="100,128,0,0"
-            HorizontalAlignment="Left"
-            VerticalAlignment="Top"
+            Grid.Row="2"
+            Grid.Column="0"
             Content="卸载模组"
             FontFamily="/Fonts/#Source Han Sans CN"
             FontSize="22"
             FontWeight="Medium"
             Foreground="#FFFFEED4" />
+        <Button
+            Grid.Row="2"
+            Grid.Column="1"
+            Width="100"
+            Height="30"
+            Content="卸载"
+            FontFamily="/Fonts/#Source Han Sans CN"
+            FontSize="16"
+            FontWeight="Medium"
+            Foreground="Black" />
     </Grid>
 
 </UserControl>

@@ -26,7 +26,7 @@ namespace LLC_MOD_Toolbox.Helpers
         public static async Task<string> GetHashAsync(string path)
         {
             using var sha256 = SHA256.Create();
-            using var fileStream = File.OpenRead(path);
+            await using var fileStream = File.OpenRead(path);
             var hash = await sha256.ComputeHashAsync(fileStream);
             return BitConverter.ToString(hash).Replace("-", "").ToLowerInvariant();
         }
@@ -53,5 +53,8 @@ namespace LLC_MOD_Toolbox.Helpers
                 @"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Steam App 1973530",
                 "InstallLocation",
                 null)?.ToString());
+
+        public static string GetJsonConfig() =>
+            File.ReadAllText("NodeList.json");
     }
 }

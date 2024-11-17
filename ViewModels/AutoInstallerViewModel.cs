@@ -9,29 +9,21 @@ namespace LLC_MOD_Toolbox.ViewModels;
 
 public partial class AutoInstallerViewModel : ObservableObject
 {
-    private readonly PrimaryNodeList primaryNodeList;
     [ObservableProperty]
-    List<NodeInformation> downloadList;
+    List<NodeInformation> downloadList = PrimaryNodeList.Instance.DownloadNode;
     [ObservableProperty]
-    List<NodeInformation> apiList;
+    List<NodeInformation> apiList = PrimaryNodeList.Instance.ApiNode;
 
     [ObservableProperty]
-    NodeInformation selectedEndPoint;
+    NodeInformation selectedEndPoint = PrimaryNodeList.Instance.DownloadNode.Last(x => x.IsDefault);
     [ObservableProperty]
-    NodeInformation selectedAPIEndPoint;
+    NodeInformation selectedAPIEndPoint = PrimaryNodeList.Instance.ApiNode.Last(x => x.IsDefault);
 
     [ObservableProperty]
     IWebProxy proxy = HttpClient.DefaultProxy;
 
     public AutoInstallerViewModel()
     {
-        primaryNodeList = JsonHelper.DeserializePrimaryNodeList(
-            File.ReadAllText("NodeList.json"))
-            .Result;
-        downloadList = primaryNodeList.DownloadNode;
-        apiList = primaryNodeList.ApiNode;
-        selectedEndPoint = downloadList.Last(x => x.IsDefault);
-        selectedAPIEndPoint = apiList.Last(x => x.IsDefault);
     }
 
 }

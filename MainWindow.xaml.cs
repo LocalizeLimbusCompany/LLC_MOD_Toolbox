@@ -2,6 +2,7 @@
 // 我恨XML，这辈子都不想写XML了。
 // （而且内存占用好多
 
+using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -10,6 +11,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using LLC_MOD_Toolbox.Helpers;
 using LLC_MOD_Toolbox.ViewModels;
+using SevenZip;
 
 namespace LLC_MOD_Toolbox
 {
@@ -25,6 +27,20 @@ namespace LLC_MOD_Toolbox
                 Interval = TimeSpan.FromSeconds(0.05)
             };
             progressTimer.Tick += ProgressTime_Tick;
+        }
+        private async void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            logger.Info("—————新日志分割线—————");
+            logger.Info("工具箱已进入加载流程。");
+            logger.Info("We have a lift off.");
+            logger.Info($"WPF架构工具箱 版本：{VERSION} 。");
+            await ChangeEEPic("https://dl.kr.zeroasso.top/ee_pic/public/public.png");
+            CheckToolboxUpdate();
+            LoadConfig();
+            InitLink();
+            CheckLimbusCompanyPath();
+            SevenZipBase.SetLibraryPath(Path.Combine(currentDir, "7z.dll"));
+            logger.Info("加载流程完成。");
         }
         /// <summary>
         /// 处理窗口拖拽。

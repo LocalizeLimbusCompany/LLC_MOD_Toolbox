@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using LLC_MOD_Toolbox.Models;
 
 namespace LLC_MOD_Toolbox.ViewModels
@@ -7,6 +8,15 @@ namespace LLC_MOD_Toolbox.ViewModels
     {
         [ObservableProperty]
         static List<PersonalInfo> personalInfos = [];
+        [ObservableProperty]
+        static List<PersonalInfo> selectedPersonalInfos = [];
+
+        [RelayCommand]
+        public static void Gacha()
+        {
+            selectedPersonalInfos.Clear();
+            throw new NotImplementedException();
+        }
 
         public GachaViewModel()
         {
