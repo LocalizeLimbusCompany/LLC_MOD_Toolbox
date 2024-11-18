@@ -38,7 +38,6 @@ namespace LLC_MOD_Toolbox
             CheckToolboxUpdate();
             LoadConfig();
             InitLink();
-            CheckLimbusCompanyPath();
             SevenZipBase.SetLibraryPath(Path.Combine(currentDir, "7z.dll"));
             logger.Info("加载流程完成。");
         }

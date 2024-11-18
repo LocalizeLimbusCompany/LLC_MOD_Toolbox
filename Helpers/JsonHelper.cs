@@ -25,5 +25,9 @@ namespace LLC_MOD_Toolbox.Helpers
             => Task.FromResult(
                 JObject.Parse(jsonPayload).GetValue("tag_name")?.ToString()
                 ?? string.Empty);
+        public static Task<string> DeserializeHash(string jsonPayload)
+            => Task.FromResult(
+                JObject.Parse(jsonPayload).GetValue("hash")?.ToString()
+                ?? string.Empty);
     }
 }

@@ -23,23 +23,22 @@ namespace LLC_MOD_Toolbox.Helpers
             await downloader.DownloadFileTaskAsync(url, path);
         }
 
-        public static async Task<string> GetHashAsync(string path)
+        public static async Task<bool> CheckHashAsync(Stream archive)
         {
-            using var sha256 = SHA256.Create();
-            await using var fileStream = File.OpenRead(path);
-            var hash = await sha256.ComputeHashAsync(fileStream);
-            return BitConverter.ToString(hash).Replace("-", "").ToLowerInvariant();
+            using SHA256 sha256 = SHA256.Create();
+            byte[] hash = await sha256.ComputeHashAsync(archive);
+            return BitConverter.ToString(hash).Replace("-", "").Equals(await HttpHelper.GetHashAsync("{useEndPoint ?? defaultEndPoint}LimbusLocalizeHash.json"), StringComparison.CurrentCultureIgnoreCase);
         }
 
         /// <summary>
         /// 解压文件 7z 文件
         /// </summary>
-        public static async Task Extract7zAsync(string source, string destination)
+        public static async Task Extract7zAsync(Stream archive, string destination)
         {
             await Task.Run(() =>
             {
                 SevenZip.SevenZipBase.SetLibraryPath("7z.dll");
-                using var extractor = new SevenZip.SevenZipExtractor(source);
+                using var extractor = new SevenZip.SevenZipExtractor(archive);
                 extractor.ExtractArchive(destination);
             });
         }
@@ -54,7 +53,11 @@ namespace LLC_MOD_Toolbox.Helpers
                 "InstallLocation",
                 null)?.ToString());
 
-        public static string GetJsonConfig() =>
+        /// <summary>
+        /// 读取节点列表配置文件
+        /// </summary>
+        /// <returns></returns>
+        public static string NodeListConfig =>
             File.ReadAllText("NodeList.json");
     }
 }

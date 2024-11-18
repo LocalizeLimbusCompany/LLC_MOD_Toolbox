@@ -6,7 +6,7 @@ namespace LLC_MOD_Toolbox.Models;
 /// </summary>
 public class PrimaryNodeList
 {
-    public static PrimaryNodeList Instance =>JsonHelper.DeserializePrimaryNodeList(FileHelper.GetJsonConfig());
+    public static PrimaryNodeList Instance =>JsonHelper.DeserializePrimaryNodeList(FileHelper.NodeListConfig);
 
     public List<NodeInformation> DownloadNode { get; init; } =
         [new("默认 (GitHub)", "https://node.zeroasso.top/d/od/", true)];

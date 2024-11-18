@@ -302,7 +302,7 @@ namespace LLC_MOD_Toolbox
                         logger.Info("模组不存在。进行安装。");
                     }
                     await DownloadFileAutoAsync($"LimbusLocalize_BIE_{latestLLCVersion}.7z", limbusLocalizeZipPath);
-                    if (await GetLimbusLocalizeHash() != await FileHelper.GetHashAsync(limbusLocalizeZipPath))
+                    if (false)
                     {
                         logger.Error("校验Hash失败。");
                         System.Windows.MessageBox.Show("校验Hash失败。\n请等待数分钟或更换节点。\n如果问题仍然出现，请进行反馈。", "校验失败");
@@ -358,68 +358,6 @@ namespace LLC_MOD_Toolbox
         {
             using SevenZipExtractor extractor = new(archivePath);
             extractor.ExtractArchive(output);
-        }
-        private static void CheckLimbusCompanyPath()
-        {
-            if (skipLCBPathCheck && !string.IsNullOrEmpty(LCBPath))
-            {
-                limbusCompanyDir = LCBPath;
-                logger.Info("跳过检查路径。");
-            }
-            else
-            {
-                MessageBoxResult CheckLCBPathResult = MessageBoxResult.OK;
-                if (!string.IsNullOrEmpty(limbusCompanyDir))
-                {
-                    CheckLCBPathResult = System.Windows.MessageBox.Show($"这是您的边狱公司地址吗？\n{limbusCompanyDir}", "检查路径", MessageBoxButton.YesNo, MessageBoxImage.Question);
-                }
-                if (CheckLCBPathResult == MessageBoxResult.Yes)
-                {
-                    logger.Info("用户确认路径。");
-                    ChangeLCBPathConfig(limbusCompanyDir);
-                    ChangeSkipPathCheckConfig(true);
-                }
-                if (string.IsNullOrEmpty(limbusCompanyDir) || CheckLCBPathResult == MessageBoxResult.No)
-                {
-                    if (string.IsNullOrEmpty(limbusCompanyDir))
-                    {
-                        logger.Warn("未能找到 Limbus Company 目录，手动选择模式。");
-                        System.Windows.MessageBox.Show("未能找到 Limbus Company 目录。请手动选择。", "提示");
-                    }
-                    else
-                    {
-                        logger.Warn("用户否认 Limbus Company 目录正确性。");
-                    }
-                    var fileDialog = new OpenFileDialog
-                    {
-                        Title = "请选择你的边狱公司游戏文件",
-                        Multiselect = false,
-                        InitialDirectory = limbusCompanyDir,
-                        Filter = "LimbusCompany.exe|LimbusCompany.exe",
-                        FileName = "LimbusCompany.exe"
-                    };
-                    if (fileDialog.ShowDialog() == true)
-                    {
-                        limbusCompanyDir = Path.GetDirectoryName(fileDialog.FileName) ?? limbusCompanyDir;
-                        limbusCompanyGameDir = Path.GetFullPath(fileDialog.FileName);
-                    }
-
-                    if (!File.Exists(limbusCompanyGameDir))
-                    {
-                        logger.Error("选择了错误目录，关闭游戏。");
-                        System.Windows.MessageBox.Show("选择目录有误，没有在当前目录找到游戏。", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
-                        System.Windows.Application.Current.Shutdown();
-                    }
-                    else
-                    {
-                        logger.Info("找到了正确目录。");
-                        ChangeSkipPathCheckConfig(true);
-                        ChangeLCBPathConfig(limbusCompanyDir);
-                    }
-                }
-            }
-            limbusCompanyGameDir = Path.Combine(limbusCompanyDir, "LimbusCompany.exe");
-            logger.Info("边狱公司路径：" + limbusCompanyDir);
         }
         /// <summary>
         /// 获取最新版汉化模组哈希

@@ -1,15 +1,54 @@
-﻿using System.Net.Http;
+﻿using System.IO;
+using System.Net;
+using System.Net.Http;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Windows.Media.Imaging;
+using Downloader;
 
 namespace LLC_MOD_Toolbox.Helpers;
 
-public static class HttpHelper
+public class HttpHelper
 {
     private static readonly HttpClient httpClient = new();
+    private static readonly DownloadConfiguration downloadOpt = new()
+    {
+        // file parts to download
+        ChunkCount = 8,
+        // download speed limited to 2MB/s, default values is zero or unlimited
+        MaximumBytesPerSecond = 1024 * 1024 * 2,
+        // the maximum number of times to fail
+        MaxTryAgainOnFailover = 3,
+        // release memory buffer after each 50 MB
+        MaximumMemoryBufferBytes = 1024 * 1024 * 50,
+        // download parts of the file as parallel or not. The default value is false
+        ParallelDownload = true,
+        // clear package chunks data when download completed with failure, default value is false
+        ClearPackageOnCompletionWithFailure = true,
+        // minimum size of chunking to download a file in multiple parts, the default value is 512
+        MinimumSizeOfChunking = 1024,
+        // Before starting the download, reserve the storage space of the file as file size, the default value is false
+        ReserveStorageSpaceBeforeStartingDownload = true,
+        // Get on demand downloaded data with ReceivedBytes on downloadProgressChanged event 
+        EnableLiveStreaming = false,
+        // config and customize request headers
+        RequestConfiguration =
+        {
+        UserAgent = $"LLC_MOD_Toolbox/{Assembly.GetExecutingAssembly().GetName().Version}",
+        Proxy = new WebProxy() {
+           Address = new Uri("http://YourProxyServer/proxy.pac"),
+           UseDefaultCredentials = false,
+           Credentials = System.Net.CredentialCache.DefaultNetworkCredentials,
+           BypassProxyOnLocal = true
+        }
+    }
+    };
+    public static readonly DownloadService downloader = new(downloadOpt);
+
     static HttpHelper()
     {
-        httpClient.DefaultRequestHeaders.Add("User-Agent", "LLC_MOD_Toolbox");
+        httpClient.DefaultRequestHeaders
+            .Add("User-Agent", $"LLC_MOD_Toolbox/{Assembly.GetExecutingAssembly().GetName().Version}");
     }
 
     /// <summary>
@@ -32,6 +71,13 @@ public static class HttpHelper
         return response;
     }
 
+    public static async Task<Stream> GetAppAsync(string url)
+    {
+        Stream stream = await downloader.DownloadFileTaskAsync(url);
+        
+        return stream;
+    }
+
     /// <summary>
     /// 获取网页内容，经常用于获取json
     /// </summary>
@@ -39,6 +85,12 @@ public static class HttpHelper
     /// <param name="url"></param>
     /// <returns></returns>
     public static async Task<string> GetStringAsync(string url)
+    {
+        var response = await GetResponseAsync(url);
+        return await response.Content.ReadAsStringAsync();
+    }
+
+    public static async Task<string> GetHashAsync(string url)
     {
         var response = await GetResponseAsync(url);
         return await response.Content.ReadAsStringAsync();
