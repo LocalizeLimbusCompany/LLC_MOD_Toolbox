@@ -65,7 +65,7 @@
     </Window.Resources>
     <Border CornerRadius="20,20,20,20">
         <Border.Background>
-            <ImageBrush ImageSource="/Picture/Background.png" Stretch="UniformToFill" />
+            <ImageBrush ImageSource="Assets/Images/Background.png" Stretch="UniformToFill" />
         </Border.Background>
         <Grid>
             <Grid.RowDefinitions>
@@ -74,7 +74,7 @@
             </Grid.RowDefinitions>
             <Grid Grid.Row="0">
                 <Grid.Background>
-                    <ImageBrush ImageSource="/Picture/TitleBar.png" Stretch="Uniform" />
+                    <ImageBrush ImageSource="Assets/Images/TitleBar.png" Stretch="Uniform" />
                 </Grid.Background>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
@@ -89,7 +89,7 @@
                     HorizontalAlignment="Left"
                     VerticalAlignment="Center"
                     d:Visibility="Visible"
-                    Source="/Picture/ZALogoA.png"
+                    Source="Assets/Images/ZALogoA.png"
                     Visibility="Collapsed" />
                 <Image
                     x:Name="MinimizeHover"
@@ -102,7 +102,7 @@
                     Panel.ZIndex="5"
                     IsHitTestVisible="False"
                     Opacity="0"
-                    Source="/Picture/MinimizeHover.png" />
+                    Source="Assets/Images/MinimizeHover.png" />
                 <Button
                     Grid.Column="1"
                     Width="80"
@@ -120,7 +120,7 @@
                         <Image
                             Width="80"
                             Height="78"
-                            Source="/Picture/Minimize.png" />
+                            Source="Assets/Images/Minimize.png" />
                     </Button.Content>
                     <Button.Triggers>
                         <EventTrigger RoutedEvent="Button.MouseEnter">
@@ -161,7 +161,7 @@
                     IsHitTestVisible="False"
                     Opacity="0"
                     RenderTransformOrigin="3.642,0.537"
-                    Source="/Picture/MinimizeHover.png" />
+                    Source="Assets/Images/MinimizeHover.png" />
                 <Button
                     Grid.Column="2"
                     Width="80"
@@ -176,7 +176,7 @@
                         <Image
                             Width="80"
                             Height="78"
-                            Source="/Picture/Close.png" />
+                            Source="Assets/Images/Close.png" />
                     </Button.Content>
                     <Button.Triggers>
                         <EventTrigger RoutedEvent="Button.MouseEnter">
@@ -215,7 +215,7 @@
                 </Grid.ColumnDefinitions>
                 <Grid Grid.Column="1">
                     <Grid.Background>
-                        <ImageBrush ImageSource="/Picture/ControlBoard.png" Stretch="Uniform" />
+                        <ImageBrush ImageSource="Assets/Images/ControlBoard.png" Stretch="Uniform" />
                     </Grid.Background>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="1*" />
@@ -233,7 +233,7 @@
                                             HorizontalContentAlignment="Center"
                                             VerticalContentAlignment="Center"
                                             Content="手动安装功能尚未开启，敬请期待后续版本。"
-                                            FontFamily="/Fonts/#Source Han Sans CN"
+                                            FontFamily="Assets/Fonts/#Source Han Sans CN"
                                             FontSize="20"
                                             FontWeight="Medium"
                                             Foreground="#FFFFEED4" />
@@ -245,7 +245,7 @@
                                             HorizontalContentAlignment="Center"
                                             VerticalContentAlignment="Center"
                                             Content="文件覆盖功能尚未开启，敬请期待后续版本。"
-                                            FontFamily="/Fonts/#Source Han Sans CN"
+                                            FontFamily="Assets/Fonts/#Source Han Sans CN"
                                             FontSize="20"
                                             FontWeight="Medium"
                                             Foreground="#FFFFEED4" />
@@ -272,7 +272,7 @@
                             HorizontalAlignment="Center"
                             VerticalAlignment="Center"
                             Opacity="0"
-                            Source="/Picture/ControlBoardHover.png" />
+                            Source="Assets/Images/ControlBoardHover.png" />
                         <Image
                             x:Name="AutoInstallDisabled"
                             Grid.Column="0"
@@ -280,7 +280,7 @@
                             Height="17"
                             HorizontalAlignment="Center"
                             VerticalAlignment="Center"
-                            Source="/Picture/DisableButton.png" />
+                            Source="Assets/Images/DisableButton.png" />
 
                         <Image
                             x:Name="GachaSimDisabled"
@@ -290,7 +290,7 @@
                             HorizontalAlignment="Center"
                             VerticalAlignment="Center"
                             Opacity="1"
-                            Source="/Picture/DisableButton.png" />
+                            Source="Assets/Images/DisableButton.png" />
 
                         <Image
                             x:Name="ManualInstallDisabled"
@@ -299,7 +299,7 @@
                             Height="17"
                             HorizontalAlignment="Center"
                             VerticalAlignment="Center"
-                            Source="/Picture/DisableButton.png" />
+                            Source="Assets/Images/DisableButton.png" />
                         <Image
                             x:Name="ReplaceInstallDisabled"
                             Grid.Column="2"
@@ -307,7 +307,7 @@
                             Height="17"
                             HorizontalAlignment="Center"
                             VerticalAlignment="Center"
-                            Source="/Picture/DisableButton.png" />
+                            Source="Assets/Images/DisableButton.png" />
                         <Image
                             x:Name="ManualInstallHover"
                             Grid.Column="1"
@@ -316,7 +316,7 @@
                             HorizontalAlignment="Center"
                             VerticalAlignment="Center"
                             Opacity="0"
-                            Source="/Picture/ControlBoardHover.png" />
+                            Source="Assets/Images/ControlBoardHover.png" />
                         <Image
                             x:Name="ReplaceInstallHover"
                             Grid.Column="2"
@@ -325,7 +325,7 @@
                             HorizontalAlignment="Center"
                             VerticalAlignment="Center"
                             Opacity="0"
-                            Source="/Picture/ControlBoardHover.png" />
+                            Source="Assets/Images/ControlBoardHover.png" />
                         <Image
                             x:Name="GachaSimHover"
                             Grid.Column="3"
@@ -334,7 +334,7 @@
                             HorizontalAlignment="Center"
                             VerticalAlignment="Center"
                             Opacity="0"
-                            Source="/Picture/ControlBoardHover.png" />
+                            Source="Assets/Images/ControlBoardHover.png" />
                         <Button
                             x:Name="AutoInstallButton"
                             Grid.Column="0"
@@ -346,7 +346,7 @@
                             BorderBrush="Transparent"
                             BorderThickness="0"
                             Content="自动安装"
-                            FontFamily="/Fonts/#Source Han Sans CN"
+                            FontFamily="Assets/Fonts/#Source Han Sans CN"
                             FontSize="18"
                             FontWeight="Bold"
                             Foreground="#FFFFEED4"
@@ -390,7 +390,7 @@
                             BorderBrush="Transparent"
                             BorderThickness="0"
                             Content="手动安装"
-                            FontFamily="/Fonts/#Source Han Sans CN"
+                            FontFamily="Assets/Fonts/#Source Han Sans CN"
                             FontSize="18"
                             FontWeight="Bold"
                             Foreground="#FFFFEED4"
@@ -434,7 +434,7 @@
                             BorderBrush="Transparent"
                             BorderThickness="0"
                             Content="文件覆盖"
-                            FontFamily="/Fonts/#Source Han Sans CN"
+                            FontFamily="Assets/Fonts/#Source Han Sans CN"
                             FontSize="18"
                             FontWeight="Bold"
                             Foreground="#FFFFEED4"
@@ -479,7 +479,7 @@
                             BorderThickness="0"
                             Click="GachaSimButtonClick"
                             Content="抽卡模拟器"
-                            FontFamily="/Fonts/#Source Han Sans CN"
+                            FontFamily="Assets/Fonts/#Source Han Sans CN"
                             FontSize="18"
                             FontWeight="Bold"
                             Foreground="#FFFFEED4"
@@ -538,7 +538,7 @@
                                 <Image
                                     Width="262"
                                     Height="40"
-                                    Source="/Picture/LinkBT.png" />
+                                    Source="Assets/Images/LinkBT.png" />
                             </Button.Content>
                             <Button.Triggers>
                                 <EventTrigger RoutedEvent="Button.MouseEnter">
@@ -585,7 +585,7 @@
                                 <Image
                                     Width="262"
                                     Height="40"
-                                    Source="/Picture/LinkBT.png" />
+                                    Source="Assets/Images/LinkBT.png" />
                             </Button.Content>
                             <Button.Triggers>
                                 <EventTrigger RoutedEvent="Button.MouseEnter">
@@ -632,7 +632,7 @@
                                 <Image
                                     Width="262"
                                     Height="40"
-                                    Source="/Picture/LinkBT.png" />
+                                    Source="Assets/Images/LinkBT.png" />
                             </Button.Content>
                             <Button.Triggers>
                                 <EventTrigger RoutedEvent="Button.MouseEnter">
@@ -679,7 +679,7 @@
                                 <Image
                                     Width="262"
                                     Height="40"
-                                    Source="/Picture/LinkBT.png" />
+                                    Source="Assets/Images/LinkBT.png" />
                             </Button.Content>
                             <Button.Triggers>
                                 <EventTrigger RoutedEvent="Button.MouseEnter">
@@ -724,7 +724,7 @@
                                 <Image
                                     Width="262"
                                     Height="40"
-                                    Source="/Picture/LinkBT.png" />
+                                    Source="Assets/Images/LinkBT.png" />
                             </Button.Content>
                         </Button>
                         <Button
@@ -743,7 +743,7 @@
                                 <Image
                                     Width="262"
                                     Height="40"
-                                    Source="/Picture/LinkBT.png" />
+                                    Source="Assets/Images/LinkBT.png" />
                             </Button.Content>
                         </Button>
                         <Button
@@ -762,7 +762,7 @@
                                 <Image
                                     Width="262"
                                     Height="40"
-                                    Source="/Picture/LinkBT.png" />
+                                    Source="Assets/Images/LinkBT.png" />
                             </Button.Content>
                         </Button>
                         <Button
@@ -783,7 +783,7 @@
                                 <Image
                                     Width="262"
                                     Height="40"
-                                    Source="/Picture/LinkBT.png" />
+                                    Source="Assets/Images/LinkBT.png" />
                             </Button.Content>
                             <Button.Triggers>
                                 <EventTrigger RoutedEvent="Button.MouseEnter">
@@ -830,7 +830,7 @@
                                 <Image
                                     Width="262"
                                     Height="40"
-                                    Source="/Picture/LinkBT.png" />
+                                    Source="Assets/Images/LinkBT.png" />
                             </Button.Content>
                             <Button.Triggers>
                                 <EventTrigger RoutedEvent="Button.MouseEnter">
@@ -877,7 +877,7 @@
                                 <Image
                                     Width="262"
                                     Height="40"
-                                    Source="/Picture/LinkBT.png" />
+                                    Source="Assets/Images/LinkBT.png" />
                             </Button.Content>
                             <Button.Triggers>
                                 <EventTrigger RoutedEvent="Button.MouseEnter">
@@ -924,7 +924,7 @@
                                 <Image
                                     Width="262"
                                     Height="40"
-                                    Source="/Picture/LinkBT.png" />
+                                    Source="Assets/Images/LinkBT.png" />
                             </Button.Content>
                             <Button.Triggers>
                                 <EventTrigger RoutedEvent="Button.MouseEnter">
@@ -969,7 +969,7 @@
                                 <Image
                                     Width="262"
                                     Height="40"
-                                    Source="/Picture/LinkBT.png" />
+                                    Source="Assets/Images/LinkBT.png" />
                             </Button.Content>
                         </Button>
                         <Button
@@ -988,7 +988,7 @@
                                 <Image
                                     Width="262"
                                     Height="40"
-                                    Source="/Picture/LinkBT.png" />
+                                    Source="Assets/Images/LinkBT.png" />
                             </Button.Content>
                         </Button>
                         <Button
@@ -1007,7 +1007,7 @@
                                 <Image
                                     Width="262"
                                     Height="40"
-                                    Source="/Picture/LinkBT.png" />
+                                    Source="Assets/Images/LinkBT.png" />
                             </Button.Content>
                         </Button>
                         <Image
@@ -1019,7 +1019,7 @@
                             VerticalAlignment="Top"
                             IsHitTestVisible="False"
                             Opacity="0"
-                            Source="/Picture/LinkBTHover.png" />
+                            Source="Assets/Images/LinkBTHover.png" />
                         <Image
                             x:Name="LinkButtonHover2"
                             Width="268"
@@ -1029,7 +1029,7 @@
                             VerticalAlignment="Top"
                             IsHitTestVisible="False"
                             Opacity="0"
-                            Source="/Picture/LinkBTHover.png" />
+                            Source="Assets/Images/LinkBTHover.png" />
                         <Image
                             x:Name="LinkButtonHover3"
                             Width="268"
@@ -1039,7 +1039,7 @@
                             VerticalAlignment="Top"
                             IsHitTestVisible="False"
                             Opacity="0"
-                            Source="/Picture/LinkBTHover.png" />
+                            Source="Assets/Images/LinkBTHover.png" />
                         <Image
                             x:Name="LinkButtonHover4"
                             Width="268"
@@ -1049,7 +1049,7 @@
                             VerticalAlignment="Top"
                             IsHitTestVisible="False"
                             Opacity="0"
-                            Source="/Picture/LinkBTHover.png" />
+                            Source="Assets/Images/LinkBTHover.png" />
                         <Image
                             x:Name="LinkButtonHover5"
                             Width="268"
@@ -1059,7 +1059,7 @@
                             VerticalAlignment="Top"
                             IsHitTestVisible="False"
                             Opacity="0"
-                            Source="/Picture/LinkBTHover.png" />
+                            Source="Assets/Images/LinkBTHover.png" />
                         <Image
                             x:Name="LinkButtonHover6"
                             Width="268"
@@ -1069,7 +1069,7 @@
                             VerticalAlignment="Top"
                             IsHitTestVisible="False"
                             Opacity="0"
-                            Source="/Picture/LinkBTHover.png" />
+                            Source="Assets/Images/LinkBTHover.png" />
                         <Image
                             x:Name="LinkButtonHover7"
                             Width="268"
@@ -1079,7 +1079,7 @@
                             VerticalAlignment="Top"
                             IsHitTestVisible="False"
                             Opacity="0"
-                            Source="/Picture/LinkBTHover.png" />
+                            Source="Assets/Images/LinkBTHover.png" />
                         <Image
                             x:Name="LinkButtonHover8"
                             Width="268"
@@ -1089,7 +1089,7 @@
                             VerticalAlignment="Top"
                             IsHitTestVisible="False"
                             Opacity="0"
-                            Source="/Picture/LinkBTHover.png" />
+                            Source="Assets/Images/LinkBTHover.png" />
                         <Label
                             Width="262"
                             Height="37"
@@ -1098,7 +1098,7 @@
                             VerticalAlignment="Top"
                             HorizontalContentAlignment="Center"
                             Content="都市零协会文档站"
-                            FontFamily="/Fonts/#Source Han Sans CN"
+                            FontFamily="Assets/Fonts/#Source Han Sans CN"
                             FontSize="20"
                             FontWeight="Bold"
                             Foreground="#FFFFEED4"
@@ -1111,7 +1111,7 @@
                             VerticalAlignment="Top"
                             HorizontalContentAlignment="Center"
                             Content="LLC on GitHub"
-                            FontFamily="/Fonts/#Source Han Sans CN"
+                            FontFamily="Assets/Fonts/#Source Han Sans CN"
                             FontSize="20"
                             FontWeight="Bold"
                             Foreground="#FFFFEED4"
@@ -1124,7 +1124,7 @@
                             VerticalAlignment="Top"
                             HorizontalContentAlignment="Center"
                             Content="翻译项目译者"
-                            FontFamily="/Fonts/#Source Han Sans CN"
+                            FontFamily="Assets/Fonts/#Source Han Sans CN"
                             FontSize="20"
                             FontWeight="Bold"
                             Foreground="#FFFFEED4"
@@ -1137,7 +1137,7 @@
                             VerticalAlignment="Top"
                             HorizontalContentAlignment="Center"
                             Content="零协会周边微店(柔造)"
-                            FontFamily="/Fonts/#Source Han Sans CN"
+                            FontFamily="Assets/Fonts/#Source Han Sans CN"
                             FontSize="20"
                             FontWeight="Bold"
                             Foreground="#FFFFEED4"
@@ -1150,7 +1150,7 @@
                             VerticalAlignment="Top"
                             HorizontalContentAlignment="Center"
                             Content="都市零协会 BiliBili"
-                            FontFamily="/Fonts/#Source Han Sans CN"
+                            FontFamily="Assets/Fonts/#Source Han Sans CN"
                             FontSize="20"
                             FontWeight="Bold"
                             Foreground="#FFFFEED4"
@@ -1163,7 +1163,7 @@
                             VerticalAlignment="Top"
                             HorizontalContentAlignment="Center"
                             Content="爱发电主页"
-                            FontFamily="/Fonts/#Source Han Sans CN"
+                            FontFamily="Assets/Fonts/#Source Han Sans CN"
                             FontSize="20"
                             FontWeight="Bold"
                             Foreground="#FFFFEED4"
@@ -1176,7 +1176,7 @@
                             VerticalAlignment="Top"
                             HorizontalContentAlignment="Center"
                             Content="翻译平台Paratranz"
-                            FontFamily="/Fonts/#Source Han Sans CN"
+                            FontFamily="Assets/Fonts/#Source Han Sans CN"
                             FontSize="20"
                             FontWeight="Bold"
                             Foreground="#FFFFEED4"
@@ -1189,7 +1189,7 @@
                             VerticalAlignment="Top"
                             HorizontalContentAlignment="Center"
                             Content="边狱公司灰机Wiki"
-                            FontFamily="/Fonts/#Source Han Sans CN"
+                            FontFamily="Assets/Fonts/#Source Han Sans CN"
                             FontSize="20"
                             FontWeight="Bold"
                             Foreground="#FFFFEED4"
@@ -1207,7 +1207,7 @@
                             Margin="0,30,0,0"
                             HorizontalAlignment="Center"
                             VerticalAlignment="Top"
-                            FontFamily="/Fonts/#Source Han Sans CN"
+                            FontFamily="Assets/Fonts/#Source Han Sans CN"
                             FontSize="20"
                             FontWeight="Medium"
                             Foreground="#FFFFEED4">
@@ -1219,13 +1219,13 @@
                             Margin="10,140,0,0"
                             HorizontalAlignment="Left"
                             VerticalAlignment="Top"
-                            Source="/Picture/NormalLine.png" />
+                            Source="Assets/Images/NormalLine.png" />
                         <Label
                             Margin="18,162,0,0"
                             HorizontalAlignment="Left"
                             VerticalAlignment="Top"
                             Content="秘钥"
-                            FontFamily="/Fonts/#Source Han Sans CN"
+                            FontFamily="Assets/Fonts/#Source Han Sans CN"
                             FontSize="20"
                             FontWeight="Bold"
                             Foreground="#FFFFEED4" />
@@ -1236,7 +1236,7 @@
                             Margin="87,169,0,0"
                             HorizontalAlignment="Left"
                             VerticalAlignment="Top"
-                            FontFamily="/Fonts/#Source Han Sans CN"
+                            FontFamily="Assets/Fonts/#Source Han Sans CN"
                             FontSize="16"
                             FontWeight="Medium"
                             Text="请输入秘钥"
@@ -1251,7 +1251,7 @@
                             Panel.ZIndex="5"
                             IsHitTestVisible="False"
                             Opacity="0"
-                            Source="/Picture/SettingButtonHover.png" />
+                            Source="Assets/Images/SettingButtonHover.png" />
                         <Button
                             Width="74"
                             Height="28"
@@ -1301,7 +1301,7 @@
                             HorizontalAlignment="Left"
                             VerticalAlignment="Top"
                             Content="校验"
-                            FontFamily="/Fonts/#Source Han Sans CN"
+                            FontFamily="Assets/Fonts/#Source Han Sans CN"
                             FontSize="16"
                             FontWeight="Heavy"
                             Foreground="Black"
@@ -1316,7 +1316,7 @@
                             Panel.ZIndex="5"
                             IsHitTestVisible="False"
                             Opacity="0"
-                            Source="/Picture/SettingButtonHover.png" />
+                            Source="Assets/Images/SettingButtonHover.png" />
                         <Button
                             Width="74"
                             Height="28"
@@ -1366,7 +1366,7 @@
                             HorizontalAlignment="Left"
                             VerticalAlignment="Top"
                             Content="了解更多"
-                            FontFamily="/Fonts/#Source Han Sans CN"
+                            FontFamily="Assets/Fonts/#Source Han Sans CN"
                             FontSize="16"
                             FontWeight="Heavy"
                             Foreground="Black"
@@ -1384,7 +1384,7 @@
                             Margin="0,15,0,0"
                             HorizontalAlignment="Center"
                             VerticalAlignment="Top"
-                            FontFamily="/Fonts/#Source Han Sans CN"
+                            FontFamily="Assets/Fonts/#Source Han Sans CN"
                             FontSize="15"
                             FontWeight="Medium"
                             Foreground="#FFFFEED4">
@@ -1420,7 +1420,7 @@
                             Margin="12,27,0,0"
                             HorizontalAlignment="Left"
                             VerticalAlignment="Top"
-                            Source="/Picture/GachaBackground.png" />
+                            Source="Assets/Images/GachaBackground.png" />
                         <Image
                             Width="30"
                             Height="30"
@@ -1429,7 +1429,7 @@
                             VerticalAlignment="Top"
                             Panel.ZIndex="5"
                             IsHitTestVisible="False"
-                            Source="/Picture/Lunacy.png" />
+                            Source="Assets/Images/Lunacy.png" />
                         <Image
                             x:Name="GachaButtonHover"
                             Width="125"
@@ -1440,7 +1440,7 @@
                             Panel.ZIndex="5"
                             IsHitTestVisible="False"
                             Opacity="0"
-                            Source="/Picture/SettingButtonHover.png" />
+                            Source="Assets/Images/SettingButtonHover.png" />
                         <Button
                             x:Name="InGachaButton"
                             Width="113"
@@ -1491,7 +1491,7 @@
                             HorizontalAlignment="Left"
                             VerticalAlignment="Top"
                             Content="x1300"
-                            FontFamily="/Fonts/#Source Han Sans CN"
+                            FontFamily="Assets/Fonts/#Source Han Sans CN"
                             FontSize="16"
                             FontWeight="Heavy"
                             Foreground="Black"
@@ -1503,7 +1503,7 @@
                             HorizontalAlignment="Left"
                             VerticalAlignment="Top"
                             Content="十连"
-                            FontFamily="/Fonts/#Source Han Sans CN"
+                            FontFamily="Assets/Fonts/#Source Han Sans CN"
                             FontSize="8"
                             FontWeight="Heavy"
                             Foreground="Black"
@@ -1521,7 +1521,7 @@
                             Visibility="Collapsed">
                             <Label.Content>
                                 <TextBlock
-                                    FontFamily="/Fonts/#Source Han Sans CN"
+                                    FontFamily="Assets/Fonts/#Source Han Sans CN"
                                     FontSize="14"
                                     FontWeight="Bold"
                                     Foreground="#B88345"
@@ -1540,7 +1540,7 @@
                             Visibility="Collapsed">
                             <Label.Content>
                                 <TextBlock
-                                    FontFamily="/Fonts/#Source Han Sans CN"
+                                    FontFamily="Assets/Fonts/#Source Han Sans CN"
                                     FontSize="14"
                                     FontWeight="Bold"
                                     Foreground="#CA1400"
@@ -1559,7 +1559,7 @@
                             Visibility="Collapsed">
                             <Label.Content>
                                 <TextBlock
-                                    FontFamily="/Fonts/#Source Han Sans CN"
+                                    FontFamily="Assets/Fonts/#Source Han Sans CN"
                                     FontSize="14"
                                     FontWeight="Bold"
                                     Foreground="#FCC404"
@@ -1578,7 +1578,7 @@
                             Visibility="Collapsed">
                             <Label.Content>
                                 <TextBlock
-                                    FontFamily="/Fonts/#Source Han Sans CN"
+                                    FontFamily="Assets/Fonts/#Source Han Sans CN"
                                     FontSize="14"
                                     FontWeight="Bold"
                                     Foreground="#B88345"
@@ -1597,7 +1597,7 @@
                             Visibility="Collapsed">
                             <Label.Content>
                                 <TextBlock
-                                    FontFamily="/Fonts/#Source Han Sans CN"
+                                    FontFamily="Assets/Fonts/#Source Han Sans CN"
                                     FontSize="14"
                                     FontWeight="Bold"
                                     Foreground="#B88345"
@@ -1616,7 +1616,7 @@
                             Visibility="Collapsed">
                             <Label.Content>
                                 <TextBlock
-                                    FontFamily="/Fonts/#Source Han Sans CN"
+                                    FontFamily="Assets/Fonts/#Source Han Sans CN"
                                     FontSize="14"
                                     FontWeight="Bold"
                                     Foreground="#B88345"
@@ -1635,7 +1635,7 @@
                             Visibility="Collapsed">
                             <Label.Content>
                                 <TextBlock
-                                    FontFamily="/Fonts/#Source Han Sans CN"
+                                    FontFamily="Assets/Fonts/#Source Han Sans CN"
                                     FontSize="14"
                                     FontWeight="Bold"
                                     Foreground="#B88345"
@@ -1654,7 +1654,7 @@
                             Visibility="Collapsed">
                             <Label.Content>
                                 <TextBlock
-                                    FontFamily="/Fonts/#Source Han Sans CN"
+                                    FontFamily="Assets/Fonts/#Source Han Sans CN"
                                     FontSize="14"
                                     FontWeight="Bold"
                                     Foreground="#B88345"
@@ -1673,7 +1673,7 @@
                             Visibility="Collapsed">
                             <Label.Content>
                                 <TextBlock
-                                    FontFamily="/Fonts/#Source Han Sans CN"
+                                    FontFamily="Assets/Fonts/#Source Han Sans CN"
                                     FontSize="14"
                                     FontWeight="Bold"
                                     Foreground="#B88345"
@@ -1692,7 +1692,7 @@
                             Visibility="Collapsed">
                             <Label.Content>
                                 <TextBlock
-                                    FontFamily="/Fonts/#Source Han Sans CN"
+                                    FontFamily="Assets/Fonts/#Source Han Sans CN"
                                     FontSize="14"
                                     FontWeight="Bold"
                                     Foreground="#B88345"
@@ -1704,7 +1704,7 @@
                 </Grid>
                 <Grid Grid.Column="0">
                     <Grid.Background>
-                        <ImageBrush ImageSource="/Picture/ButtonBackground.png" Stretch="Uniform" />
+                        <ImageBrush ImageSource="Assets/Images/ButtonBackground.png" Stretch="Uniform" />
                     </Grid.Background>
                     <Grid.RowDefinitions>
 
@@ -1730,7 +1730,7 @@
                         BorderBrush="Transparent"
                         BorderThickness="0"
                         Content="安   装"
-                        FontFamily="/Fonts/#lianmengqiyilushuaizhengruiheiti"
+                        FontFamily="Assets/Fonts/#lianmengqiyilushuaizhengruiheiti"
                         FontSize="20"
                         FontWeight="Regular"
                         Foreground="#FFFFEED4"
@@ -1773,7 +1773,7 @@
                         BorderBrush="Transparent"
                         BorderThickness="0"
                         Content="链   接"
-                        FontFamily="/Fonts/#lianmengqiyilushuaizhengruiheiti"
+                        FontFamily="Assets/Fonts/#lianmengqiyilushuaizhengruiheiti"
                         FontSize="20"
                         FontWeight="Regular"
                         Foreground="#FFFFEED4"
@@ -1816,7 +1816,7 @@
                         BorderBrush="Transparent"
                         BorderThickness="0"
                         Content="灰度测试"
-                        FontFamily="/Fonts/#lianmengqiyilushuaizhengruiheiti"
+                        FontFamily="Assets/Fonts/#lianmengqiyilushuaizhengruiheiti"
                         FontSize="20"
                         FontWeight="Regular"
                         Foreground="#FFFFEED4"
@@ -1859,7 +1859,7 @@
                         BorderBrush="Transparent"
                         BorderThickness="0"
                         Content="设   置"
-                        FontFamily="/Fonts/#lianmengqiyilushuaizhengruiheiti"
+                        FontFamily="Assets/Fonts/#lianmengqiyilushuaizhengruiheiti"
                         FontSize="20"
                         FontWeight="Regular"
                         Foreground="#FFFFEED4"
@@ -1902,7 +1902,7 @@
                         BorderBrush="Transparent"
                         BorderThickness="0"
                         Content="关   于"
-                        FontFamily="/Fonts/#lianmengqiyilushuaizhengruiheiti"
+                        FontFamily="Assets/Fonts/#lianmengqiyilushuaizhengruiheiti"
                         FontSize="20"
                         FontWeight="Regular"
                         Foreground="#FFFFEED4"
@@ -1945,7 +1945,7 @@
                         BorderBrush="Transparent"
                         BorderThickness="0"
                         Content="画   廊"
-                        FontFamily="/Fonts/#lianmengqiyilushuaizhengruiheiti"
+                        FontFamily="Assets/Fonts/#lianmengqiyilushuaizhengruiheiti"
                         FontSize="20"
                         FontWeight="Regular"
                         Foreground="#FFFFEED4"
@@ -1988,7 +1988,7 @@
                         VerticalAlignment="Bottom"
                         IsHitTestVisible="False"
                         Opacity="0"
-                        Source="/Picture/ButtonHover.png" />
+                        Source="Assets/Images/ButtonHover.png" />
                     <Image
                         x:Name="LinkHover"
                         Grid.Row="1"
@@ -1998,7 +1998,7 @@
                         VerticalAlignment="Center"
                         IsHitTestVisible="False"
                         Opacity="0"
-                        Source="/Picture/ButtonHover.png" />
+                        Source="Assets/Images/ButtonHover.png" />
                     <Image
                         x:Name="GreytestHover"
                         Grid.Row="2"
@@ -2008,7 +2008,7 @@
                         VerticalAlignment="Center"
                         IsHitTestVisible="False"
                         Opacity="0"
-                        Source="/Picture/ButtonHover.png" />
+                        Source="Assets/Images/ButtonHover.png" />
                     <Image
                         x:Name="SettingHover"
                         Grid.Row="3"
@@ -2019,7 +2019,7 @@
                         VerticalAlignment="Center"
                         IsHitTestVisible="False"
                         Opacity="0"
-                        Source="/Picture/ButtonHover.png" />
+                        Source="Assets/Images/ButtonHover.png" />
                     <Image
                         x:Name="AboutHover"
                         Grid.Row="4"
@@ -2030,7 +2030,7 @@
                         VerticalAlignment="Center"
                         IsHitTestVisible="False"
                         Opacity="0"
-                        Source="/Picture/ButtonHover.png" />
+                        Source="Assets/Images/ButtonHover.png" />
                     <Image
                         x:Name="EEHover"
                         Grid.Row="5"
@@ -2041,7 +2041,7 @@
                         VerticalAlignment="Center"
                         IsHitTestVisible="False"
                         Opacity="0"
-                        Source="/Picture/ButtonHover.png" />
+                        Source="Assets/Images/ButtonHover.png" />
                     <Button
                         Grid.Row="7"
                         Width="155"

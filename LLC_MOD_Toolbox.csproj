@@ -8,7 +8,6 @@
     <UseWPF>true</UseWPF>
     <SupportedOSPlatformVersion>7.0</SupportedOSPlatformVersion>
     <ApplicationIcon>favicon.ico</ApplicationIcon>
-    <UseWindowsForms>False</UseWindowsForms>
     <Configurations>Debug;Release;LLC_MOD_Toolbox;ReleaseLLCMT</Configurations>
 	<Version>2.0.0</Version>
   </PropertyGroup>
@@ -28,56 +27,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Converters\**" />
-    <EmbeddedResource Remove="Converters\**" />
-    <None Remove="Converters\**" />
-    <Page Remove="Converters\**" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Remove="Background.png" />
-    <None Remove="ButtonBackground.png" />
-    <None Remove="Close.png" />
-    <None Remove="ControlBoard.png" />
-    <None Remove="ControlBoardHover.png" />
-    <None Remove="DisableButton.png" />
-    <None Remove="Fonts\SourceHanSansCN-Bold.ttf" />
-    <None Remove="Fonts\SourceHanSansCN-Heavy.ttf" />
-    <None Remove="Fonts\SourceHanSansCN-Medium.ttf" />
-    <None Remove="Fonts\TitleFont.ttf" />
-    <None Remove="Minimize.png" />
-    <None Remove="MinimizeHover.png" />
-    <None Remove="Picture\ButtonHover.png" />
-    <None Remove="Picture\EmptyProgress.png" />
-    <None Remove="Picture\favicon.ico" />
-    <None Remove="Picture\FullProgress.png" />
-    <None Remove="Picture\GachaBackground.png" />
-    <None Remove="Picture\Install.png" />
-    <None Remove="Picture\InstallHover.png" />
-    <None Remove="Picture\Installing.png" />
-    <None Remove="Picture\LinkBT.png" />
-    <None Remove="Picture\LinkBTHover.png" />
-    <None Remove="Picture\LittleBlack.png" />
-    <None Remove="Picture\LittleWhite.png" />
-    <None Remove="Picture\Lunacy.png" />
-    <None Remove="Picture\NormalLine.png" />
-    <None Remove="Picture\SettingButton.png" />
-    <None Remove="Picture\SettingButtonHover.png" />
-    <None Remove="Picture\SettingsLine.png" />
-    <None Remove="Picture\StartInstallBackground.png" />
-    <None Remove="Picture\ZALogoA.png" />
-    <None Remove="TitleBar.png" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Content Include="favicon.ico" />
-    <Resource Include="Picture\GachaBackground.png" />
-    <Resource Include="Picture\LinkBT.png" />
-    <Resource Include="Picture\LinkBTHover.png" />
-    <Resource Include="Picture\Lunacy.png" />
-    <Resource Include="Picture\NormalLine.png" />
-    <Resource Include="Picture\SettingButton.png" />
-    <Resource Include="Picture\SettingButtonHover.png" />
+    <Resource Include="Assets\Images\*.png" />
+    <Resource Include="Assets\Fonts\*.ttf" />
   </ItemGroup>
 
   <ItemGroup>
@@ -88,41 +40,7 @@
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="Squid-Box.SevenZipSharp" Version="1.6.2.24" />
   </ItemGroup>
-
-  <ItemGroup>
-    <Resource Include="Fonts\SourceHanSansCN-Bold.ttf" />
-    <Resource Include="Fonts\SourceHanSansCN-Heavy.ttf" />
-    <Resource Include="Fonts\SourceHanSansCN-Medium.ttf" />
-    <Resource Include="Fonts\TitleFont.ttf" />
-    <Resource Include="Picture\Background.png" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Resource Include="Picture\ButtonBackground.png" />
-    <Resource Include="Picture\ButtonHover.png" />
-    <Resource Include="Picture\Close.png" />
-    <Resource Include="Picture\ControlBoard.png" />
-    <Resource Include="Picture\ControlBoardHover.png" />
-    <Resource Include="Picture\DisableButton.png" />
-    <Resource Include="Picture\EmptyProgress.png" />
-    <Resource Include="favicon.ico" />
-    <Resource Include="Picture\FullProgress.png" />
-    <Resource Include="Picture\Install.png" />
-    <Resource Include="Picture\InstallHover.png" />
-    <Resource Include="Picture\Installing.png" />
-    <Resource Include="Picture\LittleBlack.png" />
-    <Resource Include="Picture\LittleWhite.png" />
-    <Resource Include="Picture\Minimize.png" />
-    <Resource Include="Picture\MinimizeHover.png" />
-    <Resource Include="Picture\SettingsLine.png" />
-    <Resource Include="Picture\StartInstallBackground.png" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Resource Include="Picture\TitleBar.png" />
-    <Resource Include="Picture\ZALogoA.png" />
-  </ItemGroup>
-
+	
   <ItemGroup>
     <None Update="7z.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

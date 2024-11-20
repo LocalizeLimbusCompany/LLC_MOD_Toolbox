@@ -17,14 +17,14 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <Button Grid.Row="0" Background="Transparent">
-            <Image Source="/Picture/Install.png" />
+            <Image Source="/Assets/Images/Install.png" />
         </Button>
         <ProgressBar
             Grid.Row="1"
             d:Value="100"
             Background="Transparent">
             <ProgressBar.Foreground>
-                <ImageBrush ImageSource="pack://application:,,,/LLC_MOD_Toolbox;component/Picture/FullProgress.png" Stretch="Uniform" />
+                <ImageBrush ImageSource="pack://application:,,,/LLC_MOD_Toolbox;component/Assets/Images/FullProgress.png" Stretch="Uniform" />
             </ProgressBar.Foreground>
         </ProgressBar>
     </Grid>

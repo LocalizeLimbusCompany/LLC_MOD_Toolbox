@@ -2,6 +2,7 @@
 using System.Net;
 using System.Net.Http;
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using LLC_MOD_Toolbox.Helpers;
 using LLC_MOD_Toolbox.Models;
 
@@ -20,10 +21,11 @@ public partial class AutoInstallerViewModel : ObservableObject
     NodeInformation selectedAPIEndPoint = PrimaryNodeList.Instance.ApiNode.Last(x => x.IsDefault);
 
     [ObservableProperty]
-    IWebProxy proxy = HttpClient.DefaultProxy;
+    private WebProxy? proxy = null;
 
     public AutoInstallerViewModel()
     {
     }
+
 
 }

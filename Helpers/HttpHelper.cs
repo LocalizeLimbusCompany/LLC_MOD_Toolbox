@@ -1,17 +1,20 @@
 ﻿using System.IO;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Json;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Text.Json.Nodes;
 using System.Windows.Media.Imaging;
 using Downloader;
+using Newtonsoft.Json;
 
 namespace LLC_MOD_Toolbox.Helpers;
 
 public class HttpHelper
 {
     private static readonly HttpClient httpClient = new();
-    private static readonly DownloadConfiguration downloadOpt = new()
+    public static readonly DownloadConfiguration downloadOpt = new()
     {
         // file parts to download
         ChunkCount = 8,
@@ -36,7 +39,7 @@ public class HttpHelper
         {
         UserAgent = $"LLC_MOD_Toolbox/{Assembly.GetExecutingAssembly().GetName().Version}",
         Proxy = new WebProxy() {
-           Address = new Uri("http://YourProxyServer/proxy.pac"),
+           Address = default,
            UseDefaultCredentials = false,
            Credentials = System.Net.CredentialCache.DefaultNetworkCredentials,
            BypassProxyOnLocal = true
@@ -74,20 +77,20 @@ public class HttpHelper
     public static async Task<Stream> GetAppAsync(string url)
     {
         Stream stream = await downloader.DownloadFileTaskAsync(url);
-        
+
         return stream;
     }
 
     /// <summary>
-    /// 获取网页内容，经常用于获取json
+    /// 获取json数据
     /// </summary>
     /// <exception cref="HttpRequestException">当网络连接不良时直接断言</exception>
     /// <param name="url"></param>
     /// <returns></returns>
-    public static async Task<string> GetStringAsync(string url)
+    public static async Task<JsonObject> GetJsonAsync(string url)
     {
-        var response = await GetResponseAsync(url);
-        return await response.Content.ReadAsStringAsync();
+        var stream = await GetResponseAsync(url);
+        throw new NotImplementedException();
     }
 
     public static async Task<string> GetHashAsync(string url)

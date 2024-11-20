@@ -1,0 +1,49 @@
+{
+    "$schema": "https://json-schema.org/draft-07/schema#",
+    "contentEncoding": "utf-8",
+    "type": "object",
+    "properties": {
+        "downloadNode": {
+            "type": "array",
+            "items": {
+                "$ref": "#/definitions/node"
+            }
+        },
+        "apiNode": {
+            "type": "array",
+            "items": {
+                "$ref": "#/definitions/node"
+            }
+        }
+    },
+    "required": [
+        "downloadNode",
+        "apiNode"
+    ],
+    "definitions": {
+        "node": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "description": "节点名称"
+                },
+                "endpoint": {
+                    "type": "string",
+                    "format": "uri",
+                    "pattern": ".*/$",
+                    "description": "节点地址"
+                },
+                "isDefault": {
+                    "type": "boolean",
+                    "description": "是否为默认节点"
+                }
+            },
+            "required": [
+                "name",
+                "endpoint"
+            ],
+            "additionalProperties": false
+        }
+    }
+}

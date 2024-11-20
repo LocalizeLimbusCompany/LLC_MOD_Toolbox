@@ -7,7 +7,10 @@ namespace LLC_MOD_Toolbox.Helpers
 {
     public static class JsonHelper
     {
-        private static readonly JsonSerializerSettings JsonSettings = new()
+        /// <summary>
+        /// JSON 序列化设置，使用驼峰命名法，忽略空值
+        /// </summary>
+        private static readonly JsonSerializerSettings camelCaseJsonSettings = new()
         {
             NullValueHandling = NullValueHandling.Ignore,
             ContractResolver = new DefaultContractResolver
@@ -15,9 +18,13 @@ namespace LLC_MOD_Toolbox.Helpers
                 NamingStrategy = new CamelCaseNamingStrategy(),
             }
         };
-
+        /// <summary>
+        /// 反序列化节点列表
+        /// </summary>
+        /// <param name="jsonPayload"></param>
+        /// <returns></returns>
         public static PrimaryNodeList DeserializePrimaryNodeList(string jsonPayload)
-            => JsonConvert.DeserializeObject<PrimaryNodeList>(jsonPayload, JsonSettings)
+            => JsonConvert.DeserializeObject<PrimaryNodeList>(jsonPayload, camelCaseJsonSettings)
                 ?? new PrimaryNodeList();
 
 
@@ -25,6 +32,7 @@ namespace LLC_MOD_Toolbox.Helpers
             => Task.FromResult(
                 JObject.Parse(jsonPayload).GetValue("tag_name")?.ToString()
                 ?? string.Empty);
+
         public static Task<string> DeserializeHash(string jsonPayload)
             => Task.FromResult(
                 JObject.Parse(jsonPayload).GetValue("hash")?.ToString()

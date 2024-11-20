@@ -2,6 +2,7 @@
 using System.IO;
 using System.Security.Cryptography;
 using Downloader;
+using LLC_MOD_Toolbox.ViewModels;
 using Microsoft.Win32;
 
 namespace LLC_MOD_Toolbox.Helpers
@@ -23,11 +24,11 @@ namespace LLC_MOD_Toolbox.Helpers
             await downloader.DownloadFileTaskAsync(url, path);
         }
 
-        public static async Task<bool> CheckHashAsync(Stream archive)
+        public static async Task<bool> CheckHashAsync(Stream archive,string endpoint)
         {
             using SHA256 sha256 = SHA256.Create();
             byte[] hash = await sha256.ComputeHashAsync(archive);
-            return BitConverter.ToString(hash).Replace("-", "").Equals(await HttpHelper.GetHashAsync("{useEndPoint ?? defaultEndPoint}LimbusLocalizeHash.json"), StringComparison.CurrentCultureIgnoreCase);
+            return BitConverter.ToString(hash).Replace("-", "").Equals(await HttpHelper.GetHashAsync($"{endpoint}LimbusLocalizeHash.json"), StringComparison.CurrentCultureIgnoreCase);
         }
 
         /// <summary>
