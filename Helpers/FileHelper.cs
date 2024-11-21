@@ -24,11 +24,14 @@ namespace LLC_MOD_Toolbox.Helpers
             await downloader.DownloadFileTaskAsync(url, path);
         }
 
-        public static async Task<bool> CheckHashAsync(Stream archive,string endpoint)
+        public static async Task<bool> CheckHashAsync(Stream archive,Uri endpoint)
         {
             using SHA256 sha256 = SHA256.Create();
             byte[] hash = await sha256.ComputeHashAsync(archive);
-            return BitConverter.ToString(hash).Replace("-", "").Equals(await HttpHelper.GetHashAsync($"{endpoint}LimbusLocalizeHash.json"), StringComparison.CurrentCultureIgnoreCase);
+            return Convert.ToHexString(hash)
+                .Equals(
+                await HttpHelper.GetHashAsync(new(endpoint, "/LimbusLocalizeHash.json")),
+                StringComparison.OrdinalIgnoreCase);
         }
 
         /// <summary>
@@ -52,7 +55,8 @@ namespace LLC_MOD_Toolbox.Helpers
             Task.FromResult(Registry.GetValue(
                 @"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Steam App 1973530",
                 "InstallLocation",
-                null)?.ToString());
+                null)
+                ?.ToString());
 
         /// <summary>
         /// 读取节点列表配置文件

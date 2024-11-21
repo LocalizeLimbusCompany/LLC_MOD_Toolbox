@@ -252,221 +252,25 @@
                                     </Grid>
 
                                 </TabItem>
-                                <TabItem Header="抽卡模拟器" />
+                                <TabItem Header="抽卡模拟器">
+                                    <views:Gacha />
+                                </TabItem>
                             </TabControl>
                         </TabItem>
                         <TabItem Header="设置">
                             <views:Settings />
                         </TabItem>
                     </TabControl>
-                    <Grid Grid.Row="0" Margin="108,23,86,15">
+                    <Grid
+                        Grid.Row="0"
+                        Margin="108,23,86,15"
+                        Cursor="">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
-                        <Image
-                            x:Name="AutoInstallHover"
-                            Grid.Column="0"
-                            HorizontalAlignment="Center"
-                            VerticalAlignment="Center"
-                            Opacity="0"
-                            Source="Assets/Images/ControlBoardHover.png" />
-                        <Image
-                            x:Name="AutoInstallDisabled"
-                            Grid.Column="0"
-                            Width="91"
-                            Height="17"
-                            HorizontalAlignment="Center"
-                            VerticalAlignment="Center"
-                            Source="Assets/Images/DisableButton.png" />
-
-                        <Image
-                            x:Name="GachaSimDisabled"
-                            Grid.Column="3"
-                            Width="91"
-                            Height="17"
-                            HorizontalAlignment="Center"
-                            VerticalAlignment="Center"
-                            Opacity="1"
-                            Source="Assets/Images/DisableButton.png" />
-
-                        <Image
-                            x:Name="ManualInstallDisabled"
-                            Grid.Column="1"
-                            Width="91"
-                            Height="17"
-                            HorizontalAlignment="Center"
-                            VerticalAlignment="Center"
-                            Source="Assets/Images/DisableButton.png" />
-                        <Image
-                            x:Name="ReplaceInstallDisabled"
-                            Grid.Column="2"
-                            Width="90"
-                            Height="17"
-                            HorizontalAlignment="Center"
-                            VerticalAlignment="Center"
-                            Source="Assets/Images/DisableButton.png" />
-                        <Image
-                            x:Name="ManualInstallHover"
-                            Grid.Column="1"
-                            Width="134"
-                            Height="46"
-                            HorizontalAlignment="Center"
-                            VerticalAlignment="Center"
-                            Opacity="0"
-                            Source="Assets/Images/ControlBoardHover.png" />
-                        <Image
-                            x:Name="ReplaceInstallHover"
-                            Grid.Column="2"
-                            Width="134"
-                            Height="46"
-                            HorizontalAlignment="Center"
-                            VerticalAlignment="Center"
-                            Opacity="0"
-                            Source="Assets/Images/ControlBoardHover.png" />
-                        <Image
-                            x:Name="GachaSimHover"
-                            Grid.Column="3"
-                            Width="134"
-                            Height="46"
-                            HorizontalAlignment="Center"
-                            VerticalAlignment="Center"
-                            Opacity="0"
-                            Source="Assets/Images/ControlBoardHover.png" />
-                        <Button
-                            x:Name="AutoInstallButton"
-                            Grid.Column="0"
-                            Width="101"
-                            Height="40"
-                            HorizontalAlignment="Center"
-                            VerticalAlignment="Center"
-                            Background="Transparent"
-                            BorderBrush="Transparent"
-                            BorderThickness="0"
-                            Content="自动安装"
-                            FontFamily="Assets/Fonts/#Source Han Sans CN"
-                            FontSize="18"
-                            FontWeight="Bold"
-                            Foreground="#FFFFEED4"
-                            Style="{StaticResource NoHover}"
-                            Visibility="Collapsed">
-                            <Button.Triggers>
-                                <EventTrigger RoutedEvent="Button.MouseEnter">
-                                    <BeginStoryboard>
-                                        <Storyboard>
-                                            <DoubleAnimation
-                                                Storyboard.TargetName="AutoInstallHover"
-                                                Storyboard.TargetProperty="Opacity"
-                                                From="0"
-                                                To="1"
-                                                Duration="0:0:0.3" />
-                                        </Storyboard>
-                                    </BeginStoryboard>
-                                </EventTrigger>
-                                <EventTrigger RoutedEvent="Button.MouseLeave">
-                                    <BeginStoryboard>
-                                        <Storyboard>
-                                            <DoubleAnimation
-                                                Storyboard.TargetName="AutoInstallHover"
-                                                Storyboard.TargetProperty="Opacity"
-                                                From="1"
-                                                To="0"
-                                                Duration="0:0:0.3" />
-                                        </Storyboard>
-                                    </BeginStoryboard>
-                                </EventTrigger>
-                            </Button.Triggers>
-                        </Button>
-                        <Button
-                            x:Name="ManualInstallButton"
-                            Grid.Column="1"
-                            Width="102"
-                            Height="40"
-                            HorizontalAlignment="Center"
-                            VerticalAlignment="Center"
-                            Background="Transparent"
-                            BorderBrush="Transparent"
-                            BorderThickness="0"
-                            Content="手动安装"
-                            FontFamily="Assets/Fonts/#Source Han Sans CN"
-                            FontSize="18"
-                            FontWeight="Bold"
-                            Foreground="#FFFFEED4"
-                            Style="{StaticResource NoHover}"
-                            Visibility="Collapsed">
-                            <Button.Triggers>
-                                <EventTrigger RoutedEvent="Button.MouseEnter">
-                                    <BeginStoryboard>
-                                        <Storyboard>
-                                            <DoubleAnimation
-                                                Storyboard.TargetName="ManualInstallHover"
-                                                Storyboard.TargetProperty="Opacity"
-                                                From="0"
-                                                To="1"
-                                                Duration="0:0:0.3" />
-                                        </Storyboard>
-                                    </BeginStoryboard>
-                                </EventTrigger>
-                                <EventTrigger RoutedEvent="Button.MouseLeave">
-                                    <BeginStoryboard>
-                                        <Storyboard>
-                                            <DoubleAnimation
-                                                Storyboard.TargetName="ManualInstallHover"
-                                                Storyboard.TargetProperty="Opacity"
-                                                From="1"
-                                                To="0"
-                                                Duration="0:0:0.3" />
-                                        </Storyboard>
-                                    </BeginStoryboard>
-                                </EventTrigger>
-                            </Button.Triggers>
-                        </Button>
-                        <Button
-                            x:Name="ReplaceInstallButton"
-                            Grid.Column="2"
-                            Width="102"
-                            Height="40"
-                            HorizontalAlignment="Center"
-                            VerticalAlignment="Center"
-                            Background="Transparent"
-                            BorderBrush="Transparent"
-                            BorderThickness="0"
-                            Content="文件覆盖"
-                            FontFamily="Assets/Fonts/#Source Han Sans CN"
-                            FontSize="18"
-                            FontWeight="Bold"
-                            Foreground="#FFFFEED4"
-                            Style="{StaticResource NoHover}"
-                            Visibility="Collapsed">
-                            <Button.Triggers>
-                                <EventTrigger RoutedEvent="Button.MouseEnter">
-                                    <BeginStoryboard>
-                                        <Storyboard>
-                                            <DoubleAnimation
-                                                Storyboard.TargetName="ReplaceInstallHover"
-                                                Storyboard.TargetProperty="Opacity"
-                                                From="0"
-                                                To="1"
-                                                Duration="0:0:0.3" />
-                                        </Storyboard>
-                                    </BeginStoryboard>
-                                </EventTrigger>
-                                <EventTrigger RoutedEvent="Button.MouseLeave">
-                                    <BeginStoryboard>
-                                        <Storyboard>
-                                            <DoubleAnimation
-                                                Storyboard.TargetName="ReplaceInstallHover"
-                                                Storyboard.TargetProperty="Opacity"
-                                                From="1"
-                                                To="0"
-                                                Duration="0:0:0.3" />
-                                        </Storyboard>
-                                    </BeginStoryboard>
-                                </EventTrigger>
-                            </Button.Triggers>
-                        </Button>
                         <Button
                             x:Name="GachaSimInstallButton"
                             Grid.Column="3"
@@ -477,41 +281,13 @@
                             Background="Transparent"
                             BorderBrush="Transparent"
                             BorderThickness="0"
-                            Click="GachaSimButtonClick"
                             Content="抽卡模拟器"
                             FontFamily="Assets/Fonts/#Source Han Sans CN"
                             FontSize="18"
                             FontWeight="Bold"
                             Foreground="#FFFFEED4"
                             Style="{StaticResource NoHover}"
-                            Visibility="Visible">
-                            <Button.Triggers>
-                                <EventTrigger RoutedEvent="Button.MouseEnter">
-                                    <BeginStoryboard>
-                                        <Storyboard>
-                                            <DoubleAnimation
-                                                Storyboard.TargetName="GachaSimHover"
-                                                Storyboard.TargetProperty="Opacity"
-                                                From="0"
-                                                To="1"
-                                                Duration="0:0:0.3" />
-                                        </Storyboard>
-                                    </BeginStoryboard>
-                                </EventTrigger>
-                                <EventTrigger RoutedEvent="Button.MouseLeave">
-                                    <BeginStoryboard>
-                                        <Storyboard>
-                                            <DoubleAnimation
-                                                Storyboard.TargetName="GachaSimHover"
-                                                Storyboard.TargetProperty="Opacity"
-                                                From="1"
-                                                To="0"
-                                                Duration="0:0:0.3" />
-                                        </Storyboard>
-                                    </BeginStoryboard>
-                                </EventTrigger>
-                            </Button.Triggers>
-                        </Button>
+                            Visibility="Visible" />
 
                     </Grid>
 

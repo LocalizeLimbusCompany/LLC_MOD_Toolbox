@@ -16,7 +16,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Net.Http;
 using System.Reflection;
-using System.Security.Cryptography;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -24,7 +23,6 @@ using System.Windows.Threading;
 using Downloader;
 using LLC_MOD_Toolbox.Helpers;
 using LLC_MOD_Toolbox.Models;
-using LLC_MOD_Toolbox.ViewModels;
 using log4net;
 using Microsoft.Win32;
 using Newtonsoft.Json;
@@ -40,12 +38,9 @@ namespace LLC_MOD_Toolbox
         private static string? useAPIEndPoint;
         private static bool useGithub = false;
         private static bool useMirrorGithub = false;
-        private static string limbusCompanyDir = Registry.GetValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Steam App 1973530", "InstallLocation", null) as string
-            ?? string.Empty;
+        private static string limbusCompanyDir = FileHelper.GetLimbusCompanyPathAsync().Result ?? string.Empty;
         private static string limbusCompanyGameDir = Path.Combine(limbusCompanyDir, "LimbusCompany.exe");
         private static readonly string currentDir = AppDomain.CurrentDomain.BaseDirectory;
-        private static string defaultEndPoint = "https://node.zeroasso.top/d/od/";
-        private static string defaultAPIEndPoint = "https://api.kr.zeroasso.top/";
         private static int installPhase = 0;
         private readonly DispatcherTimer progressTimer;
         private float progressPercentage = 0;
@@ -302,16 +297,6 @@ namespace LLC_MOD_Toolbox
                         logger.Info("模组不存在。进行安装。");
                     }
                     await DownloadFileAutoAsync($"LimbusLocalize_BIE_{latestLLCVersion}.7z", limbusLocalizeZipPath);
-                    if (false)
-                    {
-                        logger.Error("校验Hash失败。");
-                        System.Windows.MessageBox.Show("校验Hash失败。\n请等待数分钟或更换节点。\n如果问题仍然出现，请进行反馈。", "校验失败");
-                        await StopInstall();
-                    }
-                    else
-                    {
-                        logger.Info("校验Hash成功。");
-                    }
                     logger.Info("解压模组本体 zip 中。");
                     Unarchive(limbusLocalizeZipPath, limbusCompanyDir);
                     logger.Info("删除模组本体 zip 。");
@@ -360,23 +345,6 @@ namespace LLC_MOD_Toolbox
             extractor.ExtractArchive(output);
         }
         /// <summary>
-        /// 获取最新版汉化模组哈希
-        /// </summary>
-        /// <returns>返回Sha256</returns>
-        private static async Task<string> GetLimbusLocalizeHash()
-        {
-            string HashRaw = await GetURLText($"{useEndPoint ?? defaultEndPoint}LimbusLocalizeHash.json");
-            dynamic JsonObject = JsonConvert.DeserializeObject(HashRaw);
-            if (JsonObject == null)
-            {
-                logger.Error("获取模组Hash失败。");
-                throw new Exception("获取Hash失败。");
-            }
-            string Hash = JsonObject.hash;
-            logger.Info("获取到的最新Hash为：" + Hash);
-            return Hash;
-        }
-        /// <summary>
         /// 处理使用Downloader下载文件的事件。
         /// </summary>
         /// <param name="sender"></param>
@@ -415,12 +383,8 @@ namespace LLC_MOD_Toolbox
                 string DownloadUrl = useEndPoint + File;
                 await DownloadFileAsync(DownloadUrl, Path);
             }
-            else
-            {
-                string DownloadUrl = defaultEndPoint + File;
-                await DownloadFileAsync(DownloadUrl, Path);
-            }
         }
+            
         /// <summary>
         /// 获取最新汉化模组标签。
         /// </summary>
@@ -496,7 +460,7 @@ namespace LLC_MOD_Toolbox
             {
                 logger.Info("正在检查工具箱更新。");
 
-                var latestReleaseTag = await UpdateHelper.GetLatestVersionAsync("https://api.github.com/repos/LocalizeLimbusCompany/LLC_MOD_Toolbox/releases/latest");
+                var latestReleaseTag = await UpdateHelper.GetLatestVersionAsync(new("https://api.github.com/repos/LocalizeLimbusCompany/LLC_MOD_Toolbox/releases/latest"));
                 logger.Info($"最新安装器tag：{latestReleaseTag}");
                 if (latestReleaseTag > Assembly.GetExecutingAssembly().GetName().Version)
                 {

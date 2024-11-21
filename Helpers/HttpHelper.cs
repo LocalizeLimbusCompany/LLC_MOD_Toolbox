@@ -1,13 +1,10 @@
 ﻿using System.IO;
 using System.Net;
 using System.Net.Http;
-using System.Net.Http.Json;
 using System.Reflection;
 using System.Runtime.InteropServices;
-using System.Text.Json.Nodes;
 using System.Windows.Media.Imaging;
 using Downloader;
-using Newtonsoft.Json;
 
 namespace LLC_MOD_Toolbox.Helpers;
 
@@ -62,11 +59,11 @@ public class HttpHelper
     /// <param name="method">Http method being used (default: <see cref="HttpMethod.Get"/>)</param>
     /// <exception cref="HttpRequestException">当网络连接不良时直接断言</exception>
     /// <returns></returns>
-    public static async Task<HttpResponseMessage> GetResponseAsync(string url, [Optional] HttpMethod method)
+    public static async Task<HttpResponseMessage> GetResponseAsync(Uri url, [Optional] HttpMethod method)
     {
         using var request = new HttpRequestMessage
         {
-            RequestUri = new Uri(url),
+            RequestUri = url,
             Method = method ?? HttpMethod.Get
         };
         var response = await httpClient.SendAsync(request);
@@ -74,9 +71,9 @@ public class HttpHelper
         return response;
     }
 
-    public static async Task<Stream> GetAppAsync(string url)
+    public static async Task<Stream> GetAppAsync(Uri url)
     {
-        Stream stream = await downloader.DownloadFileTaskAsync(url);
+        Stream stream = await downloader.DownloadFileTaskAsync(url.AbsolutePath);
 
         return stream;
     }
@@ -87,19 +84,19 @@ public class HttpHelper
     /// <exception cref="HttpRequestException">当网络连接不良时直接断言</exception>
     /// <param name="url"></param>
     /// <returns></returns>
-    public static async Task<JsonObject> GetJsonAsync(string url)
+    public static async Task<string> GetJsonAsync(Uri url)
     {
         var stream = await GetResponseAsync(url);
-        throw new NotImplementedException();
+        return await stream.Content.ReadAsStringAsync();
     }
 
-    public static async Task<string> GetHashAsync(string url)
+    public static async Task<string> GetHashAsync(Uri url)
     {
         var response = await GetResponseAsync(url);
         return await response.Content.ReadAsStringAsync();
     }
 
-    public static async Task<BitmapImage> GetImageAsync(string url)
+    public static async Task<BitmapImage> GetImageAsync(Uri url)
     {
         using var response = await GetResponseAsync(url);
         response.EnsureSuccessStatusCode();

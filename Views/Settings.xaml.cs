@@ -8,12 +8,6 @@ namespace LLC_MOD_Toolbox.Views
     /// </summary>
     public partial class Settings : UserControl
     {
-        [RelayCommand]
-        public void Uninstall()
-        {
-            throw new System.NotImplementedException();
-        }
-
         public Settings()
         {
             InitializeComponent();

@@ -1,31 +1,41 @@
-﻿using System.IO;
-using System.Net;
-using System.Net.Http;
+﻿using System.Net;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using LLC_MOD_Toolbox.Helpers;
 using LLC_MOD_Toolbox.Models;
 
 namespace LLC_MOD_Toolbox.ViewModels;
 
 public partial class AutoInstallerViewModel : ObservableObject
 {
-    [ObservableProperty]
-    List<NodeInformation> downloadList = PrimaryNodeList.Instance.DownloadNode;
-    [ObservableProperty]
-    List<NodeInformation> apiList = PrimaryNodeList.Instance.ApiNode;
+    public static PrimaryNodeList PrimaryNodeList { get; set; } = new();
 
     [ObservableProperty]
-    NodeInformation selectedEndPoint = PrimaryNodeList.Instance.DownloadNode.Last(x => x.IsDefault);
-    [ObservableProperty]
-    NodeInformation selectedAPIEndPoint = PrimaryNodeList.Instance.ApiNode.Last(x => x.IsDefault);
+    private List<NodeInformation> downloadNodeList;
 
     [ObservableProperty]
-    private WebProxy? proxy = null;
+    private List<NodeInformation> apiNodeList;
+
+    [ObservableProperty]
+    private NodeInformation selectedEndPoint;
+
+    [ObservableProperty]
+    private NodeInformation selectedApiEndPoint;
+
+    [ObservableProperty]
+    private static WebProxy? proxy = null;
+
+    [RelayCommand]
+    private static void ModUnistallation()
+    {
+
+    }
 
     public AutoInstallerViewModel()
     {
+        DownloadNodeList = PrimaryNodeList.DownloadNode;
+        ApiNodeList = PrimaryNodeList.ApiNode;
+        selectedEndPoint = DownloadNodeList.Last(p => p.IsDefault);
+        selectedApiEndPoint = PrimaryNodeList.ApiNode.Last(p => p.IsDefault);
     }
-
-
 }
+

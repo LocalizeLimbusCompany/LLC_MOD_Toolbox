@@ -1,4 +1,5 @@
-﻿using LLC_MOD_Toolbox.Helpers;
+﻿using System.IO;
+using LLC_MOD_Toolbox.Helpers;
 
 namespace LLC_MOD_Toolbox.Models;
 /// <summary>
@@ -6,8 +7,6 @@ namespace LLC_MOD_Toolbox.Models;
 /// </summary>
 public class PrimaryNodeList
 {
-    public static PrimaryNodeList Instance =>JsonHelper.DeserializePrimaryNodeList(FileHelper.NodeListConfig);
-
     /// <summary>
     /// 下载节点, 默认长度为 1
     /// </summary>
@@ -19,6 +18,12 @@ public class PrimaryNodeList
     /// </summary>
     public List<NodeInformation> ApiNode { get; init; } =
         [new("默认 (GitHub)", new("https://api.kr.zeroasso.top/"), true)];
+
+    public static async Task<PrimaryNodeList> CreateAsync(string url)
+    {
+        var jsonPayload = await File.ReadAllTextAsync(url);
+        return JsonHelper.DeserializePrimaryNodeList(jsonPayload);
+    }
 }
 /// <summary>
 /// 节点信息

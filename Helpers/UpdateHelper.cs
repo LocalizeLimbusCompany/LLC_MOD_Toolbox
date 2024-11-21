@@ -14,9 +14,9 @@ public static class UpdateHelper
     /// </summary>
     /// <param name="url">api 节点</param>
     /// <returns>Version</returns>
-    public static async Task<Version> GetLatestVersionAsync(string url)
-        => new Version((await HttpHelper.GetJsonAsync(url))["tag_name"].ToString()[1..]);
+    public static async Task<Version> GetLatestVersionAsync(Uri url)
+        => new Version(await JsonHelper.DeserializeTagName(await HttpHelper.GetJsonAsync(url)));
 
-    public static async Task<bool> IsUpdateRequiredAsync(string url)
+    public static async Task<bool> IsUpdateRequiredAsync(Uri url)
         => await GetLatestVersionAsync(url) > LocalVersion;
 }

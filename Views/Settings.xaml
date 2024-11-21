@@ -41,7 +41,7 @@
             FontSize="16"
             FontWeight="Medium"
             Foreground="Black"
-            ItemsSource="{Binding DownloadList}"
+            ItemsSource="{Binding DownloadNodeList}"
             SelectedItem="{Binding SelectedEndPoint}" />
 
         <Label
@@ -63,8 +63,8 @@
             FontSize="16"
             FontWeight="Medium"
             Foreground="Black"
-            ItemsSource="{Binding ApiList}"
-            SelectedItem="{Binding SelectedAPIEndPoint}" />
+            ItemsSource="{Binding ApiNodeList}"
+            SelectedItem="{Binding SelectedApiEndPoint}" />
 
         <Label
             Grid.Row="2"

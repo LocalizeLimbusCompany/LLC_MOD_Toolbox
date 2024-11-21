@@ -30,7 +30,7 @@ namespace LLC_MOD_Toolbox.Helpers
 
         public static Task<string> DeserializeTagName(string jsonPayload)
             => Task.FromResult(
-                JObject.Parse(jsonPayload).GetValue("tag_name")?.ToString()
+                JObject.Parse(jsonPayload).GetValue("tag_name")?.ToString()[1..]
                 ?? string.Empty);
 
         public static Task<string> DeserializeHash(string jsonPayload)

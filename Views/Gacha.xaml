@@ -12,7 +12,7 @@
     mc:Ignorable="d">
     <Grid>
         <Grid.Background>
-            <ImageBrush ImageSource="pack://application:,,,/LLC_MOD_Toolbox;component/Picture/GachaBackground.png" Stretch="Uniform" />
+            <ImageBrush ImageSource="pack://application:,,,/LLC_MOD_Toolbox;component/Assets/Images/GachaBackground.png" Stretch="Uniform" />
         </Grid.Background>
         <ListBox Background="Transparent" />
         <Button
