@@ -271,23 +271,6 @@
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
-                        <Button
-                            x:Name="GachaSimInstallButton"
-                            Grid.Column="3"
-                            Width="102"
-                            Height="40"
-                            HorizontalAlignment="Center"
-                            VerticalAlignment="Center"
-                            Background="Transparent"
-                            BorderBrush="Transparent"
-                            BorderThickness="0"
-                            Content="抽卡模拟器"
-                            FontFamily="Assets/Fonts/#Source Han Sans CN"
-                            FontSize="18"
-                            FontWeight="Bold"
-                            Foreground="#FFFFEED4"
-                            Style="{StaticResource NoHover}"
-                            Visibility="Visible" />
 
                     </Grid>
 

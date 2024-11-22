@@ -79,6 +79,7 @@
             Grid.Column="1"
             Width="100"
             Height="30"
+            Command="{Binding ModUnistallationCommand}"
             Content="卸载"
             FontFamily="/Fonts/#Source Han Sans CN"
             FontSize="16"

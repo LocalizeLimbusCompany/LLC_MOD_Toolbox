@@ -38,7 +38,7 @@ namespace LLC_MOD_Toolbox
         private static string? useAPIEndPoint;
         private static bool useGithub = false;
         private static bool useMirrorGithub = false;
-        private static string limbusCompanyDir = FileHelper.GetLimbusCompanyPathAsync().Result ?? string.Empty;
+        private static string limbusCompanyDir = FileHelper.LimbusCompanyPath;
         private static string limbusCompanyGameDir = Path.Combine(limbusCompanyDir, "LimbusCompany.exe");
         private static readonly string currentDir = AppDomain.CurrentDomain.BaseDirectory;
         private static int installPhase = 0;
@@ -47,7 +47,6 @@ namespace LLC_MOD_Toolbox
         // GreyTest 灰度测试2.0
         private static string greytestUrl = string.Empty;
         private static bool greytestStatus = false;
-        private readonly string VERSION = Assembly.GetExecutingAssembly().GetName().Version?.ToString() ?? "Unknown";
 
 
 
@@ -533,7 +532,7 @@ namespace LLC_MOD_Toolbox
         }
         #endregion
         #region 卸载功能
-        private void UninstallButtonClick(object sender, RoutedEventArgs e)
+        private async void UninstallButtonClick(object sender, RoutedEventArgs e)
         {
             logger.Info("点击删除模组");
             MessageBoxResult result = System.Windows.MessageBox.Show("删除后你需要重新安装汉化补丁。\n确定继续吗？", "警告", MessageBoxButton.YesNo, MessageBoxImage.Warning);
@@ -542,7 +541,7 @@ namespace LLC_MOD_Toolbox
                 logger.Info("确定删除模组。");
                 try
                 {
-                    DeleteBepInEx();
+                    FileHelper.DeleteBepInEx();
                 }
                 catch (Exception ex)
                 {
@@ -576,23 +575,6 @@ namespace LLC_MOD_Toolbox
                 logger.Info("删除文件： " + path);
                 File.Delete(path);
             }
-        }
-        /// <summary>
-        /// 删除BepInEx版本汉化补丁。
-        /// </summary>
-        public static void DeleteBepInEx()
-        {
-            DeleteDir(limbusCompanyDir + "/BepInEx");
-            DeleteDir(limbusCompanyDir + "/dotnet");
-            DeleteFile(limbusCompanyDir + "/doorstop_config.ini");
-            DeleteFile(limbusCompanyDir + "/Latest(框架日志).log");
-            DeleteFile(limbusCompanyDir + "/Player(游戏日志).log");
-            DeleteFile(limbusCompanyDir + "/winhttp.dll");
-            DeleteFile(limbusCompanyDir + "/winhttp.dll.disabled");
-            DeleteFile(limbusCompanyDir + "/changelog.txt");
-            DeleteFile(limbusCompanyDir + "/BepInEx-IL2CPP-x64.7z");
-            DeleteFile(limbusCompanyDir + "/LimbusLocalize_BIE.7z");
-            DeleteFile(limbusCompanyDir + "/tmpchinese_BIE.7z");
         }
         #endregion
         #region 灰度测试
@@ -696,83 +678,7 @@ namespace LLC_MOD_Toolbox
             });
         }
         #endregion
-        #region 程序配置
-        public class LLCMTConfig
-        {
-            public bool CskipLCBPathCheck { get; set; }
-            public string? CLCBPath { get; set; }
-        }
-        private static bool skipLCBPathCheck = false;
-        private static string? LCBPath = string.Empty;
-        private static readonly string configPath = Path.Combine(currentDir, "config.json");
-        private static void LoadConfig()
-        {
-            logger.Info("加载程序配置。");
-            try
-            {
-                if (File.Exists(configPath))
-                {
-                    string configContent = File.ReadAllText(configPath);
-                    LLCMTConfig LLCMTconfig = JsonConvert.DeserializeObject<LLCMTConfig>(configContent) ?? throw new FileNotFoundException("配置文件未找到。");
-                    skipLCBPathCheck = LLCMTconfig.CskipLCBPathCheck;
-                    LCBPath = LLCMTconfig.CLCBPath;
-                    logger.Info("跳过路径检查：" + skipLCBPathCheck);
-                    logger.Info("路径：" + LCBPath);
-                }
-            }
-            catch (Exception ex)
-            {
-                ErrorReport(ex, false);
-            }
-        }
-        private static void ChangeSkipPathCheckConfig(bool boolValue)
-        {
-            logger.Info("改变跳过路径检查配置，Value：" + boolValue);
-            try
-            {
-                if (File.Exists(configPath))
-                {
-                    string configContent = File.ReadAllText(configPath);
-                    LLCMTConfig LLCMTconfig = JsonConvert.DeserializeObject<LLCMTConfig>(configContent) ?? throw new FileNotFoundException("配置文件未找到。");
-                    LLCMTconfig.CskipLCBPathCheck = boolValue;
-                    string updatedConfigContent = JsonConvert.SerializeObject(LLCMTconfig, Formatting.Indented);
-                    logger.Debug("更新后的配置文件：" + updatedConfigContent);
-                    File.WriteAllText(configPath, updatedConfigContent);
-                    logger.Info("配置文件更新完成。");
-                }
-            }
-            catch (Exception ex)
-            {
-                ErrorReport(ex, false);
-            }
-        }
-        private static void ChangeLCBPathConfig(string? updatedLCBPath)
-        {
-            logger.Info($"改变边狱公司路径配置，Value： {updatedLCBPath}");
-            try
-            {
-                if (string.IsNullOrEmpty(updatedLCBPath))
-                {
-                    logger.Error("修改的值为Null。");
-                    return;
-                }
-                if (File.Exists(configPath))
-                {
-                    string configContent = File.ReadAllText(configPath);
-                    LLCMTConfig LLCMTconfig = JsonConvert.DeserializeObject<LLCMTConfig>(configContent) ?? throw new FileNotFoundException("配置文件未找到。");
-                    LLCMTconfig.CLCBPath = updatedLCBPath;
-                    string updatedConfigContent = JsonConvert.SerializeObject(LLCMTconfig, Formatting.Indented);
-                    logger.Debug("更新后的配置文件：" + updatedConfigContent);
-                    File.WriteAllText(configPath, updatedConfigContent);
-                    logger.Info("配置文件更新完成。");
-                }
-            }
-            catch (Exception ex)
-            {
-                ErrorReport(ex, false);
-            }
-        }
-        #endregion
+
         #region 开关模组
         // 我也不知道为什么这个功能这么多人想要，不过既然那么多人要，那我就写了
         private void ChangeStatuButtonClick(object sender, RoutedEventArgs e)

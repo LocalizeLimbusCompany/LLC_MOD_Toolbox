@@ -78,26 +78,7 @@ namespace LLC_MOD_Toolbox
         {
             System.Windows.Application.Current.Shutdown();
         }
-        /// <summary>
-        /// 处理自动安装按钮。
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-/*        private async void AutoInstallButtonClick(object sender, RoutedEventArgs e)
-        {
-            nowInstallPage = "auto";
-            await RefreshPage();
-        }
-        private async void ManualInstallButtonClick(object sender, RoutedEventArgs e)
-        {
-            nowInstallPage = "manual";
-            await RefreshPage();
-        }
-        private async void ReplaceInstallButtonClick(object sender, RoutedEventArgs e)
-        {
-            nowInstallPage = "replace";
-            await RefreshPage();
-        }*/
+
         private async void GachaSimButtonClick(object sender, RoutedEventArgs e)
         {
             if (!isInitGacha)
@@ -116,76 +97,36 @@ namespace LLC_MOD_Toolbox
                 //await RefreshPage();
             }
         }
-        /// <summary>
-        /// 处理安装选项按钮。
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-/*        private async void InstallOptionClick(object sender, RoutedEventArgs e)
-        {
-            nowPage = "install";
-            nowInstallPage = "auto";
-            await RefreshPage();
-        }*/
-        /// <summary>
-        /// 处理配置选项按钮。
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-/*        private async void LinkOptionClick(object sender, RoutedEventArgs e)
-        {
-            nowPage = "link";
-            await RefreshPage();
-        }
-        private async void GreytestOptionClick(object sender, RoutedEventArgs e)
-        {
-            nowPage = "greytest";
-            await RefreshPage();
-        }
-        private async void SettingsOptionClick(object sender, RoutedEventArgs e)
-        {
-            nowPage = "settings";
-            await RefreshPage();
-        }
-        private async void AboutOptionClick(object sender, RoutedEventArgs e)
-        {
-            nowPage = "about";
-            await RefreshPage();
-        }
-        private async void EEOptionClick(object sender, RoutedEventArgs e)
-        {
-            nowPage = "ee";
-            await RefreshPage();
-        }*/
-/*        public async Task ChangeProgressValue(float value)
-        {
-            value = (float)Math.Round(value, 1);
-            logger.Debug($"安装进度：{value}%");
-            RectangleGeometry rectGeometry = new()
-            {
-                Rect = new Rect(0, 0, 6.24 * value, 50)
-            };
-            await this.Dispatcher.BeginInvoke(() =>
-            {
-                FullProgress.Clip = rectGeometry;
-            });
-            logger.Debug("更改进度完成。");
-        }*/
+
+        /*        public async Task ChangeProgressValue(float value)
+                {
+                    value = (float)Math.Round(value, 1);
+                    logger.Debug($"安装进度：{value}%");
+                    RectangleGeometry rectGeometry = new()
+                    {
+                        Rect = new Rect(0, 0, 6.24 * value, 50)
+                    };
+                    await this.Dispatcher.BeginInvoke(() =>
+                    {
+                        FullProgress.Clip = rectGeometry;
+                    });
+                    logger.Debug("更改进度完成。");
+                }*/
         private void GreytestInfoButtonClick(object sender, RoutedEventArgs e)
         {
             HttpHelper.LaunchUrl("https://www.zeroasso.top/docs/community/llcdev");
         }
         #region 彩蛋
-/*        private async void WhiteBlackClickDouble(object sender, MouseButtonEventArgs e)
-        {
-            if (!eeOpening && !eeEntered)
-            {
-                logger.Info("不要点了>_<");
-                eeOpening = true;
-                eeEntered = false;
-                await ChangeEEVB(true);
-            }
-        }*/
+        /*        private async void WhiteBlackClickDouble(object sender, MouseButtonEventArgs e)
+                {
+                    if (!eeOpening && !eeEntered)
+                    {
+                        logger.Info("不要点了>_<");
+                        eeOpening = true;
+                        eeEntered = false;
+                        await ChangeEEVB(true);
+                    }
+                }*/
         public async Task ChangeEEVB(bool b)
         {
             if (b)

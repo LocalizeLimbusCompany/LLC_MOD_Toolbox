@@ -1,7 +1,6 @@
 ﻿using System.IO;
 using System.Net;
 using System.Net.Http;
-using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Windows.Media.Imaging;
 using Downloader;
@@ -34,11 +33,11 @@ public class HttpHelper
         // config and customize request headers
         RequestConfiguration =
         {
-        UserAgent = $"LLC_MOD_Toolbox/{Assembly.GetExecutingAssembly().GetName().Version}",
+        UserAgent = $"LLC_MOD_Toolbox/{UpdateHelper.LocalVersion}",
         Proxy = new WebProxy() {
            Address = default,
            UseDefaultCredentials = false,
-           Credentials = System.Net.CredentialCache.DefaultNetworkCredentials,
+           Credentials = CredentialCache.DefaultNetworkCredentials,
            BypassProxyOnLocal = true
         }
     }
@@ -48,7 +47,8 @@ public class HttpHelper
     static HttpHelper()
     {
         httpClient.DefaultRequestHeaders
-            .Add("User-Agent", $"LLC_MOD_Toolbox/{Assembly.GetExecutingAssembly().GetName().Version}");
+            .Add("User-Agent", $"LLC_MOD_Toolbox/{UpdateHelper.LocalVersion}");
+        //downloader.AddLogger();
     }
 
     /// <summary>
@@ -98,9 +98,7 @@ public class HttpHelper
 
     public static async Task<BitmapImage> GetImageAsync(Uri url)
     {
-        using var response = await GetResponseAsync(url);
-        response.EnsureSuccessStatusCode();
-        using var stream = await response.Content.ReadAsStreamAsync();
+        var stream=await downloader.DownloadFileTaskAsync(url.AbsolutePath);
         var image = new BitmapImage();
         image.BeginInit();
         image.StreamSource = stream;
