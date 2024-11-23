@@ -1,4 +1,5 @@
 ﻿namespace LLC_MOD_Toolbox.Models;
+
 /// <summary>
 /// 人格数据
 /// </summary>

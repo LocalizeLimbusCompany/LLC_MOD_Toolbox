@@ -7,29 +7,31 @@ using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using LLC_MOD_Toolbox.Helpers;
+using Microsoft.Extensions.Logging;
 
 namespace LLC_MOD_Toolbox
 {
-
     public partial class MainWindow : Window
     {
-        public MainWindow()
+        ILogger<MainWindow> logger;
+
+        public MainWindow(LoggerFactory loggerFactory)
         {
+            loggerFactory.CreateLogger<MainWindow>();
             InitializeComponent();
 
-            progressTimer = new DispatcherTimer
-            {
-                Interval = TimeSpan.FromSeconds(0.05)
-            };
+            progressTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(0.05) };
             progressTimer.Tick += ProgressTime_Tick;
         }
+
         private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
             await ChangeEEPic("https://dl.kr.zeroasso.top/ee_pic/public/public.png");
             CheckToolboxUpdate();
             InitLink();
-            logger.Info("加载流程完成。");
+            logger.LogInformation("加载流程完成。");
         }
+
         /// <summary>
         /// 处理窗口拖拽。
         /// </summary>
@@ -42,6 +44,7 @@ namespace LLC_MOD_Toolbox
                 DragMove();
             }
         }
+
         /// <summary>
         /// 拖拽时更改指针为拖拽样式。
         /// </summary>
@@ -51,6 +54,7 @@ namespace LLC_MOD_Toolbox
         {
             this.Cursor = System.Windows.Input.Cursors.ScrollAll;
         }
+
         /// <summary>
         /// 拖拽结束恢复指针样式。
         /// </summary>
@@ -60,6 +64,7 @@ namespace LLC_MOD_Toolbox
         {
             this.Cursor = System.Windows.Input.Cursors.Arrow;
         }
+
         /// <summary>
         /// 处理最小化按钮。
         /// </summary>
@@ -69,6 +74,7 @@ namespace LLC_MOD_Toolbox
         {
             this.WindowState = WindowState.Minimized;
         }
+
         /// <summary>
         /// 处理关闭按钮。
         /// </summary>
@@ -83,7 +89,12 @@ namespace LLC_MOD_Toolbox
         {
             if (!isInitGacha)
             {
-                MessageBoxResult messageBoxResult = System.Windows.MessageBox.Show("本抽卡模拟器资源来源自维基，可能信息更新不准时。\n本模拟器 不 会 对您的游戏数据造成任何影响。\n若您已知悉，请点击“确定”进行初始化。", "提示", MessageBoxButton.OKCancel, MessageBoxImage.Information);
+                MessageBoxResult messageBoxResult = System.Windows.MessageBox.Show(
+                    "本抽卡模拟器资源来源自维基，可能信息更新不准时。\n本模拟器 不 会 对您的游戏数据造成任何影响。\n若您已知悉，请点击“确定”进行初始化。",
+                    "提示",
+                    MessageBoxButton.OKCancel,
+                    MessageBoxImage.Information
+                );
                 if (messageBoxResult == MessageBoxResult.OK)
                 {
                     //nowInstallPage = "gacha";
@@ -116,6 +127,7 @@ namespace LLC_MOD_Toolbox
         {
             HttpHelper.LaunchUrl("https://www.zeroasso.top/docs/community/llcdev");
         }
+
         #region 彩蛋
         /*        private async void WhiteBlackClickDouble(object sender, MouseButtonEventArgs e)
                 {
@@ -146,17 +158,23 @@ namespace LLC_MOD_Toolbox
                 });
             }
         }
+
         public async Task ChangeEEPic(string url)
         {
-            logger.Debug("更改彩蛋图片为： " + url);
+            logger.LogDebug("更改彩蛋图片为： {url}", url);
             await this.Dispatcher.BeginInvoke(() =>
             {
-                EEPageImage.Source = BitmapFrame.Create(new Uri(url), BitmapCreateOptions.None, BitmapCacheOption.Default);
+                EEPageImage.Source = BitmapFrame.Create(
+                    new Uri(url),
+                    BitmapCreateOptions.None,
+                    BitmapCacheOption.Default
+                );
             });
         }
         #endregion
         #region 链接
         public Dictionary<string, string> linkDictionary = [];
+
         private void InitLink()
         {
             linkDictionary.Add("LinkButton1", "https://www.zeroasso.top");
@@ -168,6 +186,7 @@ namespace LLC_MOD_Toolbox
             linkDictionary.Add("LinkButton7", "https://weidian.com/?userid=1655827241");
             linkDictionary.Add("LinkButton8", "https://limbuscompany.huijiwiki.com");
         }
+
         private async Task<string?> GetSenderName(System.Windows.Controls.Control? control)
         {
             if (control != null)
@@ -184,6 +203,7 @@ namespace LLC_MOD_Toolbox
                 return string.Empty;
             }
         }
+
         private async void LinkButtonClick(object sender, RoutedEventArgs e)
         {
             if (sender != null)
@@ -196,6 +216,5 @@ namespace LLC_MOD_Toolbox
             }
         }
         #endregion
-
     }
 }

@@ -9,30 +9,36 @@ namespace LLC_MOD_Toolbox.Helpers
 {
     public static class FileHelper
     {
-        private static readonly DownloadConfiguration downloadConfig = new()
-        {
-            ChunkCount = 8,
-            MaxTryAgainOnFailover = 3,
-            ParallelDownload = true,
-        };
+        private static readonly DownloadConfiguration downloadConfig =
+            new()
+            {
+                ChunkCount = 8,
+                MaxTryAgainOnFailover = 3,
+                ParallelDownload = true,
+            };
         private static readonly DownloadService downloader = new(downloadConfig);
 
         private static readonly List<string> BepInExFiles =
         [
-                "BepInEx",
-                "dotnet",
-                "doorstop_config.ini",
-                "Latest(框架日志).log",
-                "Player(游戏日志).log",
-                "winhttp.dll",
-                "winhttp.dll.disabled",
-                "changelog.txt",
-                "BepInEx-IL2CPP-x64.7z",
-                "LimbusLocalize_BIE.7z",
-                "tmpchinese_BIE.7z"
-            ];
+            "BepInEx",
+            "dotnet",
+            "doorstop_config.ini",
+            "Latest(框架日志).log",
+            "Player(游戏日志).log",
+            "winhttp.dll",
+            "winhttp.dll.disabled",
+            "changelog.txt",
+            "BepInEx-IL2CPP-x64.7z",
+            "LimbusLocalize_BIE.7z",
+            "tmpchinese_BIE.7z"
+        ];
 
-        public static async Task DownloadFileAsync(string url, string path, EventHandler<DownloadProgressChangedEventArgs> onDownloadProgressChanged, EventHandler<AsyncCompletedEventArgs> onDownloadFileCompleted)
+        public static async Task DownloadFileAsync(
+            string url,
+            string path,
+            EventHandler<DownloadProgressChangedEventArgs> onDownloadProgressChanged,
+            EventHandler<AsyncCompletedEventArgs> onDownloadFileCompleted
+        )
         {
             downloader.DownloadProgressChanged += onDownloadProgressChanged;
             downloader.DownloadFileCompleted += onDownloadFileCompleted;
@@ -43,10 +49,12 @@ namespace LLC_MOD_Toolbox.Helpers
         {
             using SHA256 sha256 = SHA256.Create();
             byte[] hash = await sha256.ComputeHashAsync(archive);
-            return Convert.ToHexString(hash)
+            return Convert
+                .ToHexString(hash)
                 .Equals(
-                await HttpHelper.GetHashAsync(new(endpoint, "/LimbusLocalizeHash.json")),
-                StringComparison.OrdinalIgnoreCase);
+                    await HttpHelper.GetHashAsync(new(endpoint, "/LimbusLocalizeHash.json")),
+                    StringComparison.OrdinalIgnoreCase
+                );
         }
 
         /// <summary>
@@ -56,7 +64,6 @@ namespace LLC_MOD_Toolbox.Helpers
         {
             await Task.Run(() =>
             {
-                SevenZip.SevenZipBase.SetLibraryPath("7z.dll");
                 using var extractor = new SevenZip.SevenZipExtractor(archive);
                 extractor.ExtractArchive(destination);
             });
@@ -66,12 +73,25 @@ namespace LLC_MOD_Toolbox.Helpers
         /// 仅在 Windows 下有效，不过这个项目也只在 Windows 下有效
         /// </summary>
         /// <returns cref="string?">边狱公司路径</returns>
-        public static string? LimbusCompanyPath => ConfigurationManager.AppSettings["GamePath"] ??
-            Registry.GetValue(
-                @"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Steam App 1973530",
-                "InstallLocation",
-                null)
-                ?.ToString();
+        public static string? LimbusCompanyPath
+        {
+            get
+            {
+                var path =
+                    ConfigurationManager.AppSettings["GamePath"]
+                    ?? Registry.GetValue(
+                        @"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Steam App 1973530",
+                        "InstallLocation",
+                        null
+                    ) as string
+                    ?? throw new ArgumentNullException("未找到边狱公司路径。可能是注册表被恶意修改了！");
+                if (Directory.Exists(path))
+                {
+                    return path;
+                }
+                throw new DirectoryNotFoundException("未找到边狱公司路径。可能是注册表被恶意修改了！");
+            }
+        }
 
         /// <summary>
         /// 读取节点列表配置文件
@@ -79,6 +99,24 @@ namespace LLC_MOD_Toolbox.Helpers
         /// <returns></returns>
         public static Task<string> LoadNodeListConfigAsync =>
             File.ReadAllTextAsync("NodeList.json");
+
+        /// <summary>
+        /// 下载边狱公司的 BepInEx 框架
+        /// </summary>
+        /// <exception cref="ArgumentNullException"></exception>
+        public static async Task InstallBepInExAsync(Uri uri)
+        {
+            if (string.IsNullOrEmpty(LimbusCompanyPath))
+            {
+                throw new Exception("未找到边狱公司路径。可能是注册表被恶意修改了！");
+            }
+            var stream = await HttpHelper.GetModAsync(uri);
+            if (!await CheckHashAsync(stream, uri))
+            {
+                throw new Exception("Hash check failed.");
+            }
+            await Extract7zAsync(stream, LimbusCompanyPath);
+        }
 
         /// <summary>
         /// 删除Mod文件夹，删除内容为 <seealso cref="BepInExFiles"/>
@@ -94,7 +132,6 @@ namespace LLC_MOD_Toolbox.Helpers
             {
                 File.Delete(Path.Combine(LimbusCompanyPath, file));
             }
-
         }
     }
 }

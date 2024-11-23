@@ -1,13 +1,10 @@
 ﻿using System.Windows;
 using LLC_MOD_Toolbox.Models;
 using LLC_MOD_Toolbox.ViewModels;
-using log4net;
-using log4net.Repository.Hierarchy;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using NLog.Extensions.Logging;
 using SevenZip;
-
-[assembly: log4net.Config.XmlConfigurator(ConfigFile = "App.config", ConfigFileExtension = "config", Watch = true)]
-
 
 namespace LLC_MOD_Toolbox
 {
@@ -16,25 +13,43 @@ namespace LLC_MOD_Toolbox
     /// </summary>
     public partial class App : Application
     {
-        private static readonly ILog logger = LogManager.GetLogger(typeof(App));
+        private readonly ILoggerFactory loggerFactory;
+        private readonly ILogger<App> logger;
+        private readonly ServiceProvider serviceProvider;
+
+        public App()
+        {
+            loggerFactory = LoggerFactory.Create(builder =>
+            {
+                builder.ClearProviders();
+                builder.AddNLog("nlog.config");
+            });
+            var services = new ServiceCollection();
+            services.AddSingleton<ILoggerFactory>(loggerFactory);
+            serviceProvider = services.BuildServiceProvider();
+
+            logger = serviceProvider.GetRequiredService<ILoggerFactory>().CreateLogger<App>();
+        }
+
         private async void Application_Startup(object sender, StartupEventArgs e)
         {
-
-            logger.Info("—————新日志分割线—————");
-            logger.Info("工具箱已进入加载流程。");
-            logger.Info("We have a lift off.");
+            logger.LogInformation("—————新日志分割线—————");
+            logger.LogInformation("工具箱已进入加载流程。");
+            logger.LogInformation("We have a lift off.");
             SevenZipBase.SetLibraryPath("7z.dll");
-            logger.Info("加载流程完成。");
+            logger.LogInformation("加载流程完成。");
             try
             {
-                AutoInstallerViewModel.PrimaryNodeList = await PrimaryNodeList.CreateAsync("NodeList.json");
-                logger.Info("节点初始化完成。");
+                AutoInstallerViewModel.PrimaryNodeList = await PrimaryNodeList.CreateAsync(
+                    "NodeList.json"
+                );
+                logger.LogInformation("节点初始化完成。");
             }
             catch (Exception ex)
             {
-                logger.ErrorFormat("节点初始化失败，原因为：{0}", ex);
+                logger.LogError(ex, "节点初始化失败。");
             }
-            MainWindow mainWindow = new();
+            var mainWindow = serviceProvider.GetRequiredService<MainWindow>();
             mainWindow.Show();
         }
     }
