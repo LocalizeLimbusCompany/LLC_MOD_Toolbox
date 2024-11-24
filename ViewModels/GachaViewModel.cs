@@ -7,9 +7,10 @@ namespace LLC_MOD_Toolbox.ViewModels
     public partial class GachaViewModel : ObservableObject
     {
         [ObservableProperty]
-        static List<PersonalInfo> personalInfos = [];
+        private static List<PersonalInfo> personalInfos = [];
+
         [ObservableProperty]
-        static List<PersonalInfo> selectedPersonalInfos = [];
+        private static List<PersonalInfo> selectedPersonalInfos = [];
 
         [RelayCommand]
         public static void Gacha()

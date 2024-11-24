@@ -20,9 +20,6 @@
     ResizeMode="CanMinimize"
     WindowStyle="None"
     mc:Ignorable="d">
-    <Window.DataContext>
-        <localvm:AutoInstallerViewModel />
-    </Window.DataContext>
     <Window.Resources>
         <Style x:Key="NoHover" TargetType="Button">
             <Setter Property="OverridesDefaultStyle" Value="True" />

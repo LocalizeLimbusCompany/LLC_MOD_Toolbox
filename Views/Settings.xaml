@@ -20,6 +20,7 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
         <Label
@@ -81,6 +82,23 @@
             Height="30"
             Command="{Binding ModUnistallationCommand}"
             Content="卸载"
+            FontFamily="/Fonts/#Source Han Sans CN"
+            FontSize="16"
+            FontWeight="Medium"
+            Foreground="Black" />
+        <Label
+            Grid.Row="3"
+            Grid.Column="0"
+            Content="游戏位置"
+            FontFamily="/Fonts/#Source Han Sans CN"
+            FontSize="22"
+            FontWeight="Medium"
+            Foreground="#FFFFEED4" />
+        <TextBlock
+            Grid.Row="3"
+            Grid.Column="1"
+            d:Text="我不到啊"
+            Background="White"
             FontFamily="/Fonts/#Source Han Sans CN"
             FontSize="16"
             FontWeight="Medium"

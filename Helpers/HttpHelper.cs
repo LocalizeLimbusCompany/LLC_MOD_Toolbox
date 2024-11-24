@@ -43,7 +43,8 @@ public class HttpHelper
                 }
             }
         };
-    public static readonly DownloadService downloader = new(downloadOpt);
+
+    private static readonly DownloadService downloader = new(downloadOpt);
 
     public HttpHelper(LoggerFactory loggerFactory)
     {

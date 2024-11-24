@@ -16,7 +16,10 @@
             <RowDefinition Height="auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        <Button Grid.Row="0" Background="Transparent">
+        <Button
+            Grid.Row="0"
+            Background="Transparent"
+            Command="{Binding ModInstallationCommand}">
             <Image Source="/Assets/Images/Install.png" />
         </Button>
         <ProgressBar

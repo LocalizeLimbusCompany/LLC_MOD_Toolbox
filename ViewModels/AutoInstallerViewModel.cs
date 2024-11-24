@@ -19,9 +19,11 @@ public partial class AutoInstallerViewModel : ObservableObject
     [ObservableProperty]
     private List<NodeInformation> apiNodeList;
 
+    [Obsolete("直接使用参数传递")]
     [ObservableProperty]
     private NodeInformation selectedEndPoint;
 
+    [Obsolete("直接使用参数传递")]
     [ObservableProperty]
     private NodeInformation selectedApiEndPoint;
 
@@ -58,6 +60,7 @@ public partial class AutoInstallerViewModel : ObservableObject
         return Task.CompletedTask;
     }
 
+    // TODO: 将参数改为 NodeInformation 类型
     [RelayCommand]
     private async Task ModInstallation()
     {
@@ -90,6 +93,7 @@ public partial class AutoInstallerViewModel : ObservableObject
         }
     }
 
+    [Obsolete]
     public AutoInstallerViewModel(ILoggerFactory loggerFactory)
     {
         DownloadNodeList = PrimaryNodeList.DownloadNode;

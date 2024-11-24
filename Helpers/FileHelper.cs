@@ -7,7 +7,7 @@ using Microsoft.Win32;
 
 namespace LLC_MOD_Toolbox.Helpers
 {
-    public static class FileHelper
+    internal static class FileHelper
     {
         private static readonly DownloadConfiguration downloadConfig =
             new()
@@ -45,6 +45,7 @@ namespace LLC_MOD_Toolbox.Helpers
             await downloader.DownloadFileTaskAsync(url, path);
         }
 
+        // TODO: 移动到 ValidateHelper
         public static async Task<bool> CheckHashAsync(Stream archive, Uri endpoint)
         {
             using SHA256 sha256 = SHA256.Create();
@@ -93,6 +94,7 @@ namespace LLC_MOD_Toolbox.Helpers
             }
         }
 
+        // TODO: 解除封装直接暴露给 JsonHelper
         /// <summary>
         /// 读取节点列表配置文件
         /// </summary>

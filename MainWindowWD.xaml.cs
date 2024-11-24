@@ -73,6 +73,7 @@ namespace LLC_MOD_Toolbox
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
+        [Obsolete]
         private async void InstallButtonClick(object sender, RoutedEventArgs e)
         {
             logger.LogInformation("开始安装。");
@@ -112,7 +113,7 @@ namespace LLC_MOD_Toolbox
                 {
                     logger.LogError("winhttp.dll不存在。");
                     System.Windows.MessageBox.Show("winhttp.dll不存在。\n请尝试关闭杀毒软件后再次安装。");
-                    await StopInstall();
+                    StopInstall();
                     return;
                 }
                 await InstallTMP();
@@ -151,7 +152,7 @@ namespace LLC_MOD_Toolbox
                         await RefreshPage();*/
         }
 
-        private async Task StopInstall()
+        private void StopInstall()
         {
             //isInstalling = false;
             installPhase = 0;
@@ -440,7 +441,7 @@ namespace LLC_MOD_Toolbox
         }
         #endregion
         #region 进度条系统
-        public async void ProgressTime_Tick(object? sender, EventArgs e)
+        public void ProgressTime_Tick(object? sender, EventArgs e)
         {
             //await ChangeProgressValue(progressPercentage);
         }
@@ -457,7 +458,7 @@ namespace LLC_MOD_Toolbox
         }
         #endregion
         #region 卸载功能
-        private async void UninstallButtonClick(object sender, RoutedEventArgs e)
+        private void UninstallButtonClick(object sender, RoutedEventArgs e)
         {
             logger.LogInformation("点击删除模组");
             MessageBoxResult result = System.Windows.MessageBox.Show(
