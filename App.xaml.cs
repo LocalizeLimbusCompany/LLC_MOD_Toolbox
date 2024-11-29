@@ -39,7 +39,7 @@ namespace LLC_MOD_Toolbox
 
         private async void Application_Startup(object sender, StartupEventArgs e)
         {
-            var logger = Services.GetService<ILoggerFactory>()!.CreateLogger<App>();
+            var logger = Services.GetRequiredService<ILoggerFactory>()!.CreateLogger<App>();
             logger.LogInformation("—————新日志分割线—————");
             logger.LogInformation("工具箱已进入加载流程。");
             logger.LogInformation("We have a lift off.");
@@ -55,8 +55,8 @@ namespace LLC_MOD_Toolbox
             {
                 logger.LogError(ex, "节点初始化失败。");
             }
-            var mainWindow = Services.GetService<MainWindow>();
-            mainWindow.DataContext = Services.GetService<AutoInstallerViewModel>();
+            var mainWindow = Services.GetRequiredService<MainWindow>();
+            mainWindow.DataContext = Services.GetRequiredService<AutoInstallerViewModel>();
             mainWindow?.Show();
         }
     }

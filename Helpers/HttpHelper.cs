@@ -54,7 +54,7 @@ public class HttpHelper
     public static async Task<Stream> GetModAsync(Uri url)
     {
         Stream stream = await downloader.DownloadFileTaskAsync(url.AbsolutePath);
-        if (await FileHelper.CheckHashAsync(stream, url))
+        if (await ValidateHelper.CheckHashAsync(stream, url))
         {
             return stream;
         }

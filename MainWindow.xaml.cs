@@ -162,7 +162,7 @@ namespace LLC_MOD_Toolbox
         public async Task ChangeEEPic(string url)
         {
             logger.LogDebug("更改彩蛋图片为： {url}", url);
-            await this.Dispatcher.BeginInvoke(() =>
+            await this.Dispatcher.BeginInvoke(method: () =>
             {
                 EEPageImage.Source = BitmapFrame.Create(
                     new Uri(url),

@@ -45,19 +45,6 @@ namespace LLC_MOD_Toolbox.Helpers
             await downloader.DownloadFileTaskAsync(url, path);
         }
 
-        // TODO: 移动到 ValidateHelper
-        public static async Task<bool> CheckHashAsync(Stream archive, Uri endpoint)
-        {
-            using SHA256 sha256 = SHA256.Create();
-            byte[] hash = await sha256.ComputeHashAsync(archive);
-            return Convert
-                .ToHexString(hash)
-                .Equals(
-                    await HttpHelper.GetHashAsync(new(endpoint, "/LimbusLocalizeHash.json")),
-                    StringComparison.OrdinalIgnoreCase
-                );
-        }
-
         /// <summary>
         /// 解压文件 7z 文件
         /// </summary>
@@ -113,7 +100,7 @@ namespace LLC_MOD_Toolbox.Helpers
                 throw new Exception("未找到边狱公司路径。可能是注册表被恶意修改了！");
             }
             var stream = await HttpHelper.GetModAsync(uri);
-            if (!await CheckHashAsync(stream, uri))
+            if (!await ValidateHelper.CheckHashAsync(stream, uri))
             {
                 throw new Exception("Hash check failed.");
             }

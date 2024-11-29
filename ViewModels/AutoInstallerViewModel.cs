@@ -19,14 +19,6 @@ public partial class AutoInstallerViewModel : ObservableObject
     [ObservableProperty]
     private List<NodeInformation> apiNodeList;
 
-    [Obsolete("直接使用参数传递")]
-    [ObservableProperty]
-    private NodeInformation selectedEndPoint;
-
-    [Obsolete("直接使用参数传递")]
-    [ObservableProperty]
-    private NodeInformation selectedApiEndPoint;
-
     [RelayCommand]
     private static Task ModUnistallation()
     {
@@ -62,7 +54,7 @@ public partial class AutoInstallerViewModel : ObservableObject
 
     // TODO: 将参数改为 NodeInformation 类型
     [RelayCommand]
-    private async Task ModInstallation()
+    private async Task ModInstallation(NodeInformation selectedEndPoint)
     {
         MessageBoxResult result = MessageBox.Show(
             "安装前请确保游戏已经关闭。\n确定继续吗？",
@@ -76,7 +68,7 @@ public partial class AutoInstallerViewModel : ObservableObject
         }
         try
         {
-            await FileHelper.InstallBepInExAsync(SelectedEndPoint.Endpoint);
+            await FileHelper.InstallBepInExAsync(selectedEndPoint.Endpoint);
             logger.LogInformation("BepInEx 安装完成。");
         }
         catch (IOException)
@@ -93,13 +85,10 @@ public partial class AutoInstallerViewModel : ObservableObject
         }
     }
 
-    [Obsolete]
     public AutoInstallerViewModel(ILoggerFactory loggerFactory)
     {
         DownloadNodeList = PrimaryNodeList.DownloadNode;
         ApiNodeList = PrimaryNodeList.ApiNode;
-        selectedEndPoint = DownloadNodeList.Last(p => p.IsDefault);
-        selectedApiEndPoint = PrimaryNodeList.ApiNode.Last(p => p.IsDefault);
         logger = loggerFactory.CreateLogger<AutoInstallerViewModel>();
     }
 }

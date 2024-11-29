@@ -35,10 +35,7 @@ namespace LLC_MOD_Toolbox
         private static bool useGithub = false;
         private static bool useMirrorGithub = false;
         private static string limbusCompanyDir = FileHelper.LimbusCompanyPath;
-        private static string limbusCompanyGameDir = Path.Combine(
-            limbusCompanyDir,
-            "LimbusCompany.exe"
-        );
+
         private static readonly string currentDir = AppDomain.CurrentDomain.BaseDirectory;
         private static int installPhase = 0;
         private readonly DispatcherTimer progressTimer;
@@ -83,7 +80,6 @@ namespace LLC_MOD_Toolbox
             PrintInstallInfo("是否使用Github：", useGithub);
             PrintInstallInfo("是否使用Mirror Github：", useMirrorGithub);
             PrintInstallInfo("Limbus公司目录：", limbusCompanyDir);
-            PrintInstallInfo("Limbus公司游戏目录：", limbusCompanyGameDir);
             PrintInstallInfo("节点列表数量：", 0);
             PrintInstallInfo("使用节点：", useEndPoint);
             PrintInstallInfo("灰度测试状态：", greytestStatus);
