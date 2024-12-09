@@ -287,7 +287,6 @@
                             Background="Transparent"
                             BorderBrush="Transparent"
                             BorderThickness="0"
-                            Click="LinkButtonClick"
                             Opacity="1"
                             Style="{StaticResource NoHover}">
                             <Button.Content>
@@ -334,7 +333,6 @@
                             Background="Transparent"
                             BorderBrush="Transparent"
                             BorderThickness="0"
-                            Click="LinkButtonClick"
                             Opacity="1"
                             Style="{StaticResource NoHover}">
                             <Button.Content>
@@ -381,7 +379,6 @@
                             Background="Transparent"
                             BorderBrush="Transparent"
                             BorderThickness="0"
-                            Click="LinkButtonClick"
                             Opacity="1"
                             Style="{StaticResource NoHover}">
                             <Button.Content>
@@ -428,7 +425,6 @@
                             Background="Transparent"
                             BorderBrush="Transparent"
                             BorderThickness="0"
-                            Click="LinkButtonClick"
                             Opacity="1"
                             Style="{StaticResource NoHover}">
                             <Button.Content>
@@ -532,7 +528,6 @@
                             Background="Transparent"
                             BorderBrush="Transparent"
                             BorderThickness="0"
-                            Click="LinkButtonClick"
                             Opacity="1"
                             Style="{StaticResource NoHover}">
                             <Button.Content>
@@ -579,7 +574,6 @@
                             Background="Transparent"
                             BorderBrush="Transparent"
                             BorderThickness="0"
-                            Click="LinkButtonClick"
                             Opacity="1"
                             Style="{StaticResource NoHover}">
                             <Button.Content>
@@ -626,7 +620,6 @@
                             Background="Transparent"
                             BorderBrush="Transparent"
                             BorderThickness="0"
-                            Click="LinkButtonClick"
                             Opacity="1"
                             Style="{StaticResource NoHover}">
                             <Button.Content>
@@ -673,7 +666,6 @@
                             Background="Transparent"
                             BorderBrush="Transparent"
                             BorderThickness="0"
-                            Click="LinkButtonClick"
                             Opacity="1"
                             Style="{StaticResource NoHover}">
                             <Button.Content>
@@ -1080,7 +1072,6 @@
                             HorizontalAlignment="Left"
                             VerticalAlignment="Top"
                             Background="#FFFFEED4"
-                            Click="GreytestInfoButtonClick"
                             Style="{StaticResource NoHover}">
                             <Button.Clip>
                                 <RectangleGeometry

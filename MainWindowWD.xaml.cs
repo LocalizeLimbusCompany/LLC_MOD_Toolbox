@@ -132,15 +132,15 @@ namespace LLC_MOD_Toolbox
             );
             if (RunResult == MessageBoxResult.OK)
             {
-                try
-                {
-                    HttpHelper.LaunchUrl("steam://rungameid/1973530");
-                }
-                catch (Exception ex)
-                {
-                    logger.LogError("出现了问题： ", ex);
-                    System.Windows.MessageBox.Show("出现了问题。\n" + ex.ToString());
-                }
+                //try
+                //{
+                //    HttpHelper.LaunchUrl("steam://rungameid/1973530");
+                //}
+                //catch (Exception ex)
+                //{
+                //    logger.LogError("出现了问题： ", ex);
+                //    System.Windows.MessageBox.Show("出现了问题。\n" + ex.ToString());
+                //}
             }
             /*            isInstalling = false;
                         progressPercentage = 0;
@@ -253,7 +253,7 @@ namespace LLC_MOD_Toolbox
 
         private void WhyShouldIUseThis(object sender, RoutedEventArgs e)
         {
-            HttpHelper.LaunchUrl("https://www.zeroasso.top/docs/configuration/nodes");
+            //HttpHelper.LaunchUrl("https://www.zeroasso.top/docs/configuration/nodes");
         }
         #endregion
         #region 常用方法
@@ -359,17 +359,14 @@ namespace LLC_MOD_Toolbox
         /// <param name="version">当前版本</param>
         /// <param name="IsGithub">是否使用Github</param>
         /// <returns>是否存在更新</returns>
+        [Obsolete]
         private async void CheckToolboxUpdate()
         {
             try
             {
                 logger.LogInformation("正在检查工具箱更新。");
 
-                var latestReleaseTag = await UpdateHelper.GetLatestVersionAsync(
-                    new(
-                        "https://api.github.com/repos/LocalizeLimbusCompany/LLC_MOD_Toolbox/releases/latest"
-                    )
-                );
+                var latestReleaseTag = new Version(0, 0, 0);
                 logger.LogInformation($"最新安装器tag：{latestReleaseTag}");
                 if (latestReleaseTag > Assembly.GetExecutingAssembly().GetName().Version)
                 {
@@ -380,7 +377,7 @@ namespace LLC_MOD_Toolbox
                         MessageBoxButton.OK,
                         MessageBoxImage.Warning
                     );
-                    HttpHelper.LaunchUrl("https://www.zeroasso.top/docs/install/autoinstall");
+                    //HttpHelper.LaunchUrl("https://www.zeroasso.top/docs/install/autoinstall");
                     Application.Current.Shutdown();
                 }
                 logger.LogInformation("没有更新。");

@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using LLC_MOD_Toolbox.Models;
+using LLC_MOD_Toolbox.Services;
 using LLC_MOD_Toolbox.ViewModels;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -16,7 +17,7 @@ namespace LLC_MOD_Toolbox
         public static new App Current => (App)Application.Current;
         public IServiceProvider Services { get; }
 
-        private static IServiceProvider ConfigureServices()
+        private static ServiceProvider ConfigureServices()
         {
             var services = new ServiceCollection();
             services.AddSingleton<ILoggerFactory>(_ =>
@@ -26,6 +27,14 @@ namespace LLC_MOD_Toolbox
                     builder.AddNLog("nlog.config");
                 })
             );
+            services.AddSingleton<RegularFileDownloadService>();
+            services.AddSingleton<GrayFileDownloadService>();
+            services.AddSingleton<IFileDownloadService>(sp =>
+            {
+                var regular = sp.GetRequiredService<RegularFileDownloadService>();
+                var gray = sp.GetRequiredService<GrayFileDownloadService>();
+                return new GrayFileDownloadServiceProxy(regular, gray);
+            });
             services.AddTransient<MainWindow>();
             services.AddTransient<AutoInstallerViewModel>();
             services.AddTransient<GachaViewModel>();
@@ -39,7 +48,7 @@ namespace LLC_MOD_Toolbox
 
         private async void Application_Startup(object sender, StartupEventArgs e)
         {
-            var logger = Services.GetRequiredService<ILoggerFactory>()!.CreateLogger<App>();
+            var logger = Services.GetRequiredService<ILoggerFactory>().CreateLogger<App>();
             logger.LogInformation("—————新日志分割线—————");
             logger.LogInformation("工具箱已进入加载流程。");
             logger.LogInformation("We have a lift off.");
@@ -56,8 +65,9 @@ namespace LLC_MOD_Toolbox
                 logger.LogError(ex, "节点初始化失败。");
             }
             var mainWindow = Services.GetRequiredService<MainWindow>();
+            // TODO: 改以 SettingsViewModel 为 DataContext
             mainWindow.DataContext = Services.GetRequiredService<AutoInstallerViewModel>();
-            mainWindow?.Show();
+            mainWindow.Show();
         }
     }
 }

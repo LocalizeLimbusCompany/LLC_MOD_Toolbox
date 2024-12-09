@@ -4,6 +4,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LLC_MOD_Toolbox.Helpers;
+namespace LLC_MOD_Toolbox.Services;
 
-internal class GreyHttpHelper : IHttpHelper { }
+internal class GrayFileDownloadService : IFileDownloadService { }

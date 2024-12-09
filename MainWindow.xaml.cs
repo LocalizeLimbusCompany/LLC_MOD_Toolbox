@@ -102,11 +102,11 @@ namespace LLC_MOD_Toolbox
                     //await RefreshPage();
                 }
             }
-            else
-            {
-                //nowInstallPage = "gacha";
-                //await RefreshPage();
-            }
+            //else
+            //{
+            //    //nowInstallPage = "gacha";
+            //    //await RefreshPage();
+            //}
         }
 
         /*        public async Task ChangeProgressValue(float value)
@@ -123,10 +123,10 @@ namespace LLC_MOD_Toolbox
                     });
                     logger.Debug("更改进度完成。");
                 }*/
-        private void GreytestInfoButtonClick(object sender, RoutedEventArgs e)
-        {
-            HttpHelper.LaunchUrl("https://www.zeroasso.top/docs/community/llcdev");
-        }
+        //private void GreytestInfoButtonClick(object sender, RoutedEventArgs e)
+        //{
+        //    HttpHelper.LaunchUrl("https://www.zeroasso.top/docs/community/llcdev");
+        //}
 
         #region 彩蛋
         /*        private async void WhiteBlackClickDouble(object sender, MouseButtonEventArgs e)
@@ -204,17 +204,6 @@ namespace LLC_MOD_Toolbox
             }
         }
 
-        private async void LinkButtonClick(object sender, RoutedEventArgs e)
-        {
-            if (sender != null)
-            {
-                string name = await GetSenderName(sender as System.Windows.Controls.Control);
-                if (!string.IsNullOrEmpty(name) && linkDictionary.TryGetValue(name, out string url))
-                {
-                    HttpHelper.LaunchUrl(url);
-                }
-            }
-        }
         #endregion
     }
 }

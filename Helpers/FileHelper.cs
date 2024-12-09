@@ -93,14 +93,13 @@ namespace LLC_MOD_Toolbox.Helpers
         /// 下载边狱公司的 BepInEx 框架
         /// </summary>
         /// <exception cref="ArgumentNullException"></exception>
-        public static async Task InstallBepInExAsync(Uri uri)
+        public static async Task InstallBepInExAsync(string onlineHash, Stream stream)
         {
             if (string.IsNullOrEmpty(LimbusCompanyPath))
             {
                 throw new Exception("未找到边狱公司路径。可能是注册表被恶意修改了！");
             }
-            var stream = await HttpHelper.GetModAsync(uri);
-            if (!await ValidateHelper.CheckHashAsync(stream, uri))
+            if (!await ValidateHelper.CheckHashAsync(stream, onlineHash))
             {
                 throw new Exception("Hash check failed.");
             }

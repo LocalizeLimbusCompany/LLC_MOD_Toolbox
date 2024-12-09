@@ -4,6 +4,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using LLC_MOD_Toolbox.Helpers;
 using LLC_MOD_Toolbox.Models;
+using LLC_MOD_Toolbox.Services;
 using Microsoft.Extensions.Logging;
 
 namespace LLC_MOD_Toolbox.ViewModels;
@@ -12,6 +13,7 @@ public partial class AutoInstallerViewModel : ObservableObject
 {
     public static PrimaryNodeList PrimaryNodeList { get; set; } = new();
     private readonly ILogger<AutoInstallerViewModel> logger;
+    private IFileDownloadService fileDownloadService;
 
     [ObservableProperty]
     private List<NodeInformation> downloadNodeList;
@@ -68,7 +70,9 @@ public partial class AutoInstallerViewModel : ObservableObject
         }
         try
         {
-            await FileHelper.InstallBepInExAsync(selectedEndPoint.Endpoint);
+            var stream = await fileDownloadService.GetAppAsync(selectedEndPoint.Endpoint);
+
+            await FileHelper.InstallBepInExAsync("待补充", stream);
             logger.LogInformation("BepInEx 安装完成。");
         }
         catch (IOException)
@@ -85,10 +89,14 @@ public partial class AutoInstallerViewModel : ObservableObject
         }
     }
 
-    public AutoInstallerViewModel(ILoggerFactory loggerFactory)
+    public AutoInstallerViewModel(
+        ILoggerFactory loggerFactory,
+        IFileDownloadService fileDownloadService
+    )
     {
+        logger = loggerFactory.CreateLogger<AutoInstallerViewModel>();
+        this.fileDownloadService = fileDownloadService;
         DownloadNodeList = PrimaryNodeList.DownloadNode;
         ApiNodeList = PrimaryNodeList.ApiNode;
-        logger = loggerFactory.CreateLogger<AutoInstallerViewModel>();
     }
 }
