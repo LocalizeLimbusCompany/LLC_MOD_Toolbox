@@ -16,18 +16,8 @@
       "isDefault": false
     },
     {
-      "name": "联通云盘",
-      "endpoint": "https://node.zeroasso.top/d/unicom/",
-      "isDefault": false
-    },
-    {
       "name": "移动云盘",
       "endpoint": "https://node.zeroasso.top/d/mobile/",
-      "isDefault": false
-    },
-    {
-      "name": "电信云盘",
-      "endpoint": "https://node.zeroasso.top/d/telecom/",
       "isDefault": false
     }
   ],

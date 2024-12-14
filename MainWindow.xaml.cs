@@ -7,6 +7,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Xml.Linq;
 
 namespace LLC_MOD_Toolbox
 {
@@ -112,6 +113,10 @@ namespace LLC_MOD_Toolbox
             {
                 await MakeGridStatuExceptSelf(AboutPage);
             }
+            else if (nowPage == "anno")
+            {
+                await MakeGridStatuExceptSelf(AnnouncementPage);
+            }
             else
             {
                 await MakeGridStatuExceptSelf(EEPage);
@@ -134,7 +139,8 @@ namespace LLC_MOD_Toolbox
                 SettingsPage,
                 AboutPage,
                 EEPage,
-                GachaPage
+                GachaPage,
+                AnnouncementPage
             ];
             gridList.Remove(g);
             MakeGridStatu(g, true);
@@ -323,7 +329,7 @@ namespace LLC_MOD_Toolbox
         #region 彩蛋
         private async void WhiteBlackClickDouble(object sender, MouseButtonEventArgs e)
         {
-            if (!eeOpening && !eeEntered)
+            if (!eeOpening && !eeEntered && !isInAnno)
             {
                 logger.Info("不要点了>_<");
                 eeOpening = true;
@@ -400,6 +406,78 @@ namespace LLC_MOD_Toolbox
                 }
             }
         }
+        
         #endregion
+        public async Task ChangeAutoInstallButton()
+        {
+            logger.Debug("更改自动安装模组。");
+            await this.Dispatcher.BeginInvoke(() =>
+            {
+                AutoInstallStartButtonIMG.Source = BitmapFrame.Create(new Uri("pack://application:,,,/Picture/Update.png"), BitmapCreateOptions.None, BitmapCacheOption.Default);
+                AutoInstallBTHover.Source = BitmapFrame.Create(new Uri("pack://application:,,,/Picture/UpdateHover.png"), BitmapCreateOptions.None, BitmapCacheOption.Default);
+            });
+        }
+        public async Task DisableGlobalOperations()
+        {
+            await this.Dispatcher.BeginInvoke(() =>
+            {
+                AutoInstallStartButton.IsHitTestVisible = false;
+                OverlayGrid.Visibility = Visibility.Visible;
+            });
+        }
+
+        public async Task EnableGlobalOperations()
+        {
+            await this.Dispatcher.BeginInvoke(() =>
+            {
+                AutoInstallStartButton.IsHitTestVisible = true;
+                OverlayGrid.Visibility = Visibility.Collapsed;
+            });
+        }
+        public async Task ChangeLeftButtonStatu(bool statu)
+        {
+            await this.Dispatcher.BeginInvoke(() =>
+            {
+                InstallOption.IsHitTestVisible = statu;
+                LinkOption.IsHitTestVisible = statu;
+                GreytestOption.IsHitTestVisible = statu;
+                SettingOption.IsHitTestVisible = statu;
+                AboutOption.IsHitTestVisible = statu;
+                EEOption.IsHitTestVisible = statu;
+                AutoInstallButton.IsHitTestVisible = statu;
+                ManualInstallButton.IsHitTestVisible = statu;
+                ReplaceInstallButton.IsHitTestVisible = statu;
+                GachaSimInstallButton.IsHitTestVisible = statu;
+            });
+        }
+        public async Task ChangeAnnoTip(int num)
+        {
+            await this.Dispatcher.BeginInvoke(() =>
+            {
+                AnnoucementButtonTip.Text = "由于本次公告较为重要，您需要继续阅读" + num + "秒。";
+            });
+        }
+        public async Task ChangeAnnoText(string text)
+        {
+            await this.Dispatcher.BeginInvoke(() =>
+            {
+                AnnoucementText.Text = text;
+            });
+        }
+        public async Task AnnoCountEnd()
+        {
+            await this.Dispatcher.BeginInvoke(() =>
+            {
+                AnnoucementButton.IsHitTestVisible = true;
+                AnnoucementButtonTip.Visibility = Visibility.Collapsed;
+            });
+        }
+        public async Task AlreadyReadAnno()
+        {
+            nowPage = "install";
+            nowInstallPage = "auto";
+            await ChangeLeftButtonStatu(true);
+            await RefreshPage();
+        }
     }
 }

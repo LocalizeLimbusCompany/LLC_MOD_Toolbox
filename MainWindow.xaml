@@ -121,10 +121,10 @@
         <Image x:Name="AutoInstallDisabled" Grid.Column="2" HorizontalAlignment="Left" Height="17" Margin="128,18,0,0" Grid.Row="1" VerticalAlignment="Top" Width="91" Source="/Picture/DisableButton.png"/>
         <Image x:Name="ManualInstallDisabled" Grid.Column="2" HorizontalAlignment="Left" Height="17" Margin="275,18,0,0" Grid.Row="1" VerticalAlignment="Top" Width="91" Source="/Picture/DisableButton.png"/>
         <Image x:Name="ReplaceInstallDisabled" Grid.Column="2" HorizontalAlignment="Left" Height="17" Margin="424,18,0,0" Grid.Row="1" VerticalAlignment="Top" Width="90" Source="/Picture/DisableButton.png"/>
-        <Image x:Name="AutoInstallHover" Grid.Column="2" Opacity="0" HorizontalAlignment="Left" Height="46" Margin="105,4,0,0" Grid.Row="1" VerticalAlignment="Top" Width="134" Source="/Picture/ControlBoardHover.png"/>
-        <Image x:Name="ManualInstallHover" Grid.Column="2" Opacity="0" HorizontalAlignment="Left" Height="46" Margin="252,4,0,0" Grid.Row="1" VerticalAlignment="Top" Width="134" Source="/Picture/ControlBoardHover.png"/>
-        <Image x:Name="ReplaceInstallHover" Grid.Column="2" Opacity="0" HorizontalAlignment="Left" Height="46" Margin="400,4,0,0" Grid.Row="1" VerticalAlignment="Top" Width="134" Source="/Picture/ControlBoardHover.png"/>
-        <Image x:Name="GachaSimHover" Grid.Column="2" Opacity="0" HorizontalAlignment="Left" Height="46" Margin="548,4,0,0" Grid.Row="1" VerticalAlignment="Top" Width="134" Source="/Picture/ControlBoardHover.png"/>
+        <Image x:Name="AutoInstallHover" IsHitTestVisible="False" Panel.ZIndex="5" Grid.Column="2" Opacity="0" HorizontalAlignment="Left" Height="46" Margin="105,4,0,0" Grid.Row="1" VerticalAlignment="Top" Width="134" Source="/Picture/ControlBoardHover.png"/>
+        <Image x:Name="ManualInstallHover" IsHitTestVisible="False" Panel.ZIndex="5" Grid.Column="2" Opacity="0" HorizontalAlignment="Left" Height="46" Margin="252,4,0,0" Grid.Row="1" VerticalAlignment="Top" Width="134" Source="/Picture/ControlBoardHover.png"/>
+        <Image x:Name="ReplaceInstallHover" IsHitTestVisible="False" Panel.ZIndex="5" Grid.Column="2" Opacity="0" HorizontalAlignment="Left" Height="46" Margin="400,4,0,0" Grid.Row="1" VerticalAlignment="Top" Width="134" Source="/Picture/ControlBoardHover.png"/>
+        <Image x:Name="GachaSimHover" IsHitTestVisible="False" Panel.ZIndex="5" Grid.Column="2" Opacity="0" HorizontalAlignment="Left" Height="46" Margin="548,4,0,0" Grid.Row="1" VerticalAlignment="Top" Width="134" Source="/Picture/ControlBoardHover.png"/>
         <Button x:Name="AutoInstallButton" Grid.Column="2" Visibility="Collapsed" Content="自动安装" HorizontalAlignment="Left" Margin="122,4,0,0" Grid.Row="1" VerticalAlignment="Top" Height="40" Width="101" Background="Transparent" BorderBrush="Transparent" BorderThickness="0" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Bold" Foreground="#FFFFEED4" FontSize="18" Style="{StaticResource NoHover}" Click="AutoInstallButtonClick">
             <Button.Triggers>
                 <EventTrigger RoutedEvent="Button.MouseEnter">
@@ -191,7 +191,7 @@
                 </EventTrigger>
             </Button.Triggers>
         </Button>
-        <Button x:Name="GachaSimInstallButton" Grid.Column="2" Visibility="Visible" Content="抽卡模拟器" HorizontalAlignment="Left" Margin="564,5,0,0" Grid.Row="1" VerticalAlignment="Top" Height="40" Width="102" Background="Transparent" BorderBrush="Transparent" BorderThickness="0" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Bold" Foreground="#FFFFEED4" FontSize="18" Style="{StaticResource NoHover}" Click="GachaSimButtonClick">
+        <Button x:Name="GachaSimInstallButton" Grid.Column="2" Visibility="Collapsed" Content="抽卡模拟器" HorizontalAlignment="Left" Margin="564,5,0,0" Grid.Row="1" VerticalAlignment="Top" Height="40" Width="102" Background="Transparent" BorderBrush="Transparent" BorderThickness="0" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Bold" Foreground="#FFFFEED4" FontSize="18" Style="{StaticResource NoHover}" Click="GachaSimButtonClick">
             <Button.Triggers>
                 <EventTrigger RoutedEvent="Button.MouseEnter">
                     <BeginStoryboard>
@@ -351,11 +351,11 @@ From="1" To="0" Duration="0:0:0.3"/>
         <Image x:Name="SettingHover" HorizontalAlignment="Left" IsHitTestVisible="False" Opacity="0" Height="48" Margin="15,197,0,0" Grid.Row="1" VerticalAlignment="Top" Width="168" Source="/Picture/ButtonHover.png" Grid.ColumnSpan="3"/>
         <Image x:Name="AboutHover" HorizontalAlignment="Left" IsHitTestVisible="False" Opacity="0" Height="49" Margin="15,247,0,0" Grid.Row="1" VerticalAlignment="Top" Width="168" Source="/Picture/ButtonHover.png" Grid.ColumnSpan="3"/>
         <Image x:Name="EEHover" HorizontalAlignment="Left" IsHitTestVisible="False" Opacity="0" Height="49" Margin="15,296,0,0" Grid.Row="1" VerticalAlignment="Top" Width="168" Source="/Picture/ButtonHover.png" Grid.ColumnSpan="3"/>
-        <Grid x:Name="AutoInstallPage" Visibility="Collapsed" Panel.ZIndex="5" Margin="62,55,54,32" Grid.Column="2" Grid.Row="1">
+        <Grid x:Name="AutoInstallPage" Visibility="Visible" Panel.ZIndex="5" Margin="62,55,54,32" Grid.Column="2" Grid.Row="1">
 
             <Button x:Name="AutoInstallStartButton" HorizontalAlignment="Center" Margin="0,151,0,0" VerticalAlignment="Top" Panel.ZIndex="3" Width="196" Height="70" Background="Transparent" BorderBrush="Transparent" BorderThickness="0" Style="{StaticResource NoHover}" Click="InstallButtonClick">
                 <Button.Content>
-                    <Image Height="70" Width="195" Source="/Picture/Install.png" />
+                    <Image x:Name="AutoInstallStartButtonIMG" Height="70" Width="195" Source="/Picture/Install.png" />
                 </Button.Content>
                 <Button.Triggers>
                     <EventTrigger RoutedEvent="Button.MouseEnter">
@@ -379,7 +379,7 @@ From="1" To="0" Duration="0:0:0.3"/>
                 </Button.Triggers>
             </Button>
             <Image x:Name="AutoInstallBTHover" HorizontalAlignment="Center" Panel.ZIndex="5" IsHitTestVisible="False" Opacity="0" Height="70" Margin="0,151,0,0" VerticalAlignment="Top" Width="196" Source="/Picture/InstallHover.png"/>
-            <Image x:Name="AutoInstallBTIng" HorizontalAlignment="Center" Panel.ZIndex="10" IsHitTestVisible="False" Opacity="1" Height="70" Margin="0,151,0,0" VerticalAlignment="Top" Width="196" Source="/Picture/Installing.png"/>
+            <Image x:Name="AutoInstallBTIng" Visibility="Collapsed" HorizontalAlignment="Center" Panel.ZIndex="10" IsHitTestVisible="False" Opacity="1" Height="70" Margin="0,151,0,0" VerticalAlignment="Top" Width="196" Source="/Picture/Installing.png"/>
             <Image HorizontalAlignment="Center"  IsHitTestVisible="False" Height="123" VerticalAlignment="Top" Width="482" Source="/Picture/StartInstallBackground.png" Margin="0,127,0,0"/>
             <Canvas Margin="-10,294,10,22">
                 <Image x:Name="FullProgress" Height="50" Canvas.Left="26" Canvas.Top="30" Width="624" Source="/Picture/FullProgress.png" Panel.ZIndex="5" HorizontalAlignment="Left" VerticalAlignment="Center">
@@ -389,8 +389,8 @@ From="1" To="0" Duration="0:0:0.3"/>
                 </Image>
                 <Image x:Name="EmptyProgress" Height="50" Canvas.Left="26" Canvas.Top="30" Width="624" Source="/Picture/EmptyProgress.png" Panel.ZIndex="3" HorizontalAlignment="Left" VerticalAlignment="Center"/>
             </Canvas>
-            <Image HorizontalAlignment="Left" Height="81" Margin="24,249,0,0" VerticalAlignment="Top" Width="84" Source="/Picture/LittleBlack.png"/>
-            <Image HorizontalAlignment="Left" Height="92" Margin="530,238,0,0" VerticalAlignment="Top" Width="104" Source="/Picture/LittleWhite.png"/>
+            <Image HorizontalAlignment="Left" Height="288" Margin="11,77,0,0" VerticalAlignment="Top" Width="384" Source="/Picture/xiaoheiNew.png"/>
+            <Image HorizontalAlignment="Left" Height="288" Margin="475,102,0,0" VerticalAlignment="Top" Width="384" Source="/Picture/xiaobaiNew.png"/>
         </Grid>
         <Grid x:Name="ManualInstallPage" Visibility="Collapsed" Panel.ZIndex="5" Margin="62,55,54,32" Grid.Column="2" Grid.Row="1">
             <Label Content="手动安装功能尚未开启，敬请期待后续版本。" HorizontalAlignment="Center" Margin="0,137,0,0" VerticalAlignment="Top" Height="61" Width="494" FontSize="20" Foreground="#FFFFEED4" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Medium"/>
@@ -708,7 +708,7 @@ From="1" To="0" Duration="0:0:0.3"/>
             </Button>
             <Label Content="了解更多" HorizontalAlignment="Left" IsHitTestVisible="False" Margin="450,199,0,0" VerticalAlignment="Top" Height="38" Width="74" FontSize="16" Foreground="Black" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Heavy"/>
         </Grid>
-        <Grid x:Name="SettingsPage" Visibility="Visible" Panel.ZIndex="5" Margin="62,55,54,32" Grid.Column="2" Grid.Row="1">
+        <Grid x:Name="SettingsPage" Visibility="Collapsed" Panel.ZIndex="5" Margin="62,55,54,32" Grid.Column="2" Grid.Row="1">
             <Label Content="切换节点" HorizontalAlignment="Left" Margin="100,28,0,0" VerticalAlignment="Top" Height="41" Width="494" FontSize="22" Foreground="#FFFFEED4" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Medium"/>
             <ComboBox x:Name="NodeCombobox" Margin="304,35,70,330" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Medium" Foreground="Black" FontSize="16" SelectionChanged="NodeComboboxSelectionChanged" >
                 <ComboBox.Clip>
@@ -793,7 +793,7 @@ From="1" To="0" Duration="0:0:0.3"/>
         </Grid>
         <Grid x:Name="AboutPage" Visibility="Collapsed" Panel.ZIndex="5" Margin="62,55,54,32" Grid.Column="2" Grid.Row="1">
             <Label HorizontalAlignment="Center" Margin="0,15,0,0" VerticalAlignment="Top" Height="357" Width="644" FontSize="15" Foreground="#FFFFEED4" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Medium">
-                <TextBlock Text="都市零协会工具箱 (LLC_MOD_Toolbox) 是服务于都市零协会汉化模组 (LocalizeLimbusCompany) 的自动化安装工具。本软件使用库的许可证请于零协会官网 (https://www.zeroasso.top) 查看。&#10;- LLCMT工具箱&#10;  - 代码实现：曾小皮、10291029&#10;  - 美术设计：记得保存、玉佩（抽卡模拟器）&#10;- LLC翻译模组&#10;  - 翻译文本：零协会翻译组全体译者&#10;  - 汉化模组代码：奈芙Nephthys&#10;  - 汉化模组字体：茜、北岚&#10;- 特别鸣谢&#10;  - 服务器运维 &amp; 开发：曾小皮 &#10;  - 零协会广播局全体创作者&#10;  - 翻译工具：Paratranz&#10;&#10;人无语言则茫然无依。" TextWrapping="Wrap" Height="351"/>
+                <TextBlock Text="都市零协会工具箱 (LLC_MOD_Toolbox) 是服务于都市零协会汉化模组 (LocalizeLimbusCompany) 的自动化安装工具。本软件使用库的许可证请于零协会官网 (https://www.zeroasso.top) 查看。&#10;- LLCMT工具箱&#10;  - 代码实现：曾小皮、10291029&#10;  - 美术设计：记得保存、玉佩（抽卡模拟器）、Napstablook-owo（部分美术资源）&#10;- LLC翻译模组&#10;  - 翻译文本：零协会翻译组全体译者&#10;  - 汉化模组代码：奈芙Nephthys&#10;  - 汉化模组字体：茜、北岚&#10;- 特别鸣谢&#10;  - 服务器运维 &amp; 开发：曾小皮 &#10;  - 零协会广播局全体创作者&#10;  - 翻译工具：Paratranz&#10;&#10;人无语言则茫然无依。" TextWrapping="Wrap" Height="351"/>
             </Label>
         </Grid>
         <Grid x:Name="EEPage" Visibility="Collapsed" Panel.ZIndex="5" Margin="62,55,54,32" Grid.Column="2" Grid.Row="1">
@@ -882,8 +882,49 @@ From="1" To="0" Duration="0:0:0.3"/>
                 </Label.Content>
             </Label>
         </Grid>
+        <Grid x:Name="AnnouncementPage" Visibility="Collapsed" Panel.ZIndex="5" Margin="62,55,54,32" Grid.Column="2" Grid.Row="1">
+            <Label HorizontalAlignment="Center" Margin="0,10,0,0" VerticalAlignment="Top" Height="55" Width="644" FontSize="35" Foreground="#FFFFEED4" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Bold">
+                <TextBlock Text="存在未读的新公告！" Height="45"/>
+            </Label>
+            <Label HorizontalAlignment="Center" Margin="0,70,0,0" VerticalAlignment="Top" Height="269" Width="644" FontSize="15" Foreground="#FFFFEED4" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Medium">
+                <TextBlock x:Name="AnnoucementText" Text="测试文本测试文本测试文本测试文本测试文本测试文本测试文本测试文本测试文本测试文本测试文本测试文本测试文本测试文本测试文本测试文本测试文本测试文本测试文本测试文本测试文本测试文本测试文本测试文本测试文本测试文本测试文本测试文本测试文本测试文本测试文本测试文本测试文本测试文本测试文本测试文本测试文本测试文本测" TextWrapping="Wrap" Height="262" Width="634"/>
+            </Label>
+            <Image x:Name="AnnouncementButtonHover" Panel.ZIndex="5" IsHitTestVisible="False" Opacity="0" HorizontalAlignment="Center" Height="34" Margin="0,340,0,0" VerticalAlignment="Top" Width="80" Source="/Picture/SettingButtonHover.png"/>
+            <Button x:Name="AnnoucementButton" IsHitTestVisible="False" HorizontalAlignment="Center" Margin="0,343,0,0" VerticalAlignment="Top" Height="28" Width="74" Style="{StaticResource NoHover}" Background="#FFFFEED4" Click="AnnoucementButtonClick">
+                <Button.Clip>
+                    <RectangleGeometry Rect="0,0,74,28" RadiusX="3" RadiusY="3"/>
+                </Button.Clip>
+                <Button.Triggers>
+                    <EventTrigger RoutedEvent="Button.MouseEnter">
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <DoubleAnimation Storyboard.TargetName="AnnouncementButtonHover"
+Storyboard.TargetProperty="Opacity"
+From="0" To="1" Duration="0:0:0.3"/>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </EventTrigger>
+                    <EventTrigger RoutedEvent="Button.MouseLeave">
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <DoubleAnimation Storyboard.TargetName="AnnouncementButtonHover"
+Storyboard.TargetProperty="Opacity"
+From="1" To="0" Duration="0:0:0.3"/>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </EventTrigger>
+                </Button.Triggers>
+            </Button>
+            <Label x:Name="AnnoucementButtonText"  Content="已阅" HorizontalAlignment="Left" IsHitTestVisible="False" Margin="311,340,0,0" VerticalAlignment="Top" Height="38" Width="52" FontSize="16" Foreground="Black" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Heavy"/>
+            <Label HorizontalAlignment="Left" Margin="377,341,0,0" VerticalAlignment="Top" Height="33" Width="264" FontSize="12" Foreground="#FFFFEED4" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Medium">
+                <TextBlock x:Name="AnnoucementButtonTip" Text="由于本次公告较为重要，您需要继续阅读N秒。" TextWrapping="Wrap" Height="23" Width="254"/>
+            </Label>
+        </Grid>
         <Button Grid.Column="1" HorizontalAlignment="Center" Margin="0,350,0,0" Grid.Row="1" VerticalAlignment="Top" Height="41" Width="155" Style="{StaticResource BlackWhite}" Background="Transparent" BorderBrush="Transparent" BorderThickness="0" MouseDoubleClick="WhiteBlackClickDouble" />
         <Button Grid.Column="1" HorizontalAlignment="Center" Margin="0,400,0,0" Grid.Row="1" VerticalAlignment="Top" Height="41" Width="155" Style="{StaticResource BlackWhite}" Background="Transparent" BorderBrush="Transparent" BorderThickness="0" MouseDoubleClick="WhiteBlackClickDouble"/>
+        <Grid x:Name="OverlayGrid" Visibility="Visible" Background="Transparent" Grid.ColumnSpan="3" Margin="0,0,-1,0" Grid.RowSpan="2">
+            <Label Content="正在加载……" HorizontalAlignment="Left" IsHitTestVisible="False" VerticalAlignment="Top" Height="68" Width="264" FontSize="40" Foreground="#FFFFEED4" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Heavy" Margin="502,21,0,0"/>
+        </Grid>
     </Grid>
 </Window>
  

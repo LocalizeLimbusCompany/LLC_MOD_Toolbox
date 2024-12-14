@@ -58,14 +58,16 @@
     <None Remove="Picture\Installing.png" />
     <None Remove="Picture\LinkBT.png" />
     <None Remove="Picture\LinkBTHover.png" />
-    <None Remove="Picture\LittleBlack.png" />
-    <None Remove="Picture\LittleWhite.png" />
     <None Remove="Picture\Lunacy.png" />
     <None Remove="Picture\NormalLine.png" />
     <None Remove="Picture\SettingButton.png" />
     <None Remove="Picture\SettingButtonHover.png" />
     <None Remove="Picture\SettingsLine.png" />
     <None Remove="Picture\StartInstallBackground.png" />
+    <None Remove="Picture\Update.png" />
+    <None Remove="Picture\UpdateHover.png" />
+    <None Remove="Picture\xiaobaiNew.png" />
+    <None Remove="Picture\xiaoheiNew.png" />
     <None Remove="Picture\ZALogoA.png" />
     <None Remove="TitleBar.png" />
   </ItemGroup>
@@ -109,8 +111,6 @@
     <Resource Include="Picture\Install.png" />
     <Resource Include="Picture\InstallHover.png" />
     <Resource Include="Picture\Installing.png" />
-    <Resource Include="Picture\LittleBlack.png" />
-    <Resource Include="Picture\LittleWhite.png" />
     <Resource Include="Picture\Minimize.png" />
     <Resource Include="Picture\MinimizeHover.png" />
     <Resource Include="Picture\SettingsLine.png" />
@@ -119,6 +119,10 @@
 
   <ItemGroup>
     <Resource Include="Picture\TitleBar.png" />
+    <Resource Include="Picture\Update.png" />
+    <Resource Include="Picture\UpdateHover.png" />
+    <Resource Include="Picture\xiaobaiNew.png" />
+    <Resource Include="Picture\xiaoheiNew.png" />
     <Resource Include="Picture\ZALogoA.png" />
   </ItemGroup>
 

@@ -11,6 +11,14 @@
  * 要是你尝试玩弄这段代码的话，你将会在无尽的通宵中不断地咒骂自己为什么会认为自己聪明到可以优化这段代码。
  * 现在请关闭这个文件去玩点别的吧。
 */
+using Downloader;
+using LLC_MOD_Toolbox.Models;
+using log4net;
+using Microsoft.Win32;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using Newtonsoft.Json.Serialization;
+using SevenZip;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
@@ -21,14 +29,6 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Threading;
-using Downloader;
-using LLC_MOD_Toolbox.Models;
-using log4net;
-using Microsoft.Win32;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using Newtonsoft.Json.Serialization;
-using SevenZip;
 
 namespace LLC_MOD_Toolbox
 {
@@ -50,6 +50,7 @@ namespace LLC_MOD_Toolbox
         private static int installPhase = 0;
         private readonly DispatcherTimer progressTimer;
         private float progressPercentage = 0;
+        private bool isNewestModVersion = true;
         // GreyTest 灰度测试2.0
         private static string greytestUrl = string.Empty;
         private static bool greytestStatus = false;
@@ -70,6 +71,7 @@ namespace LLC_MOD_Toolbox
             logger.Info("工具箱已进入加载流程。");
             logger.Info("We have a lift off.");
             logger.Info($"WPF架构工具箱 版本：{VERSION} 。");
+            await DisableGlobalOperations();
             InitNode();
             await RefreshPage();
             await ChangeEEPic("https://dl.kr.zeroasso.top/ee_pic/public/public.png");
@@ -77,26 +79,11 @@ namespace LLC_MOD_Toolbox
             LoadConfig();
             InitLink();
             CheckLimbusCompanyPath();
+            await CheckModInstalled();
             SevenZipBase.SetLibraryPath(Path.Combine(currentDir, "7z.dll"));
+            await CheckAnno();
+            await EnableGlobalOperations();
             logger.Info("加载流程完成。");
-        }
-        /// <summary>
-        /// 安装时输出统一格式日志。
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="promptInfo"></param>
-        /// <param name="someObject"></param>
-        private static void PrintInstallInfo<T>(string promptInfo, T someObject)
-        {
-            if (someObject == null)
-            {
-                logger.Info($"{promptInfo}：空");
-            }
-            else
-            {
-                logger.Info($"{promptInfo}{someObject}");
-            }
-
         }
         #region 安装功能
         /// <summary>
@@ -107,6 +94,7 @@ namespace LLC_MOD_Toolbox
         private async void InstallButtonClick(object sender, RoutedEventArgs e)
         {
             isInstalling = true;
+            isNewestModVersion = true;
             await RefreshPage();
             logger.Info("开始安装。");
             logger.Info("**********安装信息打印**********");
@@ -124,6 +112,17 @@ namespace LLC_MOD_Toolbox
                 logger.Warn("下载节点为空。");
             }
             installPhase = 0;
+            if (File.Exists(limbusCompanyDir + "/version.dll"))
+            {
+                logger.Warn("检测到落后800年的Melonloader.");
+                MessageBoxResult DialogResult = System.Windows.MessageBox.Show("检测到落后的MelonLoader框架！\n现有的BepInEx会与MelonLoader发生冲突，导致您无法进行游戏！\n建议您进行一次卸载后继续安装模组。\n若您**及其确定这是个误判**，请点击确定，否则请点击取消返回，之后您可以在设置中找到卸载，将MelonLoader卸载后重新安装。", "警告", MessageBoxButton.OKCancel, MessageBoxImage.Hand);
+                if (DialogResult == MessageBoxResult.Cancel)
+                {
+                    await StopInstall();
+                    return;
+                }
+                logger.Warn("用户选择无视警告。");
+            }
             Process[] limbusProcess = Process.GetProcessesByName("LimbusCompany");
             if (limbusProcess.Length > 0)
             {
@@ -131,6 +130,7 @@ namespace LLC_MOD_Toolbox
                 MessageBoxResult DialogResult = System.Windows.MessageBox.Show("检测到 Limbus Company 仍然处于开启状态！\n建议您关闭游戏后继续安装模组。\n若您已经关闭了 Limbus Company，请点击确定，否则请点击取消返回。", "警告", MessageBoxButton.OKCancel, MessageBoxImage.Hand);
                 if (DialogResult == MessageBoxResult.Cancel)
                 {
+                    await StopInstall();
                     return;
                 }
                 logger.Warn("用户选择无视警告。");
@@ -163,7 +163,15 @@ namespace LLC_MOD_Toolbox
             }
             installPhase = 0;
             logger.Info("安装完成。");
-            MessageBoxResult RunResult = System.Windows.MessageBox.Show("安装已完成！\n点击“确定”立刻运行边狱公司。\n点击“取消”关闭弹窗。\n加载时请耐心等待。", "完成", MessageBoxButton.OKCancel);
+            MessageBoxResult RunResult = new();
+            if (isNewestModVersion)
+            {
+                MessageBox.Show("没有检测到新版本模组！\n您的模组已经为最新。\n点击“确定”立刻运行边狱公司。\n点击“取消”关闭弹窗。\n加载时请耐心等待。", "完成", MessageBoxButton.OKCancel);
+            }
+            else
+            {
+                MessageBox.Show("安装已完成！\n点击“确定”立刻运行边狱公司。\n点击“取消”关闭弹窗。\n加载时请耐心等待。", "完成", MessageBoxButton.OKCancel);
+            }
             if (RunResult == MessageBoxResult.OK)
             {
                 try
@@ -199,6 +207,7 @@ namespace LLC_MOD_Toolbox
                 logger.Info("BepInEx Zip目录： " + BepInExZipPath);
                 if (!File.Exists(limbusCompanyDir + "/BepInEx/core/BepInEx.Core.dll"))
                 {
+                    isNewestModVersion = false;
                     System.Windows.MessageBox.Show("如果你安装了杀毒软件，接下来可能会提示工具箱正在修改关键dll。\n允许即可。如果不信任汉化补丁，可以退出本程序。", "警告");
                     if (useGithub)
                     {
@@ -238,7 +247,11 @@ namespace LLC_MOD_Toolbox
                 if (useGithub)
                 {
                     result = await CheckChineseFontAssetUpdate(LastWriteTime, true);
-                    await DownloadFileAsync($"https://github.com/LocalizeLimbusCompany/LLC_ChineseFontAsset/releases/download/{result.Tag}/tmpchinesefont_BIE_{result.Tag}.7z", tmpchineseZipPath);
+                    if (result.IsNotLatestVersion)
+                    {
+                        isNewestModVersion = false;
+                        await DownloadFileAsync($"https://github.com/LocalizeLimbusCompany/LLC_ChineseFontAsset/releases/download/{result.Tag}/tmpchinesefont_BIE_{result.Tag}.7z", tmpchineseZipPath);
+                    }
                 }
                 else
                 {
@@ -250,10 +263,12 @@ namespace LLC_MOD_Toolbox
                 }
                 if (!useGithub && !useMirrorGithub && result.IsNotLatestVersion)
                 {
+                    isNewestModVersion = false;
                     await DownloadFileAutoAsync("tmpchinesefont_BIE.7z", tmpchineseZipPath);
                 }
                 else if (result.IsNotLatestVersion)
                 {
+                    isNewestModVersion = false;
                     await DownloadFileAsync($"https://mirror.ghproxy.com/https://github.com/LocalizeLimbusCompany/LLC_ChineseFontAsset/releases/download/{result.Tag}/tmpchinesefont_BIE_{result.Tag}.7z", tmpchineseZipPath);
                 }
                 logger.Info("解压 tmp zip 中。");
@@ -295,6 +310,7 @@ namespace LLC_MOD_Toolbox
                     }
                     else
                     {
+                        isNewestModVersion = false;
                         logger.Info("模组不存在。进行安装。");
                     }
                     await DownloadFileAsync($"https://github.com/LocalizeLimbusCompany/LocalizeLimbusCompany/releases/download/{latestLLCVersion}/LimbusLocalize_BIE_{latestLLCVersion}.7z", limbusLocalizeZipPath);
@@ -326,6 +342,7 @@ namespace LLC_MOD_Toolbox
                     }
                     else
                     {
+                        isNewestModVersion = false;
                         logger.Info("模组不存在。进行安装。");
                     }
                     await DownloadFileAutoAsync($"LimbusLocalize_BIE_{latestLLCVersion}.7z", limbusLocalizeZipPath);
@@ -364,6 +381,7 @@ namespace LLC_MOD_Toolbox
                             return;
                         }
                     }
+                    isNewestModVersion = false;
                     await DownloadFileAsync($"https://mirror.ghproxy.com/https://github.com/LocalizeLimbusCompany/LocalizeLimbusCompany/releases/download/{latestLLCVersion}/LimbusLocalize_BIE_{latestLLCVersion}.7z", limbusLocalizeZipPath);
                     logger.Info("解压模组本体 zip 中。");
                     Unarchive(limbusLocalizeZipPath, limbusCompanyDir);
@@ -386,7 +404,7 @@ namespace LLC_MOD_Toolbox
                     NamingStrategy = new CamelCaseNamingStrategy()
                 }
             };
-            var json = JsonConvert.DeserializeObject<RootModel>(File.ReadAllText($"NodeList.json"),_jsonSettings);
+            var json = JsonConvert.DeserializeObject<RootModel>(File.ReadAllText($"NodeList.json"), _jsonSettings);
             nodeList = json.DownloadNode;
             apiList = json.ApiNode;
             NodeCombobox.Items.Add("恢复默认");
@@ -550,6 +568,25 @@ namespace LLC_MOD_Toolbox
             using SevenZipExtractor extractor = new(archivePath);
             extractor.ExtractArchive(output);
         }
+
+        /// <summary>
+        /// 安装时输出统一格式日志。
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="promptInfo"></param>
+        /// <param name="someObject"></param>
+        private static void PrintInstallInfo<T>(string promptInfo, T someObject)
+        {
+            if (someObject == null)
+            {
+                logger.Info($"{promptInfo}：空");
+            }
+            else
+            {
+                logger.Info($"{promptInfo}{someObject}");
+            }
+
+        }
         private static void CheckLimbusCompanyPath()
         {
             if (skipLCBPathCheck && !string.IsNullOrEmpty(LCBPath))
@@ -623,7 +660,7 @@ namespace LLC_MOD_Toolbox
             if (JsonObject == null)
             {
                 logger.Error("获取模组Hash失败。");
-                throw new Exception("获取Hash失败。");
+                throw new HashException();
             }
             string Hash = JsonObject.hash;
             logger.Info("获取到的最新Hash为：" + Hash);
@@ -715,7 +752,7 @@ namespace LLC_MOD_Toolbox
             var output = JArray.Parse(raw)[0].Value<JObject>();
             if (output.TryGetValue("tag_name", out var jtag))
             {
-                var latestVersionTag= jtag.Value<string>();
+                var latestVersionTag = jtag.Value<string>();
                 logger.Info($"汉化模组最后标签为： {latestVersionTag}");
                 return latestVersionTag;
             }
@@ -756,21 +793,6 @@ namespace LLC_MOD_Toolbox
                 UseShellExecute = true
             };
             Process.Start(psi);
-        }
-        /// <summary>
-        /// 用于错误处理。
-        /// </summary>
-        /// <param name="ex"></param>
-        /// <param name="CloseWindow">是否关闭窗体。</param>
-        /// <param name="advice">提供建议</param>
-        public static void ErrorReport(Exception ex, bool CloseWindow, string advice = "")
-        {
-            logger.Error("出现了问题：\n", ex);
-            System.Windows.MessageBox.Show($"运行中出现了问题。\n{advice}若要反馈，请带上链接或日志。\n——————————\n{ex}", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
-            if (CloseWindow)
-            {
-                System.Windows.Application.Current.Shutdown();
-            }
         }
         /// <summary>
         /// 检查工具箱更新
@@ -841,6 +863,26 @@ namespace LLC_MOD_Toolbox
             }
             return new FontUpdateResult(null, false);
         }
+        private async Task CheckModInstalled()
+        {
+            try
+            {
+                logger.Info("正在检查模组是否安装。");
+                if (File.Exists(limbusCompanyDir + "\\BepInEx\\plugins\\LLC\\LimbusLocalize_BIE.dll"))
+                {
+                    logger.Info("模组已安装。");
+                    await ChangeAutoInstallButton();
+                }
+                else
+                {
+                    logger.Info("模组未安装。");
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.Error("出现问题。" + ex.ToString());
+            }
+        }
         #endregion
         #region 进度条系统
         public async void ProgressTime_Tick(object? sender, EventArgs e)
@@ -859,7 +901,7 @@ namespace LLC_MOD_Toolbox
         }
         #endregion
         #region 卸载功能
-        private void UninstallButtonClick(object sender, RoutedEventArgs e)
+        private async void UninstallButtonClick(object sender, RoutedEventArgs e)
         {
             logger.Info("点击删除模组");
             MessageBoxResult result = System.Windows.MessageBox.Show("删除后你需要重新安装汉化补丁。\n确定继续吗？", "警告", MessageBoxButton.YesNo, MessageBoxImage.Warning);
@@ -868,7 +910,10 @@ namespace LLC_MOD_Toolbox
                 logger.Info("确定删除模组。");
                 try
                 {
+                    await DisableGlobalOperations();
                     DeleteBepInEx();
+                    DeleteMelonLoader();
+                    await EnableGlobalOperations();
                 }
                 catch (Exception ex)
                 {
@@ -919,6 +964,17 @@ namespace LLC_MOD_Toolbox
             DeleteFile(limbusCompanyDir + "/BepInEx-IL2CPP-x64.7z");
             DeleteFile(limbusCompanyDir + "/LimbusLocalize_BIE.7z");
             DeleteFile(limbusCompanyDir + "/tmpchinese_BIE.7z");
+        }
+        public static void DeleteMelonLoader()
+        {
+            // 为什么还有人在用Melonloader！！！！
+            DeleteDir(limbusCompanyDir + "/MelonLoader");
+            DeleteDir(limbusCompanyDir + "/Mods");
+            DeleteDir(limbusCompanyDir + "/Plugins");
+            DeleteDir(limbusCompanyDir + "/UserData");
+            DeleteDir(limbusCompanyDir + "/UserLibs");
+            DeleteFile(limbusCompanyDir + "/dobby.dll");
+            DeleteFile(limbusCompanyDir + "/version.dll");
         }
         #endregion
         #region 灰度测试
@@ -1028,9 +1084,11 @@ namespace LLC_MOD_Toolbox
         {
             public bool CskipLCBPathCheck { get; set; }
             public string? CLCBPath { get; set; }
+            public int? CAnnoVersion { get; set; }
         }
         private static bool skipLCBPathCheck = false;
         private static string? LCBPath = string.Empty;
+        private static int? AnnoVersion = 0;
         private static readonly string configPath = Path.Combine(currentDir, "config.json");
         private static void LoadConfig()
         {
@@ -1043,6 +1101,7 @@ namespace LLC_MOD_Toolbox
                     LLCMTConfig LLCMTconfig = JsonConvert.DeserializeObject<LLCMTConfig>(configContent) ?? throw new FileNotFoundException("配置文件未找到。");
                     skipLCBPathCheck = LLCMTconfig.CskipLCBPathCheck;
                     LCBPath = LLCMTconfig.CLCBPath;
+                    AnnoVersion = LLCMTconfig.CAnnoVersion;
                     logger.Info("跳过路径检查：" + skipLCBPathCheck);
                     logger.Info("路径：" + LCBPath);
                 }
@@ -1099,6 +1158,32 @@ namespace LLC_MOD_Toolbox
                 ErrorReport(ex, false);
             }
         }
+        private static void ChangeAnnoVersionConfig(int? updatedVersion)
+        {
+            logger.Info($"改变公告版本配置，Value： {updatedVersion}");
+            try
+            {
+                if (updatedVersion == null)
+                {
+                    logger.Error("修改的值为Null。");
+                    return;
+                }
+                if (File.Exists(configPath))
+                {
+                    string configContent = File.ReadAllText(configPath);
+                    LLCMTConfig LLCMTconfig = JsonConvert.DeserializeObject<LLCMTConfig>(configContent) ?? throw new FileNotFoundException("配置文件未找到。");
+                    LLCMTconfig.CAnnoVersion = updatedVersion;
+                    string updatedConfigContent = JsonConvert.SerializeObject(LLCMTconfig, Formatting.Indented);
+                    logger.Debug("更新后的配置文件：" + updatedConfigContent);
+                    File.WriteAllText(configPath, updatedConfigContent);
+                    logger.Info("配置文件更新完成。");
+                }
+            }
+            catch (Exception ex)
+            {
+                ErrorReport(ex, false);
+            }
+        }
         #endregion
         #region 开关模组
         // 我也不知道为什么这个功能这么多人想要，不过既然那么多人要，那我就写了
@@ -1137,12 +1222,14 @@ namespace LLC_MOD_Toolbox
         private int[]? uniqueCount;
         private async Task InitGacha()
         {
+            await DisableGlobalOperations();
             string gachaText = await GetURLText("https://api.kr.zeroasso.top/wiki/wiki_personal.json");
             if (string.IsNullOrEmpty(gachaText))
             {
                 logger.Error("初始化失败。");
                 System.Windows.MessageBox.Show("初始化失败。请检查网络情况。", "提示");
                 isInitGachaFailed = true;
+                await EnableGlobalOperations();
                 return;
             }
 
@@ -1159,7 +1246,7 @@ namespace LLC_MOD_Toolbox
             // 明明可以用 personalInfos.GroupBy(p => p.Unique)
             System.Windows.MessageBox.Show("初始化完成。", "提示");
             isInitGacha = true;
-
+            await EnableGlobalOperations();
         }
         private async void InGachaButtonClick(object sender, RoutedEventArgs e)
         {
@@ -1174,6 +1261,11 @@ namespace LLC_MOD_Toolbox
             try
             {
                 List<PersonalInfo> personals = GenPersonalList();
+                if (personals.Count < 10)
+                {
+                    logger.Info("人格数量不足。\n尝试重新生成。");
+                    personals = GenPersonalList();
+                }
                 await StartChangeLabel(personals);
             }
             catch (Exception ex)
@@ -1501,6 +1593,128 @@ namespace LLC_MOD_Toolbox
                 GachaText10.Visibility = Visibility.Collapsed;
                 InGachaButton.IsHitTestVisible = false;
             });
+        }
+        #endregion
+        #region 错误处理
+        /// <summary>
+        /// 用于错误处理。
+        /// </summary>
+        /// <param name="ex"></param>
+        /// <param name="CloseWindow">是否关闭窗体。</param>
+        /// <param name="advice">提供建议</param>
+        public static void ErrorReport(Exception ex, bool CloseWindow, string advice = "")
+        {
+            logger.Error("出现了问题：\n", ex);
+            string errorMessage = ReturnExceptionText(ex);
+            if (CloseWindow)
+            {
+                System.Windows.MessageBox.Show($"运行中出现了问题，且在这个错误发生后，工具箱将关闭。\n{advice}若要反馈，请带上链接或日志。\n反馈请勿！请勿截图此页面！\n错误分析原因：\n{errorMessage}", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            else
+            {
+                System.Windows.MessageBox.Show($"运行中出现了问题。但你仍然能够使用工具箱（大概）。\n{advice}若要反馈，请带上链接或日志。\n反馈请勿！请勿截图此页面！\n——————————\n错误分析原因：\n{errorMessage}", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            if (CloseWindow)
+            {
+                System.Windows.Application.Current.Shutdown();
+            }
+        }
+        public static string ReturnExceptionText(Exception ex)
+        {
+            if (ex is (System.Net.WebException) || (ex is HttpRequestException) || (ex is HttpProtocolException) || (ex is System.Net.Sockets.SocketException) || (ex is System.Net.HttpListenerException) || (ex is HttpIOException))
+            {
+                return "网络链接错误，请尝试更换节点，关闭加速器或代理后再试。\n您也可以尝试在官网“常见问题”进行排查。";
+            }
+            else if (ex is SevenZipException)
+            {
+                return "解压出现问题，大概率为网络问题。\n请尝试更换节点，关闭加速器或代理后再试。\n您也可以尝试在官网“常见问题”进行排查。";
+            }
+            else if (ex is FileNotFoundException)
+            {
+                return "无法找到文件，可能是网络问题，也可能是边狱公司路径出现错误。\n请尝试更换节点，关闭加速器或代理后再试。\n您也可以尝试在官网“常见问题”进行排查。";
+            }
+            else if (ex is UnauthorizedAccessException)
+            {
+                return "无权限访问文件，请尝试以管理员身份启动，也可能是你打开了边狱公司？";
+            }
+            else if (ex is IOException)
+            {
+                return "文件访问出现问题。\n可能是文件已被边狱公司占用？\n您可以尝试关闭边狱公司。";
+            }
+            else if (ex is HashException)
+            {
+                return "文件损坏。\n大概率为网络问题，请尝试更换节点，关闭加速器或代理后再试。\n您也可以尝试在官网“常见问题”进行排查。";
+            }
+            return "未知错误原因，错误已记录至日志，请查看官网“常见问题”进行排查。\n如果没有解决，请尝试进行反馈。";
+        }
+        #endregion
+        #region 公告系统
+        private DispatcherTimer _AnnoTimer;
+        private int annoLastTime = 0;
+        private bool isInAnno = false;
+        private async Task CheckAnno()
+        {
+            string annoText = await GetURLText("https://dl.kr.zeroasso.top/api/Announcement.json");
+            if (string.IsNullOrEmpty(annoText))
+            {
+                return;
+            }
+            var annoObject = JObject.Parse(annoText);
+            if (annoObject["version"]!.Value<int>() <= AnnoVersion)
+            {
+                logger.Info("无新公告。");
+                return;
+            }
+            else
+            {
+                logger.Info("有新公告。");
+            }
+            string annoContent = annoObject["anno"]!.Value<string>();
+            annoContent = annoContent.Replace("\\n", "\n");
+            string annoLevel = annoObject["level"]!.Value<string>();
+            int annoVersionNew = annoObject["version"]!.Value<int>();
+            await ChangeLeftButtonStatu(false);
+            await ChangeAnnoText(annoContent);
+            ChangeAnnoVersionConfig(annoVersionNew);
+            isInAnno = true;
+            await MakeGridStatuExceptSelf(AnnouncementPage);
+            if (annoLevel == "normal")
+            {
+                await AnnoCountEnd();
+                return;
+            }
+            else if (annoLevel == "important")
+            {
+                annoLastTime = 5;
+            }
+            else if (annoLevel == "special")
+            {
+                annoLastTime = 15;
+            }
+            _AnnoTimer = new DispatcherTimer
+            {
+                Interval = TimeSpan.FromSeconds(1)
+            };
+            _AnnoTimer.Tick += AnnoTimer_Tick;
+            _AnnoTimer.Start();
+        }
+        private async void AnnoTimer_Tick(object? sender, EventArgs e)
+        {
+            if (annoLastTime > 0)
+            {
+                annoLastTime -= 1;
+                await ChangeAnnoTip(annoLastTime);
+            }
+            else
+            {
+                isInAnno = false;
+                await AnnoCountEnd();
+                _AnnoTimer.Stop();
+            }
+        }
+        private async void AnnoucementButtonClick(object sender, RoutedEventArgs e)
+        {
+            await AlreadyReadAnno();
         }
         #endregion
     }
