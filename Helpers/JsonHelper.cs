@@ -10,32 +10,29 @@ namespace LLC_MOD_Toolbox.Helpers
         /// <summary>
         /// JSON 序列化设置，使用驼峰命名法，忽略空值
         /// </summary>
-        private static readonly JsonSerializerSettings camelCaseJsonSettings = new()
-        {
-            NullValueHandling = NullValueHandling.Ignore,
-            ContractResolver = new DefaultContractResolver
+        private static readonly JsonSerializerSettings camelCaseJsonSettings =
+            new()
             {
-                NamingStrategy = new CamelCaseNamingStrategy(),
-            }
-        };
+                NullValueHandling = NullValueHandling.Ignore,
+                ContractResolver = new DefaultContractResolver
+                {
+                    NamingStrategy = new CamelCaseNamingStrategy(),
+                }
+            };
+
         /// <summary>
         /// 反序列化节点列表
         /// </summary>
         /// <param name="jsonPayload"></param>
         /// <returns></returns>
-        public static PrimaryNodeList DeserializePrimaryNodeList(string jsonPayload)
-            => JsonConvert.DeserializeObject<PrimaryNodeList>(jsonPayload, camelCaseJsonSettings)
-                ?? new PrimaryNodeList();
+        public static PrimaryNodeList DeserializePrimaryNodeList(string jsonPayload) =>
+            JsonConvert.DeserializeObject<PrimaryNodeList>(jsonPayload, camelCaseJsonSettings)
+            ?? new PrimaryNodeList();
 
+        public static string DeserializeTagName(string jsonPayload) =>
+            JObject.Parse(jsonPayload).GetValue("tag_name")?.ToString()[1..] ?? string.Empty;
 
-        public static Task<string> DeserializeTagName(string jsonPayload)
-            => Task.FromResult(
-                JObject.Parse(jsonPayload).GetValue("tag_name")?.ToString()[1..]
-                ?? string.Empty);
-
-        public static Task<string> DeserializeHash(string jsonPayload)
-            => Task.FromResult(
-                JObject.Parse(jsonPayload).GetValue("hash")?.ToString()
-                ?? string.Empty);
+        public static string DeserializeHash(string jsonPayload) =>
+            JObject.Parse(jsonPayload).GetValue("hash")?.ToString() ?? string.Empty;
     }
 }

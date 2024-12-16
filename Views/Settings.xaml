@@ -31,7 +31,8 @@
             FontSize="22"
             FontWeight="Medium"
             Foreground="#FFFFEED4" />
-        <ComboBox
+        
+            <ComboBox
             x:Name="NodeCombobox"
             Grid.Row="0"
             Grid.Column="1"

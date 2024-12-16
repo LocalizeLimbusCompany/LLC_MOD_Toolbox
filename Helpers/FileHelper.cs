@@ -1,7 +1,6 @@
 ﻿using System.ComponentModel;
 using System.Configuration;
 using System.IO;
-using System.Security.Cryptography;
 using Downloader;
 using Microsoft.Win32;
 

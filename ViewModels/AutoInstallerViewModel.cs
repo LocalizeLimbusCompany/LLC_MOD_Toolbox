@@ -13,7 +13,7 @@ public partial class AutoInstallerViewModel : ObservableObject
 {
     public static PrimaryNodeList PrimaryNodeList { get; set; } = new();
     private readonly ILogger<AutoInstallerViewModel> logger;
-    private IFileDownloadService fileDownloadService;
+    private readonly FileDownloadServiceProxy fileDownloadServiceProxy;
 
     [ObservableProperty]
     private List<NodeInformation> downloadNodeList;
@@ -54,7 +54,6 @@ public partial class AutoInstallerViewModel : ObservableObject
         return Task.CompletedTask;
     }
 
-    // TODO: 将参数改为 NodeInformation 类型
     [RelayCommand]
     private async Task ModInstallation(NodeInformation selectedEndPoint)
     {
@@ -70,7 +69,7 @@ public partial class AutoInstallerViewModel : ObservableObject
         }
         try
         {
-            var stream = await fileDownloadService.GetAppAsync(selectedEndPoint.Endpoint);
+            var stream = await fileDownloadServiceProxy.GetAppAsync(selectedEndPoint.Endpoint);
 
             await FileHelper.InstallBepInExAsync("待补充", stream);
             logger.LogInformation("BepInEx 安装完成。");
@@ -91,11 +90,11 @@ public partial class AutoInstallerViewModel : ObservableObject
 
     public AutoInstallerViewModel(
         ILoggerFactory loggerFactory,
-        IFileDownloadService fileDownloadService
+        FileDownloadServiceProxy grayFileDownloadServiceProxy
     )
     {
         logger = loggerFactory.CreateLogger<AutoInstallerViewModel>();
-        this.fileDownloadService = fileDownloadService;
+        fileDownloadServiceProxy = grayFileDownloadServiceProxy;
         DownloadNodeList = PrimaryNodeList.DownloadNode;
         ApiNodeList = PrimaryNodeList.ApiNode;
     }

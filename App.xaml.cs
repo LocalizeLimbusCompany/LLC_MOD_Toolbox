@@ -24,7 +24,7 @@ namespace LLC_MOD_Toolbox
                 LoggerFactory.Create(builder =>
                 {
                     builder.ClearProviders();
-                    builder.AddNLog("nlog.config");
+                    builder.AddNLog("Nlog.config");
                 })
             );
             services.AddSingleton<RegularFileDownloadService>();
@@ -33,7 +33,7 @@ namespace LLC_MOD_Toolbox
             {
                 var regular = sp.GetRequiredService<RegularFileDownloadService>();
                 var gray = sp.GetRequiredService<GrayFileDownloadService>();
-                return new GrayFileDownloadServiceProxy(regular, gray);
+                return new FileDownloadServiceProxy(regular, gray);
             });
             services.AddTransient<MainWindow>();
             services.AddTransient<AutoInstallerViewModel>();
@@ -65,7 +65,6 @@ namespace LLC_MOD_Toolbox
                 logger.LogError(ex, "节点初始化失败。");
             }
             var mainWindow = Services.GetRequiredService<MainWindow>();
-            // TODO: 改以 SettingsViewModel 为 DataContext
             mainWindow.DataContext = Services.GetRequiredService<AutoInstallerViewModel>();
             mainWindow.Show();
         }

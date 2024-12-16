@@ -6,7 +6,6 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
-using LLC_MOD_Toolbox.Helpers;
 using Microsoft.Extensions.Logging;
 
 namespace LLC_MOD_Toolbox
@@ -24,6 +23,7 @@ namespace LLC_MOD_Toolbox
             progressTimer.Tick += ProgressTime_Tick;
         }
 
+        [Obsolete]
         private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
             await ChangeEEPic("https://dl.kr.zeroasso.top/ee_pic/public/public.png");
@@ -52,7 +52,7 @@ namespace LLC_MOD_Toolbox
         /// <param name="e"></param>
         private void Window_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            this.Cursor = System.Windows.Input.Cursors.ScrollAll;
+            this.Cursor = Cursors.ScrollAll;
         }
 
         /// <summary>
@@ -62,7 +62,7 @@ namespace LLC_MOD_Toolbox
         /// <param name="e"></param>
         private void Window_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
-            this.Cursor = System.Windows.Input.Cursors.Arrow;
+            this.Cursor = Cursors.Arrow;
         }
 
         /// <summary>
@@ -185,23 +185,6 @@ namespace LLC_MOD_Toolbox
             linkDictionary.Add("LinkButton6", "https://paratranz.cn");
             linkDictionary.Add("LinkButton7", "https://weidian.com/?userid=1655827241");
             linkDictionary.Add("LinkButton8", "https://limbuscompany.huijiwiki.com");
-        }
-
-        private async Task<string?> GetSenderName(System.Windows.Controls.Control? control)
-        {
-            if (control != null)
-            {
-                string name = string.Empty;
-                await this.Dispatcher.BeginInvoke(() =>
-                {
-                    name = control.Name;
-                });
-                return name;
-            }
-            else
-            {
-                return string.Empty;
-            }
         }
 
         #endregion

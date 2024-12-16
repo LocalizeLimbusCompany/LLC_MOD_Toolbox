@@ -30,13 +30,12 @@ namespace LLC_MOD_Toolbox
 {
     public partial class MainWindow : Window
     {
-        private static string? useEndPoint;
-        private static string? useAPIEndPoint;
+        private static string? useEndPoint = null;
+        private static string? useAPIEndPoint = null;
         private static bool useGithub = false;
         private static bool useMirrorGithub = false;
-        private static string limbusCompanyDir = FileHelper.LimbusCompanyPath;
+        private static string limbusCompanyDir = FileHelper.LimbusCompanyPath ?? string.Empty;
 
-        private static readonly string currentDir = AppDomain.CurrentDomain.BaseDirectory;
         private static int installPhase = 0;
         private readonly DispatcherTimer progressTimer;
         private float progressPercentage = 0;
@@ -360,7 +359,7 @@ namespace LLC_MOD_Toolbox
         /// <param name="IsGithub">是否使用Github</param>
         /// <returns>是否存在更新</returns>
         [Obsolete]
-        private async void CheckToolboxUpdate()
+        private void CheckToolboxUpdate()
         {
             try
             {
@@ -384,7 +383,7 @@ namespace LLC_MOD_Toolbox
             }
             catch (Exception ex)
             {
-                logger.LogError("检查安装器更新出现问题。", ex);
+                logger.LogError(ex, "检查安装器更新出现问题。");
                 return;
             }
         }
@@ -428,7 +427,7 @@ namespace LLC_MOD_Toolbox
             catch (Exception ex)
             {
                 System.Windows.MessageBox.Show("出现了问题。\n" + ex.ToString());
-                logger.LogError("出现了问题。\n", ex);
+                logger.LogError(ex, "出现了问题。\n");
             }
             return new FontUpdateResult(null, false);
         }
@@ -735,7 +734,7 @@ namespace LLC_MOD_Toolbox
             }
             catch (Exception ex)
             {
-                logger.LogInformation("出现了问题。", ex);
+                logger.LogInformation(ex, "出现了问题。");
                 MessageBox.Show("出了点小问题！\n要不再试一次？\n————————\n" + ex.ToString());
                 gachaTimer?.Stop();
                 _currentIndex = 0;

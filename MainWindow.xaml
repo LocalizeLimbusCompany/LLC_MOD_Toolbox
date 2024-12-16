@@ -13,6 +13,7 @@
     d:DataContext="{d:DesignInstance Type=localvm:MainViewModel}"
     AllowsTransparency="True"
     Background="Transparent"
+    FontFamily="Assets/Fonts/#Source Han Sans CN"
     Loaded="Window_Loaded"
     MouseDown="WindowDragMove"
     MouseLeftButtonDown="Window_MouseLeftButtonDown"
