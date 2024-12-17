@@ -2,7 +2,7 @@
 
 namespace LLC_MOD_Toolbox.Helpers;
 
-public static class UpdateHelper
+public static class VersionHelper
 {
     /// <summary>
     /// 通过反射获取的本地版本号

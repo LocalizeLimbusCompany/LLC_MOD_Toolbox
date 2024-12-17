@@ -1,4 +1,7 @@
-﻿using System.Windows.Controls;
+﻿using System.Windows;
+using System.Windows.Controls;
+using LLC_MOD_Toolbox.ViewModels;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace LLC_MOD_Toolbox.Views
 {
@@ -10,6 +13,15 @@ namespace LLC_MOD_Toolbox.Views
         public Settings()
         {
             InitializeComponent();
+            Loaded += OnLoaded;
+        }
+
+        private void OnLoaded(object sender, RoutedEventArgs e)
+        {
+            if (Application.Current is LLC_MOD_Toolbox.App app)
+            {
+                DataContext = app.Services.GetRequiredService<SettingsViewModel>();
+            }
         }
     }
 }

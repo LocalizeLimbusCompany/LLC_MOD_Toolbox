@@ -38,6 +38,7 @@ namespace LLC_MOD_Toolbox
             services.AddTransient<MainWindow>();
             services.AddTransient<AutoInstallerViewModel>();
             services.AddTransient<GachaViewModel>();
+            services.AddTransient<SettingsViewModel>();
             return services.BuildServiceProvider();
         }
 
@@ -55,7 +56,7 @@ namespace LLC_MOD_Toolbox
             SevenZipBase.SetLibraryPath("7z.dll");
             try
             {
-                AutoInstallerViewModel.PrimaryNodeList = await PrimaryNodeList.CreateAsync(
+                SettingsViewModel.PrimaryNodeList = await PrimaryNodeList.CreateAsync(
                     "NodeList.json"
                 );
                 logger.LogInformation("节点初始化完成。");
@@ -65,7 +66,6 @@ namespace LLC_MOD_Toolbox
                 logger.LogError(ex, "节点初始化失败。");
             }
             var mainWindow = Services.GetRequiredService<MainWindow>();
-            mainWindow.DataContext = Services.GetRequiredService<AutoInstallerViewModel>();
             mainWindow.Show();
         }
     }

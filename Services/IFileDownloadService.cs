@@ -38,7 +38,7 @@ public interface IFileDownloadService
             // Get on demand downloaded data with ReceivedBytes on downloadProgressChanged event
             EnableLiveStreaming = false,
             // config and customize request headers
-            RequestConfiguration = { UserAgent = $"LLC_MOD_Toolbox/{UpdateHelper.LocalVersion}", }
+            RequestConfiguration = { UserAgent = $"LLC_MOD_Toolbox/{VersionHelper.LocalVersion}", }
         };
     private static readonly HttpClient httpClient = new();
 

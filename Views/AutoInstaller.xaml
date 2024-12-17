@@ -19,8 +19,8 @@
         <Button
             Grid.Row="0"
             Background="Transparent"
-            Command="{Binding ModInstallationCommand}"
-            CommandParameter="{Binding ElementName=NodeComboBox, Path=SelectedValue}">
+            Command="{Binding ModInstallationCommand}">
+            <Button.CommandParameter />
             <Image Source="/Assets/Images/Install.png" />
         </Button>
         <ProgressBar

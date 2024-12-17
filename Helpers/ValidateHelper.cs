@@ -3,7 +3,7 @@ using System.Security.Cryptography;
 
 namespace LLC_MOD_Toolbox.Helpers;
 
-internal class ValidateHelper
+internal static class ValidateHelper
 {
     public static async Task<bool> CheckHashAsync(Stream archive, string onlineHash)
     {

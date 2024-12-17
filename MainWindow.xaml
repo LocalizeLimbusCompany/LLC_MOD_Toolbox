@@ -4,16 +4,17 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:LLC_MOD_Toolbox"
-    xmlns:localvm="clr-namespace:LLC_MOD_Toolbox.ViewModels"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:viewmodels="clr-namespace:LLC_MOD_Toolbox.ViewModels"
     xmlns:views="clr-namespace:LLC_MOD_Toolbox.Views"
     Title="都市零协会工具箱"
     Width="960"
     Height="600"
-    d:DataContext="{d:DesignInstance Type=localvm:MainViewModel}"
+    d:DataContext="{d:DesignInstance Type=viewmodels:MainViewModel}"
     AllowsTransparency="True"
     Background="Transparent"
     FontFamily="Assets/Fonts/#Source Han Sans CN"
+    FontWeight="Medium"
     Loaded="Window_Loaded"
     MouseDown="WindowDragMove"
     MouseLeftButtonDown="Window_MouseLeftButtonDown"
@@ -256,7 +257,7 @@
                             </TabControl>
                         </TabItem>
                         <TabItem Header="设置">
-                            <views:Settings />
+                            <views:Settings d:DataContext="{d:DesignInstance Type=viewmodels:SettingsViewModel}" Loaded="Settings_Loaded" />
                         </TabItem>
                     </TabControl>
                     <Grid

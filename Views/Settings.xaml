@@ -6,9 +6,11 @@
     xmlns:local="clr-namespace:LLC_MOD_Toolbox.Views"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:viewmodels="clr-namespace:LLC_MOD_Toolbox.ViewModels"
-    d:DataContext="{d:DesignInstance Type=viewmodels:AutoInstallerViewModel}"
+    d:DataContext="{d:DesignInstance Type=viewmodels:SettingsViewModel}"
     d:DesignHeight="450"
     d:DesignWidth="800"
+    d:FontFamily="/Fonts/#Source Han Sans CN"
+    d:FontWeight="Medium"
     mc:Ignorable="d">
 
     <Grid x:Name="SettingsPage">
@@ -27,24 +29,19 @@
             Grid.Row="0"
             Grid.Column="0"
             Content="切换节点"
-            FontFamily="/Fonts/#Source Han Sans CN"
             FontSize="22"
-            FontWeight="Medium"
             Foreground="#FFFFEED4" />
-        
-            <ComboBox
+
+        <ComboBox
             x:Name="NodeCombobox"
             Grid.Row="0"
             Grid.Column="1"
-            Width="257"
-            Height="32"
+            d:SelectedIndex="0"
             DisplayMemberPath="Name"
-            FontFamily="/Fonts/#Source Han Sans CN"
             FontSize="16"
-            FontWeight="Medium"
             Foreground="Black"
             ItemsSource="{Binding DownloadNodeList}"
-            SelectedItem="{Binding SelectedEndPoint}" />
+            SelectedItem="{Binding DownloadNode}" />
 
         <Label
             Grid.Row="1"
@@ -58,15 +55,11 @@
             x:Name="APICombobox"
             Grid.Row="1"
             Grid.Column="1"
-            Width="257"
-            Height="34"
             DisplayMemberPath="Name"
-            FontFamily="/Fonts/#Source Han Sans CN"
             FontSize="16"
-            FontWeight="Medium"
             Foreground="Black"
             ItemsSource="{Binding ApiNodeList}"
-            SelectedItem="{Binding SelectedApiEndPoint}" />
+            SelectedItem="{Binding ApiNode}" />
 
         <Label
             Grid.Row="2"
@@ -79,30 +72,21 @@
         <Button
             Grid.Row="2"
             Grid.Column="1"
-            Width="100"
-            Height="30"
             Command="{Binding ModUnistallationCommand}"
             Content="卸载"
-            FontFamily="/Fonts/#Source Han Sans CN"
-            FontSize="16"
-            FontWeight="Medium"
             Foreground="Black" />
         <Label
             Grid.Row="3"
             Grid.Column="0"
             Content="游戏位置"
-            FontFamily="/Fonts/#Source Han Sans CN"
             FontSize="22"
-            FontWeight="Medium"
             Foreground="#FFFFEED4" />
         <TextBlock
             Grid.Row="3"
             Grid.Column="1"
             d:Text="我不到啊"
             Background="White"
-            FontFamily="/Fonts/#Source Han Sans CN"
             FontSize="16"
-            FontWeight="Medium"
             Foreground="Black" />
     </Grid>
 

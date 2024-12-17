@@ -47,40 +47,13 @@ namespace LLC_MOD_Toolbox.Helpers
         /// <summary>
         /// 解压文件 7z 文件
         /// </summary>
-        public static async Task Extract7zAsync(Stream archive, string destination)
+        public static Task Extract7zAsync(Stream archive, string destination)
         {
-            await Task.Run(() =>
-            {
-                using var extractor = new SevenZip.SevenZipExtractor(archive);
-                extractor.ExtractArchive(destination);
-            });
+            using var extractor = new SevenZip.SevenZipExtractor(archive);
+            extractor.ExtractArchive(destination);
+            return Task.CompletedTask;
         }
 
-        /// <summary>
-        /// 仅在 Windows 下有效，不过这个项目也只在 Windows 下有效
-        /// </summary>
-        /// <returns cref="string?">边狱公司路径</returns>
-        public static string? LimbusCompanyPath
-        {
-            get
-            {
-                var path =
-                    ConfigurationManager.AppSettings["GamePath"]
-                    ?? Registry.GetValue(
-                        @"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Steam App 1973530",
-                        "InstallLocation",
-                        null
-                    ) as string
-                    ?? throw new ArgumentNullException("未找到边狱公司路径。可能是注册表被恶意修改了！");
-                if (Directory.Exists(path))
-                {
-                    return path;
-                }
-                throw new DirectoryNotFoundException("未找到边狱公司路径。可能是注册表被恶意修改了！");
-            }
-        }
-
-        // TODO: 解除封装直接暴露给 JsonHelper
         /// <summary>
         /// 读取节点列表配置文件
         /// </summary>
@@ -92,32 +65,28 @@ namespace LLC_MOD_Toolbox.Helpers
         /// 下载边狱公司的 BepInEx 框架
         /// </summary>
         /// <exception cref="ArgumentNullException"></exception>
-        public static async Task InstallBepInExAsync(string onlineHash, Stream stream)
+        public static async Task InstallBepInExAsync(Stream stream, string limbusCompanyPath)
         {
-            if (string.IsNullOrEmpty(LimbusCompanyPath))
+            if (string.IsNullOrEmpty(limbusCompanyPath))
             {
                 throw new Exception("未找到边狱公司路径。可能是注册表被恶意修改了！");
             }
-            if (!await ValidateHelper.CheckHashAsync(stream, onlineHash))
-            {
-                throw new Exception("Hash check failed.");
-            }
-            await Extract7zAsync(stream, LimbusCompanyPath);
+            await Extract7zAsync(stream, limbusCompanyPath);
         }
 
         /// <summary>
         /// 删除Mod文件夹，删除内容为 <seealso cref="BepInExFiles"/>
         /// </summary>
         /// <returns></returns>
-        public static void DeleteBepInEx()
+        public static void DeleteBepInEx(string limbusCompanyPath)
         {
-            if (string.IsNullOrEmpty(LimbusCompanyPath))
+            if (string.IsNullOrEmpty(limbusCompanyPath))
             {
-                throw new ArgumentNullException("未找到边狱公司路径。可能是注册表被恶意修改了！");
+                throw new Exception("未找到边狱公司路径。可能是注册表被恶意修改了！");
             }
             foreach (string file in BepInExFiles)
             {
-                File.Delete(Path.Combine(LimbusCompanyPath, file));
+                File.Delete(Path.Combine(limbusCompanyPath, file));
             }
         }
     }
