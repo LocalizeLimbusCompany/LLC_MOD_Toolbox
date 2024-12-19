@@ -257,7 +257,7 @@
                             </TabControl>
                         </TabItem>
                         <TabItem Header="设置">
-                            <views:Settings d:DataContext="{d:DesignInstance Type=viewmodels:SettingsViewModel}" Loaded="Settings_Loaded" />
+                            <views:Settings d:DataContext="{d:DesignInstance Type=viewmodels:SettingsViewModel}" />
                         </TabItem>
                     </TabControl>
                     <Grid

@@ -34,7 +34,6 @@ namespace LLC_MOD_Toolbox
         private static string? useAPIEndPoint = null;
         private static bool useGithub = false;
         private static bool useMirrorGithub = false;
-        private static string limbusCompanyDir = FileHelper.LimbusCompanyPath ?? string.Empty;
 
         private static int installPhase = 0;
         private readonly DispatcherTimer progressTimer;
@@ -462,10 +461,7 @@ namespace LLC_MOD_Toolbox
             if (result == MessageBoxResult.Yes)
             {
                 logger.LogInformation("确定删除模组。");
-                try
-                {
-                    FileHelper.DeleteBepInEx();
-                }
+                try { }
                 catch (Exception ex)
                 {
                     System.Windows.MessageBox.Show("删除过程中出现了一些问题： " + ex.ToString(), "警告");
@@ -691,6 +687,7 @@ namespace LLC_MOD_Toolbox
         private DispatcherTimer? gachaTimer;
         private int _currentIndex = 0;
         private int[]? uniqueCount;
+        private string limbusCompanyDir;
 
         private async Task InitGacha()
         {

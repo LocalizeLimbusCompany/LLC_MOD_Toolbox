@@ -18,8 +18,11 @@ public partial class AutoInstallerViewModel(
         loggerFactory.CreateLogger<AutoInstallerViewModel>();
 
     [RelayCommand]
-    private async Task ModInstallation(NodeInformation selectedEndPoint, string limbusCompanyPath)
+    private async Task ModInstallation((NodeInformation, string) installationParams)
     {
+        logger.LogInformation("开始安装 BepInEx。");
+        NodeInformation selectedEndPoint = installationParams.Item1;
+        string limbusCompanyPath = installationParams.Item2;
         MessageBoxResult result = MessageBox.Show(
             "安装前请确保游戏已经关闭。\n确定继续吗？",
             "警告",

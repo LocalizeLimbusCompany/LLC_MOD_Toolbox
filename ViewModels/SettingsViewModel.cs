@@ -13,11 +13,12 @@ public partial class SettingsViewModel : ObservableObject
 {
     public static PrimaryNodeList PrimaryNodeList { get; set; } = new();
 
+    private string? limbusCompanyPath;
+
     /// <summary>
     /// 仅在 Windows 下有效，不过这个项目也只在 Windows 下有效
     /// </summary>
-    /// <returns cref="string?">边狱公司路径</returns>
-    public static string? LimbusCompanyPath
+    public string LimbusCompanyPath
     {
         get
         {
@@ -31,11 +32,16 @@ public partial class SettingsViewModel : ObservableObject
                 ?? throw new ArgumentNullException("未找到边狱公司路径。可能是注册表被恶意修改了！");
             if (Directory.Exists(path))
             {
+                limbusCompanyPath = path;
                 return path;
             }
             throw new DirectoryNotFoundException("未找到边狱公司路径。可能是注册表被恶意修改了！");
         }
-        set { ConfigurationManager.AppSettings["GamePath"] = value; }
+        set
+        {
+            ConfigurationManager.AppSettings["GamePath"] = value;
+            SetProperty(ref limbusCompanyPath, value);
+        }
     }
 
     [ObservableProperty]

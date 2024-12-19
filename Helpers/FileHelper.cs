@@ -1,8 +1,6 @@
 ﻿using System.ComponentModel;
-using System.Configuration;
 using System.IO;
 using Downloader;
-using Microsoft.Win32;
 
 namespace LLC_MOD_Toolbox.Helpers
 {
