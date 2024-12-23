@@ -12,9 +12,6 @@
     d:FontFamily="/Fonts/#Source Han Sans CN"
     d:FontWeight="Medium"
     mc:Ignorable="d">
-    <UserControl.DataContext>
-        <viewmodels:SettingsViewModel />
-    </UserControl.DataContext>
     <Grid x:Name="SettingsPage">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="1*" />
@@ -43,7 +40,7 @@
             FontSize="16"
             Foreground="Black"
             ItemsSource="{Binding DownloadNodeList}"
-            SelectedItem="{Binding DownloadNode}" />
+            SelectedItem="{Binding DownloadNode, Mode=TwoWay}" />
 
         <Label
             Grid.Row="1"
@@ -61,7 +58,7 @@
             FontSize="16"
             Foreground="Black"
             ItemsSource="{Binding ApiNodeList}"
-            SelectedItem="{Binding ApiNode}" />
+            SelectedItem="{Binding ApiNode, Mode=TwoWay}" />
 
         <Label
             Grid.Row="2"

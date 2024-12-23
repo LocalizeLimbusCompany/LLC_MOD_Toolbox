@@ -11,18 +11,21 @@ namespace LLC_MOD_Toolbox.ViewModels;
 
 public partial class AutoInstallerViewModel(
     ILoggerFactory loggerFactory,
-    FileDownloadServiceProxy fileDownloadServiceProxy
+    IFileDownloadService fileDownloadServiceProxy,
+    SettingsViewModel settingsViewModel
 ) : ObservableObject
 {
     private readonly ILogger<AutoInstallerViewModel> logger =
         loggerFactory.CreateLogger<AutoInstallerViewModel>();
 
     [RelayCommand]
-    private async Task ModInstallation((NodeInformation, string) installationParams)
+    private async Task ModInstallation()
     {
         logger.LogInformation("开始安装 BepInEx。");
-        NodeInformation selectedEndPoint = installationParams.Item1;
-        string limbusCompanyPath = installationParams.Item2;
+        NodeInformation selectedEndPoint = settingsViewModel.DownloadNode;
+        string limbusCompanyPath = settingsViewModel.LimbusCompanyPath;
+        logger.LogInformation("选择的下载节点为：{selectedEndPoint}", selectedEndPoint);
+        logger.LogInformation("边狱公司路径为：{limbusCompanyPath}", limbusCompanyPath);
         MessageBoxResult result = MessageBox.Show(
             "安装前请确保游戏已经关闭。\n确定继续吗？",
             "警告",
@@ -31,15 +34,21 @@ public partial class AutoInstallerViewModel(
         );
         if (result != MessageBoxResult.Yes)
         {
+            logger.LogInformation("用户取消了安装 BepInEx。");
             return;
         }
         try
         {
-            var stream = await fileDownloadServiceProxy.GetAppAsync(selectedEndPoint.Endpoint);
+            var stream = await fileDownloadServiceProxy.DownloadFileAsync(
+                selectedEndPoint.Endpoint,
+                limbusCompanyPath,
+                null,
+                null
+            );
             var onlineHash = await fileDownloadServiceProxy.GetHashAsync(selectedEndPoint.Endpoint);
-            if (await ValidateHelper.CheckHashAsync(stream, onlineHash))
+            if (!await ValidateHelper.CheckHashAsync(stream, onlineHash))
                 throw new Exception("文件校验失败。");
-            await FileHelper.InstallBepInExAsync(stream, limbusCompanyPath);
+            FileHelper.InstallBepInEx(stream, limbusCompanyPath);
             logger.LogInformation("BepInEx 安装完成。");
         }
         catch (IOException)

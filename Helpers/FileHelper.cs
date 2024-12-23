@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel;
 using System.IO;
 using Downloader;
+using Microsoft.Extensions.Logging;
 
 namespace LLC_MOD_Toolbox.Helpers
 {
@@ -17,8 +18,6 @@ namespace LLC_MOD_Toolbox.Helpers
 
         private static readonly List<string> BepInExFiles =
         [
-            "BepInEx",
-            "dotnet",
             "doorstop_config.ini",
             "Latest(框架日志).log",
             "Player(游戏日志).log",
@@ -29,27 +28,21 @@ namespace LLC_MOD_Toolbox.Helpers
             "LimbusLocalize_BIE.7z",
             "tmpchinese_BIE.7z"
         ];
+        private static readonly List<string> BepInExFolders = ["BepInEx", "dotnet",];
 
         public static async Task DownloadFileAsync(
             string url,
             string path,
             EventHandler<DownloadProgressChangedEventArgs> onDownloadProgressChanged,
-            EventHandler<AsyncCompletedEventArgs> onDownloadFileCompleted
+            EventHandler<AsyncCompletedEventArgs> onDownloadFileCompleted,
+            ILogger logger
         )
         {
+            logger.LogInformation("开始下载文件：{url}", url);
+            downloader.AddLogger(logger);
             downloader.DownloadProgressChanged += onDownloadProgressChanged;
             downloader.DownloadFileCompleted += onDownloadFileCompleted;
             await downloader.DownloadFileTaskAsync(url, path);
-        }
-
-        /// <summary>
-        /// 解压文件 7z 文件
-        /// </summary>
-        public static Task Extract7zAsync(Stream archive, string destination)
-        {
-            using var extractor = new SevenZip.SevenZipExtractor(archive);
-            extractor.ExtractArchive(destination);
-            return Task.CompletedTask;
         }
 
         /// <summary>
@@ -63,13 +56,14 @@ namespace LLC_MOD_Toolbox.Helpers
         /// 下载边狱公司的 BepInEx 框架
         /// </summary>
         /// <exception cref="ArgumentNullException"></exception>
-        public static async Task InstallBepInExAsync(Stream stream, string limbusCompanyPath)
+        public static void InstallBepInEx(Stream stream, string limbusCompanyPath)
         {
             if (string.IsNullOrEmpty(limbusCompanyPath))
             {
                 throw new Exception("未找到边狱公司路径。可能是注册表被恶意修改了！");
             }
-            await Extract7zAsync(stream, limbusCompanyPath);
+            using var extractor = new SevenZip.SevenZipExtractor(stream);
+            extractor.ExtractArchive(limbusCompanyPath);
         }
 
         /// <summary>
@@ -85,6 +79,10 @@ namespace LLC_MOD_Toolbox.Helpers
             foreach (string file in BepInExFiles)
             {
                 File.Delete(Path.Combine(limbusCompanyPath, file));
+            }
+            foreach (string folder in BepInExFolders)
+            {
+                Directory.Delete(Path.Combine(limbusCompanyPath, folder), true);
             }
         }
     }

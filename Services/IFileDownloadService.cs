@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.ComponentModel;
+using System.IO;
 using System.Net.Http;
 using System.Runtime.InteropServices;
 using System.Windows.Media.Imaging;
@@ -15,7 +16,7 @@ public enum ServiceState
 
 public interface IFileDownloadService
 {
-    public static readonly DownloadService downloader = new(downloadOpt);
+    private static readonly DownloadService downloader = new(downloadOpt);
     public static readonly DownloadConfiguration downloadOpt =
         new()
         {
@@ -47,6 +48,18 @@ public interface IFileDownloadService
         Stream stream = await downloader.DownloadFileTaskAsync(url.AbsolutePath);
 
         return stream;
+    }
+
+    public async Task<Stream> DownloadFileAsync(
+        Uri url,
+        string path,
+        EventHandler<DownloadProgressChangedEventArgs> onDownloadProgressChanged,
+        EventHandler<AsyncCompletedEventArgs> onDownloadFileCompleted
+    )
+    {
+        downloader.DownloadProgressChanged += onDownloadProgressChanged;
+        downloader.DownloadFileCompleted += onDownloadFileCompleted;
+        return await downloader.DownloadFileTaskAsync(url.AbsolutePath);
     }
 
     public async Task<string> GetHashAsync(Uri url)

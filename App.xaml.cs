@@ -2,6 +2,7 @@
 using LLC_MOD_Toolbox.Models;
 using LLC_MOD_Toolbox.Services;
 using LLC_MOD_Toolbox.ViewModels;
+using LLC_MOD_Toolbox.Views;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NLog.Extensions.Logging;
@@ -35,10 +36,18 @@ namespace LLC_MOD_Toolbox
                 var gray = sp.GetRequiredService<GrayFileDownloadService>();
                 return new FileDownloadServiceProxy(regular, gray);
             });
+            services.AddSingleton<SettingsViewModel>();
             services.AddTransient<MainWindow>();
             services.AddTransient<AutoInstallerViewModel>();
             services.AddTransient<GachaViewModel>();
-            services.AddTransient<SettingsViewModel>();
+            /*services.AddTransient(sp => new Settings
+            {
+                DataContext = sp.GetService<SettingsViewModel>()
+            });
+            services.AddTransient(sp => new AutoInstaller
+            {
+                DataContext = sp.GetService<AutoInstallerViewModel>()
+            });*/
             return services.BuildServiceProvider();
         }
 

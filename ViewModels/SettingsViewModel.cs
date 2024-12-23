@@ -5,6 +5,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using LLC_MOD_Toolbox.Helpers;
 using LLC_MOD_Toolbox.Models;
+using Microsoft.Extensions.Logging;
 using Microsoft.Win32;
 
 namespace LLC_MOD_Toolbox.ViewModels;
@@ -14,6 +15,8 @@ public partial class SettingsViewModel : ObservableObject
     public static PrimaryNodeList PrimaryNodeList { get; set; } = new();
 
     private string? limbusCompanyPath;
+
+    private readonly ILogger logger;
 
     /// <summary>
     /// 仅在 Windows 下有效，不过这个项目也只在 Windows 下有效
@@ -39,6 +42,7 @@ public partial class SettingsViewModel : ObservableObject
         }
         set
         {
+            logger.LogInformation("设置边狱公司路径为：{value}", value);
             ConfigurationManager.AppSettings["GamePath"] = value;
             SetProperty(ref limbusCompanyPath, value);
         }
@@ -57,8 +61,9 @@ public partial class SettingsViewModel : ObservableObject
     private NodeInformation apiNode;
 
     [RelayCommand]
-    private static Task ModUnistallation(string limbusCompanyPath)
+    private Task ModUnistallation()
     {
+        logger.LogInformation("开始卸载 BepInEx。");
         MessageBoxResult result = MessageBox.Show(
             "删除后你需要重新安装汉化补丁。\n确定继续吗？",
             "警告",
@@ -67,11 +72,12 @@ public partial class SettingsViewModel : ObservableObject
         );
         if (result != MessageBoxResult.Yes)
         {
+            logger.LogInformation("取消卸载 BepInEx。");
             return Task.CompletedTask;
         }
         try
         {
-            FileHelper.DeleteBepInEx(limbusCompanyPath);
+            FileHelper.DeleteBepInEx(LimbusCompanyPath);
         }
         catch (IOException)
         {
@@ -89,8 +95,9 @@ public partial class SettingsViewModel : ObservableObject
         return Task.CompletedTask;
     }
 
-    public SettingsViewModel()
+    public SettingsViewModel(ILoggerFactory loggerFactory)
     {
+        logger = loggerFactory.CreateLogger<SettingsViewModel>();
         DownloadNodeList = PrimaryNodeList.DownloadNode;
         ApiNodeList = PrimaryNodeList.ApiNode;
         downloadNode = DownloadNodeList.Last(n => n.IsDefault);
