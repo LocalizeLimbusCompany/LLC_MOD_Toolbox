@@ -14,9 +14,9 @@ namespace LLC_MOD_Toolbox
     {
         private readonly ILogger<MainWindow> logger;
 
-        public MainWindow(ILoggerFactory loggerFactory)
+        public MainWindow(ILogger<MainWindow> logger)
         {
-            logger = loggerFactory.CreateLogger<MainWindow>();
+            this.logger = logger;
             InitializeComponent();
 
             progressTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(0.05) };

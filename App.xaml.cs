@@ -21,13 +21,6 @@ namespace LLC_MOD_Toolbox
         private static ServiceProvider ConfigureServices()
         {
             var services = new ServiceCollection();
-            services.AddSingleton<ILoggerFactory>(_ =>
-                LoggerFactory.Create(builder =>
-                {
-                    builder.ClearProviders();
-                    builder.AddNLog("Nlog.config");
-                })
-            );
             services.AddSingleton<RegularFileDownloadService>();
             services.AddSingleton<GrayFileDownloadService>();
             services.AddSingleton<IFileDownloadService>(sp =>
@@ -40,14 +33,15 @@ namespace LLC_MOD_Toolbox
             services.AddTransient<MainWindow>();
             services.AddTransient<AutoInstallerViewModel>();
             services.AddTransient<GachaViewModel>();
-            /*services.AddTransient(sp => new Settings
+            services.AddTransient(sp => new Settings
             {
-                DataContext = sp.GetService<SettingsViewModel>()
+                DataContext = sp.GetRequiredService<SettingsViewModel>()
             });
             services.AddTransient(sp => new AutoInstaller
             {
-                DataContext = sp.GetService<AutoInstallerViewModel>()
-            });*/
+                DataContext = sp.GetRequiredService<AutoInstallerViewModel>()
+            });
+            services.AddLogging(builder => builder.AddNLog("Nlog.config"));
             return services.BuildServiceProvider();
         }
 
@@ -58,7 +52,7 @@ namespace LLC_MOD_Toolbox
 
         private async void Application_Startup(object sender, StartupEventArgs e)
         {
-            var logger = Services.GetRequiredService<ILoggerFactory>().CreateLogger<App>();
+            var logger = Services.GetRequiredService<ILogger<App>>();
             logger.LogInformation("—————新日志分割线—————");
             logger.LogInformation("工具箱已进入加载流程。");
             logger.LogInformation("We have a lift off.");

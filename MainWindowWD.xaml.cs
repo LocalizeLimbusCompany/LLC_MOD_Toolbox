@@ -299,7 +299,8 @@ namespace LLC_MOD_Toolbox
                 Url,
                 Path,
                 NewOnDownloadProgressChanged,
-                NewOnDownloadProgressCompleted
+                NewOnDownloadProgressCompleted,
+                logger
             );
         }
 

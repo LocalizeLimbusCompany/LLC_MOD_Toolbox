@@ -12,7 +12,7 @@ namespace LLC_MOD_Toolbox.Views
         public Settings()
         {
             InitializeComponent();
-            DataContext = App.Current.Services.GetService<SettingsViewModel>();
+            DataContext = App.Current.Services.GetRequiredService<SettingsViewModel>();
         }
     }
 }

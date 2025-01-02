@@ -16,7 +16,7 @@ public partial class SettingsViewModel : ObservableObject
 
     private string? limbusCompanyPath;
 
-    private readonly ILogger logger;
+    private readonly ILogger<SettingsViewModel> logger;
 
     /// <summary>
     /// 仅在 Windows 下有效，不过这个项目也只在 Windows 下有效
@@ -95,9 +95,9 @@ public partial class SettingsViewModel : ObservableObject
         return Task.CompletedTask;
     }
 
-    public SettingsViewModel(ILoggerFactory loggerFactory)
+    public SettingsViewModel(ILogger<SettingsViewModel> logger)
     {
-        logger = loggerFactory.CreateLogger<SettingsViewModel>();
+        this.logger = logger;
         DownloadNodeList = PrimaryNodeList.DownloadNode;
         ApiNodeList = PrimaryNodeList.ApiNode;
         downloadNode = DownloadNodeList.Last(n => n.IsDefault);

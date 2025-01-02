@@ -10,14 +10,11 @@ using Microsoft.Extensions.Logging;
 namespace LLC_MOD_Toolbox.ViewModels;
 
 public partial class AutoInstallerViewModel(
-    ILoggerFactory loggerFactory,
+    ILogger<AutoInstallerViewModel> logger,
     IFileDownloadService fileDownloadServiceProxy,
     SettingsViewModel settingsViewModel
 ) : ObservableObject
 {
-    private readonly ILogger<AutoInstallerViewModel> logger =
-        loggerFactory.CreateLogger<AutoInstallerViewModel>();
-
     [RelayCommand]
     private async Task ModInstallation()
     {
