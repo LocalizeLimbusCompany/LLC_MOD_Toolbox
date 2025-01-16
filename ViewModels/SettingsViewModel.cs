@@ -32,7 +32,7 @@ public partial class SettingsViewModel : ObservableObject
                     "InstallLocation",
                     null
                 ) as string
-                ?? throw new ArgumentNullException("未找到边狱公司路径。可能是注册表被恶意修改了！");
+                ?? throw new ArgumentNullException("未找到边狱公司路径。可能是注册表被删除了！");
             if (Directory.Exists(path))
             {
                 limbusCompanyPath = path;

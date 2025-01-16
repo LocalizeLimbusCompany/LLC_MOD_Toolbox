@@ -1,5 +1,4 @@
-﻿using System.ComponentModel;
-using System.IO;
+﻿using System.IO;
 using System.Net.Http;
 using System.Runtime.InteropServices;
 using System.Windows.Media.Imaging;
@@ -16,7 +15,7 @@ public enum ServiceState
 
 public interface IFileDownloadService
 {
-    private static readonly DownloadService downloader = new(downloadOpt);
+    public static DownloadService ServiceDownloader { get; } = new(downloadOpt);
     public static readonly DownloadConfiguration downloadOpt =
         new()
         {
@@ -45,21 +44,18 @@ public interface IFileDownloadService
 
     public async Task<Stream> GetAppAsync(Uri url)
     {
-        Stream stream = await downloader.DownloadFileTaskAsync(url.AbsolutePath);
+        Stream stream = await ServiceDownloader.DownloadFileTaskAsync(url.AbsolutePath);
 
         return stream;
     }
 
-    public async Task<Stream> DownloadFileAsync(
-        Uri url,
-        string path,
-        EventHandler<DownloadProgressChangedEventArgs> onDownloadProgressChanged,
-        EventHandler<AsyncCompletedEventArgs> onDownloadFileCompleted
-    )
+    public async Task<Stream> DownloadFileAsync(Uri url, string path, IProgress<double> progress)
     {
-        downloader.DownloadProgressChanged += onDownloadProgressChanged;
-        downloader.DownloadFileCompleted += onDownloadFileCompleted;
-        return await downloader.DownloadFileTaskAsync(url.AbsolutePath);
+        ServiceDownloader.ChunkDownloadProgressChanged += (sender, e) =>
+        {
+            progress.Report(e.ProgressPercentage);
+        };
+        return await ServiceDownloader.DownloadFileTaskAsync(url.AbsolutePath);
     }
 
     public async Task<string> GetHashAsync(Uri url)
@@ -70,7 +66,7 @@ public interface IFileDownloadService
 
     public async Task<BitmapImage> GetImageAsync(Uri url)
     {
-        var stream = await downloader.DownloadFileTaskAsync(url.AbsolutePath);
+        var stream = await ServiceDownloader.DownloadFileTaskAsync(url.AbsolutePath);
         var image = new BitmapImage();
         image.BeginInit();
         image.StreamSource = stream;

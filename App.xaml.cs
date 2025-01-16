@@ -29,18 +29,18 @@ namespace LLC_MOD_Toolbox
                 var gray = sp.GetRequiredService<GrayFileDownloadService>();
                 return new FileDownloadServiceProxy(regular, gray);
             });
-            services.AddSingleton<SettingsViewModel>();
             services.AddTransient<MainWindow>();
+            services.AddSingleton<SettingsViewModel>();
             services.AddTransient<AutoInstallerViewModel>();
             services.AddTransient<GachaViewModel>();
-            services.AddTransient(sp => new Settings
+            /*services.AddTransient(sp => new Settings
             {
                 DataContext = sp.GetRequiredService<SettingsViewModel>()
             });
             services.AddTransient(sp => new AutoInstaller
             {
                 DataContext = sp.GetRequiredService<AutoInstallerViewModel>()
-            });
+            });*/
             services.AddLogging(builder => builder.AddNLog("Nlog.config"));
             return services.BuildServiceProvider();
         }
@@ -56,7 +56,13 @@ namespace LLC_MOD_Toolbox
             logger.LogInformation("—————新日志分割线—————");
             logger.LogInformation("工具箱已进入加载流程。");
             logger.LogInformation("We have a lift off.");
+            logger.LogInformation("当前版本：{version}", GetType().Assembly.GetName().Version);
             SevenZipBase.SetLibraryPath("7z.dll");
+            if (e.Args.Length > 0)
+            {
+                logger.LogInformation("检测到启动参数。");
+                throw new NotImplementedException("暂不支持启动参数。");
+            }
             try
             {
                 SettingsViewModel.PrimaryNodeList = await PrimaryNodeList.CreateAsync(
@@ -68,8 +74,8 @@ namespace LLC_MOD_Toolbox
             {
                 logger.LogError(ex, "节点初始化失败。");
             }
-            var mainWindow = Services.GetRequiredService<MainWindow>();
-            mainWindow.Show();
+            var mainWindow = Services.GetService<MainWindow>();
+            mainWindow?.Show();
         }
     }
 }

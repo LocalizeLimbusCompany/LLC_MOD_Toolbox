@@ -1,7 +1,5 @@
-﻿using System.ComponentModel;
-using System.IO;
+﻿using System.IO;
 using System.Windows.Media.Imaging;
-using Downloader;
 
 namespace LLC_MOD_Toolbox.Services;
 
@@ -24,18 +22,8 @@ public class FileDownloadServiceProxy(
 
     public Task<Stream> GetAppAsync(Uri url) => fileDownloadService.GetAppAsync(url);
 
-    public Task<Stream> DownloadFileAsync(
-        Uri url,
-        string path,
-        EventHandler<DownloadProgressChangedEventArgs> onDownloadProgressChanged,
-        EventHandler<AsyncCompletedEventArgs> onDownloadFileCompleted
-    ) =>
-        fileDownloadService.DownloadFileAsync(
-            url,
-            path,
-            onDownloadProgressChanged,
-            onDownloadFileCompleted
-        );
+    public Task<Stream> DownloadFileAsync(Uri url, string path, IProgress<double> progress) =>
+        fileDownloadService.DownloadFileAsync(url, path, progress);
 
     public Task<string> GetJsonAsync(Uri url) => fileDownloadService.GetJsonAsync(url);
 

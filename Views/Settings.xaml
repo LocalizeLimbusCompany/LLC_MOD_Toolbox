@@ -80,15 +80,15 @@
             Content="游戏位置"
             FontSize="22"
             Foreground="#FFFFEED4" />
-        <TextBlock
-            x:Name="GameLocationTextBlock"
+        <Button
             Grid.Row="3"
             Grid.Column="1"
-            d:Text="我不到啊"
+            d:Content="我不到啊"
             Background="White"
+            Click="Button_Click"
+            Content="{Binding LimbusCompanyPath}"
             FontSize="16"
-            Foreground="Black"
-            Text="{Binding LimbusCompanyPath}" />
+            Foreground="Black" />
     </Grid>
 
 </UserControl>

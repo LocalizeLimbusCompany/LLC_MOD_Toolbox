@@ -462,12 +462,6 @@ namespace LLC_MOD_Toolbox
             if (result == MessageBoxResult.Yes)
             {
                 logger.LogInformation("确定删除模组。");
-                try { }
-                catch (Exception ex)
-                {
-                    System.Windows.MessageBox.Show("删除过程中出现了一些问题： " + ex.ToString(), "警告");
-                    logger.LogError("删除过程中出现了一些问题： ", ex);
-                }
                 System.Windows.MessageBox.Show("删除完成。", "提示");
                 logger.LogInformation("删除完成。");
             }

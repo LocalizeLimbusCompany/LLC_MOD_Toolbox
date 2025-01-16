@@ -25,7 +25,8 @@
         <ProgressBar
             Grid.Row="1"
             d:Value="100"
-            Background="Transparent">
+            Background="Transparent"
+            Value="{Binding InstallationProgress}">
             <ProgressBar.Foreground>
                 <ImageBrush ImageSource="pack://application:,,,/LLC_MOD_Toolbox;component/Assets/Images/FullProgress.png" Stretch="Uniform" />
             </ProgressBar.Foreground>
