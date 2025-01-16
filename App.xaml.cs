@@ -18,30 +18,29 @@ namespace LLC_MOD_Toolbox
         public static new App Current => (App)Application.Current;
         public IServiceProvider Services { get; }
 
-        private static ServiceProvider ConfigureServices()
+        private static IServiceProvider ConfigureServices()
         {
             var services = new ServiceCollection();
-            services.AddSingleton<RegularFileDownloadService>();
-            services.AddSingleton<GrayFileDownloadService>();
-            services.AddSingleton<IFileDownloadService>(sp =>
-            {
-                var regular = sp.GetRequiredService<RegularFileDownloadService>();
-                var gray = sp.GetRequiredService<GrayFileDownloadService>();
-                return new FileDownloadServiceProxy(regular, gray);
-            });
+            services.AddSingleton<PrimaryNodeList>();
+            services.AddSingleton<IFileDownloadService, GrayFileDownloadService>();
+            services.AddSingleton<IFileDownloadService, RegularFileDownloadService>();
             services.AddTransient<MainWindow>();
-            services.AddSingleton<SettingsViewModel>();
-            services.AddTransient<AutoInstallerViewModel>();
-            services.AddTransient<GachaViewModel>();
-            /*services.AddTransient(sp => new Settings
-            {
-                DataContext = sp.GetRequiredService<SettingsViewModel>()
-            });
             services.AddTransient(sp => new AutoInstaller
             {
                 DataContext = sp.GetRequiredService<AutoInstallerViewModel>()
-            });*/
-            services.AddLogging(builder => builder.AddNLog("Nlog.config"));
+            });
+            services.AddTransient(sp => new Settings
+            {
+                DataContext = sp.GetRequiredService<SettingsViewModel>()
+            });
+            services.AddTransient<SettingsViewModel>();
+            services.AddTransient<AutoInstallerViewModel>();
+            services.AddTransient<GachaViewModel>();
+            services.AddLogging(builder =>
+            {
+                builder.ClearProviders();
+                builder.AddNLog("Nlog.config");
+            });
             return services.BuildServiceProvider();
         }
 
@@ -65,16 +64,15 @@ namespace LLC_MOD_Toolbox
             }
             try
             {
-                SettingsViewModel.PrimaryNodeList = await PrimaryNodeList.CreateAsync(
-                    "NodeList.json"
-                );
+                PrimaryNodeList primaryNodeList = Services.GetRequiredService<PrimaryNodeList>();
+                primaryNodeList = await PrimaryNodeList.CreateAsync("NodeList.json");
                 logger.LogInformation("节点初始化完成。");
             }
             catch (Exception ex)
             {
                 logger.LogError(ex, "节点初始化失败。");
             }
-            var mainWindow = Services.GetService<MainWindow>();
+            var mainWindow = Services.GetRequiredService<MainWindow>();
             mainWindow?.Show();
         }
     }

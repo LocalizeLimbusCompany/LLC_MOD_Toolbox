@@ -1,6 +1,4 @@
 ﻿using System.Windows.Controls;
-using LLC_MOD_Toolbox.ViewModels;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Win32;
 
 namespace LLC_MOD_Toolbox.Views
@@ -13,7 +11,6 @@ namespace LLC_MOD_Toolbox.Views
         public Settings()
         {
             InitializeComponent();
-            DataContext = App.Current.Services.GetService<SettingsViewModel>();
         }
 
         private void Button_Click(object sender, System.Windows.RoutedEventArgs e)

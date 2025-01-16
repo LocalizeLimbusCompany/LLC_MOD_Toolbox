@@ -12,8 +12,6 @@ namespace LLC_MOD_Toolbox.ViewModels;
 
 public partial class SettingsViewModel : ObservableObject
 {
-    public static PrimaryNodeList PrimaryNodeList { get; set; } = new();
-
     private string? limbusCompanyPath;
 
     private readonly ILogger<SettingsViewModel> logger;
@@ -95,11 +93,11 @@ public partial class SettingsViewModel : ObservableObject
         return Task.CompletedTask;
     }
 
-    public SettingsViewModel(ILogger<SettingsViewModel> logger)
+    public SettingsViewModel(ILogger<SettingsViewModel> logger, PrimaryNodeList primaryNodeList)
     {
         this.logger = logger;
-        DownloadNodeList = PrimaryNodeList.DownloadNode;
-        ApiNodeList = PrimaryNodeList.ApiNode;
+        DownloadNodeList = primaryNodeList.DownloadNode;
+        ApiNodeList = primaryNodeList.ApiNode;
         downloadNode = DownloadNodeList.Last(n => n.IsDefault);
         apiNode = ApiNodeList.Last(n => n.IsDefault);
     }

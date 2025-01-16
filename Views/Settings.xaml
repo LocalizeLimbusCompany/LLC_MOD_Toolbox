@@ -12,6 +12,7 @@
     d:FontFamily="/Fonts/#Source Han Sans CN"
     d:FontWeight="Medium"
     mc:Ignorable="d">
+
     <Grid x:Name="SettingsPage">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="1*" />
@@ -54,6 +55,8 @@
             x:Name="APICombobox"
             Grid.Row="1"
             Grid.Column="1"
+            Height="37"
+            VerticalAlignment="Bottom"
             DisplayMemberPath="Name"
             FontSize="16"
             Foreground="Black"
