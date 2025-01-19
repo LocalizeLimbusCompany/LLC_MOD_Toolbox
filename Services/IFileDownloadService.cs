@@ -1,4 +1,4 @@
-﻿using System.IO;
+using System.IO;
 using System.Net.Http;
 using System.Runtime.InteropServices;
 using System.Windows.Media.Imaging;

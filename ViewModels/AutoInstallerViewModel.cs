@@ -1,4 +1,4 @@
-﻿using System.IO;
+using System.IO;
 using System.Windows;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -11,7 +11,7 @@ namespace LLC_MOD_Toolbox.ViewModels;
 
 public partial class AutoInstallerViewModel(
     ILogger<AutoInstallerViewModel> logger,
-    IFileDownloadService fileDownloadServiceProxy,
+    IFileDownloadService fileDownloadService,
     SettingsViewModel settingsViewModel
 ) : ObservableObject
 {
@@ -39,12 +39,12 @@ public partial class AutoInstallerViewModel(
         }
         try
         {
-            var stream = await fileDownloadServiceProxy.DownloadFileAsync(
+            var stream = await fileDownloadService.DownloadFileAsync(
                 selectedEndPoint.Endpoint,
                 limbusCompanyPath,
                 InstallationProgress
             );
-            var onlineHash = await fileDownloadServiceProxy.GetHashAsync(selectedEndPoint.Endpoint);
+            var onlineHash = await fileDownloadService.GetHashAsync(selectedEndPoint.Endpoint);
             if (!await ValidateHelper.CheckHashAsync(stream, onlineHash))
                 throw new Exception("文件校验失败。");
             FileHelper.InstallBepInEx(stream, limbusCompanyPath);

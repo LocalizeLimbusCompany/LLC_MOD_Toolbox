@@ -68,4 +68,8 @@
     </Compile>
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Assets\I18n\" />
+  </ItemGroup>
+
 </Project>

@@ -1,4 +1,4 @@
-﻿using System.Windows;
+using System.Windows;
 using LLC_MOD_Toolbox.Helpers;
 using LLC_MOD_Toolbox.Models;
 using LLC_MOD_Toolbox.Services;
@@ -22,7 +22,7 @@ namespace LLC_MOD_Toolbox
         public static new App Current => (App)Application.Current;
         public IServiceProvider Services { get; }
 
-        private static IServiceProvider ConfigureServices()
+        private static ServiceProvider ConfigureServices()
         {
             var services = new ServiceCollection();
 
@@ -30,8 +30,8 @@ namespace LLC_MOD_Toolbox
             services.AddSingleton<PrimaryNodeList>();
 
             // Services
-            services.AddSingleton<IFileDownloadService, GrayFileDownloadService>();
-            services.AddSingleton<IFileDownloadService, RegularFileDownloadService>();
+            services.AddKeyedTransient<IFileDownloadService, GrayFileDownloadService>("Gray");
+            services.AddKeyedTransient<IFileDownloadService, RegularFileDownloadService>("Regular");
 
             // Views
             services.AddTransient<MainWindow>();
@@ -86,7 +86,7 @@ namespace LLC_MOD_Toolbox
                 _logger.LogError(ex, "节点初始化失败。");
             }
 
-            _logger.LogInformation("当前版本：{version}", GetType().Assembly.GetName().Version);
+            _logger.LogInformation("当前版本：{}", GetType().Assembly.GetName().Version);
             // 检查更新
             try
             {
