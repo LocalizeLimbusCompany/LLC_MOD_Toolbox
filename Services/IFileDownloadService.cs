@@ -106,13 +106,4 @@ public interface IFileDownloadService
         response.EnsureSuccessStatusCode();
         return response;
     }
-
-    /// <summary>
-    /// 老实说或许它不应该在这个类里……
-    /// </summary>
-    /// <param name="url">要打开的文件</param>
-    public void LaunchUrl(string url) =>
-        System.Diagnostics.Process.Start(
-            new System.Diagnostics.ProcessStartInfo(url) { UseShellExecute = true }
-        );
 }

@@ -10,7 +10,8 @@
     Title="都市零协会工具箱"
     Width="960"
     Height="600"
-    d:DataContext="{d:DesignInstance Type=viewmodels:MainViewModel}"
+    d:DataContext="{d:DesignInstance Type=viewmodels:MainViewModel,
+                                     IsDesignTimeCreatable=True}"
     AllowsTransparency="True"
     Background="Transparent"
     FontFamily="Assets/Fonts/#Source Han Sans CN"
