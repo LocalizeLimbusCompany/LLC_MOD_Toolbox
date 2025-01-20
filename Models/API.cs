@@ -1,4 +1,4 @@
-﻿using System.IO;
+using System.IO;
 using LLC_MOD_Toolbox.Helpers;
 
 namespace LLC_MOD_Toolbox.Models;

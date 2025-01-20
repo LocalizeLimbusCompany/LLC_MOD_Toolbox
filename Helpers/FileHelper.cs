@@ -86,15 +86,6 @@ static class FileHelper
     }
 
     /// <summary>
-    /// 老实说或许它不应该在这个类里……
-    /// </summary>
-    /// <param name="url">要打开的地址</param>
-    public static void LaunchUrl(string url) =>
-        System.Diagnostics.Process.Start(
-            new System.Diagnostics.ProcessStartInfo(url) { UseShellExecute = true }
-        );
-
-    /// <summary>
     /// 添加到 <seealso href="https://learn.microsoft.com/zh-cn/powershell/module/defender/add-mppreference">Windows Defender</seealso> 的排除列表<br/>
     /// <b>*需要管理员权限</b><br/>
     /// <b>*危险操作请勿自动进行</b>

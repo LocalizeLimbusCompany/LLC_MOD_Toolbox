@@ -30,8 +30,8 @@ namespace LLC_MOD_Toolbox
             services.AddSingleton<PrimaryNodeList>();
 
             // Services
-            services.AddKeyedTransient<IFileDownloadService, GrayFileDownloadService>("Gray");
-            services.AddKeyedTransient<IFileDownloadService, RegularFileDownloadService>("Regular");
+            //services.AddKeyedTransient<IFileDownloadService, GrayFileDownloadService>("Gray");
+            services.AddTransient<IFileDownloadService, RegularFileDownloadService>();
 
             // Views
             services.AddTransient<MainWindow>();
@@ -45,7 +45,7 @@ namespace LLC_MOD_Toolbox
             });
 
             // ViewModels
-            services.AddSingleton<SettingsViewModel>();
+            services.AddTransient<SettingsViewModel>();
             services.AddTransient<AutoInstallerViewModel>();
             services.AddTransient<GachaViewModel>();
 
@@ -60,6 +60,11 @@ namespace LLC_MOD_Toolbox
         public App()
         {
             Services = ConfigureServices();
+            AppDomain.CurrentDomain.UnhandledException += (sender, e) =>
+            {
+                var _logger = Services.GetRequiredService<ILogger<App>>();
+                _logger.LogError(e.ExceptionObject as Exception, "未处理异常");
+            };
         }
 
         private async void Application_Startup(object sender, StartupEventArgs e)
@@ -101,7 +106,7 @@ namespace LLC_MOD_Toolbox
                 if (VersionHelper.CheckForUpdate(latestVersion))
                 {
                     _logger.LogInformation("检测到新版本。打开链接");
-                    FileHelper.LaunchUrl(nodeInformation.Endpoint.ToString());
+                    PathHelper.LaunchUrl(nodeInformation.Endpoint.ToString());
                     throw new NotImplementedException("暂不支持自动更新。");
                 }
             }

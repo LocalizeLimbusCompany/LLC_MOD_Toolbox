@@ -1,4 +1,4 @@
-﻿// 此文件用来处理前端样式相关逻辑。
+// 此文件用来处理前端样式相关逻辑。
 // 我恨XML，这辈子都不想写XML了。
 // （而且内存占用好多
 
@@ -112,7 +112,7 @@ namespace LLC_MOD_Toolbox
         /*        public async Task ChangeProgressValue(float value)
                 {
                     value = (float)Math.Round(value, 1);
-                    logger.Debug($"安装进度：{value}%");
+                    _logger.Debug($"安装进度：{value}%");
                     RectangleGeometry rectGeometry = new()
                     {
                         Rect = new Rect(0, 0, 6.24 * value, 50)
@@ -121,7 +121,7 @@ namespace LLC_MOD_Toolbox
                     {
                         FullProgress.Clip = rectGeometry;
                     });
-                    logger.Debug("更改进度完成。");
+                    _logger.Debug("更改进度完成。");
                 }*/
         //private void GreytestInfoButtonClick(object sender, RoutedEventArgs e)
         //{
@@ -133,7 +133,7 @@ namespace LLC_MOD_Toolbox
                 {
                     if (!eeOpening && !eeEntered)
                     {
-                        logger.Info("不要点了>_<");
+                        _logger.Info("不要点了>_<");
                         eeOpening = true;
                         eeEntered = false;
                         await ChangeEEVB(true);

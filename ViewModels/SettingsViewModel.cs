@@ -1,20 +1,21 @@
-﻿using System.Configuration;
+using System.Configuration;
 using System.IO;
 using System.Windows;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
+using CommunityToolkit.Mvvm.Messaging.Messages;
 using LLC_MOD_Toolbox.Helpers;
 using LLC_MOD_Toolbox.Models;
 using Microsoft.Extensions.Logging;
-using Microsoft.Win32;
 
 namespace LLC_MOD_Toolbox.ViewModels;
 
 public partial class SettingsViewModel : ObservableObject
 {
-    private string? limbusCompanyPath;
+    private string limbusCompanyPath = PathHelper.DetectedLimbusCompanyPath;
 
-    private readonly ILogger<SettingsViewModel> logger;
+    private readonly ILogger<SettingsViewModel> _logger;
 
     /// <summary>
     /// 仅在 Windows 下有效，不过这个项目也只在 Windows 下有效
@@ -25,23 +26,23 @@ public partial class SettingsViewModel : ObservableObject
         {
             var path =
                 ConfigurationManager.AppSettings["GamePath"]
-                ?? Registry.GetValue(
-                    @"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Steam App 1973530",
-                    "InstallLocation",
-                    null
-                ) as string
+                ?? PathHelper.DetectedLimbusCompanyPath
                 ?? throw new ArgumentNullException("未找到边狱公司路径。可能是注册表被删除了！");
             if (Directory.Exists(path))
             {
                 limbusCompanyPath = path;
                 return path;
             }
-            throw new DirectoryNotFoundException("未找到边狱公司路径。可能是注册表被恶意修改了！");
+            _logger.LogWarning("未找到边狱公司路径。");
+            return PathHelper.DetectedLimbusCompanyPath;
         }
         set
         {
-            logger.LogInformation("设置边狱公司路径为：{value}", value);
+            _logger.LogInformation("设置边狱公司路径为：{value}", value);
             ConfigurationManager.AppSettings["GamePath"] = value;
+            WeakReferenceMessenger.Default.Send(
+                new ValueChangedMessage<(NodeInformation, string)>((DownloadNode, value))
+            );
             SetProperty(ref limbusCompanyPath, value);
         }
     }
@@ -61,7 +62,7 @@ public partial class SettingsViewModel : ObservableObject
     [RelayCommand]
     private Task ModUnistallation()
     {
-        logger.LogInformation("开始卸载 BepInEx。");
+        _logger.LogInformation("开始卸载 BepInEx。");
         MessageBoxResult result = MessageBox.Show(
             "删除后你需要重新安装汉化补丁。\n确定继续吗？",
             "警告",
@@ -70,7 +71,7 @@ public partial class SettingsViewModel : ObservableObject
         );
         if (result != MessageBoxResult.Yes)
         {
-            logger.LogInformation("取消卸载 BepInEx。");
+            _logger.LogInformation("取消卸载 BepInEx。");
             return Task.CompletedTask;
         }
         try
@@ -95,7 +96,7 @@ public partial class SettingsViewModel : ObservableObject
 
     public SettingsViewModel(ILogger<SettingsViewModel> logger, PrimaryNodeList primaryNodeList)
     {
-        this.logger = logger;
+        this._logger = logger;
         DownloadNodeList = primaryNodeList.DownloadNode;
         ApiNodeList = primaryNodeList.ApiNode;
         downloadNode = DownloadNodeList.Last(n => n.IsDefault);

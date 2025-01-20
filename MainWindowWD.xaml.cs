@@ -1,4 +1,4 @@
-﻿// 用于处理后端逻辑。
+// 用于处理后端逻辑。
 /*
  * You may think you know what the following code does.
  * But you dont. Trust me.
@@ -136,7 +136,7 @@ namespace LLC_MOD_Toolbox
                 //}
                 //catch (Exception ex)
                 //{
-                //    logger.LogError("出现了问题： ", ex);
+                //    _logger.LogError("出现了问题： ", ex);
                 //    System.Windows.MessageBox.Show("出现了问题。\n" + ex.ToString());
                 //}
             }
