@@ -1,4 +1,4 @@
-﻿using System.Reflection;
+using System.Reflection;
 
 namespace LLC_MOD_Toolbox.Helpers;
 

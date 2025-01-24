@@ -88,7 +88,7 @@
             Grid.Column="1"
             d:Content="我不到啊"
             Background="White"
-            Click="Button_Click"
+            Command="{Binding ChangeLimbusCompanyCommand}"
             Content="{Binding LimbusCompanyPath}"
             FontSize="16"
             Foreground="Black" />

@@ -1,4 +1,4 @@
-﻿using System.Windows.Controls;
+using System.Windows.Controls;
 using Microsoft.Win32;
 
 namespace LLC_MOD_Toolbox.Views
@@ -11,11 +11,6 @@ namespace LLC_MOD_Toolbox.Views
         public Settings()
         {
             InitializeComponent();
-        }
-
-        private void Button_Click(object sender, System.Windows.RoutedEventArgs e)
-        {
-            _ = new OpenFileDialog();
         }
     }
 }

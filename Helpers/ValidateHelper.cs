@@ -1,9 +1,9 @@
-﻿using System.IO;
+using System.IO;
 using System.Security.Cryptography;
 
 namespace LLC_MOD_Toolbox.Helpers;
 
-internal static class ValidateHelper
+static class ValidateHelper
 {
     public static async Task<bool> CheckHashAsync(Stream archive, string onlineHash)
     {

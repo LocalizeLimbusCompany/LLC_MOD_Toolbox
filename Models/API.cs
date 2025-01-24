@@ -12,13 +12,13 @@ public class PrimaryNodeList
     /// 下载节点, 默认长度为 1
     /// </summary>
     public List<NodeInformation> DownloadNode { get; init; } =
-        [new("默认 (GitHub)", (new("https://node.zeroasso.top/d/od/")), true)];
+        [new("默认", (new("https://node.zeroasso.top/d/od/")), true)];
 
     /// <summary>
     /// API 节点, 默认长度为 1
     /// </summary>
     public List<NodeInformation> ApiNode { get; init; } =
-        [new("默认 (GitHub)", new("https://api.kr.zeroasso.top/"), true)];
+        [new("默认", new("https://api.kr.zeroasso.top/"), true)];
 
     public static async Task<PrimaryNodeList> CreateAsync(string url)
     {

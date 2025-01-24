@@ -43,25 +43,6 @@ namespace LLC_MOD_Toolbox
         private static string greytestUrl = string.Empty;
         private static bool greytestStatus = false;
 
-        /// <summary>
-        /// 按某格式打印log4net，毫无意义的封装，建议弃用，尽快切换写法
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="promptInfo"></param>
-        /// <param name="someObject"></param>
-        [Obsolete]
-        private void PrintInstallInfo<T>(string promptInfo, T someObject)
-        {
-            if (someObject == null)
-            {
-                logger.LogInformation($"{promptInfo}：空");
-            }
-            else
-            {
-                logger.LogInformation($"{promptInfo}{someObject}");
-            }
-        }
-
         #region 安装功能
         /// <summary>
         /// 处理自动安装页面的安装按钮。
@@ -74,14 +55,6 @@ namespace LLC_MOD_Toolbox
             logger.LogInformation("开始安装。");
             logger.LogInformation("**********安装信息打印**********");
             logger.LogInformation("本次安装信息：");
-            //请勿抑制警告，尽快设计更好的处理方法
-            PrintInstallInfo("是否使用Github：", useGithub);
-            PrintInstallInfo("是否使用Mirror Github：", useMirrorGithub);
-            PrintInstallInfo("Limbus公司目录：", limbusCompanyDir);
-            PrintInstallInfo("节点列表数量：", 0);
-            PrintInstallInfo("使用节点：", useEndPoint);
-            PrintInstallInfo("灰度测试状态：", greytestStatus);
-            logger.LogInformation("**********安装信息打印**********");
             installPhase = 0;
             Process[] limbusProcess = Process.GetProcessesByName("LimbusCompany");
             if (limbusProcess.Length > 0)

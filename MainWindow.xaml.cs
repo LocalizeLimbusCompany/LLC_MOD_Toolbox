@@ -27,7 +27,6 @@ namespace LLC_MOD_Toolbox
         private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
             await ChangeEEPic("https://dl.kr.zeroasso.top/ee_pic/public/public.png");
-            CheckToolboxUpdate();
             InitLink();
             logger.LogInformation("加载流程完成。");
         }
