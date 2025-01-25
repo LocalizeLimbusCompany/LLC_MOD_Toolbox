@@ -1,5 +1,4 @@
 using System.Windows.Controls;
-using Microsoft.Win32;
 
 namespace LLC_MOD_Toolbox.Views
 {

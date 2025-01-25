@@ -5,7 +5,7 @@ using Microsoft.Extensions.Logging;
 
 namespace LLC_MOD_Toolbox.Helpers;
 
-static class FileHelper
+internal static class FileHelper
 {
     private static readonly DownloadConfiguration downloadConfig =
         new()
@@ -86,6 +86,7 @@ static class FileHelper
     }
 
     /// <summary>
+    /// [未测]
     /// 添加到 <seealso href="https://learn.microsoft.com/zh-cn/powershell/module/defender/add-mppreference">Windows Defender</seealso> 的排除列表<br/>
     /// <b>*需要管理员权限</b><br/>
     /// <b>*危险操作请勿自动进行</b>
@@ -97,7 +98,7 @@ static class FileHelper
         {
             Arguments = $"Add-MpPreference -ExclusionPath \"{path}\"",
             UseShellExecute = true,
-            Verb = "runas" // This makes the process run as administrator
+            Verb = "RunAs" // This makes the process run as administrator
         };
         System.Diagnostics.Process.Start(processInfo);
     }

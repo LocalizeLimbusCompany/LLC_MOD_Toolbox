@@ -3,7 +3,7 @@ using Microsoft.Win32;
 
 namespace LLC_MOD_Toolbox.Helpers
 {
-    static class PathHelper
+    internal static class PathHelper
     {
         /// <summary>
         /// 获取边狱公司路径
@@ -37,11 +37,11 @@ namespace LLC_MOD_Toolbox.Helpers
         /// <returns>选择的文件路径</returns>
         public static string SelectPath()
         {
-            OpenFileDialog openFileDialog =
-                new() { Filter = "边狱公司游戏文件|LimbusCompany.exe", Title = "选择边狱公司游戏文件" };
-            if (openFileDialog.ShowDialog() == true)
+            OpenFolderDialog openFolderDialog =
+                new() { DefaultDirectory = DetectedLimbusCompanyPath, Title = "选择边狱公司文件夹" };
+            if (openFolderDialog.ShowDialog() == true)
             {
-                return openFileDialog.FileName;
+                return openFolderDialog.FolderName;
             }
             throw new ConfigurationErrorsException("未选择文件！");
         }

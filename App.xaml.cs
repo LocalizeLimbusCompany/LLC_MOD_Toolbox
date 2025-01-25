@@ -4,7 +4,6 @@ using LLC_MOD_Toolbox.Helpers;
 using LLC_MOD_Toolbox.Models;
 using LLC_MOD_Toolbox.Services;
 using LLC_MOD_Toolbox.ViewModels;
-using LLC_MOD_Toolbox.Views;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NLog.Extensions.Logging;
@@ -28,26 +27,17 @@ namespace LLC_MOD_Toolbox
             var services = new ServiceCollection();
 
             // Models
-            services.AddSingleton<PrimaryNodeList>();
+            services.AddSingleton(_ => PrimaryNodeList.Create("NodeList.json"));
 
             // Services
-            //services.AddKeyedTransient<IFileDownloadService, GrayFileDownloadService>("Gray");
             services.AddTransient<IFileDownloadService, RegularFileDownloadService>();
 
             // Views
             services.AddTransient<MainWindow>();
-            services.AddTransient(sp => new AutoInstaller
-            {
-                DataContext = sp.GetRequiredService<AutoInstallerViewModel>()
-            });
-            services.AddTransient(sp => new Settings
-            {
-                DataContext = sp.GetRequiredService<SettingsViewModel>()
-            });
 
             // ViewModels
-            services.AddTransient<SettingsViewModel>();
             services.AddTransient<AutoInstallerViewModel>();
+            services.AddTransient<SettingsViewModel>();
             services.AddTransient<GachaViewModel>();
 
             services.AddLogging(builder =>
@@ -81,16 +71,6 @@ namespace LLC_MOD_Toolbox
                 _logger.LogInformation("检测到启动参数。");
                 throw new NotImplementedException("暂不支持启动参数。");
             }
-            try
-            {
-                PrimaryNodeList primaryNodeList = Services.GetRequiredService<PrimaryNodeList>();
-                primaryNodeList = await PrimaryNodeList.CreateAsync("NodeList.json");
-                _logger.LogInformation("节点初始化完成。");
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "节点初始化失败。");
-            }
 
             _logger.LogInformation("当前版本：{}", VersionHelper.LocalVersion);
             // 检查更新
@@ -101,7 +81,7 @@ namespace LLC_MOD_Toolbox
                 // TODO: 优化节点选择
                 NodeInformation nodeInformation = NodeList.ApiNode.Last(n => n.IsDefault);
                 var jsonPayload = await http.GetJsonAsync(
-                    new Uri(nodeInformation.Endpoint, "Toolbox_Release.json")
+                    new Uri(nodeInformation.Endpoint, "/Toolbox_Release.json")
                 );
                 _logger.LogInformation("API 节点连接成功。");
                 var latestVersion = JsonHelper.DeserializeTagName(jsonPayload);
@@ -122,7 +102,7 @@ namespace LLC_MOD_Toolbox
                 _logger.LogError(ex, "未处理异常");
             }
             var mainWindow = Services.GetRequiredService<MainWindow>();
-            mainWindow?.Show();
+            mainWindow.Show();
         }
     }
 }

@@ -20,9 +20,9 @@ public class PrimaryNodeList
     public List<NodeInformation> ApiNode { get; init; } =
         [new("默认", new("https://api.kr.zeroasso.top/"), true)];
 
-    public static async Task<PrimaryNodeList> CreateAsync(string url)
+    public static PrimaryNodeList Create(string url)
     {
-        var jsonPayload = await File.ReadAllTextAsync(url);
+        var jsonPayload = File.ReadAllText(url);
         return JsonHelper.DeserializePrimaryNodeList(jsonPayload);
     }
 }

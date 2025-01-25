@@ -21,7 +21,7 @@ public partial class AutoInstallerViewModel : ObservableObject
     private string limbusCompanyPath;
 
     [ObservableProperty]
-    Progress<double> installationProgress = new();
+    private Progress<double> installationProgress = new();
 
     public AutoInstallerViewModel(
         ILogger<AutoInstallerViewModel> logger,

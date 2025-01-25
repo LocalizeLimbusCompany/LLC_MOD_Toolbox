@@ -5,7 +5,7 @@ using Newtonsoft.Json.Serialization;
 
 namespace LLC_MOD_Toolbox.Helpers;
 
-static class JsonHelper
+internal static class JsonHelper
 {
     /// <summary>
     /// JSON 序列化设置，使用驼峰命名法，忽略空值

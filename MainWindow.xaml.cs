@@ -6,6 +6,8 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
+using LLC_MOD_Toolbox.ViewModels;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 namespace LLC_MOD_Toolbox
@@ -18,6 +20,10 @@ namespace LLC_MOD_Toolbox
         {
             this.logger = logger;
             InitializeComponent();
+            AutoInstallerPage.DataContext =
+                App.Current.Services.GetRequiredService<AutoInstallerViewModel>();
+            SettingsPage.DataContext = App.Current.Services.GetRequiredService<SettingsViewModel>();
+            GachaPage.DataContext = App.Current.Services.GetRequiredService<GachaViewModel>();
 
             progressTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(0.05) };
             progressTimer.Tick += ProgressTime_Tick;
@@ -108,20 +114,6 @@ namespace LLC_MOD_Toolbox
             //}
         }
 
-        /*        public async Task ChangeProgressValue(float value)
-                {
-                    value = (float)Math.Round(value, 1);
-                    _logger.Debug($"安装进度：{value}%");
-                    RectangleGeometry rectGeometry = new()
-                    {
-                        Rect = new Rect(0, 0, 6.24 * value, 50)
-                    };
-                    await this.Dispatcher.BeginInvoke(() =>
-                    {
-                        FullProgress.Clip = rectGeometry;
-                    });
-                    _logger.Debug("更改进度完成。");
-                }*/
         //private void GreytestInfoButtonClick(object sender, RoutedEventArgs e)
         //{
         //    HttpHelper.LaunchUrl("https://www.zeroasso.top/docs/community/llcdev");

@@ -37,7 +37,6 @@ namespace LLC_MOD_Toolbox
 
         private static int installPhase = 0;
         private readonly DispatcherTimer progressTimer;
-        private float progressPercentage = 0;
 
         // GreyTest 灰度测试2.0
         private static string greytestUrl = string.Empty;
@@ -123,7 +122,6 @@ namespace LLC_MOD_Toolbox
         {
             //isInstalling = false;
             installPhase = 0;
-            progressPercentage = 0;
             //await ChangeProgressValue(progressPercentage);
             //await RefreshPage();
         }
@@ -251,13 +249,7 @@ namespace LLC_MOD_Toolbox
             );
         }
 
-        private void NewOnDownloadProgressCompleted(object? sender, AsyncCompletedEventArgs e)
-        {
-            if (installPhase != 0)
-            {
-                progressPercentage = installPhase * 33;
-            }
-        }
+        private void NewOnDownloadProgressCompleted(object? sender, AsyncCompletedEventArgs e) { }
 
         /// <summary>
         /// 自动下载文件。
@@ -413,7 +405,6 @@ namespace LLC_MOD_Toolbox
 
         public void StartProgressTimer()
         {
-            progressPercentage = 0;
             progressTimer.Start();
         }
 
@@ -435,7 +426,7 @@ namespace LLC_MOD_Toolbox
             if (result == MessageBoxResult.Yes)
             {
                 logger.LogInformation("确定删除模组。");
-                System.Windows.MessageBox.Show("删除完成。", "提示");
+                MessageBox.Show("删除完成。", "提示");
                 logger.LogInformation("删除完成。");
             }
         }
@@ -674,9 +665,9 @@ namespace LLC_MOD_Toolbox
             gachaTimer.Tick += GachaTimerTick;
             List<PersonalInfo> personalInfos = TranformTextToList(gachaText);
             logger.LogInformation("人格数量：" + personalInfos.Count);
-            personalInfos1star = personalInfos.Where(p => p.Unique == 1).ToList();
-            personalInfos2star = personalInfos.Where(p => p.Unique == 2).ToList();
-            personalInfos3star = personalInfos.Where(p => p.Unique == 3).ToList();
+            personalInfos1star = [.. personalInfos.Where(p => p.Unique == 1)];
+            personalInfos2star = [.. personalInfos.Where(p => p.Unique == 2)];
+            personalInfos3star = [.. personalInfos.Where(p => p.Unique == 3)];
             // 明明可以用 personalInfos.GroupBy(p => p.Unique)
             System.Windows.MessageBox.Show("初始化完成。", "提示");
             isInitGacha = true;
@@ -703,10 +694,6 @@ namespace LLC_MOD_Toolbox
                 MessageBox.Show("出了点小问题！\n要不再试一次？\n————————\n" + ex.ToString());
                 gachaTimer?.Stop();
                 _currentIndex = 0;
-                await Dispatcher.BeginInvoke(() =>
-                {
-                    InGachaButton.IsHitTestVisible = true;
-                });
                 return;
             }
             if (gachaTimer != null)
@@ -726,19 +713,7 @@ namespace LLC_MOD_Toolbox
             return uniqueCount;
         }
 
-        private async Task StartChangeLabel(List<PersonalInfo> personals)
-        {
-            await ChangeLabelColorAndPersonal(personals[0], GachaText1);
-            await ChangeLabelColorAndPersonal(personals[1], GachaText2);
-            await ChangeLabelColorAndPersonal(personals[2], GachaText3);
-            await ChangeLabelColorAndPersonal(personals[3], GachaText4);
-            await ChangeLabelColorAndPersonal(personals[4], GachaText5);
-            await ChangeLabelColorAndPersonal(personals[5], GachaText6);
-            await ChangeLabelColorAndPersonal(personals[6], GachaText7);
-            await ChangeLabelColorAndPersonal(personals[7], GachaText8);
-            await ChangeLabelColorAndPersonal(personals[8], GachaText9);
-            await ChangeLabelColorAndPersonal(personals[9], GachaText10);
-        }
+        private async Task StartChangeLabel(List<PersonalInfo> personals) { }
 
         private async Task ChangeLabelColorAndPersonal(
             PersonalInfo personal,
@@ -868,10 +843,7 @@ namespace LLC_MOD_Toolbox
             else if (gachaTimer != null)
             {
                 gachaTimer.Stop();
-                await this.Dispatcher.BeginInvoke(() =>
-                {
-                    InGachaButton.IsHitTestVisible = true;
-                });
+                await this.Dispatcher.BeginInvoke(() => { });
                 Random random = new();
                 gachaCount += 1;
                 switch (gachaCount)
@@ -1036,20 +1008,7 @@ namespace LLC_MOD_Toolbox
 
         private async Task CollapsedAllGacha()
         {
-            await this.Dispatcher.BeginInvoke(() =>
-            {
-                GachaText1.Visibility = Visibility.Collapsed;
-                GachaText2.Visibility = Visibility.Collapsed;
-                GachaText3.Visibility = Visibility.Collapsed;
-                GachaText4.Visibility = Visibility.Collapsed;
-                GachaText5.Visibility = Visibility.Collapsed;
-                GachaText6.Visibility = Visibility.Collapsed;
-                GachaText7.Visibility = Visibility.Collapsed;
-                GachaText8.Visibility = Visibility.Collapsed;
-                GachaText9.Visibility = Visibility.Collapsed;
-                GachaText10.Visibility = Visibility.Collapsed;
-                InGachaButton.IsHitTestVisible = false;
-            });
+            await this.Dispatcher.BeginInvoke(() => { });
         }
         #endregion
     }
