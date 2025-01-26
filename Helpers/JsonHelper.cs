@@ -30,21 +30,11 @@ internal static class JsonHelper
         ?? new PrimaryNodeList();
 
     /// <summary>
-    /// 反序列化标签名
+    /// 根据传入的键反序列化Json对应的值
     /// </summary>
     /// <param name="jsonPayload"></param>
-    /// <returns>版本号</returns>
-    /// <exception cref="JsonReaderException"></exception>
-    public static string DeserializeTagName(string jsonPayload) =>
-        JObject.Parse(jsonPayload).GetValue("tag_name")?.ToString()[1..]
-        ?? throw new JsonReaderException();
-
-    /// <summary>
-    /// 反序列化哈希值
-    /// </summary>
-    /// <param name="jsonPayload"></param>
-    /// <returns>哈希值</returns>
-    /// <exception cref="JsonReaderException"></exception>
-    public static string DeserializeHash(string jsonPayload) =>
-        JObject.Parse(jsonPayload).GetValue("hash")?.ToString() ?? throw new JsonReaderException();
+    /// <returns>键对应的值</returns>
+    /// <exception cref="JsonReaderException">如果不存在对应键值对</exception>
+    public static string DeserializeValue(string key, string jsonPayload) =>
+        JObject.Parse(jsonPayload).GetValue(key)?.ToString() ?? throw new JsonReaderException();
 }

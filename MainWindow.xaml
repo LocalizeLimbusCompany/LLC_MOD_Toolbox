@@ -15,6 +15,7 @@
     Background="Transparent"
     FontFamily="Assets/Fonts/#Source Han Sans CN"
     FontWeight="Medium"
+    Foreground="#FFFFEED4"
     Loaded="Window_Loaded"
     MouseDown="WindowDragMove"
     MouseLeftButtonDown="Window_MouseLeftButtonDown"
@@ -60,6 +61,27 @@
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
+        </Style>
+        <!--  标题文本样式  -->
+        <Style x:Key="JustifiedHeaderStyle" TargetType="TextBlock">
+            <Setter Property="TextAlignment" Value="Justify" />
+            <Setter Property="HorizontalAlignment" Value="Stretch" />
+            <Setter Property="TextWrapping" Value="Wrap" />
+            <Setter Property="Foreground" Value="#FFFFEED4" />
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="FontFamily" Value="Assets/Fonts/#Source Han Sans CN" />
+        </Style>
+
+        <!--  TabItem 标题模板  -->
+        <Style TargetType="TabItem">
+            <Setter Property="HeaderTemplate">
+                <Setter.Value>
+                    <DataTemplate>
+                        <TextBlock Style="{StaticResource JustifiedHeaderStyle}" Text="{Binding}" />
+                    </DataTemplate>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="Background" Value="Transparent" />
         </Style>
     </Window.Resources>
     <Border CornerRadius="20,20,20,20">
@@ -220,7 +242,10 @@
                         <RowDefinition Height="1*" />
                         <RowDefinition Height="5*" />
                     </Grid.RowDefinitions>
-                    <TabControl Grid.RowSpan="2" Background="Transparent">
+                    <TabControl
+                        Grid.RowSpan="2"
+                        Background="Transparent"
+                        TabStripPlacement="Left">
                         <TabItem Header="安装">
                             <TabControl Background="Transparent">
                                 <TabItem Header="自动安装">
@@ -252,7 +277,7 @@
 
                                 </TabItem>
                                 <TabItem Header="抽卡模拟器">
-                                    <views:Gacha x:Name="GachaPage" />
+                                    <views:Gacha x:Name="GachaPage" Height="336" />
                                 </TabItem>
                             </TabControl>
                         </TabItem>

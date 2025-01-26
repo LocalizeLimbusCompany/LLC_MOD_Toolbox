@@ -69,7 +69,7 @@ internal static class FileHelper
     /// 删除 Mod，删除内容为 <seealso cref="BepInExFiles"/> 和 <seealso cref="BepInExFolders"/>
     /// </summary>
     /// <returns></returns>
-    public static void DeleteBepInEx(string limbusCompanyPath)
+    public static void DeleteBepInEx(string limbusCompanyPath, ILogger logger)
     {
         if (string.IsNullOrEmpty(limbusCompanyPath))
         {
@@ -81,7 +81,14 @@ internal static class FileHelper
         }
         foreach (string folder in BepInExFolders)
         {
-            Directory.Delete(Path.Combine(limbusCompanyPath, folder), true);
+            try
+            {
+                Directory.Delete(Path.Combine(limbusCompanyPath, folder), true);
+            }
+            catch (DirectoryNotFoundException ex)
+            {
+                logger.LogInformation(ex, "{}已提前被删除。", folder);
+            }
         }
     }
 

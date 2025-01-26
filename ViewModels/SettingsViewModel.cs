@@ -13,7 +13,7 @@ namespace LLC_MOD_Toolbox.ViewModels;
 
 public partial class SettingsViewModel : ObservableObject
 {
-    private string limbusCompanyPath = PathHelper.DetectedLimbusCompanyPath;
+    private string limbusCompanyPath = string.Empty;
 
     private readonly ILogger<SettingsViewModel> _logger;
 
@@ -24,17 +24,12 @@ public partial class SettingsViewModel : ObservableObject
     {
         get
         {
-            var path =
-                ConfigurationManager.AppSettings["GamePath"]
-                ?? PathHelper.DetectedLimbusCompanyPath
-                ?? throw new ArgumentNullException("未找到边狱公司路径。可能是注册表被删除了！");
-            if (Directory.Exists(path))
+            if (Directory.Exists(limbusCompanyPath))
             {
-                limbusCompanyPath = path;
-                return path;
+                return limbusCompanyPath;
             }
-            _logger.LogWarning("未找到边狱公司路径。");
-            return PathHelper.DetectedLimbusCompanyPath;
+            _logger.LogWarning("当前路径不存在！");
+            return PathHelper.SelectPath();
         }
         set
         {
@@ -76,23 +71,25 @@ public partial class SettingsViewModel : ObservableObject
         }
         try
         {
-            FileHelper.DeleteBepInEx(LimbusCompanyPath);
+            FileHelper.DeleteBepInEx(LimbusCompanyPath, _logger);
         }
         catch (IOException ex)
         {
             MessageBox.Show("Limbus Company正在运行中，请先关闭游戏。", "警告");
             _logger.LogError(ex, "Limbus Company正在运行中，请先关闭游戏。");
         }
-        catch (ArgumentNullException)
+        catch (ArgumentNullException ex)
         {
             MessageBox.Show("注册表内无数据，可能被恶意修改了！", "警告");
-            _logger.LogError("注册表内无数据，可能被恶意修改了！");
+            _logger.LogError(ex, "注册表内无数据，可能被恶意修改了！");
         }
         catch (Exception ex)
         {
             MessageBox.Show($"删除过程中出现了一些问题：\n{ex}", "警告");
             _logger.LogError(ex, "未处理异常");
         }
+        _logger.LogInformation("已卸载模组");
+        MessageBox.Show("卸载完成。");
 
         return Task.CompletedTask;
     }
@@ -110,5 +107,16 @@ public partial class SettingsViewModel : ObservableObject
         ApiNodeList = primaryNodeList.ApiNode;
         downloadNode = DownloadNodeList.Last(n => n.IsDefault);
         apiNode = ApiNodeList.Last(n => n.IsDefault);
+        try
+        {
+            LimbusCompanyPath =
+                ConfigurationManager.AppSettings["GamePath"]
+                ?? PathHelper.DetectedLimbusCompanyPath;
+        }
+        catch (ArgumentNullException ex)
+        {
+            _logger.LogWarning(ex, "未找到边狱公司地址");
+            LimbusCompanyPath = PathHelper.SelectPath();
+        }
     }
 }

@@ -42,16 +42,12 @@ public interface IFileDownloadService
         };
     private static readonly HttpClient httpClient = new();
 
-    public async Task<Stream> GetAppAsync(Uri url)
-    {
-        Stream stream = await ServiceDownloader.DownloadFileTaskAsync(url.AbsolutePath);
-
-        return stream;
-    }
+    public async Task<Stream> GetAppAsync(Uri url) =>
+        await ServiceDownloader.DownloadFileTaskAsync(url.AbsolutePath);
 
     public async Task<Stream> DownloadFileAsync(Uri url, string path, IProgress<double> progress)
     {
-        ServiceDownloader.ChunkDownloadProgressChanged += (sender, e) =>
+        ServiceDownloader.DownloadProgressChanged += (sender, e) =>
         {
             progress.Report(e.ProgressPercentage);
         };
@@ -60,8 +56,8 @@ public interface IFileDownloadService
 
     public async Task<string> GetHashAsync(Uri url)
     {
-        var response = await GetResponseAsync(url);
-        return await response.Content.ReadAsStringAsync();
+        var jsonPayload = await GetJsonAsync(url);
+        return JsonHelper.DeserializeValue("hash", jsonPayload);
     }
 
     public async Task<BitmapImage> GetImageAsync(Uri url)
@@ -106,4 +102,7 @@ public interface IFileDownloadService
         response.EnsureSuccessStatusCode();
         return response;
     }
+    public Task<Stream> GetBepInExAsync(Uri url);
+    public Task<Stream> GetTmpAsync(Uri url);
+    public Task<Stream> GetModAsync(Uri url);
 }

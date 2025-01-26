@@ -87,14 +87,14 @@ namespace LLC_MOD_Toolbox
         /// <param name="e"></param>
         private void CloseButtonClick(object sender, RoutedEventArgs e)
         {
-            System.Windows.Application.Current.Shutdown();
+            Application.Current.Shutdown();
         }
 
         private async void GachaSimButtonClick(object sender, RoutedEventArgs e)
         {
             if (!isInitGacha)
             {
-                MessageBoxResult messageBoxResult = System.Windows.MessageBox.Show(
+                MessageBoxResult messageBoxResult = MessageBox.Show(
                     "本抽卡模拟器资源来源自维基，可能信息更新不准时。\n本模拟器 不 会 对您的游戏数据造成任何影响。\n若您已知悉，请点击“确定”进行初始化。",
                     "提示",
                     MessageBoxButton.OKCancel,

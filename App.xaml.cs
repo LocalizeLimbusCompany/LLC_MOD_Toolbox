@@ -84,7 +84,8 @@ namespace LLC_MOD_Toolbox
                     new Uri(nodeInformation.Endpoint, "/Toolbox_Release.json")
                 );
                 _logger.LogInformation("API 节点连接成功。");
-                var latestVersion = JsonHelper.DeserializeTagName(jsonPayload);
+                var announcement = JsonHelper.DeserializeValue("body", jsonPayload);
+                var latestVersion = JsonHelper.DeserializeValue("tag_name", jsonPayload);
                 _logger.LogInformation("当前网络版本：{latestVersion}", latestVersion);
                 if (VersionHelper.CheckForUpdate(latestVersion))
                 {
@@ -95,11 +96,7 @@ namespace LLC_MOD_Toolbox
             }
             catch (HttpRequestException ex)
             {
-                _logger.LogError(ex, "网络不通畅");
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "未处理异常");
+                _logger.LogError(ex, "网络不通畅，无法获取联网版本");
             }
             var mainWindow = Services.GetRequiredService<MainWindow>();
             mainWindow.Show();
