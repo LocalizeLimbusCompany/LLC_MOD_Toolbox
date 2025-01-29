@@ -29,7 +29,6 @@ namespace LLC_MOD_Toolbox
             progressTimer.Tick += ProgressTime_Tick;
         }
 
-        [Obsolete]
         private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
             await ChangeEEPic("https://dl.kr.zeroasso.top/ee_pic/public/public.png");

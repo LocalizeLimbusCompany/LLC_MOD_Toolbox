@@ -10,5 +10,5 @@ public static class VersionHelper
     public static Version LocalVersion =>
         Assembly.GetExecutingAssembly().GetName().Version ?? throw new NullReferenceException();
 
-    public static bool CheckForUpdate(string version) => new Version(version) > LocalVersion;
+    public static bool CheckForUpdate(string version) => new Version(version[1..]) > LocalVersion;
 }

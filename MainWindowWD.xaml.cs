@@ -35,7 +35,6 @@ namespace LLC_MOD_Toolbox
         private static bool useGithub = false;
         private static bool useMirrorGithub = false;
 
-        private static int installPhase = 0;
         private readonly DispatcherTimer progressTimer;
 
         // GreyTest 灰度测试2.0
@@ -54,7 +53,6 @@ namespace LLC_MOD_Toolbox
             logger.LogInformation("开始安装。");
             logger.LogInformation("**********安装信息打印**********");
             logger.LogInformation("本次安装信息：");
-            installPhase = 0;
             Process[] limbusProcess = Process.GetProcessesByName("LimbusCompany");
             if (limbusProcess.Length > 0)
             {
@@ -79,7 +77,6 @@ namespace LLC_MOD_Toolbox
                 {
                     logger.LogError("winhttp.dll不存在。");
                     System.Windows.MessageBox.Show("winhttp.dll不存在。\n请尝试关闭杀毒软件后再次安装。");
-                    StopInstall();
                     return;
                 }
                 await InstallTMP();
@@ -93,7 +90,6 @@ namespace LLC_MOD_Toolbox
             {
                 ErrorReport(ex, true, "您可以尝试在设置中切换节点。\n");
             }
-            installPhase = 0;
             logger.LogInformation("安装完成。");
             MessageBoxResult RunResult = System.Windows.MessageBox.Show(
                 "安装已完成！\n点击“确定”立刻运行边狱公司。\n点击“取消”关闭弹窗。\n加载时请耐心等待。",
@@ -118,20 +114,11 @@ namespace LLC_MOD_Toolbox
                         await RefreshPage();*/
         }
 
-        private void StopInstall()
-        {
-            //isInstalling = false;
-            installPhase = 0;
-            //await ChangeProgressValue(progressPercentage);
-            //await RefreshPage();
-        }
-
         private async Task InstallBepInEx()
         {
             await Task.Run(async () =>
             {
                 logger.LogInformation("已进入安装BepInEx流程。");
-                installPhase = 1;
                 string BepInExZipPath = Path.Combine(limbusCompanyDir, "BepInEx-IL2CPP-x64.7z");
                 logger.LogInformation("BepInEx Zip目录： " + BepInExZipPath);
                 if (!File.Exists(limbusCompanyDir + "/BepInEx/core/BepInEx.Core.dll"))
@@ -175,7 +162,6 @@ namespace LLC_MOD_Toolbox
             await Task.Run(async () =>
             {
                 logger.LogInformation("已进入TMP流程。");
-                installPhase = 2;
                 string modsDir = limbusCompanyDir + "/BepInEx/plugins/LLC";
                 Directory.CreateDirectory(modsDir);
                 string tmpchineseZipPath = Path.Combine(limbusCompanyDir, "tmpchinese_BIE.7z");
@@ -317,42 +303,6 @@ namespace LLC_MOD_Toolbox
             }
         }
 
-        /// <summary>
-        /// 检查工具箱更新
-        /// </summary>
-        /// <param name="version">当前版本</param>
-        /// <param name="IsGithub">是否使用Github</param>
-        /// <returns>是否存在更新</returns>
-        [Obsolete]
-        private void CheckToolboxUpdate()
-        {
-            try
-            {
-                logger.LogInformation("正在检查工具箱更新。");
-
-                var latestReleaseTag = new Version(0, 0, 0);
-                logger.LogInformation($"最新安装器tag：{latestReleaseTag}");
-                if (latestReleaseTag > Assembly.GetExecutingAssembly().GetName().Version)
-                {
-                    logger.LogInformation("安装器存在更新。");
-                    MessageBox.Show(
-                        "安装器存在更新。\n点击确定进入官网下载最新版本工具箱",
-                        "更新提醒",
-                        MessageBoxButton.OK,
-                        MessageBoxImage.Warning
-                    );
-                    //HttpHelper.LaunchUrl("https://www.zeroasso.top/docs/install/autoinstall");
-                    Application.Current.Shutdown();
-                }
-                logger.LogInformation("没有更新。");
-            }
-            catch (Exception ex)
-            {
-                logger.LogError(ex, "检查安装器更新出现问题。");
-                return;
-            }
-        }
-
         public record FontUpdateResult(string? Tag, bool IsNotLatestVersion);
 
         /// <summary>
@@ -413,50 +363,7 @@ namespace LLC_MOD_Toolbox
             progressTimer.Stop();
         }
         #endregion
-        #region 卸载功能
-        private void UninstallButtonClick(object sender, RoutedEventArgs e)
-        {
-            logger.LogInformation("点击删除模组");
-            MessageBoxResult result = System.Windows.MessageBox.Show(
-                "删除后你需要重新安装汉化补丁。\n确定继续吗？",
-                "警告",
-                MessageBoxButton.YesNo,
-                MessageBoxImage.Warning
-            );
-            if (result == MessageBoxResult.Yes)
-            {
-                logger.LogInformation("确定删除模组。");
-                MessageBox.Show("删除完成。", "提示");
-                logger.LogInformation("删除完成。");
-            }
-        }
 
-        /// <summary>
-        /// 删除目录。
-        /// </summary>
-        /// <param name="path"></param>
-        public void DeleteDir(string path)
-        {
-            if (Directory.Exists(path))
-            {
-                logger.LogInformation("删除目录： " + path);
-                Directory.Delete(path, true);
-            }
-        }
-
-        /// <summary>
-        /// 删除文件。
-        /// </summary>
-        /// <param name="path"></param>
-        public void DeleteFile(string path)
-        {
-            if (File.Exists(path))
-            {
-                logger.LogInformation("删除文件： " + path);
-                File.Delete(path);
-            }
-        }
-        #endregion
         #region 灰度测试
         private async void StartGreytestButtonClick(object sender, RoutedEventArgs e)
         {
@@ -579,7 +486,6 @@ namespace LLC_MOD_Toolbox
             await Task.Run(async () =>
             {
                 logger.LogInformation("灰度测试模式已开启。开始安装灰度模组。");
-                installPhase = 3;
                 await DownloadFileAsync(greytestUrl, limbusCompanyDir + "/LimbusLocalize_Dev.7z");
                 Unarchive($"{limbusCompanyDir}/LimbusLocalize_Dev.7z", limbusCompanyDir);
                 logger.LogInformation("灰度模组安装完成。");

@@ -11,4 +11,10 @@ internal static class ValidateHelper
         byte[] hash = await sha256.ComputeHashAsync(archive);
         return Convert.ToHexString(hash).Equals(onlineHash, StringComparison.OrdinalIgnoreCase);
     }
+
+    public static bool CheckMelonloader(string path)
+    {
+        string melonloaderPath = Path.Combine(path, "version.dll");
+        return File.Exists(melonloaderPath);
+    }
 }

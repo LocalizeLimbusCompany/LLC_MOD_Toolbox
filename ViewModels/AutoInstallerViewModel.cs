@@ -67,33 +67,58 @@ public partial class AutoInstallerViewModel : ObservableObject
             _logger.LogInformation("用户取消了安装 BepInEx。");
             return;
         }
+        if (ValidateHelper.CheckMelonloader(limbusCompanyPath))
+        {
+            MessageBox.Show(
+                "Current environment has MelonLoader installed, please uninstall it first.",
+                "Warning"
+            );
+            _logger.LogError(
+                "Current environment has MelonLoader installed, please uninstall it first."
+            );
+            return;
+        }
         try
         {
-            var stream = await fileDownloadService.DownloadFileAsync(
+            using var stream = await fileDownloadService.DownloadFileAsync(
                 selectedEndPoint.Endpoint,
                 limbusCompanyPath,
                 InstallationProgress
             );
             var onlineHash = await fileDownloadService.GetHashAsync(selectedEndPoint.Endpoint);
             if (!await ValidateHelper.CheckHashAsync(stream, onlineHash))
-                throw new Exception("文件校验失败。");
-            FileHelper.InstallBepInEx(stream, limbusCompanyPath);
+                throw new HashException();
+            FileHelper.InstallPackage(stream, limbusCompanyPath);
             _logger.LogInformation("BepInEx 安装完成。");
+            Stream tmpStream = await fileDownloadService.GetTmpAsync(selectedEndPoint.Endpoint);
+            FileHelper.InstallPackage(tmpStream, limbusCompanyPath);
+            _logger.LogInformation("Fonts 安装完成。");
+
+            Stream locolizeStream = await fileDownloadService.GetModAsync(
+                selectedEndPoint.Endpoint
+            );
+            FileHelper.InstallPackage(locolizeStream, limbusCompanyPath);
+            _logger.LogInformation("Localize 安装完成。");
         }
-        catch (IOException)
+        catch (IOException ex)
         {
             MessageBox.Show("Limbus Company正在运行中，请先关闭游戏。", "警告");
-            _logger.LogError("Limbus Company正在运行中，请先关闭游戏。");
+            _logger.LogWarning(ex, "Limbus Company正在运行中，请先关闭游戏。");
         }
-        catch (ArgumentNullException)
+        catch (ArgumentNullException ex)
         {
             MessageBox.Show("注册表内无数据，可能被恶意修改了！", "警告");
-            _logger.LogError("注册表内无数据，可能被恶意修改了！");
+            _logger.LogWarning(ex, "注册表内无数据，可能被恶意修改了！");
+        }
+        catch (HashException ex)
+        {
+            MessageBox.Show("文件校验失败，请检查网络连接。", "警告");
+            _logger.LogWarning(ex, "文件校验失败，请检查网络连接。");
         }
         catch (Exception ex)
         {
-            MessageBox.Show($"安装过程中出现了一些问题：\n{ex}", "警告");
-            _logger.LogError(ex, "安装过程中出现了一些问题。");
+            MessageBox.Show("未知错误，请联系开发者。", "警告");
+            _logger.LogError(ex, "未知错误，请联系开发者。");
         }
     }
 }

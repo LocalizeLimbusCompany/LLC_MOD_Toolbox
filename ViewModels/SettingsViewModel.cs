@@ -83,11 +83,6 @@ public partial class SettingsViewModel : ObservableObject
             MessageBox.Show("注册表内无数据，可能被恶意修改了！", "警告");
             _logger.LogError(ex, "注册表内无数据，可能被恶意修改了！");
         }
-        catch (Exception ex)
-        {
-            MessageBox.Show($"删除过程中出现了一些问题：\n{ex}", "警告");
-            _logger.LogError(ex, "未处理异常");
-        }
         _logger.LogInformation("已卸载模组");
         MessageBox.Show("卸载完成。");
 

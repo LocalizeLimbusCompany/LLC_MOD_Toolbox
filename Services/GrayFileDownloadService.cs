@@ -4,18 +4,11 @@ namespace LLC_MOD_Toolbox.Services;
 
 public class GrayFileDownloadService : IFileDownloadService
 {
-    public Task<Stream> GetBepInExAsync(Uri url)
+    public async Task<Stream> GetModAsync(Uri url)
     {
-        throw new NotImplementedException();
-    }
-
-    public Task<Stream> GetModAsync(Uri url)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<Stream> GetTmpAsync(Uri url)
-    {
-        throw new NotImplementedException();
+        Stream stream = await IFileDownloadService.ServiceDownloader.DownloadFileTaskAsync(
+            new Uri(url, "tmpchinesefont_BIE.7z").AbsolutePath
+        );
+        return stream;
     }
 }

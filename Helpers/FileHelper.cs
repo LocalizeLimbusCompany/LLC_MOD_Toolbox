@@ -52,10 +52,10 @@ internal static class FileHelper
     public static Task<string> LoadNodeListConfigAsync => File.ReadAllTextAsync("NodeList.json");
 
     /// <summary>
-    /// 下载边狱公司的 BepInEx 框架
+    /// 下载边狱公司的 Mod
     /// </summary>
     /// <exception cref="ArgumentNullException"></exception>
-    public static void InstallBepInEx(Stream stream, string limbusCompanyPath)
+    public static void InstallPackage(Stream stream, string limbusCompanyPath)
     {
         if (string.IsNullOrEmpty(limbusCompanyPath))
         {

@@ -1,6 +1,7 @@
 using System.IO;
 using System.Net.Http;
 using System.Runtime.InteropServices;
+using System.Text;
 using System.Windows.Media.Imaging;
 using Downloader;
 using LLC_MOD_Toolbox.Helpers;
@@ -56,7 +57,7 @@ public interface IFileDownloadService
 
     public async Task<string> GetHashAsync(Uri url)
     {
-        var jsonPayload = await GetJsonAsync(url);
+        var jsonPayload = await GetJsonAsync(new Uri(url, "LimbusLocalizeHash.json"));
         return JsonHelper.DeserializeValue("hash", jsonPayload);
     }
 
@@ -79,8 +80,9 @@ public interface IFileDownloadService
     /// <returns></returns>
     public async Task<string> GetJsonAsync(Uri url)
     {
-        var stream = await GetResponseAsync(url);
-        return await stream.Content.ReadAsStringAsync();
+        var json = await ServiceDownloader.DownloadFileTaskAsync(url.AbsoluteUri);
+        using StreamReader reader = new(json);
+        return await reader.ReadToEndAsync();
     }
 
     /// <summary>
@@ -102,7 +104,19 @@ public interface IFileDownloadService
         response.EnsureSuccessStatusCode();
         return response;
     }
-    public Task<Stream> GetBepInExAsync(Uri url);
-    public Task<Stream> GetTmpAsync(Uri url);
+    public async Task<Stream> GetBepInExAsync(Uri url)
+    {
+        Stream stream = await ServiceDownloader.DownloadFileTaskAsync(
+            new Uri(url, "BepInEx-IL2CPP-x64.7z").AbsolutePath
+        );
+        return stream;
+    }
+    public async Task<Stream> GetTmpAsync(Uri url)
+    {
+        Stream stream = await ServiceDownloader.DownloadFileTaskAsync(
+            new Uri(url, "tmpchinesefont_BIE.7z").AbsolutePath
+        );
+        return stream;
+    }
     public Task<Stream> GetModAsync(Uri url);
 }

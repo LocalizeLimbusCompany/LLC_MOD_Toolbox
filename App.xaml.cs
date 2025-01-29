@@ -54,6 +54,7 @@ namespace LLC_MOD_Toolbox
             AppDomain.CurrentDomain.UnhandledException += (sender, e) =>
             {
                 var _logger = Services.GetRequiredService<ILogger<App>>();
+                MessageBox.Show($"Unhandled Error occurs in: {e.ExceptionObject}");
                 _logger.LogError(e.ExceptionObject as Exception, "未处理异常");
             };
         }
@@ -93,6 +94,7 @@ namespace LLC_MOD_Toolbox
                     PathHelper.LaunchUrl("https://www.zeroasso.top/docs/install/autoinstall");
                     throw new NotImplementedException("暂不支持自动更新。");
                 }
+                MessageBox.Show(announcement);
             }
             catch (HttpRequestException ex)
             {

@@ -62,18 +62,23 @@
                 </Setter.Value>
             </Setter>
         </Style>
-        <!--  标题文本样式  -->
+        <!--  两端对齐的 TextBlock 样式  -->
         <Style x:Key="JustifiedHeaderStyle" TargetType="TextBlock">
-            <Setter Property="TextAlignment" Value="Justify" />
-            <Setter Property="HorizontalAlignment" Value="Stretch" />
             <Setter Property="TextWrapping" Value="Wrap" />
             <Setter Property="Foreground" Value="#FFFFEED4" />
             <Setter Property="Background" Value="Transparent" />
-            <Setter Property="FontFamily" Value="Assets/Fonts/#Source Han Sans CN" />
+            <Setter Property="FontFamily" Value="Assets/Fonts/#lianmengqiyilushuaizhengruiheiti" />
+            <Setter Property="FontSize" Value="20" />
+            <Setter Property="FontWeight" Value="Medium" />
+            <Setter Property="HorizontalAlignment" Value="Stretch" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="TextAlignment" Value="Justify" />
+            <!--  强制宽度  -->
         </Style>
 
-        <!--  TabItem 标题模板  -->
+        <!--  TabItem 自定义模板  -->
         <Style TargetType="TabItem">
+            <Setter Property="Background" Value="Transparent" />
             <Setter Property="HeaderTemplate">
                 <Setter.Value>
                     <DataTemplate>
@@ -81,7 +86,38 @@
                     </DataTemplate>
                 </Setter.Value>
             </Setter>
-            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TabItem">
+                        <Grid
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Background="Transparent">
+                            <Border
+                                Name="MainBorder"
+                                Background="Transparent"
+                                BorderBrush="Transparent">
+                                <ContentPresenter
+                                    Margin="10"
+                                    HorizontalAlignment="Stretch"
+                                    VerticalAlignment="Center"
+                                    ContentSource="Header" />
+                            </Border>
+                            <!--  选中状态的下划线  -->
+                            <Border
+                                Name="SelectionIndicator"
+                                Height="2"
+                                VerticalAlignment="Bottom"
+                                Background="Transparent" />
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter TargetName="SelectionIndicator" Property="Background" Value="#FFDAA520" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
         </Style>
     </Window.Resources>
     <Border CornerRadius="20,20,20,20">
@@ -235,17 +271,10 @@
                     <ColumnDefinition Width="7*" />
                 </Grid.ColumnDefinitions>
                 <Grid Grid.Column="1">
-                    <Grid.Background>
-                        <ImageBrush ImageSource="Assets/Images/ControlBoard.png" Stretch="Uniform" />
-                    </Grid.Background>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="1*" />
-                        <RowDefinition Height="5*" />
-                    </Grid.RowDefinitions>
-                    <TabControl
-                        Grid.RowSpan="2"
-                        Background="Transparent"
-                        TabStripPlacement="Left">
+                    <TabControl Grid.RowSpan="2" TabStripPlacement="Left">
+                        <TabControl.Background>
+                            <ImageBrush ImageSource="/Assets/Images/ControlBoard.png" />
+                        </TabControl.Background>
                         <TabItem Header="安装">
                             <TabControl Background="Transparent">
                                 <TabItem Header="自动安装">
@@ -266,6 +295,7 @@
                                 <TabItem Header="覆盖安装">
                                     <Grid x:Name="ReplaceInstallPage">
                                         <Label
+                                            Grid.ColumnSpan="2"
                                             HorizontalContentAlignment="Center"
                                             VerticalContentAlignment="Center"
                                             Content="文件覆盖功能尚未开启，敬请期待后续版本。"
@@ -277,26 +307,17 @@
 
                                 </TabItem>
                                 <TabItem Header="抽卡模拟器">
-                                    <views:Gacha x:Name="GachaPage" Height="336" />
+                                    <views:Gacha x:Name="GachaPage" />
                                 </TabItem>
                             </TabControl>
                         </TabItem>
+                        <TabItem Header="链接" />
+                        <TabItem Header="灰度测试" />
                         <TabItem Header="设置">
                             <views:Settings x:Name="SettingsPage" d:DataContext="{d:DesignInstance Type=viewmodels:SettingsViewModel}" />
                         </TabItem>
+                        <TabItem Header="关于" />
                     </TabControl>
-                    <Grid
-                        Grid.Row="0"
-                        Margin="108,23,86,15"
-                        Cursor="">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
-
-                    </Grid>
 
                     <Grid
                         x:Name="LinkPage"
@@ -1202,49 +1223,6 @@
                     </Grid.RowDefinitions>
 
                     <Button
-                        x:Name="InstallOption"
-                        Width="127"
-                        Height="33"
-                        Margin="0,0,0,10"
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Bottom"
-                        Background="Transparent"
-                        BorderBrush="Transparent"
-                        BorderThickness="0"
-                        Content="安   装"
-                        FontFamily="Assets/Fonts/#lianmengqiyilushuaizhengruiheiti"
-                        FontSize="20"
-                        FontWeight="Regular"
-                        Foreground="#FFFFEED4"
-                        Style="{StaticResource NoHover}">
-                        <Button.Triggers>
-                            <EventTrigger RoutedEvent="Button.MouseEnter">
-                                <BeginStoryboard>
-                                    <Storyboard>
-                                        <DoubleAnimation
-                                            Storyboard.TargetName="InstallHover"
-                                            Storyboard.TargetProperty="Opacity"
-                                            From="0"
-                                            To="1"
-                                            Duration="0:0:0.3" />
-                                    </Storyboard>
-                                </BeginStoryboard>
-                            </EventTrigger>
-                            <EventTrigger RoutedEvent="Button.MouseLeave">
-                                <BeginStoryboard>
-                                    <Storyboard>
-                                        <DoubleAnimation
-                                            Storyboard.TargetName="InstallHover"
-                                            Storyboard.TargetProperty="Opacity"
-                                            From="1"
-                                            To="0"
-                                            Duration="0:0:0.3" />
-                                    </Storyboard>
-                                </BeginStoryboard>
-                            </EventTrigger>
-                        </Button.Triggers>
-                    </Button>
-                    <Button
                         x:Name="LinkOption"
                         Grid.Row="1"
                         Width="127"
@@ -1321,49 +1299,6 @@
                                     <Storyboard>
                                         <DoubleAnimation
                                             Storyboard.TargetName="GreytestHover"
-                                            Storyboard.TargetProperty="Opacity"
-                                            From="1"
-                                            To="0"
-                                            Duration="0:0:0.3" />
-                                    </Storyboard>
-                                </BeginStoryboard>
-                            </EventTrigger>
-                        </Button.Triggers>
-                    </Button>
-                    <Button
-                        x:Name="SettingOption"
-                        Grid.Row="3"
-                        Width="127"
-                        Height="33"
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center"
-                        Background="Transparent"
-                        BorderBrush="Transparent"
-                        BorderThickness="0"
-                        Content="设   置"
-                        FontFamily="Assets/Fonts/#lianmengqiyilushuaizhengruiheiti"
-                        FontSize="20"
-                        FontWeight="Regular"
-                        Foreground="#FFFFEED4"
-                        Style="{StaticResource NoHover}">
-                        <Button.Triggers>
-                            <EventTrigger RoutedEvent="Button.MouseEnter">
-                                <BeginStoryboard>
-                                    <Storyboard>
-                                        <DoubleAnimation
-                                            Storyboard.TargetName="SettingHover"
-                                            Storyboard.TargetProperty="Opacity"
-                                            From="0"
-                                            To="1"
-                                            Duration="0:0:0.3" />
-                                    </Storyboard>
-                                </BeginStoryboard>
-                            </EventTrigger>
-                            <EventTrigger RoutedEvent="Button.MouseLeave">
-                                <BeginStoryboard>
-                                    <Storyboard>
-                                        <DoubleAnimation
-                                            Storyboard.TargetName="SettingHover"
                                             Storyboard.TargetProperty="Opacity"
                                             From="1"
                                             To="0"
