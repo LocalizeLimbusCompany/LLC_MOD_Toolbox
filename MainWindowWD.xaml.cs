@@ -22,6 +22,7 @@ using SevenZip;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
+using System.Net;
 using System.Net.Http;
 using System.Reflection;
 using System.Security.Cryptography;
@@ -29,6 +30,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Threading;
+using static LLC_MOD_Toolbox.SimpleDnsChecker;
 
 namespace LLC_MOD_Toolbox
 {
@@ -38,7 +40,6 @@ namespace LLC_MOD_Toolbox
         private static string? useEndPoint;
         private static string? useAPIEndPoint;
         private static bool useGithub = false;
-        private static bool useMirrorGithub = false;
         private static string limbusCompanyDir = Registry.GetValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Steam App 1973530", "InstallLocation", null) as string
             ?? string.Empty;
         private static string limbusCompanyGameDir = Path.Combine(limbusCompanyDir, "LimbusCompany.exe");
@@ -72,9 +73,15 @@ namespace LLC_MOD_Toolbox
             logger.Info("We have a lift off.");
             logger.Info($"WPF架构工具箱 版本：{VERSION} 。");
             await DisableGlobalOperations();
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls13;
+            using HttpClient client = new HttpClient
+            {
+                DefaultRequestVersion = HttpVersion.Version11,
+                DefaultVersionPolicy = HttpVersionPolicy.RequestVersionExact
+            };
             InitNode();
             await RefreshPage();
-            await ChangeEEPic("https://dl.kr.zeroasso.top/ee_pic/public/public.png");
+            await ChangeEEPic("https://api.zeroasso.top/v2/eepic/get_image");
             CheckToolboxUpdate();
             LoadConfig();
             InitLink();
@@ -83,6 +90,8 @@ namespace LLC_MOD_Toolbox
             SevenZipBase.SetLibraryPath(Path.Combine(currentDir, "7z.dll"));
             await CheckAnno();
             await EnableGlobalOperations();
+            CheckLCBPath();
+            await CheckDNS();
             logger.Info("加载流程完成。");
         }
         #region 安装功能
@@ -100,7 +109,6 @@ namespace LLC_MOD_Toolbox
             logger.Info("**********安装信息打印**********");
             logger.Info("本次安装信息：");
             PrintInstallInfo("是否使用Github：", useGithub);
-            PrintInstallInfo("是否使用Mirror Github：", useMirrorGithub);
             PrintInstallInfo("Limbus公司目录：", limbusCompanyDir);
             PrintInstallInfo("Limbus公司游戏目录：", limbusCompanyGameDir);
             PrintInstallInfo("节点列表数量：", nodeList.Count);
@@ -142,20 +150,39 @@ namespace LLC_MOD_Toolbox
                 if (!File.Exists(Path.Combine(limbusCompanyDir, "winhttp.dll")))
                 {
                     logger.Error("winhttp.dll不存在。");
-                    System.Windows.MessageBox.Show("winhttp.dll不存在。\n请尝试关闭杀毒软件后再次安装。");
-                    await StopInstall();
-                    return;
+                    if (File.Exists(limbusCompanyDir + "/winhttp.dll.disabled"))
+                    {
+                        logger.Info("找到被关闭的winhttp.dll.disabled。");
+                        MessageBoxResult result = MessageBox.Show("winhttp.dll不存在。但是找到了被关闭的winhttp.dll.disabled。\n可能是您的模组已关闭。\n点击确定将尝试开启模组，否则将停止安装。", "修复提示", MessageBoxButton.OKCancel, MessageBoxImage.Question);
+                        if (result == MessageBoxResult.OK)
+                        {
+                            logger.Info("尝试开启模组。");
+                            File.Move(limbusCompanyDir + "/winhttp.dll.disabled", limbusCompanyDir + "/winhttp.dll");
+                        }
+                        else
+                        {
+                            logger.Info("用户选择不开启模组。");
+                            await StopInstall();
+                            return;
+                        }
+                    }
+                    else
+                    {
+                        MessageBox.Show("winhttp.dll不存在。\n可能是安装出现了问题？\n请尝试关闭杀毒软件后再次安装，或者您可以尝试使用工具箱卸载一次模组后，再进行安装。");
+                        await StopInstall();
+                        return;
+                    }
                 }
                 await InstallTMP();
                 if (!greytestStatus)
                 {
                     await InstallMod();
+                    await InstallResource();
                 }
                 else
                 {
                     await InstallGreytestMod();
                 }
-
             }
             catch (Exception ex)
             {
@@ -166,11 +193,11 @@ namespace LLC_MOD_Toolbox
             MessageBoxResult RunResult = new();
             if (isNewestModVersion)
             {
-                MessageBox.Show("没有检测到新版本模组！\n您的模组已经为最新。\n点击“确定”立刻运行边狱公司。\n点击“取消”关闭弹窗。\n加载时请耐心等待。", "完成", MessageBoxButton.OKCancel);
+                RunResult = MessageBox.Show("没有检测到新版本模组！\n您的模组已经为最新。\n点击“确定”立刻运行边狱公司。\n点击“取消”关闭弹窗。\n加载时请耐心等待。", "完成", MessageBoxButton.OKCancel);
             }
             else
             {
-                MessageBox.Show("安装已完成！\n点击“确定”立刻运行边狱公司。\n点击“取消”关闭弹窗。\n加载时请耐心等待。", "完成", MessageBoxButton.OKCancel);
+                RunResult = MessageBox.Show("安装已完成！\n点击“确定”立刻运行边狱公司。\n点击“取消”关闭弹窗。\n加载时请耐心等待。", "完成", MessageBoxButton.OKCancel);
             }
             if (RunResult == MessageBoxResult.OK)
             {
@@ -181,7 +208,7 @@ namespace LLC_MOD_Toolbox
                 catch (Exception ex)
                 {
                     logger.Error("出现了问题： ", ex);
-                    System.Windows.MessageBox.Show("出现了问题。\n" + ex.ToString());
+                    MessageBox.Show("出现了问题。\n" + ex.ToString());
                 }
             }
             isInstalling = false;
@@ -194,6 +221,10 @@ namespace LLC_MOD_Toolbox
             isInstalling = false;
             installPhase = 0;
             progressPercentage = 0;
+            DeleteFile(limbusCompanyDir + "/BepInEx-IL2CPP-x64.7z");
+            DeleteFile(limbusCompanyDir + "/tmpchinesefont_BIE.7z");
+            DeleteFile(limbusCompanyDir + "/LimbusLocalize_BIE.7z");
+            DeleteFile(limbusCompanyDir + "/LimbusLocalize_Dev.7z");
             await ChangeProgressValue(progressPercentage);
             await RefreshPage();
         }
@@ -213,13 +244,9 @@ namespace LLC_MOD_Toolbox
                     {
                         await DownloadFileAsync("https://github.com/LocalizeLimbusCompany/BepInEx_For_LLC/releases/download/v6.0.1-LLC/BepInEx-IL2CPP-x64-6.0.1.7z", BepInExZipPath);
                     }
-                    else if (!useMirrorGithub)
+                    else
                     {
                         await DownloadFileAutoAsync("BepInEx-IL2CPP-x64.7z", BepInExZipPath);
-                    }
-                    else if (useMirrorGithub)
-                    {
-                        await DownloadFileAsync("https://mirror.ghproxy.com/https://github.com/LocalizeLimbusCompany/BepInEx_For_LLC/releases/download/v6.0.1-LLC/BepInEx-IL2CPP-x64-6.0.1.7z", BepInExZipPath);
                     }
                     logger.Info("开始解压 BepInEx zip。");
                     Unarchive(BepInExZipPath, limbusCompanyDir);
@@ -261,7 +288,7 @@ namespace LLC_MOD_Toolbox
                 {
                     return;
                 }
-                if (!useGithub && !useMirrorGithub && result.IsNotLatestVersion)
+                if (!useGithub && result.IsNotLatestVersion)
                 {
                     isNewestModVersion = false;
                     await DownloadFileAutoAsync("tmpchinesefont_BIE.7z", tmpchineseZipPath);
@@ -296,6 +323,7 @@ namespace LLC_MOD_Toolbox
                     {
                         var versionInfo = FileVersionInfo.GetVersionInfo(limbusLocalizeDllPath);
                         currentVersion = versionInfo.ProductVersion;
+                        logger.Info("当前模组版本： " + currentVersion);
                         if (string.IsNullOrEmpty(currentVersion))
                         {
                             logger.Info("模组版本获取失败");
@@ -320,73 +348,131 @@ namespace LLC_MOD_Toolbox
                     File.Delete(limbusLocalizeZipPath);
                     return;
                 }
-                if (!useMirrorGithub)
+                latestLLCVersion = await GetLatestLimbusLocalizeVersion(false);
+                logger.Info("最后模组版本： " + latestLLCVersion);
+                if (File.Exists(limbusLocalizeDllPath))
                 {
-                    latestLLCVersion = await GetLatestLimbusLocalizeVersion(false);
-                    logger.Info("最后模组版本： " + latestLLCVersion);
-                    if (File.Exists(limbusLocalizeDllPath))
+                    var versionInfo = FileVersionInfo.GetVersionInfo(limbusLocalizeDllPath);
+                    currentVersion = versionInfo.ProductVersion;
+                    logger.Info("当前模组版本： " + currentVersion);
+                    if (string.IsNullOrEmpty(currentVersion))
                     {
-                        var versionInfo = FileVersionInfo.GetVersionInfo(limbusLocalizeDllPath);
-                        currentVersion = versionInfo.ProductVersion;
-                        if (string.IsNullOrEmpty(currentVersion))
-                        {
-                            logger.Info("模组版本获取失败");
-                            System.Windows.MessageBox.Show("模组版本获取失败，请尝试卸载后重新安装。\n如果问题仍然出现，请进行反馈。", "获取失败");
-                            await StopInstall();
-                        }
-                        else if (new System.Version(currentVersion) >= new System.Version(latestLLCVersion.Remove(0, 1)))
-                        {
-                            logger.Info("模组无需更新。");
-                            return;
-                        }
-                    }
-                    else
-                    {
-                        isNewestModVersion = false;
-                        logger.Info("模组不存在。进行安装。");
-                    }
-                    await DownloadFileAutoAsync($"LimbusLocalize_BIE_{latestLLCVersion}.7z", limbusLocalizeZipPath);
-                    if (await GetLimbusLocalizeHash() != CalculateSHA256(limbusLocalizeZipPath))
-                    {
-                        logger.Error("校验Hash失败。");
-                        System.Windows.MessageBox.Show("校验Hash失败。\n请等待数分钟或更换节点。\n如果问题仍然出现，请进行反馈。", "校验失败");
+                        logger.Info("模组版本获取失败");
+                        System.Windows.MessageBox.Show("模组版本获取失败，请尝试卸载后重新安装。\n如果问题仍然出现，请进行反馈。", "获取失败");
                         await StopInstall();
                     }
-                    else
+                    else if (new System.Version(currentVersion) >= new System.Version(latestLLCVersion.Remove(0, 1)))
                     {
-                        logger.Info("校验Hash成功。");
-                    }
-                    logger.Info("解压模组本体 zip 中。");
-                    Unarchive(limbusLocalizeZipPath, limbusCompanyDir);
-                    logger.Info("删除模组本体 zip 。");
-                    File.Delete(limbusLocalizeZipPath);
-                }
-                else if (useMirrorGithub)
-                {
-                    latestLLCVersion = await GetLatestLimbusLocalizeVersion(false);
-                    logger.Info("最后模组版本： " + latestLLCVersion);
-                    if (File.Exists(limbusLocalizeDllPath))
-                    {
-                        var versionInfo = FileVersionInfo.GetVersionInfo(limbusLocalizeDllPath);
-                        currentVersion = versionInfo.ProductVersion;
-                        if (string.IsNullOrEmpty(currentVersion))
-                        {
-                            logger.Info("模组版本获取失败");
-                            System.Windows.MessageBox.Show("模组版本获取失败，请尝试卸载后重新安装。\n如果问题仍然出现，请进行反馈。", "获取失败");
-                            await StopInstall();
-                        }
-                        else if (new System.Version(currentVersion) >= new System.Version(latestLLCVersion.Remove(0, 1)))
-                        {
-                            logger.Info("无需更新。");
-                            return;
-                        }
+                        logger.Info("模组无需更新。");
+                        return;
                     }
                     isNewestModVersion = false;
-                    await DownloadFileAsync($"https://mirror.ghproxy.com/https://github.com/LocalizeLimbusCompany/LocalizeLimbusCompany/releases/download/{latestLLCVersion}/LimbusLocalize_BIE_{latestLLCVersion}.7z", limbusLocalizeZipPath);
-                    logger.Info("解压模组本体 zip 中。");
-                    Unarchive(limbusLocalizeZipPath, limbusCompanyDir);
-                    logger.Info("删除模组本体 zip 。");
-                    File.Delete(limbusLocalizeZipPath);
+                }
+                else
+                {
+                    isNewestModVersion = false;
+                    logger.Info("模组不存在。进行安装。");
+                }
+                await DownloadFileAutoAsync($"LimbusLocalize_BIE_{latestLLCVersion}.7z", limbusLocalizeZipPath);
+                string hash = await GetLimbusLocalizeHash();
+                if (string.IsNullOrEmpty(hash))
+                {
+                    logger.Error("获取模组Hash失败。");
+                    MessageBox.Show("获取模组Hash失败。\n请等待数分钟或更换节点。\n如果问题仍然出现，请进行反馈。", "获取失败");
+                    await StopInstall();
+                    return;
+                }
+                if (hash != CalculateSHA256(limbusLocalizeZipPath))
+                {
+                    logger.Error("校验Hash失败。");
+                    MessageBox.Show("校验Hash失败。\n请等待数分钟或更换节点。\n如果问题仍然出现，请进行反馈。", "校验失败");
+                    await StopInstall();
+                    return;
+                }
+                else
+                {
+                    logger.Info("校验Hash成功。");
+                }
+                logger.Info("解压模组本体 zip 中。");
+                Unarchive(limbusLocalizeZipPath, limbusCompanyDir);
+                logger.Info("删除模组本体 zip 。");
+                File.Delete(limbusLocalizeZipPath);
+            });
+        }
+        private async Task InstallResource()
+        {
+            await Task.Run(async () =>
+            {
+                logger.Info("开始安装资源。");
+                installPhase = 4;
+                string modsDir = limbusCompanyDir + "/BepInEx/plugins/LLC";
+                string versionJson = modsDir + "/version.json";
+                int localVersion = 0;
+                int remoteVersion = 0;
+                bool needUpdate = false;
+                if (!File.Exists(versionJson))
+                {
+                    logger.Info("version.json不存在。");
+                    needUpdate = true;
+                    if (!useGithub)
+                    {
+                        string remoteVersionRaw = await GetURLText("https://api.zeroasso.top/v2/resource/get_version");
+                        var remoteVersionObject = JObject.Parse(remoteVersionRaw);
+                        remoteVersion = int.Parse(remoteVersionObject["resource_version"].ToString());
+                    }
+                    else
+                    {
+                        string remoteVersionRaw = await GetURLText("https://api.github.com/repos/LocalizeLimbusCompany/LLC_Release/releases/latest");
+                        var remoteVersionObject = JObject.Parse(remoteVersionRaw);
+                        remoteVersion = int.Parse(remoteVersionObject["tag_name"].ToString());
+                    }
+                }
+                else if (!useGithub)
+                {
+                    var versionObject = JObject.Parse(File.ReadAllText(versionJson));
+                    string remoteVersionRaw = await GetURLText("https://api.zeroasso.top/v2/resource/get_version");
+                    var remoteVersionObject = JObject.Parse(remoteVersionRaw);
+                    localVersion = int.Parse(versionObject["resource_version"].ToString());
+                    remoteVersion = int.Parse(remoteVersionObject["resource_version"].ToString());
+                    logger.Info("本地资源版本：" + localVersion + "，远程资源版本：" + remoteVersion);
+                    if (localVersion < remoteVersion)
+                    {
+                        needUpdate = true;
+                    }
+                }
+                else
+                {
+                    var versionObject = JObject.Parse(File.ReadAllText(versionJson));
+                    string remoteVersionRaw = await GetURLText("https://api.github.com/repos/LocalizeLimbusCompany/LLC_Release/releases/latest");
+                    var remoteVersionObject = JObject.Parse(remoteVersionRaw);
+                    localVersion = int.Parse(versionObject["resource_version"].ToString());
+                    remoteVersion = int.Parse(remoteVersionObject["tag_name"].ToString());
+                    logger.Info("本地资源版本：" + localVersion + "，远程资源版本：" + remoteVersion);
+                    if (localVersion < remoteVersion)
+                    {
+                        needUpdate = true;
+                    }
+                }
+                if (needUpdate)
+                {
+                    logger.Info("资源需要更新。");
+                    isNewestModVersion = false;
+                    if (!useGithub)
+                    {
+                        logger.Info("开始下载资源。");
+                        await DownloadFileAutoAsync($"Resource/LimbusLocalize_Resource_{remoteVersion}.7z", Path.Combine(limbusCompanyDir, $"LimbusLocalize_Resource_{remoteVersion}.7z"));
+                        Unarchive(Path.Combine(limbusCompanyDir, $"LimbusLocalize_Resource_{remoteVersion}.7z"), limbusCompanyDir);
+                        File.Delete(Path.Combine(limbusCompanyDir, $"LimbusLocalize_Resource_{remoteVersion}.7z"));
+                        logger.Info("资源下载完成。");
+                    }
+                    else
+                    {
+                        logger.Info("开始下载资源。");
+                        await DownloadFileAsync($"https://github.com/LocalizeLimbusCompany/LLC_Release/releases/download/{remoteVersion}/LimbusLocalize_Resource_{remoteVersion}.7z", Path.Combine(limbusCompanyDir, $"LimbusLocalize_Resource_{remoteVersion}.7z"));
+                        Unarchive(Path.Combine(limbusCompanyDir, $"LimbusLocalize_Resource_{remoteVersion}.7z"), limbusCompanyDir);
+                        File.Delete(Path.Combine(limbusCompanyDir, $"LimbusLocalize_Resource_{remoteVersion}.7z"));
+                        logger.Info("资源下载完成。");
+                    }
                 }
             });
         }
@@ -417,7 +503,6 @@ namespace LLC_MOD_Toolbox
                 NodeCombobox.Items.Add(Node.Name);
             }
             NodeCombobox.Items.Add("Github直连");
-            NodeCombobox.Items.Add("Mirror Github");
             // API
             APICombobox.Items.Add("恢复默认");
             foreach (var api in apiList)
@@ -491,7 +576,6 @@ namespace LLC_MOD_Toolbox
                 if (nodeComboboxText == "恢复默认")
                 {
                     useEndPoint = string.Empty;
-                    useMirrorGithub = false;
                     useGithub = false;
                     logger.Info("已恢复默认Endpoint。");
                 }
@@ -501,19 +585,10 @@ namespace LLC_MOD_Toolbox
                     System.Windows.MessageBox.Show("如果您没有使用代理软件（包括Watt Toolkit）\n请不要使用此节点。\nGithub由于不可抗力因素，对国内网络十分不友好。\n如果您是国外用户，才应该使用此选项。", "警告", MessageBoxButton.OK, MessageBoxImage.Warning);
                     useEndPoint = string.Empty;
                     useGithub = true;
-                    useMirrorGithub = false;
-                }
-                else if (nodeComboboxText == "Mirror Github")
-                {
-                    logger.Info("选择镜像Github节点。");
-                    System.Windows.MessageBox.Show("Mirror Github服务由【mirror.ghproxy.com】提供。\n零协会不对其可能造成的任何问题（包括不可使用，安全性相关）负责。", "警告", MessageBoxButton.OK, MessageBoxImage.Warning);
-                    useMirrorGithub = true;
-                    useGithub = false;
                 }
                 else
                 {
                     useEndPoint = FindNodeEndpoint(nodeComboboxText);
-                    useMirrorGithub = false;
                     useGithub = false;
                     logger.Info("当前Endpoint：" + useEndPoint);
                     System.Windows.MessageBox.Show("切换成功。", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
@@ -634,7 +709,7 @@ namespace LLC_MOD_Toolbox
 
                     if (!File.Exists(limbusCompanyGameDir))
                     {
-                        logger.Error("选择了错误目录，关闭游戏。");
+                        logger.Error("选择了错误目录，关闭。");
                         System.Windows.MessageBox.Show("选择目录有误，没有在当前目录找到游戏。", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
                         System.Windows.Application.Current.Shutdown();
                     }
@@ -655,7 +730,7 @@ namespace LLC_MOD_Toolbox
         /// <returns>返回Sha256</returns>
         private static async Task<string> GetLimbusLocalizeHash()
         {
-            string HashRaw = await GetURLText($"{useEndPoint ?? defaultEndPoint}LimbusLocalizeHash.json");
+            string HashRaw = await GetURLText(string.Format(useEndPoint ?? defaultEndPoint, "LimbusLocalizeHash.json"));
             dynamic JsonObject = JsonConvert.DeserializeObject(HashRaw);
             if (JsonObject == null)
             {
@@ -689,14 +764,14 @@ namespace LLC_MOD_Toolbox
             logger.Debug("ProgressPercentage: " + e.ProgressPercentage + " ProgressPercentage(Int): " + (int)(e.ProgressPercentage));
             if (installPhase != 0)
             {
-                progressPercentage = (float)((installPhase - 1) * 33 + e.ProgressPercentage * 0.33);
+                progressPercentage = (float)((installPhase - 1) * 25 + e.ProgressPercentage * 0.25);
             }
         }
         private void NewOnDownloadProgressCompleted(object? sender, AsyncCompletedEventArgs e)
         {
             if (installPhase != 0)
             {
-                progressPercentage = installPhase * 33;
+                progressPercentage = installPhase * 25;
             }
         }
         /// <summary>
@@ -724,12 +799,12 @@ namespace LLC_MOD_Toolbox
             logger.Info($"自动选择下载节点式下载文件 文件: {File}  路径: {Path}");
             if (!string.IsNullOrEmpty(useEndPoint))
             {
-                string DownloadUrl = useEndPoint + File;
+                string DownloadUrl = string.Format(useEndPoint, File);
                 await DownloadFileAsync(DownloadUrl, Path);
             }
             else
             {
-                string DownloadUrl = defaultEndPoint + File;
+                string DownloadUrl = string.Format(defaultEndPoint, File);
                 await DownloadFileAsync(DownloadUrl, Path);
             }
         }
@@ -743,7 +818,7 @@ namespace LLC_MOD_Toolbox
             string raw;
             if (!useGithub)
             {
-                raw = await GetURLText(useAPIEndPoint + "Mod_Release.json");
+                raw = await GetURLText(string.Format(useAPIEndPoint, "repos/LocalizeLimbusCompany/LocalizeLimbusCompany/releases"));
             }
             else
             {
@@ -805,7 +880,7 @@ namespace LLC_MOD_Toolbox
             try
             {
                 logger.Info("正在检查工具箱更新。");
-                string raw = await GetURLText(useAPIEndPoint + "Toolbox_Release.json");
+                string raw = await GetURLText(string.Format(useAPIEndPoint, "repos/LocalizeLimbusCompany/LLC_Mod_Toolbox/releases/latest"));
                 var JsonObject = JObject.Parse(raw);
                 string latestReleaseTagRaw = JsonObject["tag_name"].Value<string>();
                 string latestReleaseTag = latestReleaseTagRaw.Remove(0, 1);
@@ -846,7 +921,7 @@ namespace LLC_MOD_Toolbox
                 }
                 else
                 {
-                    raw = await GetURLText(useAPIEndPoint + "LatestTmp_Release.json");
+                    raw = await GetURLText(string.Format(useAPIEndPoint, "repos/LocalizeLimbusCompany/LLC_ChineseFontAsset/releases/latest"));
                 }
                 var JsonObject = JObject.Parse(raw);
                 string latestReleaseTag = JsonObject["tag_name"].Value<string>();
@@ -881,6 +956,61 @@ namespace LLC_MOD_Toolbox
             catch (Exception ex)
             {
                 logger.Error("出现问题。" + ex.ToString());
+            }
+        }
+        public void CheckLCBPath()
+        {
+            logger.Info("检查边狱公司路径。");
+            if (!Path.Exists(limbusCompanyDir))
+            {
+                logger.Error("边狱公司目录不存在。");
+                FixLCBPath();
+            }
+            else
+            {
+                bool isNormalPath = true;
+                if (!File.Exists(limbusCompanyDir + "\\LimbusCompany.exe"))
+                {
+                    isNormalPath = false;
+                }
+                if (!File.Exists(limbusCompanyDir + "\\LimbusCompany_Data\\resources.assets"))
+                {
+                    isNormalPath = false;
+                }
+                if (!isNormalPath)
+                {
+                    logger.Error("边狱公司目录不正确。");
+                    FixLCBPath();
+                }
+            }
+        }
+        public void FixLCBPath()
+        {
+            ChangeSkipPathCheckConfig(false);
+            var fileDialog = new OpenFileDialog
+            {
+                Title = "请选择你的边狱公司游戏文件",
+                Multiselect = false,
+                Filter = "LimbusCompany.exe|LimbusCompany.exe",
+                FileName = "LimbusCompany.exe"
+            };
+            if (fileDialog.ShowDialog() == true)
+            {
+                limbusCompanyDir = Path.GetDirectoryName(fileDialog.FileName) ?? limbusCompanyDir;
+                limbusCompanyGameDir = Path.GetFullPath(fileDialog.FileName);
+            }
+
+            if (!File.Exists(limbusCompanyGameDir))
+            {
+                logger.Error("选择了错误目录，关闭游戏。");
+                System.Windows.MessageBox.Show("选择目录有误，没有在当前目录找到游戏。", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                System.Windows.Application.Current.Shutdown();
+            }
+            else
+            {
+                logger.Info("找到了正确目录。");
+                ChangeSkipPathCheckConfig(true);
+                ChangeLCBPathConfig(limbusCompanyDir);
             }
         }
         #endregion
@@ -980,7 +1110,8 @@ namespace LLC_MOD_Toolbox
         #region 灰度测试
         private async void StartGreytestButtonClick(object sender, RoutedEventArgs e)
         {
-            logger.Info("Z-TECH 灰度测试客户端程序 v2.0 启动。（并不是");
+            logger.Info("Z-TECH 灰度测试客户端程序 v3.0 启动。");
+            await DisableGlobalOperations();
             if (!greytestStatus)
             {
                 string token = await GetGreytestBoxText();
@@ -991,7 +1122,7 @@ namespace LLC_MOD_Toolbox
                     return;
                 }
                 logger.Info("Token为：" + token);
-                string tokenUrl = $"https://dev.zeroasso.top/api/{token}.json";
+                string tokenUrl = $"https://api.zeroasso.top/v2/grey_test/get_token?code={token}";
                 using (HttpClient client = new())
                 {
                     try
@@ -1005,12 +1136,14 @@ namespace LLC_MOD_Toolbox
                         {
                             logger.Info("秘钥无效。");
                             System.Windows.MessageBox.Show("请输入有效的Token。", "提示", MessageBoxButton.OK, MessageBoxImage.Error);
+                            await EnableGlobalOperations();
                             return;
                         }
                     }
                     catch (Exception ex)
                     {
                         ErrorReport(ex, false);
+                        await EnableGlobalOperations();
                         return;
                     }
                 }
@@ -1027,27 +1160,29 @@ namespace LLC_MOD_Toolbox
                     {
                         logger.Info("Token已停止测试。");
                         System.Windows.MessageBox.Show("Token已停止测试。", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
+                        await EnableGlobalOperations();
                         return;
                     }
-                    string fileName = tokenObject["file_name"].Value<string>();
                     string note = tokenObject["note"].Value<string>();
-                    logger.Info($"Token信息：{token}\n混淆文件名：{fileName}\n备注：{note}");
+                    logger.Info($"Token：{token}\n备注：{note}");
                     await ChangeLogoToTest();
-                    var a = $"""目前Token有效。\n-------------\nToken信息：\n秘钥：{token}\n混淆文件名：{fileName}\n备注：{note}\n-------------\n灰度测试模式已开启。\n请在自动安装安装此秘钥对应版本汉化。\n秘钥信息请勿外传。""";
-                    System.Windows.MessageBox.Show(
-                        $"目前Token有效。\n-------------\nToken信息：\n秘钥：{token}\n混淆文件名：{fileName}\n备注：{note}\n-------------\n灰度测试模式已开启。\n请在自动安装安装此秘钥对应版本汉化。\n秘钥信息请勿外传。", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
+                    MessageBox.Show(
+                        $"目前Token有效。\n-------------\nToken信息：\n秘钥：{token}\n备注：{note}\n-------------\n灰度测试模式已开启。\n请在自动安装安装此秘钥对应版本汉化。\n秘钥信息请勿外传。", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
                     greytestStatus = true;
-                    greytestUrl = "https://dev.zeroasso.top/files/LimbusLocalize_Dev_" + fileName + ".7z";
+                    greytestUrl = $"https://api.zeroasso.top/v2/grey_test/get_file?code={token}";
+                    await EnableGlobalOperations();
                 }
                 catch (Exception ex)
                 {
                     ErrorReport(ex, false);
+                    await EnableGlobalOperations();
                     return;
                 }
             }
             else
             {
                 System.Windows.MessageBox.Show("灰度测试模式已开启。\n请在自动安装安装此秘钥对应版本汉化。\n若需要正常使用或更换秘钥，请重启工具箱。", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
+                await EnableGlobalOperations();
                 return;
             }
         }
@@ -1075,6 +1210,7 @@ namespace LLC_MOD_Toolbox
                 installPhase = 3;
                 await DownloadFileAsync(greytestUrl, limbusCompanyDir + "/LimbusLocalize_Dev.7z");
                 Unarchive(limbusCompanyDir + "/LimbusLocalize_Dev.7z", limbusCompanyDir);
+                File.Delete(limbusCompanyDir + "/LimbusLocalize_Dev.7z");
                 logger.Info("灰度模组安装完成。");
             });
         }
@@ -1223,7 +1359,7 @@ namespace LLC_MOD_Toolbox
         private async Task InitGacha()
         {
             await DisableGlobalOperations();
-            string gachaText = await GetURLText("https://api.kr.zeroasso.top/wiki/wiki_personal.json");
+            string gachaText = await GetURLText("https://download.zeroasso.top/wiki/wiki_personal.json");
             if (string.IsNullOrEmpty(gachaText))
             {
                 logger.Error("初始化失败。");
@@ -1654,49 +1790,56 @@ namespace LLC_MOD_Toolbox
         private bool isInAnno = false;
         private async Task CheckAnno()
         {
-            string annoText = await GetURLText("https://dl.kr.zeroasso.top/api/Announcement.json");
-            if (string.IsNullOrEmpty(annoText))
+            try
             {
-                return;
+                string annoText = await GetURLText("https://api.zeroasso.top/v2/announcement/get_anno");
+                if (string.IsNullOrEmpty(annoText))
+                {
+                    return;
+                }
+                var annoObject = JObject.Parse(annoText);
+                if (annoObject["version"]!.Value<int>() <= AnnoVersion)
+                {
+                    logger.Info("无新公告。");
+                    return;
+                }
+                else
+                {
+                    logger.Info("有新公告。");
+                }
+                string annoContent = annoObject["anno"]!.Value<string>();
+                annoContent = annoContent.Replace("\\n", "\n");
+                string annoLevel = annoObject["level"]!.Value<string>();
+                int annoVersionNew = annoObject["version"]!.Value<int>();
+                await ChangeLeftButtonStatu(false);
+                await ChangeAnnoText(annoContent);
+                ChangeAnnoVersionConfig(annoVersionNew);
+                isInAnno = true;
+                await MakeGridStatuExceptSelf(AnnouncementPage);
+                if (annoLevel == "normal")
+                {
+                    await AnnoCountEnd();
+                    return;
+                }
+                else if (annoLevel == "important")
+                {
+                    annoLastTime = 5;
+                }
+                else if (annoLevel == "special")
+                {
+                    annoLastTime = 15;
+                }
+                _AnnoTimer = new DispatcherTimer
+                {
+                    Interval = TimeSpan.FromSeconds(1)
+                };
+                _AnnoTimer.Tick += AnnoTimer_Tick;
+                _AnnoTimer.Start();
             }
-            var annoObject = JObject.Parse(annoText);
-            if (annoObject["version"]!.Value<int>() <= AnnoVersion)
+            catch (Exception ex)
             {
-                logger.Info("无新公告。");
-                return;
+                ErrorReport(ex, false);
             }
-            else
-            {
-                logger.Info("有新公告。");
-            }
-            string annoContent = annoObject["anno"]!.Value<string>();
-            annoContent = annoContent.Replace("\\n", "\n");
-            string annoLevel = annoObject["level"]!.Value<string>();
-            int annoVersionNew = annoObject["version"]!.Value<int>();
-            await ChangeLeftButtonStatu(false);
-            await ChangeAnnoText(annoContent);
-            ChangeAnnoVersionConfig(annoVersionNew);
-            isInAnno = true;
-            await MakeGridStatuExceptSelf(AnnouncementPage);
-            if (annoLevel == "normal")
-            {
-                await AnnoCountEnd();
-                return;
-            }
-            else if (annoLevel == "important")
-            {
-                annoLastTime = 5;
-            }
-            else if (annoLevel == "special")
-            {
-                annoLastTime = 15;
-            }
-            _AnnoTimer = new DispatcherTimer
-            {
-                Interval = TimeSpan.FromSeconds(1)
-            };
-            _AnnoTimer.Tick += AnnoTimer_Tick;
-            _AnnoTimer.Start();
         }
         private async void AnnoTimer_Tick(object? sender, EventArgs e)
         {

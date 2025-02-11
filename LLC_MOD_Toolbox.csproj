@@ -10,7 +10,7 @@
     <ApplicationIcon>favicon.ico</ApplicationIcon>
     <UseWindowsForms>False</UseWindowsForms>
     <Configurations>Debug;Release;LLC_MOD_Toolbox;ReleaseLLCMT</Configurations>
-	<Version>1.0.3</Version>
+	<Version>1.0.4</Version>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'" />

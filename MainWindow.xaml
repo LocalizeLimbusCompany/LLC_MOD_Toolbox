@@ -390,7 +390,7 @@ From="1" To="0" Duration="0:0:0.3"/>
                 <Image x:Name="EmptyProgress" Height="50" Canvas.Left="26" Canvas.Top="30" Width="624" Source="/Picture/EmptyProgress.png" Panel.ZIndex="3" HorizontalAlignment="Left" VerticalAlignment="Center"/>
             </Canvas>
             <Image HorizontalAlignment="Left" Height="288" Margin="11,77,0,0" VerticalAlignment="Top" Width="384" Source="/Picture/xiaoheiNew.png"/>
-            <Image HorizontalAlignment="Left" Height="288" Margin="475,102,0,0" VerticalAlignment="Top" Width="384" Source="/Picture/xiaobaiNew.png"/>
+            <Image HorizontalAlignment="Left" Height="316" Margin="471,77,0,0" VerticalAlignment="Top" Width="384" Source="/Picture/xiaobaiNew.png"/>
         </Grid>
         <Grid x:Name="ManualInstallPage" Visibility="Collapsed" Panel.ZIndex="5" Margin="62,55,54,32" Grid.Column="2" Grid.Row="1">
             <Label Content="手动安装功能尚未开启，敬请期待后续版本。" HorizontalAlignment="Center" Margin="0,137,0,0" VerticalAlignment="Top" Height="61" Width="494" FontSize="20" Foreground="#FFFFEED4" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Medium"/>
@@ -793,7 +793,7 @@ From="1" To="0" Duration="0:0:0.3"/>
         </Grid>
         <Grid x:Name="AboutPage" Visibility="Collapsed" Panel.ZIndex="5" Margin="62,55,54,32" Grid.Column="2" Grid.Row="1">
             <Label HorizontalAlignment="Center" Margin="0,15,0,0" VerticalAlignment="Top" Height="357" Width="644" FontSize="15" Foreground="#FFFFEED4" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Medium">
-                <TextBlock Text="都市零协会工具箱 (LLC_MOD_Toolbox) 是服务于都市零协会汉化模组 (LocalizeLimbusCompany) 的自动化安装工具。本软件使用库的许可证请于零协会官网 (https://www.zeroasso.top) 查看。&#10;- LLCMT工具箱&#10;  - 代码实现：曾小皮、10291029&#10;  - 美术设计：记得保存、玉佩（抽卡模拟器）、Napstablook-owo（部分美术资源）&#10;- LLC翻译模组&#10;  - 翻译文本：零协会翻译组全体译者&#10;  - 汉化模组代码：奈芙Nephthys&#10;  - 汉化模组字体：茜、北岚&#10;- 特别鸣谢&#10;  - 服务器运维 &amp; 开发：曾小皮 &#10;  - 零协会广播局全体创作者&#10;  - 翻译工具：Paratranz&#10;&#10;人无语言则茫然无依。" TextWrapping="Wrap" Height="351"/>
+                <TextBlock Text="都市零协会工具箱 (LLC_MOD_Toolbox) 是服务于都市零协会汉化模组 (LocalizeLimbusCompany) 的自动化安装工具。本软件使用库的许可证请于零协会官网 (https://www.zeroasso.top) 查看。&#10;- LLCMT工具箱&#10;  - 代码实现：曾小皮、明（ProjektMing）、10291029&#10;  - 美术设计：记得保存、玉佩（抽卡模拟器）、Napstablook-owo（部分美术资源）&#10;- LLC翻译模组&#10;  - 翻译文本：零协会翻译组全体译者&#10;  - 汉化模组代码：奈芙Nephthys&#10;  - 汉化模组字体：茜、北岚&#10;- 特别鸣谢&#10;  - 服务器运维 &amp; 开发：曾小皮 &#10;  - 零协会广播局全体创作者&#10;  - 翻译工具：Paratranz&#10;  - 服务器赞助：简幻欢&#10;人无语言则茫然无依。" TextWrapping="Wrap" Height="351"/>
             </Label>
         </Grid>
         <Grid x:Name="EEPage" Visibility="Collapsed" Panel.ZIndex="5" Margin="62,55,54,32" Grid.Column="2" Grid.Row="1">
