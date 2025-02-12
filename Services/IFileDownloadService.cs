@@ -57,7 +57,7 @@ public interface IFileDownloadService
 
     public async Task<string> GetHashAsync(string url)
     {
-        var jsonPayload = await GetJsonAsync(string.Format(url, "LimbusLocalizeHash.json"));
+        var jsonPayload = await GetJsonAsync(UrlHelper.GetHashUrl(url));
         return JsonHelper.DeserializeValue("hash", jsonPayload);
     }
 
@@ -104,18 +104,14 @@ public interface IFileDownloadService
         response.EnsureSuccessStatusCode();
         return response;
     }
-    public async Task<Stream> GetBepInExAsync(Uri url)
+    public async Task<Stream> GetBepInExAsync(string url)
     {
-        Stream stream = await ServiceDownloader.DownloadFileTaskAsync(
-            new Uri(url, "BepInEx-IL2CPP-x64.7z").AbsolutePath
-        );
+        Stream stream = await ServiceDownloader.DownloadFileTaskAsync(UrlHelper.GetBepInExUrl(url));
         return stream;
     }
     public async Task<Stream> GetTmpAsync(string url)
     {
-        Stream stream = await ServiceDownloader.DownloadFileTaskAsync(
-            string.Format(url, "tmpchinesefont_BIE.7z")
-        );
+        Stream stream = await ServiceDownloader.DownloadFileTaskAsync(UrlHelper.GetTmpUrl(url));
         return stream;
     }
     public Task<Stream> GetModAsync(string url);

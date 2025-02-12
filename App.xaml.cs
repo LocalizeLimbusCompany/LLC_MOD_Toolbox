@@ -80,7 +80,7 @@ namespace LLC_MOD_Toolbox
                 // TODO: 优化节点选择
                 NodeInformation nodeInformation = NodeList.ApiNode.Last(n => n.IsDefault);
                 var jsonPayload = await http.GetJsonAsync(
-                    string.Format(nodeInformation.Endpoint, "Toolbox_Release.json")
+                    UrlHelper.GetReleaseUrl(nodeInformation.Endpoint)
                 );
                 _logger.LogInformation("API 节点连接成功。");
                 var announcement = JsonHelper.DeserializeValue("body", jsonPayload);
@@ -89,7 +89,7 @@ namespace LLC_MOD_Toolbox
                 if (VersionHelper.CheckForUpdate(latestVersion))
                 {
                     _logger.LogInformation("检测到新版本，打开链接。");
-                    PathHelper.LaunchUrl("https://www.zeroasso.top/docs/install/autoinstall");
+                    UrlHelper.LaunchUrl("https://www.zeroasso.top/docs/install/autoinstall");
                     throw new NotImplementedException("暂不支持自动更新。");
                 }
                 MessageBox.Show(announcement);
@@ -97,6 +97,10 @@ namespace LLC_MOD_Toolbox
             catch (HttpRequestException ex)
             {
                 _logger.LogError(ex, "网络不通畅，无法获取联网版本");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "检查更新时出现异常");
             }
             var mainWindow = Services.GetRequiredService<MainWindow>();
             mainWindow.Show();
