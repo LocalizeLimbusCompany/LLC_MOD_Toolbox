@@ -11,14 +11,14 @@ public class PrimaryNodeList
     /// <summary>
     /// 下载节点, 默认长度为 1
     /// </summary>
-    public List<NodeInformation> DownloadNode { get; init; } =
-        [new("默认", (new("https://node.zeroasso.top/d/od/")), true)];
+    public List<NodeInformation> DownloadNode { get; } =
+        [new("默认", "https://node.zeroasso.top/d/od/{0}", true)];
 
     /// <summary>
     /// API 节点, 默认长度为 1
     /// </summary>
-    public List<NodeInformation> ApiNode { get; init; } =
-        [new("默认", new("https://api.kr.zeroasso.top/"), true)];
+    public List<NodeInformation> ApiNode { get; } =
+        [new("默认", "https://api.kr.zeroasso.top/{0}", true)];
 
     public static PrimaryNodeList Create(string url)
     {
@@ -30,4 +30,19 @@ public class PrimaryNodeList
 /// <summary>
 /// 节点信息
 /// </summary>
-public record class NodeInformation(string Name, Uri Endpoint, bool IsDefault = false);
+public record NodeInformation(
+    string Name,
+    string Endpoint,
+    bool IsDefault = false,
+    ApiType ApiType = ApiType.Custom
+);
+
+/// <summary>
+/// API 类型
+/// </summary>
+public enum ApiType
+{
+    GitHub,
+    Mirror,
+    Custom,
+}

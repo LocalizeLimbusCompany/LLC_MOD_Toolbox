@@ -36,7 +36,6 @@
                 "endpoint": {
                     "type": "string",
                     "format": "uri",
-                    "pattern": ".*/$",
                     "description": "节点地址"
                 },
                 "isDefault": {

@@ -5,10 +5,27 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:LLC_MOD_Toolbox.Views"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    Title="Link"
+    xmlns:viewmodels="clr-namespace:LLC_MOD_Toolbox.ViewModels"
+    Title="链接"
+    d:DataContext="{d:DesignInstance Type=viewmodels:LinkViewModel}"
     d:DesignHeight="450"
     d:DesignWidth="800"
     mc:Ignorable="d">
-
-    <StackPanel />
+    <Page.Resources>
+        <Style TargetType="Button">
+            <Setter Property="Foreground" Value="#FFFFEED4" />
+            <Setter Property="Width" Value="268" />
+            <Setter Property="Height" Value="46" />
+        </Style>
+    </Page.Resources>
+    <UniformGrid Columns="2">
+        <d:Button Content="Hello" />
+        <d:Button />
+        <d:Button />
+        <d:Button />
+        <d:Button />
+        <d:Button />
+        <d:Button />
+        <d:Button />
+    </UniformGrid>
 </Page>

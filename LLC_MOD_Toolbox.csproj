@@ -39,7 +39,7 @@
     <PackageReference Include="Downloader" Version="*" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="*" />
     <PackageReference Include="Newtonsoft.Json" Version="*" />
-    <PackageReference Include="NLog.Extensions.Logging" Version="5.3.15" />
+    <PackageReference Include="NLog.Extensions.Logging" Version="*" />
     <PackageReference Include="Squid-Box.SevenZipSharp" Version="*" />
   </ItemGroup>
 	

@@ -20,7 +20,10 @@ namespace LLC_MOD_Toolbox
         /// Gets the current instance of the application.
         /// </summary>
         public static new App Current => (App)Application.Current;
+
         public IServiceProvider Services { get; }
+
+        private readonly ILogger<App> _logger;
 
         private static ServiceProvider ConfigureServices()
         {
@@ -51,17 +54,12 @@ namespace LLC_MOD_Toolbox
         public App()
         {
             Services = ConfigureServices();
-            AppDomain.CurrentDomain.UnhandledException += (sender, e) =>
-            {
-                var _logger = Services.GetRequiredService<ILogger<App>>();
-                MessageBox.Show($"Unhandled Error occurs in: {e.ExceptionObject}");
-                _logger.LogError(e.ExceptionObject as Exception, "未处理异常");
-            };
+            _logger = Services.GetRequiredService<ILogger<App>>();
+            AppDomain.CurrentDomain.UnhandledException += Application_HandleException;
         }
 
         private async void Application_Startup(object sender, StartupEventArgs e)
         {
-            var _logger = Services.GetRequiredService<ILogger<App>>();
             _logger.LogInformation("—————新日志分割线—————");
             _logger.LogInformation("工具箱已进入加载流程。");
             _logger.LogInformation("We have a lift off.");
@@ -82,7 +80,7 @@ namespace LLC_MOD_Toolbox
                 // TODO: 优化节点选择
                 NodeInformation nodeInformation = NodeList.ApiNode.Last(n => n.IsDefault);
                 var jsonPayload = await http.GetJsonAsync(
-                    new Uri(nodeInformation.Endpoint, "/Toolbox_Release.json")
+                    string.Format(nodeInformation.Endpoint, "Toolbox_Release.json")
                 );
                 _logger.LogInformation("API 节点连接成功。");
                 var announcement = JsonHelper.DeserializeValue("body", jsonPayload);
@@ -102,6 +100,17 @@ namespace LLC_MOD_Toolbox
             }
             var mainWindow = Services.GetRequiredService<MainWindow>();
             mainWindow.Show();
+        }
+
+        private void Application_HandleException(object sender, UnhandledExceptionEventArgs e)
+        {
+            _logger.LogError(e.ExceptionObject as Exception, "未处理异常");
+            MessageBox.Show($"出现未处理的异常，请截图留存，否则可能无法定位：{e.ExceptionObject}");
+        }
+
+        private void Application_Exit(object sender, ExitEventArgs e)
+        {
+            _logger.LogInformation("工具箱已退出。");
         }
     }
 }

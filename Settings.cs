@@ -1,4 +1,4 @@
-﻿namespace LLC_MOD_Toolbox.Properties
+namespace LLC_MOD_Toolbox.Properties
 {
     // 通过此类可以处理设置类的特定事件:
     //  在更改某个设置的值之前将引发 SettingChanging 事件。

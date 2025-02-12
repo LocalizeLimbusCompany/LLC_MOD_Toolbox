@@ -90,28 +90,6 @@ namespace LLC_MOD_Toolbox
             {
                 ErrorReport(ex, true, "您可以尝试在设置中切换节点。\n");
             }
-            logger.LogInformation("安装完成。");
-            MessageBoxResult RunResult = System.Windows.MessageBox.Show(
-                "安装已完成！\n点击“确定”立刻运行边狱公司。\n点击“取消”关闭弹窗。\n加载时请耐心等待。",
-                "完成",
-                MessageBoxButton.OKCancel
-            );
-            if (RunResult == MessageBoxResult.OK)
-            {
-                //try
-                //{
-                //    HttpHelper.LaunchUrl("steam://rungameid/1973530");
-                //}
-                //catch (Exception ex)
-                //{
-                //    _logger.LogError("出现了问题： ", ex);
-                //    System.Windows.MessageBox.Show("出现了问题。\n" + ex.ToString());
-                //}
-            }
-            /*            isInstalling = false;
-                        progressPercentage = 0;
-                        await ChangeProgressValue(0);
-                        await RefreshPage();*/
         }
 
         private async Task InstallBepInEx()

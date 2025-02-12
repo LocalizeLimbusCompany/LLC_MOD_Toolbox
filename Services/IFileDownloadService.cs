@@ -43,21 +43,21 @@ public interface IFileDownloadService
         };
     private static readonly HttpClient httpClient = new();
 
-    public async Task<Stream> GetAppAsync(Uri url) =>
-        await ServiceDownloader.DownloadFileTaskAsync(url.AbsolutePath);
+    public async Task<Stream> GetAppAsync(string url) =>
+        await ServiceDownloader.DownloadFileTaskAsync(url);
 
-    public async Task<Stream> DownloadFileAsync(Uri url, string path, IProgress<double> progress)
+    public async Task<Stream> DownloadFileAsync(string url, string path, IProgress<double> progress)
     {
         ServiceDownloader.DownloadProgressChanged += (sender, e) =>
         {
             progress.Report(e.ProgressPercentage);
         };
-        return await ServiceDownloader.DownloadFileTaskAsync(url.AbsolutePath);
+        return await ServiceDownloader.DownloadFileTaskAsync(url);
     }
 
-    public async Task<string> GetHashAsync(Uri url)
+    public async Task<string> GetHashAsync(string url)
     {
-        var jsonPayload = await GetJsonAsync(new Uri(url, "LimbusLocalizeHash.json"));
+        var jsonPayload = await GetJsonAsync(string.Format(url, "LimbusLocalizeHash.json"));
         return JsonHelper.DeserializeValue("hash", jsonPayload);
     }
 
@@ -78,9 +78,9 @@ public interface IFileDownloadService
     /// <exception cref="HttpRequestException">当网络连接不良时直接断言</exception>
     /// <param name="url"></param>
     /// <returns></returns>
-    public async Task<string> GetJsonAsync(Uri url)
+    public async Task<string> GetJsonAsync(string url)
     {
-        var json = await ServiceDownloader.DownloadFileTaskAsync(url.AbsoluteUri);
+        var json = await ServiceDownloader.DownloadFileTaskAsync(url);
         using StreamReader reader = new(json);
         return await reader.ReadToEndAsync();
     }
@@ -111,12 +111,12 @@ public interface IFileDownloadService
         );
         return stream;
     }
-    public async Task<Stream> GetTmpAsync(Uri url)
+    public async Task<Stream> GetTmpAsync(string url)
     {
         Stream stream = await ServiceDownloader.DownloadFileTaskAsync(
-            new Uri(url, "tmpchinesefont_BIE.7z").AbsolutePath
+            string.Format(url, "tmpchinesefont_BIE.7z")
         );
         return stream;
     }
-    public Task<Stream> GetModAsync(Uri url);
+    public Task<Stream> GetModAsync(string url);
 }
