@@ -358,11 +358,18 @@ namespace LLC_MOD_Toolbox
         }
         public async Task ChangeEEPic(string url)
         {
-            logger.Debug("更改彩蛋图片为： " + url);
-            await this.Dispatcher.BeginInvoke(() =>
+            try
             {
-                EEPageImage.Source = BitmapFrame.Create(new Uri(url), BitmapCreateOptions.None, BitmapCacheOption.Default);
-            });
+                logger.Debug("更改彩蛋图片为： " + url);
+                await this.Dispatcher.BeginInvoke(() =>
+                {
+                    EEPageImage.Source = BitmapFrame.Create(new Uri(url), BitmapCreateOptions.None, BitmapCacheOption.Default);
+                });
+            }
+            catch
+            {
+                // encountered error, ignore it.
+            }
         }
         #endregion
         #region 链接

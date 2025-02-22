@@ -296,7 +296,7 @@ namespace LLC_MOD_Toolbox
                 else if (result.IsNotLatestVersion)
                 {
                     isNewestModVersion = false;
-                    await DownloadFileAsync($"https://mirror.ghproxy.com/https://github.com/LocalizeLimbusCompany/LLC_ChineseFontAsset/releases/download/{result.Tag}/tmpchinesefont_BIE_{result.Tag}.7z", tmpchineseZipPath);
+                    await DownloadFileAsync($"https://github.com/LocalizeLimbusCompany/LLC_ChineseFontAsset/releases/download/{result.Tag}/tmpchinesefont_BIE_{result.Tag}.7z", tmpchineseZipPath);
                 }
                 logger.Info("解压 tmp zip 中。");
                 Unarchive(tmpchineseZipPath, limbusCompanyDir);
