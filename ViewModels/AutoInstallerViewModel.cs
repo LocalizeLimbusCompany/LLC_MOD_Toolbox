@@ -69,13 +69,8 @@ public partial class AutoInstallerViewModel : ObservableObject
         }
         if (ValidateHelper.CheckMelonloader(limbusCompanyPath))
         {
-            MessageBox.Show(
-                "Current environment has MelonLoader installed, please uninstall it first.",
-                "Warning"
-            );
-            _logger.LogError(
-                "Current environment has MelonLoader installed, please uninstall it first."
-            );
+            MessageBox.Show("当前环境检测到 MelonLoader，请先卸载", "Warning");
+            _logger.LogError("当前环境检测到 MelonLoader，请先卸载。");
             return;
         }
         try

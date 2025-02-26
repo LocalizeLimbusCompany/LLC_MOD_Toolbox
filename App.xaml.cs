@@ -108,13 +108,21 @@ namespace LLC_MOD_Toolbox
 
         private void Application_HandleException(object sender, UnhandledExceptionEventArgs e)
         {
-            _logger.LogError(e.ExceptionObject as Exception, "未处理异常");
+            if (e.ExceptionObject is Exception exception)
+                _logger.LogError("未处理异常：{}", GetExceptionMessage(exception));
             MessageBox.Show($"出现未处理的异常，请截图留存，否则可能无法定位：{e.ExceptionObject}");
         }
 
         private void Application_Exit(object sender, ExitEventArgs e)
         {
             _logger.LogInformation("工具箱已退出。");
+        }
+
+        private static string GetExceptionMessage(Exception ex)
+        {
+            return ex.InnerException == null
+                ? ex.Message
+                : $"{ex.Message} -> {GetExceptionMessage(ex.InnerException)}";
         }
     }
 }
