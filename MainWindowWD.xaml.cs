@@ -46,8 +46,8 @@ namespace LLC_MOD_Toolbox
         private static readonly string currentDir = AppDomain.CurrentDomain.BaseDirectory;
         private static List<Node> nodeList = [];
         private static List<Node> apiList = [];
-        private static string defaultEndPoint = "https://node.zeroasso.top/d/od/";
-        private static string defaultAPIEndPoint = "https://api.kr.zeroasso.top/";
+        private static string defaultEndPoint = "";
+        private static string defaultAPIEndPoint = "";
         private static int installPhase = 0;
         private readonly DispatcherTimer progressTimer;
         private float progressPercentage = 0;
@@ -1356,6 +1356,8 @@ namespace LLC_MOD_Toolbox
         private DispatcherTimer? gachaTimer;
         private int _currentIndex = 0;
         private int[]? uniqueCount;
+        private bool hasVergil = false;
+        private bool alreadyHasVergil = false;
         private async Task InitGacha()
         {
             await DisableGlobalOperations();
@@ -1365,6 +1367,7 @@ namespace LLC_MOD_Toolbox
                 logger.Error("初始化失败。");
                 System.Windows.MessageBox.Show("初始化失败。请检查网络情况。", "提示");
                 isInitGachaFailed = true;
+                hasVergil = false;
                 await EnableGlobalOperations();
                 return;
             }
@@ -1393,6 +1396,11 @@ namespace LLC_MOD_Toolbox
                 logger.Info("初始化失败。");
                 System.Windows.MessageBox.Show("初始化失败，无法进行抽卡操作。", "提示");
                 return;
+            }
+            Random random = new();
+            if (random.Next(1, 101) == 100)
+            {
+                hasVergil = true;
             }
             try
             {
@@ -1464,6 +1472,14 @@ namespace LLC_MOD_Toolbox
                     {
                         textBlock.Text = "[★★★]" + personal.Name;
                         textBlock.Foreground = new SolidColorBrush((System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString("#FCC404"));
+                    }
+                    Random random = new();
+                    if (hasVergil && random.Next(1,10) == 1)
+                    {
+                        textBlock.Text = "[★★★★★★] 猩红凝视 维吉里乌斯";
+                        textBlock.Foreground = new SolidColorBrush((System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString("#9B0101"));
+                        hasVergil = false;
+                        alreadyHasVergil = true;
                     }
                 }
             });
@@ -1560,6 +1576,12 @@ namespace LLC_MOD_Toolbox
                 });
                 Random random = new();
                 gachaCount += 1;
+                if (alreadyHasVergil)
+                {
+                    System.Windows.MessageBox.Show("当你不见前路，不知应去往何方时……\n向导会为你指引方向。\n但丁。", "？？？", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    alreadyHasVergil = false;
+                    return;
+                }
                 switch (gachaCount)
                 {
                     case 10:

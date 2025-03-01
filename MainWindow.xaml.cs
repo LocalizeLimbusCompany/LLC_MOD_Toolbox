@@ -384,6 +384,7 @@ namespace LLC_MOD_Toolbox
             linkDictionary.Add("LinkButton6", "https://paratranz.cn");
             linkDictionary.Add("LinkButton7", "https://weidian.com/?userid=1655827241");
             linkDictionary.Add("LinkButton8", "https://limbuscompany.huijiwiki.com");
+            linkDictionary.Add("LinkButton9", "https://simpfun.cn");
         }
         private async Task<string?> GetSenderName(System.Windows.Controls.Control? control)
         {

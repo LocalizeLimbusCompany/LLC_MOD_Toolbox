@@ -11,11 +11,6 @@
       "isDefault": false
     },
     {
-      "name": "Onedrive For Business",
-      "endpoint": "https://node.zeroasso.top/d/od/{0}",
-      "isDefault": false
-    },
-    {
       "name": "天翼云盘",
       "endpoint": "https://node.zeroasso.top/d/tianyi/{0}",
       "isDefault": false
