@@ -42,6 +42,7 @@ namespace LLC_MOD_Toolbox
             services.AddTransient<AutoInstallerViewModel>();
             services.AddTransient<SettingsViewModel>();
             services.AddTransient<GachaViewModel>();
+            services.AddTransient<LinkViewModel>();
 
             services.AddLogging(builder =>
             {

@@ -1,31 +1,42 @@
-<Page
+<UserControl
     x:Class="LLC_MOD_Toolbox.Views.Link"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:local="clr-namespace:LLC_MOD_Toolbox.Views"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:viewmodels="clr-namespace:LLC_MOD_Toolbox.ViewModels"
-    Title="链接"
+    xmlns:views="clr-namespace:LLC_MOD_Toolbox.Views"
     d:DataContext="{d:DesignInstance Type=viewmodels:LinkViewModel}"
     d:DesignHeight="450"
     d:DesignWidth="800"
     mc:Ignorable="d">
-    <Page.Resources>
+
+    <UserControl.Resources>
         <Style TargetType="Button">
             <Setter Property="Foreground" Value="#FFFFEED4" />
             <Setter Property="Width" Value="268" />
             <Setter Property="Height" Value="46" />
+            <Setter Property="Background">
+                <Setter.Value>
+                    <ImageBrush ImageSource="/Assets/Images/LinkBT.png" />
+                </Setter.Value>
+            </Setter>
         </Style>
-    </Page.Resources>
-    <UniformGrid Columns="2">
-        <d:Button Content="Hello" />
-        <d:Button />
-        <d:Button />
-        <d:Button />
-        <d:Button />
-        <d:Button />
-        <d:Button />
-        <d:Button />
-    </UniformGrid>
-</Page>
+    </UserControl.Resources>
+
+    <ItemsControl ItemsSource="{Binding Links}">
+        <ItemsControl.ItemsPanel>
+            <ItemsPanelTemplate>
+                <UniformGrid Columns="2" />
+            </ItemsPanelTemplate>
+        </ItemsControl.ItemsPanel>
+        <ItemsControl.ItemTemplate>
+            <DataTemplate>
+                <Button
+                    Command="{Binding 暂时占一个位置我现在都不知道这个该怎么写}"
+                    CommandParameter="{Binding Value}"
+                    Content="{Binding Key}" />
+            </DataTemplate>
+        </ItemsControl.ItemTemplate>
+    </ItemsControl>
+</UserControl>

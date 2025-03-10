@@ -48,7 +48,7 @@ internal static class FileHelper
     /// <summary>
     /// 读取节点列表配置文件
     /// </summary>
-    /// <returns></returns>
+    /// <returns>节点配置</returns>
     public static Task<string> LoadNodeListConfigAsync => File.ReadAllTextAsync("NodeList.json");
 
     /// <summary>
@@ -68,7 +68,6 @@ internal static class FileHelper
     /// <summary>
     /// 删除 Mod，删除内容为 <seealso cref="BepInExFiles"/> 和 <seealso cref="BepInExFolders"/>
     /// </summary>
-    /// <returns></returns>
     public static void DeleteBepInEx(string limbusCompanyPath, ILogger logger)
     {
         if (string.IsNullOrEmpty(limbusCompanyPath))
@@ -105,7 +104,7 @@ internal static class FileHelper
         {
             Arguments = $"Add-MpPreference -ExclusionPath \"{path}\"",
             UseShellExecute = true,
-            Verb = "RunAs" // This makes the process run as administrator
+            Verb = "RunAs"
         };
         System.Diagnostics.Process.Start(processInfo);
     }
