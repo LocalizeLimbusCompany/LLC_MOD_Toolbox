@@ -49,6 +49,8 @@ namespace LLC_MOD_Toolbox
                 builder.ClearProviders();
                 builder.AddNLog("Nlog.config");
             });
+
+            services.AddHttpClient();
             return services.BuildServiceProvider();
         }
 
@@ -99,6 +101,11 @@ namespace LLC_MOD_Toolbox
             {
                 _logger.LogError(ex, "网络不通畅，无法获取联网版本");
             }
+            catch (NotImplementedException)
+            {
+                _logger.LogInformation("暂不支持自动更新");
+                Current.Shutdown();
+            }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "检查更新时出现异常");
@@ -110,7 +117,7 @@ namespace LLC_MOD_Toolbox
         private void Application_HandleException(object sender, UnhandledExceptionEventArgs e)
         {
             if (e.ExceptionObject is Exception exception)
-                _logger.LogError("未处理异常：{}", GetExceptionMessage(exception));
+                _logger.LogError(exception, "未处理异常：{}", GetExceptionMessage(exception));
             MessageBox.Show($"出现未处理的异常，请截图留存，否则可能无法定位：{e.ExceptionObject}");
         }
 

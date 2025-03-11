@@ -1,7 +1,6 @@
 using System.IO;
 using System.Net.Http;
 using System.Runtime.InteropServices;
-using System.Text;
 using System.Windows.Media.Imaging;
 using Downloader;
 using LLC_MOD_Toolbox.Helpers;
@@ -16,8 +15,8 @@ public enum ServiceState
 
 public interface IFileDownloadService
 {
-    public static DownloadService ServiceDownloader { get; } = new(downloadOpt);
-    public static readonly DownloadConfiguration downloadOpt =
+    static DownloadService ServiceDownloader { get; } = new(downloadOpt);
+    static readonly DownloadConfiguration downloadOpt =
         new()
         {
             // file parts to download
@@ -43,10 +42,10 @@ public interface IFileDownloadService
         };
     private static readonly HttpClient httpClient = new();
 
-    public async Task<Stream> GetAppAsync(string url) =>
+    async Task<Stream> GetAppAsync(string url) =>
         await ServiceDownloader.DownloadFileTaskAsync(url);
 
-    public async Task<Stream> DownloadFileAsync(string url, string path, IProgress<double> progress)
+    async Task<Stream> DownloadFileAsync(string url, string path, IProgress<double> progress)
     {
         ServiceDownloader.DownloadProgressChanged += (sender, e) =>
         {
@@ -55,13 +54,13 @@ public interface IFileDownloadService
         return await ServiceDownloader.DownloadFileTaskAsync(url);
     }
 
-    public async Task<string> GetHashAsync(string url)
+    async Task<string> GetHashAsync(string url)
     {
         var jsonPayload = await GetJsonAsync(UrlHelper.GetHashUrl(url));
         return JsonHelper.DeserializeValue("hash", jsonPayload);
     }
 
-    public async Task<BitmapImage> GetImageAsync(Uri url)
+    async Task<BitmapImage> GetImageAsync(Uri url)
     {
         var stream = await ServiceDownloader.DownloadFileTaskAsync(url.AbsolutePath);
         var image = new BitmapImage();
@@ -78,7 +77,7 @@ public interface IFileDownloadService
     /// <exception cref="HttpRequestException">当网络连接不良时直接断言</exception>
     /// <param name="url"></param>
     /// <returns></returns>
-    public async Task<string> GetJsonAsync(string url)
+    async Task<string> GetJsonAsync(string url)
     {
         var json = await ServiceDownloader.DownloadFileTaskAsync(url);
         using StreamReader reader = new(json);
@@ -93,7 +92,7 @@ public interface IFileDownloadService
     /// <param name="method">Http method being used (default: <see cref="HttpMethod.Get"/>)</param>
     /// <exception cref="HttpRequestException">当网络连接不良时直接断言</exception>
     /// <returns></returns>
-    public async Task<HttpResponseMessage> GetResponseAsync(Uri url, [Optional] HttpMethod method)
+    async Task<HttpResponseMessage> GetResponseAsync(Uri url, [Optional] HttpMethod method)
     {
         using var request = new HttpRequestMessage
         {
@@ -104,15 +103,15 @@ public interface IFileDownloadService
         response.EnsureSuccessStatusCode();
         return response;
     }
-    public async Task<Stream> GetBepInExAsync(string url)
+    async Task<Stream> GetBepInExAsync(string url)
     {
         Stream stream = await ServiceDownloader.DownloadFileTaskAsync(UrlHelper.GetBepInExUrl(url));
         return stream;
     }
-    public async Task<Stream> GetTmpAsync(string url)
+    async Task<Stream> GetTmpAsync(string url)
     {
         Stream stream = await ServiceDownloader.DownloadFileTaskAsync(UrlHelper.GetTmpUrl(url));
         return stream;
     }
-    public Task<Stream> GetModAsync(string url);
+    Task<Stream> GetModAsync(string url);
 }

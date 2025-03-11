@@ -1,6 +1,6 @@
 namespace LLC_MOD_Toolbox.Models;
 
-class HashException : Exception
+internal class HashException : Exception
 {
     public HashException()
         : base("Hash 验证失败") { }

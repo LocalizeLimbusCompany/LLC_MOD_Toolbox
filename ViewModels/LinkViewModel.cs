@@ -27,7 +27,7 @@ namespace LLC_MOD_Toolbox.ViewModels
         private void OpenLink(string link)
         {
             UrlHelper.LaunchUrl(link);
-            _logger.LogInformation("打开链接：{}", link);
+            _logger.LogInformation("打开链接：{link}", link);
         }
     }
 }
