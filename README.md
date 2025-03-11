@@ -18,6 +18,6 @@ dotnet build
 
 请参考[贡献指南](./docs/CONTRIBUTING.md)
 
-## 出现的额外问题
+## 出现的较专业问题
 
 详见[FAQ](./docs/FAQ.md)

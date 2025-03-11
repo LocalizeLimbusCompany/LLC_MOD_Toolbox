@@ -18,7 +18,7 @@ public class PrimaryNodeList
     /// API 节点, 默认长度为 1
     /// </summary>
     public List<NodeInformation> ApiNode { get; } =
-        [new("默认", "https://api.kr.zeroasso.top/{0}", true)];
+        [new("默认", "https://api.zeroasso.top/v2/get_api/get/{0}", true)];
 
     public static PrimaryNodeList Create(string url)
     {

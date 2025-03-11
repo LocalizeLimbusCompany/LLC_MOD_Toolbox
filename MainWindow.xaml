@@ -73,7 +73,14 @@
             <Setter Property="HorizontalAlignment" Value="Stretch" />
             <Setter Property="VerticalAlignment" Value="Center" />
             <Setter Property="TextAlignment" Value="Justify" />
-            <!--  强制宽度  -->
+        </Style>
+        <Style x:Key="Information" TargetType="TextBlock">
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="HorizontalAlignment" Value="Center" />
+            <Setter Property="FontFamily" Value="Assets/Fonts/#Source Han Sans CN" />
+            <Setter Property="FontSize" Value="20" />
+            <Setter Property="FontWeight" Value="Medium" />
+            <Setter Property="Foreground" Value="#FFFFEED4" />
         </Style>
 
         <!--  TabItem 自定义模板  -->
@@ -282,29 +289,11 @@
                                 </TabItem>
                                 <TabItem Header="手动安装">
                                     <Grid x:Name="ManualInstallPage">
-                                        <Label
-                                            HorizontalContentAlignment="Center"
-                                            VerticalContentAlignment="Center"
-                                            Content="手动安装功能尚未开启，敬请期待后续版本。"
-                                            FontFamily="Assets/Fonts/#Source Han Sans CN"
-                                            FontSize="20"
-                                            FontWeight="Medium"
-                                            Foreground="#FFFFEED4" />
+                                        <TextBlock Style="{StaticResource Information}" Text="手动安装功能尚未开启，敬请期待后续版本。" />
                                     </Grid>
                                 </TabItem>
                                 <TabItem Header="覆盖安装">
-                                    <Grid x:Name="ReplaceInstallPage">
-                                        <Label
-                                            Grid.ColumnSpan="2"
-                                            HorizontalContentAlignment="Center"
-                                            VerticalContentAlignment="Center"
-                                            Content="文件覆盖功能尚未开启，敬请期待后续版本。"
-                                            FontFamily="Assets/Fonts/#Source Han Sans CN"
-                                            FontSize="20"
-                                            FontWeight="Medium"
-                                            Foreground="#FFFFEED4" />
-                                    </Grid>
-
+                                    <TextBlock Style="{StaticResource Information}" Text="文件覆盖功能尚未开启，敬请期待后续版本。" />
                                 </TabItem>
                                 <TabItem Header="抽卡模拟器">
                                     <views:Gacha x:Name="GachaPage" />
@@ -312,13 +301,31 @@
                             </TabControl>
                         </TabItem>
                         <TabItem Header="链接">
+                            <!--  这里会出现两列按钮，但由于数组是在运行时创建的，因此不能在设计时显示  -->
                             <views:Link x:Name="LinkPage" />
                         </TabItem>
                         <TabItem Header="灰度测试" />
                         <TabItem Header="设置">
                             <views:Settings x:Name="SettingsPage" d:DataContext="{d:DesignInstance Type=viewmodels:SettingsViewModel}" />
                         </TabItem>
-                        <TabItem Header="关于" />
+                        <TabItem Header="关于">
+                            <TextBlock Style="{StaticResource Information}" TextWrapping="Wrap">
+                                都市零协会工具箱 (LLC_MOD_Toolbox) 是服务于都市零协会汉化模组 (LocalizeLimbusCompany) 的自动化安装工具。本软件使用库的许可证请于零协会官网 (https://www.zeroasso.top) 查看。<LineBreak />
+                                - LLCMT工具箱<LineBreak />
+                                - 代码实现：曾小皮、10291029<LineBreak />
+                                - 美术设计：记得保存、玉佩（抽卡模拟器）<LineBreak />
+                                - LLC翻译模组<LineBreak />
+                                - 翻译文本：零协会翻译组全体译者<LineBreak />
+                                - 汉化模组代码：奈芙Nephthys<LineBreak />
+                                - 汉化模组字体：茜、北岚<LineBreak />
+                                - 特别鸣谢<LineBreak />
+                                - 服务器运维 &amp; 开发：曾小皮<LineBreak />
+                                - 零协会广播局全体创作者<LineBreak />
+                                - 翻译工具：Paratranz<LineBreak />
+                                <LineBreak />
+                                人无语言则茫然无依。<LineBreak />
+                            </TextBlock>
+                        </TabItem>
                     </TabControl>
 
                     <Grid
@@ -498,28 +505,6 @@
                             IsHitTestVisible="False" />
                     </Grid>
                     <Grid
-                        x:Name="AboutPage"
-                        Grid.Row="1"
-                        Margin="62,55,54,32"
-                        Panel.ZIndex="5"
-                        Visibility="Collapsed">
-                        <Label
-                            Width="644"
-                            Height="357"
-                            Margin="0,15,0,0"
-                            HorizontalAlignment="Center"
-                            VerticalAlignment="Top"
-                            FontFamily="Assets/Fonts/#Source Han Sans CN"
-                            FontSize="15"
-                            FontWeight="Medium"
-                            Foreground="#FFFFEED4">
-                            <TextBlock
-                                Height="351"
-                                Text="都市零协会工具箱 (LLC_MOD_Toolbox) 是服务于都市零协会汉化模组 (LocalizeLimbusCompany) 的自动化安装工具。本软件使用库的许可证请于零协会官网 (https://www.zeroasso.top) 查看。&#10;- LLCMT工具箱&#10;  - 代码实现：曾小皮、10291029&#10;  - 美术设计：记得保存、玉佩（抽卡模拟器）&#10;- LLC翻译模组&#10;  - 翻译文本：零协会翻译组全体译者&#10;  - 汉化模组代码：奈芙Nephthys&#10;  - 汉化模组字体：茜、北岚&#10;- 特别鸣谢&#10;  - 服务器运维 &amp; 开发：曾小皮 &#10;  - 零协会广播局全体创作者&#10;  - 翻译工具：Paratranz&#10;&#10;人无语言则茫然无依。"
-                                TextWrapping="Wrap" />
-                        </Label>
-                    </Grid>
-                    <Grid
                         x:Name="EEPage"
                         Grid.Row="1"
                         Margin="62,55,54,32"
@@ -552,49 +537,6 @@
 
                     </Grid.RowDefinitions>
 
-                    <Button
-                        x:Name="LinkOption"
-                        Grid.Row="1"
-                        Width="127"
-                        Height="33"
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center"
-                        Background="Transparent"
-                        BorderBrush="Transparent"
-                        BorderThickness="0"
-                        Content="链   接"
-                        FontFamily="Assets/Fonts/#lianmengqiyilushuaizhengruiheiti"
-                        FontSize="20"
-                        FontWeight="Regular"
-                        Foreground="#FFFFEED4"
-                        Style="{StaticResource NoHover}">
-                        <Button.Triggers>
-                            <EventTrigger RoutedEvent="Button.MouseEnter">
-                                <BeginStoryboard>
-                                    <Storyboard>
-                                        <DoubleAnimation
-                                            Storyboard.TargetName="LinkHover"
-                                            Storyboard.TargetProperty="Opacity"
-                                            From="0"
-                                            To="1"
-                                            Duration="0:0:0.3" />
-                                    </Storyboard>
-                                </BeginStoryboard>
-                            </EventTrigger>
-                            <EventTrigger RoutedEvent="Button.MouseLeave">
-                                <BeginStoryboard>
-                                    <Storyboard>
-                                        <DoubleAnimation
-                                            Storyboard.TargetName="LinkHover"
-                                            Storyboard.TargetProperty="Opacity"
-                                            From="1"
-                                            To="0"
-                                            Duration="0:0:0.3" />
-                                    </Storyboard>
-                                </BeginStoryboard>
-                            </EventTrigger>
-                        </Button.Triggers>
-                    </Button>
                     <Button
                         x:Name="GreytestOption"
                         Grid.Row="2"
@@ -629,49 +571,6 @@
                                     <Storyboard>
                                         <DoubleAnimation
                                             Storyboard.TargetName="GreytestHover"
-                                            Storyboard.TargetProperty="Opacity"
-                                            From="1"
-                                            To="0"
-                                            Duration="0:0:0.3" />
-                                    </Storyboard>
-                                </BeginStoryboard>
-                            </EventTrigger>
-                        </Button.Triggers>
-                    </Button>
-                    <Button
-                        x:Name="AboutOption"
-                        Grid.Row="4"
-                        Width="127"
-                        Height="33"
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center"
-                        Background="Transparent"
-                        BorderBrush="Transparent"
-                        BorderThickness="0"
-                        Content="关   于"
-                        FontFamily="Assets/Fonts/#lianmengqiyilushuaizhengruiheiti"
-                        FontSize="20"
-                        FontWeight="Regular"
-                        Foreground="#FFFFEED4"
-                        Style="{StaticResource NoHover}">
-                        <Button.Triggers>
-                            <EventTrigger RoutedEvent="Button.MouseEnter">
-                                <BeginStoryboard>
-                                    <Storyboard>
-                                        <DoubleAnimation
-                                            Storyboard.TargetName="AboutHover"
-                                            Storyboard.TargetProperty="Opacity"
-                                            From="0"
-                                            To="1"
-                                            Duration="0:0:0.3" />
-                                    </Storyboard>
-                                </BeginStoryboard>
-                            </EventTrigger>
-                            <EventTrigger RoutedEvent="Button.MouseLeave">
-                                <BeginStoryboard>
-                                    <Storyboard>
-                                        <DoubleAnimation
-                                            Storyboard.TargetName="AboutHover"
                                             Storyboard.TargetProperty="Opacity"
                                             From="1"
                                             To="0"
@@ -726,69 +625,6 @@
                             </EventTrigger>
                         </Button.Triggers>
                     </Button>
-                    <Image
-                        x:Name="InstallHover"
-                        Width="168"
-                        Height="49"
-                        Margin="0,0,0,1"
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Bottom"
-                        IsHitTestVisible="False"
-                        Opacity="0"
-                        Source="Assets/Images/ButtonHover.png" />
-                    <Image
-                        x:Name="LinkHover"
-                        Grid.Row="1"
-                        Width="168"
-                        Height="49"
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center"
-                        IsHitTestVisible="False"
-                        Opacity="0"
-                        Source="Assets/Images/ButtonHover.png" />
-                    <Image
-                        x:Name="GreytestHover"
-                        Grid.Row="2"
-                        Width="168"
-                        Height="49"
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center"
-                        IsHitTestVisible="False"
-                        Opacity="0"
-                        Source="Assets/Images/ButtonHover.png" />
-                    <Image
-                        x:Name="SettingHover"
-                        Grid.Row="3"
-                        Width="168"
-                        Height="48"
-                        Margin="0,0,5,0"
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center"
-                        IsHitTestVisible="False"
-                        Opacity="0"
-                        Source="Assets/Images/ButtonHover.png" />
-                    <Image
-                        x:Name="AboutHover"
-                        Grid.Row="4"
-                        Width="168"
-                        Height="49"
-                        Margin="0,0,0,0"
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center"
-                        IsHitTestVisible="False"
-                        Opacity="0"
-                        Source="Assets/Images/ButtonHover.png" />
-                    <Image
-                        x:Name="EEHover"
-                        Grid.Row="5"
-                        Width="168"
-                        Height="49"
-                        Margin="0,0,0,0"
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center"
-                        IsHitTestVisible="False"
-                        Opacity="0"
-                        Source="Assets/Images/ButtonHover.png" />
                     <Button
                         Grid.Row="7"
                         Width="155"

@@ -1,5 +1,12 @@
 {
   "$schema": "https://raw.githubusercontent.com/ProjektMing/LLC_MOD_Toolbox/refactor/schema.json",
+  "apiNode": [
+    {
+      "name": "零协会官方 API",
+      "endpoint": "https://api.zeroasso.top/v2/get_api/get/{0}",
+      "isDefault": true
+    }
+  ],
   "downloadNode": [
     {
       "name": "自动选择节点",
@@ -20,13 +27,6 @@
       "name": "天翼云盘",
       "endpoint": "https://node.zeroasso.top/d/tianyi/{0}",
       "isDefault": false
-    }
-  ],
-  "apiNode": [
-    {
-      "name": "零协会官方 API",
-      "endpoint": "https://api.zeroasso.top/v2/get_api/get/{0}",
-      "isDefault": true
     }
   ]
 }
