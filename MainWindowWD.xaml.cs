@@ -14,7 +14,6 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Net.Http;
-using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -570,7 +569,7 @@ namespace LLC_MOD_Toolbox
             try
             {
                 List<PersonalInfo> personals = GenPersonalList();
-                await StartChangeLabel(personals);
+                StartChangeLabel(personals);
             }
             catch (Exception ex)
             {
@@ -597,7 +596,7 @@ namespace LLC_MOD_Toolbox
             return uniqueCount;
         }
 
-        private async Task StartChangeLabel(List<PersonalInfo> personals) { }
+        private void StartChangeLabel(List<PersonalInfo> personals) { }
 
         private async Task ChangeLabelColorAndPersonal(
             PersonalInfo personal,

@@ -38,6 +38,7 @@
     <PackageReference Include="CommunityToolkit.Mvvm" Version="*" />
     <PackageReference Include="Downloader" Version="*" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="*" />
+    <PackageReference Include="Microsoft.Extensions.Http" Version="9.0.2" />
     <PackageReference Include="Newtonsoft.Json" Version="*" />
     <PackageReference Include="NLog.Extensions.Logging" Version="*" />
     <PackageReference Include="Squid-Box.SevenZipSharp" Version="*" />

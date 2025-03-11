@@ -8,13 +8,12 @@ namespace LLC_MOD_Toolbox.Helpers
         /// <summary>
         /// 获取边狱公司路径
         /// </summary>
-        public static string DetectedLimbusCompanyPath { get; } =
+        public static string? DetectedLimbusCompanyPath { get; } =
             Registry.GetValue(
                 @"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Steam App 1973530",
                 "InstallLocation",
                 null
-            ) as string
-            ?? throw new ArgumentNullException("未找到边狱公司路径。可能是注册表被删除了！");
+            ) as string;
 
         /// <summary>
         /// 选择边狱公司游戏文件路径
@@ -28,7 +27,7 @@ namespace LLC_MOD_Toolbox.Helpers
             {
                 return openFolderDialog.FolderName;
             }
-            throw new ConfigurationErrorsException("未选择文件！");
+            return SelectPath();
         }
     }
 }

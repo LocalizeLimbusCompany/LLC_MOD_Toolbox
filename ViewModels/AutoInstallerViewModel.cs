@@ -39,7 +39,7 @@ public partial class AutoInstallerViewModel : ObservableObject
         limbusCompanyPath =
             ConfigurationManager.AppSettings["GamePath"]
             ?? PathHelper.DetectedLimbusCompanyPath
-            ?? throw new DirectoryNotFoundException("未找到边狱公司路径。可能是注册表被恶意修改了！");
+            ?? PathHelper.SelectPath();
     }
 
     private void SettingsChanged(
@@ -57,7 +57,10 @@ public partial class AutoInstallerViewModel : ObservableObject
         _logger.LogInformation("选择的下载节点为：{selectedEndPoint}", selectedEndPoint);
         _logger.LogInformation("边狱公司路径为：{limbusCompanyPath}", limbusCompanyPath);
         MessageBoxResult result = MessageBox.Show(
-            "安装前请确保游戏已经关闭。\n确定继续吗？",
+            """
+            安装前请确保游戏已经关闭。
+            确定继续吗？
+            """,
             "警告",
             MessageBoxButton.YesNo,
             MessageBoxImage.Warning
@@ -69,17 +72,17 @@ public partial class AutoInstallerViewModel : ObservableObject
         }
         if (ValidateHelper.CheckMelonloader(limbusCompanyPath))
         {
-            MessageBox.Show(
-                "Current environment has MelonLoader installed, please uninstall it first.",
-                "Warning"
-            );
-            _logger.LogError(
-                "Current environment has MelonLoader installed, please uninstall it first."
-            );
+            MessageBox.Show("当前环境检测到 MelonLoader，请先卸载", "Warning");
+            _logger.LogError("当前环境检测到 MelonLoader，提醒用户卸载。");
             return;
         }
         try
         {
+            string[] files =
+            [
+                UrlHelper.GetBepInExUrl(selectedEndPoint.Endpoint),
+                UrlHelper.GetTmpUrl(selectedEndPoint.Endpoint)
+            ];
             using var stream = await fileDownloadService.DownloadFileAsync(
                 selectedEndPoint.Endpoint,
                 limbusCompanyPath,
