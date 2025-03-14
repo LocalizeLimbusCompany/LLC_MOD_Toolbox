@@ -9,7 +9,7 @@
 请求地址：
 
 ```url
-GET https://api.zeroasso.top/v2/get_api/get/repos/LocalizeLimbusCompany/LLC_Mod_Toolbox/releases/latest
+GET https://api.zeroasso.top/v2/get_api/get/{repo}
 ```
 
 可选参数：`repos/LocalizeLimbusCompany/LLC_Mod_Toolbox/releases/latest`、`repos/LocalizeLimbusCompany/LocalizeLimbusCompany/releases/latest`、`repos/LocalizeLimbusCompany/BepInEx_For_LLC/releases/latest`和`repos/LocalizeLimbusCompany/LLC_ChineseFontAsset/releases/latest`
@@ -41,7 +41,7 @@ GET https://api.zeroasso.top/v2/resource/get_version
 请求地址：
 
 ```url
-GET https://api.zeroasso.top/v2/download/files?file_name=BepInEx-IL2CPP-x64.7z
+GET https://api.zeroasso.top/v2/download/files?file_name={fileName}}
 ```
 
 可选参数：`BepInEx-IL2CPP-x64.7z`、`LimbusLocalize_BIE.7z`、`tmpchinesefont_BIE.7z`和`Resource/LimbusLocalize_Resource_latest.7z`

@@ -54,6 +54,9 @@ public partial class SettingsViewModel : ObservableObject
     [ObservableProperty]
     private NodeInformation apiNode;
 
+    [ObservableProperty]
+    private string? testCode = null;
+
     [RelayCommand]
     private Task ModUnistallation()
     {
@@ -102,16 +105,9 @@ public partial class SettingsViewModel : ObservableObject
         ApiNodeList = primaryNodeList.ApiNode;
         downloadNode = DownloadNodeList.Last(n => n.IsDefault);
         apiNode = ApiNodeList.Last(n => n.IsDefault);
-        try
-        {
-            LimbusCompanyPath =
-                ConfigurationManager.AppSettings["GamePath"]
-                ?? PathHelper.DetectedLimbusCompanyPath;
-        }
-        catch (ArgumentNullException ex)
-        {
-            _logger.LogWarning(ex, "未找到边狱公司地址");
-            LimbusCompanyPath = PathHelper.SelectPath();
-        }
+        LimbusCompanyPath =
+            ConfigurationManager.AppSettings["GamePath"]
+            ?? PathHelper.DetectedLimbusCompanyPath
+            ?? PathHelper.SelectPath();
     }
 }

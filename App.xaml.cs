@@ -1,5 +1,6 @@
 using System.Net.Http;
 using System.Windows;
+using Downloader;
 using LLC_MOD_Toolbox.Helpers;
 using LLC_MOD_Toolbox.Models;
 using LLC_MOD_Toolbox.Services;
@@ -51,6 +52,7 @@ namespace LLC_MOD_Toolbox
             });
 
             services.AddHttpClient();
+
             return services.BuildServiceProvider();
         }
 
@@ -67,7 +69,6 @@ namespace LLC_MOD_Toolbox
             _logger.LogInformation("工具箱已进入加载流程。");
             _logger.LogInformation("We have a lift off.");
 
-            SevenZipBase.SetLibraryPath("7z.dll");
             if (e.Args.Length > 0)
             {
                 _logger.LogInformation("检测到启动参数。");
@@ -78,6 +79,7 @@ namespace LLC_MOD_Toolbox
             // 检查更新
             try
             {
+                SevenZipBase.SetLibraryPath("7z.dll");
                 var http = Services.GetRequiredService<IFileDownloadService>();
                 var NodeList = Services.GetRequiredService<PrimaryNodeList>();
                 // TODO: 优化节点选择
@@ -126,6 +128,11 @@ namespace LLC_MOD_Toolbox
             _logger.LogInformation("工具箱已退出。");
         }
 
+        /// <summary>
+        /// 获取异常信息
+        /// </summary>
+        /// <param name="ex"></param>
+        /// <returns>获取异常对象的内部信息</returns>
         private static string GetExceptionMessage(Exception ex)
         {
             return ex.InnerException == null

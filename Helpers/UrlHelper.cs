@@ -6,17 +6,39 @@ namespace LLC_MOD_Toolbox.Helpers
     {
         private static readonly StringBuilder sb = new();
 
-        public static string GetTmpUrl(string url) =>
-            sb.Clear().AppendFormat(url, "tmpchinesefont_BIE.7z").ToString();
+        public static IEnumerable<string> GetUrls(string url)
+        {
+            List<string> paths =
+            [
+                "BepInEx-IL2CPP-x64.7z",
+                "tmpchinesefont_BIE.7z",
+                "LimbusLocalize_BIE.7z",
+                "Resource/LimbusLocalize_Resource_latest.7z",
+            ];
+
+            foreach (var path in paths)
+            {
+                yield return sb.Clear().AppendFormat(url, path).ToString();
+            }
+        }
 
         public static string GetReleaseUrl(string url) =>
-            sb.Clear().AppendFormat(url, "Toolbox_Release.json").ToString();
-
-        public static string GetBepInExUrl(string url) =>
-            sb.Clear().AppendFormat(url, "BepInEx-IL2CPP-x64.7z").ToString();
+            sb.Clear()
+                .AppendFormat(url, "repos/LocalizeLimbusCompany/LLC_Mod_Toolbox/releases/latest`")
+                .ToString();
 
         public static string GetHashUrl(string url) =>
             sb.Clear().AppendFormat(url, "LimbusLocalizeHash.json").ToString();
+
+        public static string GetTestUrl(string testCode)
+        {
+            return sb.Clear()
+                .AppendFormat(
+                    "https://api.zeroasso.top/v2/grey_test/get_file?code={token}",
+                    testCode
+                )
+                .ToString();
+        }
 
         /// <summary>
         /// 打开指定的网址

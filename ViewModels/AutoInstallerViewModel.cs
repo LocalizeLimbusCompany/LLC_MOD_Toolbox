@@ -5,6 +5,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using CommunityToolkit.Mvvm.Messaging.Messages;
+using Downloader;
 using LLC_MOD_Toolbox.Helpers;
 using LLC_MOD_Toolbox.Models;
 using LLC_MOD_Toolbox.Services;
@@ -19,6 +20,7 @@ public partial class AutoInstallerViewModel : ObservableObject
 
     private NodeInformation selectedEndPoint;
     private string limbusCompanyPath;
+    private string? testCode;
 
     [ObservableProperty]
     private Progress<double> installationProgress = new();
@@ -56,6 +58,13 @@ public partial class AutoInstallerViewModel : ObservableObject
         _logger.LogInformation("开始安装 BepInEx。");
         _logger.LogInformation("选择的下载节点为：{selectedEndPoint}", selectedEndPoint);
         _logger.LogInformation("边狱公司路径为：{limbusCompanyPath}", limbusCompanyPath);
+
+        if (ValidateHelper.CheckMelonloader(limbusCompanyPath))
+        {
+            MessageBox.Show("当前环境检测到 MelonLoader，请先卸载", "Warning");
+            _logger.LogError("当前环境检测到 MelonLoader，提醒用户卸载。");
+            return;
+        }
         MessageBoxResult result = MessageBox.Show(
             """
             安装前请确保游戏已经关闭。
@@ -70,38 +79,9 @@ public partial class AutoInstallerViewModel : ObservableObject
             _logger.LogInformation("用户取消了安装 BepInEx。");
             return;
         }
-        if (ValidateHelper.CheckMelonloader(limbusCompanyPath))
-        {
-            MessageBox.Show("当前环境检测到 MelonLoader，请先卸载", "Warning");
-            _logger.LogError("当前环境检测到 MelonLoader，提醒用户卸载。");
-            return;
-        }
         try
         {
-            string[] files =
-            [
-                UrlHelper.GetBepInExUrl(selectedEndPoint.Endpoint),
-                UrlHelper.GetTmpUrl(selectedEndPoint.Endpoint)
-            ];
-            using var stream = await fileDownloadService.DownloadFileAsync(
-                selectedEndPoint.Endpoint,
-                limbusCompanyPath,
-                InstallationProgress
-            );
-            var onlineHash = await fileDownloadService.GetHashAsync(selectedEndPoint.Endpoint);
-            if (!await ValidateHelper.CheckHashAsync(stream, onlineHash))
-                throw new HashException();
-            FileHelper.InstallPackage(stream, limbusCompanyPath);
-            _logger.LogInformation("BepInEx 安装完成。");
-            Stream tmpStream = await fileDownloadService.GetTmpAsync(selectedEndPoint.Endpoint);
-            FileHelper.InstallPackage(tmpStream, limbusCompanyPath);
-            _logger.LogInformation("Fonts 安装完成。");
-
-            Stream locolizeStream = await fileDownloadService.GetModAsync(
-                selectedEndPoint.Endpoint
-            );
-            FileHelper.InstallPackage(locolizeStream, limbusCompanyPath);
-            _logger.LogInformation("Localize 安装完成。");
+            var webFiles = UrlHelper.GetUrls(selectedEndPoint.Endpoint);
         }
         catch (IOException ex)
         {
