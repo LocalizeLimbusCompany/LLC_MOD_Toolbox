@@ -20,10 +20,11 @@ public partial class AutoInstallerViewModel : ObservableObject
 
     private NodeInformation selectedEndPoint;
     private string limbusCompanyPath;
-    private string? testCode;
+    private string? testToken;
 
     [ObservableProperty]
-    private Progress<double> installationProgress = new();
+    private double percent;
+    private Progress<double> installationProgress;
 
     public AutoInstallerViewModel(
         ILogger<AutoInstallerViewModel> logger,
@@ -42,6 +43,8 @@ public partial class AutoInstallerViewModel : ObservableObject
             ConfigurationManager.AppSettings["GamePath"]
             ?? PathHelper.DetectedLimbusCompanyPath
             ?? PathHelper.SelectPath();
+
+        installationProgress = new Progress<double>(value => Percent = value);
     }
 
     private void SettingsChanged(

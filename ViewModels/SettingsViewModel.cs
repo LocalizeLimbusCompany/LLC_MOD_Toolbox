@@ -33,6 +33,8 @@ public partial class SettingsViewModel : ObservableObject
         }
         set
         {
+            if (!Directory.Exists(value))
+                return;
             _logger.LogInformation("设置边狱公司路径为：{value}", value);
             ConfigurationManager.AppSettings["GamePath"] = value;
             WeakReferenceMessenger.Default.Send(
@@ -55,7 +57,7 @@ public partial class SettingsViewModel : ObservableObject
     private NodeInformation apiNode;
 
     [ObservableProperty]
-    private string? testCode = null;
+    private string? testToken;
 
     [RelayCommand]
     private Task ModUnistallation()
@@ -96,6 +98,16 @@ public partial class SettingsViewModel : ObservableObject
     private void SelectLimbusCompanyPath()
     {
         LimbusCompanyPath = PathHelper.SelectPath();
+    }
+
+    [RelayCommand]
+    private void Test()
+    {
+        if (string.IsNullOrEmpty(TestToken))
+        {
+            MessageBox.Show("请输入秘钥！");
+            return;
+        }
     }
 
     public SettingsViewModel(ILogger<SettingsViewModel> logger, PrimaryNodeList primaryNodeList)

@@ -16,6 +16,37 @@
     FontWeight="Medium"
     Foreground="#FFFFEED4"
     mc:Ignorable="d">
+    <UserControl.Resources>
+        <ControlTemplate x:Key="TextBoxTemplatePlaceHolder" TargetType="TextBox">
+            <Border
+                x:Name="border"
+                Padding="5,0"
+                Background="{TemplateBinding Background}"
+                BorderBrush="{TemplateBinding BorderBrush}"
+                BorderThickness="{TemplateBinding BorderThickness}"
+                SnapsToDevicePixels="True">
+                <Grid>
+                    <ScrollViewer
+                        x:Name="PART_ContentHost"
+                        Focusable="false"
+                        HorizontalScrollBarVisibility="Hidden"
+                        VerticalScrollBarVisibility="Hidden" />
+                    <TextBlock
+                        x:Name="PlaceHolder"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Background="Transparent"
+                        Opacity="0"
+                        Text="{TemplateBinding Tag}" />
+                </Grid>
+            </Border>
+            <ControlTemplate.Triggers>
+                <Trigger Property="Text" Value="">
+                    <Setter TargetName="PlaceHolder" Property="Opacity" Value="0.7" />
+                </Trigger>
+            </ControlTemplate.Triggers>
+        </ControlTemplate>
+    </UserControl.Resources>
     <StackPanel>
 
         <TextBlock TextWrapping="Wrap">
@@ -27,7 +58,9 @@
         <TextBox
             FontSize="16"
             FontWeight="Medium"
-            Text="{Binding TestCode, FallbackValue={DynamicResource PlaceHolder}}"
+            Tag="{DynamicResource PlaceHolder}"
+            Template="{StaticResource TextBoxTemplatePlaceHolder}"
+            Text="{Binding TestCode}"
             TextWrapping="Wrap">
             <TextBox.Resources>
                 <sys:String x:Key="PlaceHolder">请输入测试密钥</sys:String>

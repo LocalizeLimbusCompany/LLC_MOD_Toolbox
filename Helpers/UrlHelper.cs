@@ -6,7 +6,7 @@ namespace LLC_MOD_Toolbox.Helpers
     {
         private static readonly StringBuilder sb = new();
 
-        public static IEnumerable<string> GetUrls(string url)
+        public static IEnumerable<string> GetUrls(string url, string? testToken)
         {
             List<string> paths =
             [
@@ -15,6 +15,11 @@ namespace LLC_MOD_Toolbox.Helpers
                 "LimbusLocalize_BIE.7z",
                 "Resource/LimbusLocalize_Resource_latest.7z",
             ];
+            if (testToken is not null)
+            {
+                paths.Remove("BepInEx-IL2CPP-x64.7z");
+                yield return GetTestUrl(testToken);
+            }
 
             foreach (var path in paths)
             {
@@ -33,10 +38,8 @@ namespace LLC_MOD_Toolbox.Helpers
         public static string GetTestUrl(string testCode)
         {
             return sb.Clear()
-                .AppendFormat(
-                    "https://api.zeroasso.top/v2/grey_test/get_file?code={token}",
-                    testCode
-                )
+                .Append("https://api.zeroasso.top/v2/grey_test/get_file?code=")
+                .Append(testCode)
                 .ToString();
         }
 
