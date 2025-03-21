@@ -84,7 +84,7 @@ public partial class AutoInstallerViewModel : ObservableObject
         }
         try
         {
-            var webFiles = UrlHelper.GetUrls(selectedEndPoint.Endpoint);
+            var webFiles = UrlHelper.GetUrls(selectedEndPoint.Endpoint, testToken);
         }
         catch (IOException ex)
         {

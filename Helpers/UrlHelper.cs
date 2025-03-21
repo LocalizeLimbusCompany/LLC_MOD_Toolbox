@@ -5,26 +5,26 @@ namespace LLC_MOD_Toolbox.Helpers
     internal static class UrlHelper
     {
         private static readonly StringBuilder sb = new();
+        static readonly List<string> paths =
+        [
+            "BepInEx-IL2CPP-x64.7z",
+            "tmpchinesefont_BIE.7z",
+            "LimbusLocalize_BIE.7z",
+            "Resource/LimbusLocalize_Resource_latest.7z",
+        ];
 
-        public static IEnumerable<string> GetUrls(string url, string? testToken)
+        public static List<string> GetUrls(string url, string? testToken)
         {
-            List<string> paths =
-            [
-                "BepInEx-IL2CPP-x64.7z",
-                "tmpchinesefont_BIE.7z",
-                "LimbusLocalize_BIE.7z",
-                "Resource/LimbusLocalize_Resource_latest.7z",
-            ];
-            if (testToken is not null)
-            {
-                paths.Remove("BepInEx-IL2CPP-x64.7z");
-                yield return GetTestUrl(testToken);
-            }
-
+            List<string> results = [];
             foreach (var path in paths)
             {
-                yield return sb.Clear().AppendFormat(url, path).ToString();
+                results.Add(sb.Clear().AppendFormat(url, path).ToString());
             }
+            if (testToken is not null)
+            {
+                paths[2] = GetTestUrl(testToken);
+            }
+            return paths;
         }
 
         public static string GetReleaseUrl(string url) =>
