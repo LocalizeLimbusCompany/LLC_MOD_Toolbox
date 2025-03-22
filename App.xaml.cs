@@ -34,7 +34,8 @@ namespace LLC_MOD_Toolbox
             services.AddSingleton(_ => PrimaryNodeList.Create("NodeList.json"));
 
             // Services
-            services.AddTransient<IFileDownloadService, RegularFileDownloadService>();
+            services.AddTransient<IFileDownloadService, FileDownloadService>();
+            services.AddTransient<IDialogDisplayService, DialogDisplayService>();
 
             // Views
             services.AddTransient<MainWindow>();
@@ -93,11 +94,11 @@ namespace LLC_MOD_Toolbox
                 _logger.LogInformation("当前网络版本：{latestVersion}", latestVersion);
                 if (VersionHelper.CheckForUpdate(latestVersion))
                 {
+                    MessageBox.Show(announcement);
                     _logger.LogInformation("检测到新版本，打开链接。");
                     UrlHelper.LaunchUrl("https://www.zeroasso.top/docs/install/autoinstall");
                     throw new NotImplementedException("暂不支持自动更新。");
                 }
-                MessageBox.Show(announcement);
             }
             catch (HttpRequestException ex)
             {

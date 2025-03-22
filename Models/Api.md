@@ -12,7 +12,7 @@
 GET https://api.zeroasso.top/v2/get_api/get/{repo}
 ```
 
-可选参数：`repos/LocalizeLimbusCompany/LLC_Mod_Toolbox/releases/latest`、`repos/LocalizeLimbusCompany/LocalizeLimbusCompany/releases/latest`、`repos/LocalizeLimbusCompany/BepInEx_For_LLC/releases/latest`和`repos/LocalizeLimbusCompany/LLC_ChineseFontAsset/releases/latest`
+可选参数：`repos/LocalizeLimbusCompany/LLC_Mod_Toolbox/releases/latest`、`repos/LocalizeLimbusCompany/LocalizeLimbusCompany/releases/latest`、`repos/LocalizeLimbusCompany/BepInEx_For_LLC/releases/latest`、`repos/LocalizeLimbusCompany/LLC_ChineseFontAsset/releases/latest`和`repos/LocalizeLimbusCompany/LLC_Release/releases/latest`
 
 返回数据：JSON 格式，包含版本号、发布时间、下载地址等信息
 

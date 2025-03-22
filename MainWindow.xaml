@@ -297,71 +297,11 @@
                         </TabControl>
                     </TabItem>
                     <TabItem Header="链接">
-                        <!--  这里会出现两列按钮，但由于数组是在运行时创建的，因此不能在设计时显示  -->
+                        <!--  虽然可以加上预览，但在运行后会很自然地爆掉，并且设计时效果不佳，所以请移步控件 Link  -->
                         <views:Link x:Name="LinkPage" />
                     </TabItem>
                     <TabItem Header="灰度测试">
-                        <Grid x:Name="GreytestPage">
-                            <Label
-                                Width="644"
-                                Height="97"
-                                Margin="0,30,0,0"
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Top"
-                                FontFamily="Assets/Fonts/#Source Han Sans CN"
-                                FontSize="20"
-                                FontWeight="Medium"
-                                Foreground="#FFFFEED4">
-                                <TextBlock Text="请您在文本框当中输入提供的测试密钥，并点击确认。成功进入灰度测试模式之后，请使用自动安装页面进行安装。此时，自动安装的文件将会是密钥相对应的灰度测试文件。" TextWrapping="Wrap" />
-                            </Label>
-                            <Image
-                                Width="626"
-                                Height="10"
-                                Margin="10,140,0,0"
-                                HorizontalAlignment="Left"
-                                VerticalAlignment="Top"
-                                Source="Assets/Images/NormalLine.png" />
-                            <Label
-                                Margin="18,162,0,0"
-                                HorizontalAlignment="Left"
-                                VerticalAlignment="Top"
-                                Content="秘钥"
-                                FontFamily="Assets/Fonts/#Source Han Sans CN"
-                                FontSize="20"
-                                FontWeight="Bold"
-                                Foreground="#FFFFEED4" />
-                            <TextBox
-                                x:Name="GreytestTokenBox"
-                                Width="539"
-                                Height="25"
-                                Margin="87,169,0,0"
-                                HorizontalAlignment="Left"
-                                VerticalAlignment="Top"
-                                FontFamily="Assets/Fonts/#Source Han Sans CN"
-                                FontSize="16"
-                                FontWeight="Medium"
-                                Text="请输入秘钥"
-                                TextWrapping="Wrap" />
-                            <Label
-                                Width="52"
-                                Height="38"
-                                Margin="568,199,0,0"
-                                HorizontalAlignment="Left"
-                                VerticalAlignment="Top"
-                                Content="校验"
-                                FontFamily="Assets/Fonts/#Source Han Sans CN"
-                                FontSize="16"
-                                FontWeight="Heavy"
-                                Foreground="Black"
-                                IsHitTestVisible="False" />
-                            <Image
-                                x:Name="GreytestInfoButtonHover"
-                                Width="80"
-                                Height="34"
-                                Margin="447,199,0,0"
-                                HorizontalAlignment="Left"
-                                VerticalAlignment="Top" />
-                        </Grid>
+                        <views:GrayTest />
                     </TabItem>
                     <TabItem Header="设置">
                         <views:Settings x:Name="SettingsPage" d:DataContext="{d:DesignInstance Type=viewmodels:SettingsViewModel}" />

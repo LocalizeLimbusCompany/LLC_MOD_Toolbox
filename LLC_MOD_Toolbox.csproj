@@ -6,6 +6,7 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
+    <LangVersion>13</LangVersion>
     <SupportedOSPlatformVersion>7.0</SupportedOSPlatformVersion>
     <ApplicationIcon>favicon.ico</ApplicationIcon>
     <Configurations>Debug;Release;LLC_MOD_Toolbox;ReleaseLLCMT</Configurations>
@@ -39,7 +40,7 @@
     <PackageReference Include="CommunityToolkit.Mvvm" Version="*" />
     <PackageReference Include="Downloader" Version="*" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="*" />
-    <PackageReference Include="Microsoft.Extensions.Http" Version="9.0.2" />
+    <PackageReference Include="Microsoft.Extensions.Http" Version="*" />
     <PackageReference Include="Newtonsoft.Json" Version="*" />
     <PackageReference Include="NLog.Extensions.Logging" Version="*" />
     <PackageReference Include="Squid-Box.SevenZipSharp" Version="*" />

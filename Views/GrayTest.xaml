@@ -16,41 +16,12 @@
     FontWeight="Medium"
     Foreground="#FFFFEED4"
     mc:Ignorable="d">
-    <UserControl.Resources>
-        <ControlTemplate x:Key="TextBoxTemplatePlaceHolder" TargetType="TextBox">
-            <Border
-                x:Name="border"
-                Padding="5,0"
-                Background="{TemplateBinding Background}"
-                BorderBrush="{TemplateBinding BorderBrush}"
-                BorderThickness="{TemplateBinding BorderThickness}"
-                SnapsToDevicePixels="True">
-                <Grid>
-                    <ScrollViewer
-                        x:Name="PART_ContentHost"
-                        Focusable="false"
-                        HorizontalScrollBarVisibility="Hidden"
-                        VerticalScrollBarVisibility="Hidden" />
-                    <TextBlock
-                        x:Name="PlaceHolder"
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center"
-                        Background="Transparent"
-                        Opacity="0"
-                        Text="{TemplateBinding Tag}" />
-                </Grid>
-            </Border>
-            <ControlTemplate.Triggers>
-                <Trigger Property="Text" Value="">
-                    <Setter TargetName="PlaceHolder" Property="Opacity" Value="0.7" />
-                </Trigger>
-            </ControlTemplate.Triggers>
-        </ControlTemplate>
-    </UserControl.Resources>
     <StackPanel>
 
         <TextBlock TextWrapping="Wrap">
-            请您在文本框当中输入提供的测试密钥，并点击确认。成功进入灰度测试模式之后，请使用自动安装页面进行安装。此时，自动安装的文件将会是密钥相对应的灰度测试文件。
+            请您在文本框当中输入提供的测试密钥，并点击确认。
+            成功进入灰度测试模式之后，请使用自动安装页面进行安装。
+            此时，自动安装的文件将会是密钥相对应的灰度测试文件。
         </TextBlock>
 
         <Image Source="/Assets/Images/NormalLine.png" />
@@ -58,13 +29,28 @@
         <TextBox
             FontSize="16"
             FontWeight="Medium"
-            Tag="{DynamicResource PlaceHolder}"
-            Template="{StaticResource TextBoxTemplatePlaceHolder}"
-            Text="{Binding TestCode}"
-            TextWrapping="Wrap">
+            Text="{Binding TestToken}">
             <TextBox.Resources>
-                <sys:String x:Key="PlaceHolder">请输入测试密钥</sys:String>
+                <VisualBrush
+                    x:Key="HelpBrush"
+                    AlignmentX="Left"
+                    Opacity="0.3"
+                    Stretch="None"
+                    TileMode="None">
+                    <VisualBrush.Visual>
+                        <TextBlock Foreground="Gray" Text="请输入测试秘钥" />
+                    </VisualBrush.Visual>
+                </VisualBrush>
             </TextBox.Resources>
+            <TextBox.Style>
+                <Style TargetType="TextBox">
+                    <Style.Triggers>
+                        <Trigger Property="Text" Value="">
+                            <Setter Property="Background" Value="{StaticResource HelpBrush}" />
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </TextBox.Style>
         </TextBox>
         <Button
             Content="校验"

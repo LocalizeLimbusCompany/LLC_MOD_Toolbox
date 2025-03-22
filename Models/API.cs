@@ -43,6 +43,5 @@ public record NodeInformation(
 public enum ApiType
 {
     GitHub,
-    Mirror,
     Custom,
 }

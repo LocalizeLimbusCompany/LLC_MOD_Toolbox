@@ -24,7 +24,7 @@ public partial class AutoInstallerViewModel : ObservableObject
 
     [ObservableProperty]
     private double percent;
-    private Progress<double> installationProgress;
+    private readonly Progress<double> installationProgress;
 
     public AutoInstallerViewModel(
         ILogger<AutoInstallerViewModel> logger,
@@ -32,10 +32,9 @@ public partial class AutoInstallerViewModel : ObservableObject
         PrimaryNodeList primaryNodeList
     )
     {
-        WeakReferenceMessenger.Default.Register<ValueChangedMessage<(NodeInformation, string)>>(
-            this,
-            SettingsChanged
-        );
+        WeakReferenceMessenger.Default.Register<
+            ValueChangedMessage<(NodeInformation, string, string?)>
+        >(this, SettingsChanged);
         _logger = logger;
         this.fileDownloadService = fileDownloadService;
         selectedEndPoint = primaryNodeList.DownloadNode[0];
@@ -49,10 +48,10 @@ public partial class AutoInstallerViewModel : ObservableObject
 
     private void SettingsChanged(
         object recipient,
-        ValueChangedMessage<(NodeInformation, string)> message
+        ValueChangedMessage<(NodeInformation, string, string?)> message
     )
     {
-        (selectedEndPoint, limbusCompanyPath) = message.Value;
+        (selectedEndPoint, limbusCompanyPath, testToken) = message.Value;
     }
 
     [RelayCommand]
@@ -84,7 +83,25 @@ public partial class AutoInstallerViewModel : ObservableObject
         }
         try
         {
-            var webFiles = UrlHelper.GetUrls(selectedEndPoint.Endpoint, testToken);
+            List<string> webFiles = [];
+            switch (selectedEndPoint.ApiType)
+            {
+                case ApiType.Custom:
+                {
+                    webFiles = UrlHelper.GetCustumApiUrls(selectedEndPoint.Endpoint, testToken);
+                    break;
+                }
+
+                case ApiType.GitHub:
+                    webFiles = await UrlHelper.GetGitHubApiUrl(
+                        selectedEndPoint.Endpoint,
+                        fileDownloadService
+                    );
+                    break;
+                default:
+                    throw new NotImplementedException("暂不支持的 API 类型。");
+            }
+            List<Task> tasks = [];
         }
         catch (IOException ex)
         {

@@ -196,23 +196,6 @@ namespace LLC_MOD_Toolbox
             }
         }
 #endif
-        private async Task<string> GetGreytestBoxText()
-        {
-            string? text = string.Empty;
-            await this.Dispatcher.BeginInvoke(() =>
-            {
-                text = GreytestTokenBox.Text;
-            });
-            return text;
-        }
-
-        private async Task ChangeLogoToTest()
-        {
-            await this.Dispatcher.BeginInvoke(() =>
-            {
-                ZALogo.Visibility = Visibility.Visible;
-            });
-        }
 
         #region 开关模组
         // 我也不知道为什么这个功能这么多人想要，不过既然那么多人要，那我就写了

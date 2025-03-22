@@ -5,9 +5,9 @@ using Microsoft.Extensions.Logging;
 
 namespace LLC_MOD_Toolbox.Services;
 
-public class RegularFileDownloadService : IFileDownloadService
+public class FileDownloadService(ILogger<FileDownloadService> _logger) : IFileDownloadService
 {
-    public DownloadService DownloadService { get; }
+    private readonly DownloadService downloadService = new(downloadOpt);
     private static readonly DownloadConfiguration downloadOpt =
         new()
         {
@@ -32,19 +32,12 @@ public class RegularFileDownloadService : IFileDownloadService
             // config and customize request headers
             RequestConfiguration = { UserAgent = $"LLC_MOD_Toolbox/{VersionHelper.LocalVersion}", }
         };
-    private readonly ILogger<RegularFileDownloadService> _logger;
 
     public async Task<string> GetJsonAsync(string url)
     {
-        DownloadService.AddLogger(_logger);
-        Stream stream = await DownloadService.DownloadFileTaskAsync(url);
+        downloadService.AddLogger(_logger);
+        Stream stream = await downloadService.DownloadFileTaskAsync(url);
         using StreamReader reader = new(stream);
         return await reader.ReadToEndAsync();
-    }
-
-    public RegularFileDownloadService(ILogger<RegularFileDownloadService> logger)
-    {
-        _logger = logger;
-        DownloadService = new DownloadService(downloadOpt);
     }
 }

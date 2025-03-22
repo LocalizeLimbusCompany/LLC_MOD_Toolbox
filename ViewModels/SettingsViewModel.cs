@@ -38,7 +38,9 @@ public partial class SettingsViewModel : ObservableObject
             _logger.LogInformation("设置边狱公司路径为：{value}", value);
             ConfigurationManager.AppSettings["GamePath"] = value;
             WeakReferenceMessenger.Default.Send(
-                new ValueChangedMessage<(NodeInformation, string)>((DownloadNode, value))
+                new ValueChangedMessage<(NodeInformation, string, string?)>(
+                    (DownloadNode, value, TestToken)
+                )
             );
             SetProperty(ref limbusCompanyPath, value);
         }
@@ -108,6 +110,13 @@ public partial class SettingsViewModel : ObservableObject
             MessageBox.Show("请输入秘钥！");
             return;
         }
+        _logger.LogInformation("开始测试节点连接。");
+        // TODO: 发送测试请求
+        WeakReferenceMessenger.Default.Send(
+            new ValueChangedMessage<(NodeInformation, string, string?)>(
+                (ApiNode, LimbusCompanyPath, TestToken)
+            )
+        );
     }
 
     public SettingsViewModel(ILogger<SettingsViewModel> logger, PrimaryNodeList primaryNodeList)
