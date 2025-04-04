@@ -7,20 +7,25 @@
     },
     {
       "name": "零协会镇江节点",
-      "endpoint": "http://download.zeroasso.top/files/{0}",
+      "endpoint": "https://download.zeroasso.top/files/{0}",
       "isDefault": false
     },
     {
-      "name": "天翼云盘",
-      "endpoint": "https://node.zeroasso.top/d/tianyi/{0}",
+      "name": "CloudFlare CDN(海外)",
+      "endpoint": "https://cdn-download.zeroasso.top/files/{0}",
       "isDefault": false
     }
   ],
   "apiNode": [
     {
       "name": "零协会官方 API",
-      "endpoint": "https://api.zeroasso.top/v2/get_api/get/{0}",
+      "endpoint": "https://api.zeroasso.top/{0}",
       "isDefault": true
+    },
+    {
+      "name": "CloudFlare CDN API(海外)",
+      "endpoint": "https://cdn-api.zeroasso.top/{0}",
+      "isDefault": false
     }
   ]
 }

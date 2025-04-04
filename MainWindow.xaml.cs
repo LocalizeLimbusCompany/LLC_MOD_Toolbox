@@ -39,16 +39,10 @@ namespace LLC_MOD_Toolbox
             if (nowPage == "install")
             {
                 AutoInstallDisabled.Visibility = Visibility.Hidden;
-                ManualInstallDisabled.Visibility = Visibility.Hidden;
-                ReplaceInstallDisabled.Visibility = Visibility.Hidden;
                 GachaSimDisabled.Visibility = Visibility.Hidden;
                 AutoInstallButton.Visibility = Visibility.Visible;
-                ManualInstallButton.Visibility = Visibility.Visible;
-                ReplaceInstallButton.Visibility = Visibility.Visible;
                 GachaSimInstallButton.Visibility = Visibility.Visible;
                 AutoInstallButton.IsHitTestVisible = true;
-                ManualInstallButton.IsHitTestVisible = true;
-                ReplaceInstallButton.IsHitTestVisible = true;
             }
             else
             {
@@ -57,12 +51,8 @@ namespace LLC_MOD_Toolbox
                 ReplaceInstallDisabled.Visibility = Visibility.Visible;
                 GachaSimDisabled.Visibility = Visibility.Visible;
                 AutoInstallButton.Visibility = Visibility.Hidden;
-                ManualInstallButton.Visibility = Visibility.Hidden;
-                ReplaceInstallButton.Visibility = Visibility.Hidden;
                 GachaSimInstallButton.Visibility = Visibility.Hidden;
                 AutoInstallButton.IsHitTestVisible = false;
-                ManualInstallButton.IsHitTestVisible = false;
-                ReplaceInstallButton.IsHitTestVisible = false;
             }
             // 安装中相关控件
             if (isInstalling)
@@ -84,12 +74,6 @@ namespace LLC_MOD_Toolbox
                 {
                     case "auto":
                         await MakeGridStatuExceptSelf(AutoInstallPage);
-                        break;
-                    case "manual":
-                        await MakeGridStatuExceptSelf(ManualInstallPage);
-                        break;
-                    case "replace":
-                        await MakeGridStatuExceptSelf(ReplaceInstallPage);
                         break;
                     case "gacha":
                         await MakeGridStatuExceptSelf(GachaPage);
@@ -132,8 +116,6 @@ namespace LLC_MOD_Toolbox
             List<Grid> gridList =
             [
                 AutoInstallPage,
-                ManualInstallPage,
-                ReplaceInstallPage,
                 LinkPage,
                 GreytestPage,
                 SettingsPage,
@@ -237,16 +219,6 @@ namespace LLC_MOD_Toolbox
         private async void AutoInstallButtonClick(object sender, RoutedEventArgs e)
         {
             nowInstallPage = "auto";
-            await RefreshPage();
-        }
-        private async void ManualInstallButtonClick(object sender, RoutedEventArgs e)
-        {
-            nowInstallPage = "manual";
-            await RefreshPage();
-        }
-        private async void ReplaceInstallButtonClick(object sender, RoutedEventArgs e)
-        {
-            nowInstallPage = "replace";
             await RefreshPage();
         }
         private async void GachaSimButtonClick(object sender, RoutedEventArgs e)
@@ -453,8 +425,6 @@ namespace LLC_MOD_Toolbox
                 AboutOption.IsHitTestVisible = statu;
                 EEOption.IsHitTestVisible = statu;
                 AutoInstallButton.IsHitTestVisible = statu;
-                ManualInstallButton.IsHitTestVisible = statu;
-                ReplaceInstallButton.IsHitTestVisible = statu;
                 GachaSimInstallButton.IsHitTestVisible = statu;
             });
         }

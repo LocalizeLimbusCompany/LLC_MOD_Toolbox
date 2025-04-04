@@ -147,50 +147,6 @@
                 </EventTrigger>
             </Button.Triggers>
         </Button>
-        <Button x:Name="ManualInstallButton" Visibility="Collapsed" Grid.Column="2" Content="手动安装" HorizontalAlignment="Left" Margin="270,5,0,0" Grid.Row="1" VerticalAlignment="Top" Height="40" Width="102" Background="Transparent" BorderBrush="Transparent" BorderThickness="0" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Bold" Foreground="#FFFFEED4" FontSize="18" Style="{StaticResource NoHover}" Click="ManualInstallButtonClick">
-            <Button.Triggers>
-                <EventTrigger RoutedEvent="Button.MouseEnter">
-                    <BeginStoryboard>
-                        <Storyboard>
-                            <DoubleAnimation Storyboard.TargetName="ManualInstallHover"
-             Storyboard.TargetProperty="Opacity"
-             From="0" To="1" Duration="0:0:0.3"/>
-                        </Storyboard>
-                    </BeginStoryboard>
-                </EventTrigger>
-                <EventTrigger RoutedEvent="Button.MouseLeave">
-                    <BeginStoryboard>
-                        <Storyboard>
-                            <DoubleAnimation Storyboard.TargetName="ManualInstallHover"
-             Storyboard.TargetProperty="Opacity"
-             From="1" To="0" Duration="0:0:0.3"/>
-                        </Storyboard>
-                    </BeginStoryboard>
-                </EventTrigger>
-            </Button.Triggers>
-        </Button>
-        <Button x:Name="ReplaceInstallButton" Grid.Column="2" Visibility="Collapsed" Content="文件覆盖" HorizontalAlignment="Left" Margin="418,5,0,0" Grid.Row="1" VerticalAlignment="Top" Height="40" Width="102" Background="Transparent" BorderBrush="Transparent" BorderThickness="0" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Bold" Foreground="#FFFFEED4" FontSize="18" Style="{StaticResource NoHover}" Click="ReplaceInstallButtonClick">
-            <Button.Triggers>
-                <EventTrigger RoutedEvent="Button.MouseEnter">
-                    <BeginStoryboard>
-                        <Storyboard>
-                            <DoubleAnimation Storyboard.TargetName="ReplaceInstallHover"
-             Storyboard.TargetProperty="Opacity"
-             From="0" To="1" Duration="0:0:0.3"/>
-                        </Storyboard>
-                    </BeginStoryboard>
-                </EventTrigger>
-                <EventTrigger RoutedEvent="Button.MouseLeave">
-                    <BeginStoryboard>
-                        <Storyboard>
-                            <DoubleAnimation Storyboard.TargetName="ReplaceInstallHover"
-             Storyboard.TargetProperty="Opacity"
-             From="1" To="0" Duration="0:0:0.3"/>
-                        </Storyboard>
-                    </BeginStoryboard>
-                </EventTrigger>
-            </Button.Triggers>
-        </Button>
         <Button x:Name="GachaSimInstallButton" Grid.Column="2" Visibility="Collapsed" Content="抽卡模拟器" HorizontalAlignment="Left" Margin="564,5,0,0" Grid.Row="1" VerticalAlignment="Top" Height="40" Width="102" Background="Transparent" BorderBrush="Transparent" BorderThickness="0" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Bold" Foreground="#FFFFEED4" FontSize="18" Style="{StaticResource NoHover}" Click="GachaSimButtonClick">
             <Button.Triggers>
                 <EventTrigger RoutedEvent="Button.MouseEnter">
@@ -391,12 +347,6 @@ From="1" To="0" Duration="0:0:0.3"/>
             </Canvas>
             <Image HorizontalAlignment="Left" Height="288" Margin="11,77,0,0" VerticalAlignment="Top" Width="384" Source="/Picture/xiaoheiNew.png"/>
             <Image HorizontalAlignment="Left" Height="316" Margin="471,77,0,0" VerticalAlignment="Top" Width="384" Source="/Picture/xiaobaiNew.png"/>
-        </Grid>
-        <Grid x:Name="ManualInstallPage" Visibility="Collapsed" Panel.ZIndex="5" Margin="62,55,54,32" Grid.Column="2" Grid.Row="1">
-            <Label Content="手动安装功能尚未开启，敬请期待后续版本。" HorizontalAlignment="Center" Margin="0,137,0,0" VerticalAlignment="Top" Height="61" Width="494" FontSize="20" Foreground="#FFFFEED4" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Medium"/>
-        </Grid>
-        <Grid x:Name="ReplaceInstallPage" Visibility="Collapsed" Panel.ZIndex="5" Margin="62,55,54,32" Grid.Column="2" Grid.Row="1">
-            <Label Content="文件覆盖功能尚未开启，敬请期待后续版本。" HorizontalAlignment="Center" Margin="0,137,0,0" VerticalAlignment="Top" Height="61" Width="494" FontSize="20" Foreground="#FFFFEED4" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Medium"/>
         </Grid>
         <Grid x:Name="LinkPage" Visibility="Collapsed" Panel.ZIndex="5" Margin="62,55,54,32" Grid.Column="2" Grid.Row="1">
             <Button x:Name="LinkButton1" HorizontalAlignment="Left" Margin="37,40,0,0" VerticalAlignment="Top" Height="40" Width="262" Opacity="1" Background="Transparent" BorderBrush="Transparent" BorderThickness="0" Style="{StaticResource NoHover}" Click="LinkButtonClick">
@@ -782,34 +732,6 @@ From="1" To="0" Duration="0:0:0.3"/>
                 </Button.Clip>
             </Button>
             <Label Content="卸载" HorizontalAlignment="Left" IsHitTestVisible="False" Margin="531,130,0,0" VerticalAlignment="Top" Height="38" Width="52" FontSize="16" Foreground="Black" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Heavy"/>
-            <Label Content="切换模组开关状态" HorizontalAlignment="Left" Margin="100,179,0,0" VerticalAlignment="Top" Height="41" Width="494" FontSize="22" Foreground="#FFFFEED4" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Medium"/>
-            <Image x:Name="ChangeStatuHover" Panel.ZIndex="5" IsHitTestVisible="False" Opacity="0" HorizontalAlignment="Left" Height="34" Margin="512,184,0,0" VerticalAlignment="Top" Width="80" Source="/Picture/SettingButtonHover.png"/>
-            <Button HorizontalAlignment="Left" Margin="515,187,0,0" VerticalAlignment="Top" Height="28" Width="74" Style="{StaticResource NoHover}" Background="#FFFFEED4" Click="ChangeStatuButtonClick">
-                <Button.Clip>
-                    <RectangleGeometry Rect="0,0,74,28" RadiusX="3" RadiusY="3"/>
-                </Button.Clip>
-                <Button.Triggers>
-                    <EventTrigger RoutedEvent="Button.MouseEnter">
-                        <BeginStoryboard>
-                            <Storyboard>
-                                <DoubleAnimation Storyboard.TargetName="ChangeStatuHover"
-Storyboard.TargetProperty="Opacity"
-From="0" To="1" Duration="0:0:0.3"/>
-                            </Storyboard>
-                        </BeginStoryboard>
-                    </EventTrigger>
-                    <EventTrigger RoutedEvent="Button.MouseLeave">
-                        <BeginStoryboard>
-                            <Storyboard>
-                                <DoubleAnimation Storyboard.TargetName="ChangeStatuHover"
-Storyboard.TargetProperty="Opacity"
-From="1" To="0" Duration="0:0:0.3"/>
-                            </Storyboard>
-                        </BeginStoryboard>
-                    </EventTrigger>
-                </Button.Triggers>
-            </Button>
-            <Label Content="开关" HorizontalAlignment="Left" IsHitTestVisible="False" Margin="531,183,0,0" VerticalAlignment="Top" Height="38" Width="52" FontSize="16" Foreground="Black" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Heavy"/>
             <Label Content="?" HorizontalAlignment="Left" IsHitTestVisible="False" Margin="276,34,0,0" VerticalAlignment="Top" Height="38" Width="52" FontSize="16" Foreground="Black" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Heavy"/>
             <Label Content="?" HorizontalAlignment="Left" IsHitTestVisible="False" Margin="276,85,0,0" VerticalAlignment="Top" Height="38" Width="52" FontSize="16" Foreground="Black" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Heavy"/>
         </Grid>
