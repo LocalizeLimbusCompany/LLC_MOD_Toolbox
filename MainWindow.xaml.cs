@@ -361,9 +361,18 @@ namespace LLC_MOD_Toolbox
             try
             {
                 logger.Debug("更改彩蛋图片为： " + url);
+
                 await this.Dispatcher.BeginInvoke(() =>
                 {
-                    EEPageImage.Source = BitmapFrame.Create(new Uri(url), BitmapCreateOptions.None, BitmapCacheOption.Default);
+                    try
+                    {
+                    Uri uri = new Uri(url);
+                        EEPageImage.Source = BitmapFrame.Create(uri, BitmapCreateOptions.None, BitmapCacheOption.Default);
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine(ex.ToString());
+                    }
                 });
             }
             catch

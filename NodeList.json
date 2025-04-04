@@ -1,21 +1,26 @@
 ﻿{
-  "downloadNode": [
-    {
-      "name": "自动选择节点",
-      "endpoint": "https://api.zeroasso.top/v2/download/files?file_name={0}",
-      "isDefault": true
-    },
-    {
-      "name": "零协会镇江节点",
-      "endpoint": "http://download.zeroasso.top/files/{0}",
-      "isDefault": false
-    },
-    {
-      "name": "天翼云盘",
-      "endpoint": "https://node.zeroasso.top/d/tianyi/{0}",
-      "isDefault": false
-    }
-  ],
+    "downloadNode": [
+        {
+            "name": "自动选择节点",
+            "endpoint": "https://api.zeroasso.top/v2/download/files?file_name={0}",
+            "isDefault": false
+        },
+        {
+            "name": "零协会镇江节点",
+            "endpoint": "http://download.zeroasso.top/files/{0}",
+            "isDefault": false
+        },
+        {
+            "name": "零协会临时节点",
+            "endpoint": "http://download.zeroasso.top/files/{0}",
+            "isDefault": true
+        },
+        {
+            "name": "Github直连",
+            "endpoint": "https://github.com/LocalizeLimbusCompany/LLC_Release/releases/download/{0}",
+            "isDefault": false
+        }
+    ],
   "apiNode": [
     {
       "name": "零协会官方 API",
