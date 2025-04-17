@@ -24,7 +24,7 @@ namespace LLC_MOD_Toolbox
         /// </summary>
         public async Task RefreshPage()
         {
-            logger.Info("刷新页面状态中。");
+            Log.logger.Info("刷新页面状态中。");
             // 隐藏按钮Hover
             CloseHover.Opacity = 0;
             MinimizeHover.Opacity = 0;
@@ -105,7 +105,7 @@ namespace LLC_MOD_Toolbox
             {
                 await MakeGridStatuExceptSelf(EEPage);
             }
-            logger.Info("刷新页面状态完成。");
+            Log.logger.Info("刷新页面状态完成。");
         }
         /// <summary>
         /// 使输入的Grid可见，隐藏其他Grid。
@@ -283,7 +283,7 @@ namespace LLC_MOD_Toolbox
         public async Task ChangeProgressValue(float value)
         {
             value = (float)Math.Round(value, 1);
-            logger.Debug("安装进度：" + value + "%");
+            Log.logger.Debug("安装进度：" + value + "%");
             RectangleGeometry rectGeometry = new()
             {
                 Rect = new Rect(0, 0, 6.24 * value, 50)
@@ -292,7 +292,7 @@ namespace LLC_MOD_Toolbox
             {
                 FullProgress.Clip = rectGeometry;
             });
-            logger.Debug("更改进度完成。");
+            Log.logger.Debug("更改进度完成。");
         }
         private void GreytestInfoButtonClick(object sender, RoutedEventArgs e)
         {
@@ -303,7 +303,7 @@ namespace LLC_MOD_Toolbox
         {
             if (!eeOpening && !eeEntered && !isInAnno)
             {
-                logger.Info("不要点了>_<");
+                Log.logger.Info("不要点了>_<");
                 eeOpening = true;
                 eeEntered = false;
                 await ChangeEEVB(true);
@@ -332,15 +332,23 @@ namespace LLC_MOD_Toolbox
         {
             try
             {
-                logger.Debug("更改彩蛋图片为： " + url);
-                await this.Dispatcher.BeginInvoke(() =>
+                using (var client = new HttpClient())
                 {
-                    EEPageImage.Source = BitmapFrame.Create(new Uri(url), BitmapCreateOptions.None, BitmapCacheOption.Default);
-                });
+                    var bytes = await client.GetByteArrayAsync(url);
+                    using (var stream = new MemoryStream(bytes))
+                    {
+                        var bitmap = new BitmapImage();
+                        bitmap.BeginInit();
+                        bitmap.CacheOption = BitmapCacheOption.OnLoad;
+                        bitmap.StreamSource = stream;
+                        bitmap.EndInit();
+                        EEPageImage.Source = bitmap;
+                    }
+                }
             }
-            catch
+            catch (Exception ex)
             {
-                // encountered error, ignore it.
+                Log.logger.Error("更改彩蛋图片失败：" + ex.Message);
             }
         }
         #endregion
@@ -390,7 +398,7 @@ namespace LLC_MOD_Toolbox
         #endregion
         public async Task ChangeAutoInstallButton()
         {
-            logger.Debug("更改自动安装模组。");
+            Log.logger.Debug("更改自动安装模组。");
             await this.Dispatcher.BeginInvoke(() =>
             {
                 AutoInstallStartButtonIMG.Source = BitmapFrame.Create(new Uri("pack://application:,,,/Picture/Update.png"), BitmapCreateOptions.None, BitmapCacheOption.Default);
