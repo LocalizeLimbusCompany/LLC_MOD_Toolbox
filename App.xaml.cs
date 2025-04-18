@@ -1,6 +1,5 @@
 using System.Net.Http;
 using System.Windows;
-using Downloader;
 using LLC_MOD_Toolbox.Helpers;
 using LLC_MOD_Toolbox.Models;
 using LLC_MOD_Toolbox.Services;

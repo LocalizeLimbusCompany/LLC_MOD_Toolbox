@@ -1,4 +1,3 @@
-using System.Configuration;
 using Microsoft.Win32;
 
 namespace LLC_MOD_Toolbox.Helpers

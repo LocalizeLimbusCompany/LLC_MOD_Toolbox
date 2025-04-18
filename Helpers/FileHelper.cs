@@ -59,7 +59,7 @@ internal static class FileHelper
     {
         if (string.IsNullOrEmpty(limbusCompanyPath))
         {
-            throw new Exception("未找到边狱公司路径。可能是注册表被恶意修改了！");
+            throw new ArgumentNullException(nameof(limbusCompanyPath));
         }
         using var extractor = new SevenZip.SevenZipExtractor(stream);
         extractor.ExtractArchive(limbusCompanyPath);
@@ -72,7 +72,7 @@ internal static class FileHelper
     {
         if (string.IsNullOrEmpty(limbusCompanyPath))
         {
-            throw new Exception("未找到边狱公司路径。可能是注册表被恶意修改了！");
+            throw new ArgumentNullException(nameof(limbusCompanyPath));
         }
         foreach (string file in BepInExFiles)
         {
@@ -84,15 +84,15 @@ internal static class FileHelper
             {
                 Directory.Delete(Path.Combine(limbusCompanyPath, folder), true);
             }
-            catch (DirectoryNotFoundException ex)
+            catch (DirectoryNotFoundException)
             {
-                logger.LogInformation(ex, "{}已提前被删除。", folder);
+                logger.LogInformation("{}已提前被删除。", folder);
             }
         }
     }
 
     /// <summary>
-    /// [未测]
+    /// [未测] 这个，不需要了。
     /// 添加到 <seealso href="https://learn.microsoft.com/zh-cn/powershell/module/defender/add-mppreference">Windows Defender</seealso> 的排除列表<br/>
     /// <b>*需要管理员权限</b><br/>
     /// <b>*危险操作请勿自动进行</b>

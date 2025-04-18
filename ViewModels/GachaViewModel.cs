@@ -1,6 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using LLC_MOD_Toolbox.Models;
@@ -12,7 +10,7 @@ namespace LLC_MOD_Toolbox.ViewModels
         private List<PersonalInfo> personalInfos = [];
 
         [ObservableProperty]
-        private List<PersonalInfo> selectedPersonalInfos = [];
+        private ObservableCollection<PersonalInfo> selectedPersonalInfos = [];
 
         [ObservableProperty]
         private bool isLoading;

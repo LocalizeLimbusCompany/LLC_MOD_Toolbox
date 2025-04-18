@@ -5,7 +5,6 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using CommunityToolkit.Mvvm.Messaging.Messages;
-using Downloader;
 using LLC_MOD_Toolbox.Helpers;
 using LLC_MOD_Toolbox.Models;
 using LLC_MOD_Toolbox.Services;

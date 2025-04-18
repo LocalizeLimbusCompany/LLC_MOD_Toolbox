@@ -10,19 +10,11 @@
  * 要是你尝试玩弄这段代码的话，你将会在无尽的通宵中不断地咒骂自己为什么会认为自己聪明到可以优化这段代码。
  * 现在请关闭这个文件去玩点别的吧。
 */
-using System.ComponentModel;
-using System.Diagnostics;
 using System.IO;
-using System.Net.Http;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Media;
 using System.Windows.Threading;
 using Downloader;
-using LLC_MOD_Toolbox.Helpers;
-using LLC_MOD_Toolbox.Models;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json.Linq;
 using SevenZip;
 
 namespace LLC_MOD_Toolbox

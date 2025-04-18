@@ -8,6 +8,8 @@ using CommunityToolkit.Mvvm.Messaging.Messages;
 using LLC_MOD_Toolbox.Helpers;
 using LLC_MOD_Toolbox.Models;
 using Microsoft.Extensions.Logging;
+using ApiNode = LLC_MOD_Toolbox.Models.NodeInformation;
+using DownloadNode = LLC_MOD_Toolbox.Models.NodeInformation;
 
 namespace LLC_MOD_Toolbox.ViewModels;
 
@@ -17,9 +19,6 @@ public partial class SettingsViewModel : ObservableObject
 
     private readonly ILogger<SettingsViewModel> _logger;
 
-    /// <summary>
-    /// 仅在 Windows 下有效，不过这个项目也只在 Windows 下有效
-    /// </summary>
     public string LimbusCompanyPath
     {
         get
@@ -37,26 +36,20 @@ public partial class SettingsViewModel : ObservableObject
                 return;
             _logger.LogInformation("设置边狱公司路径为：{value}", value);
             ConfigurationManager.AppSettings["GamePath"] = value;
-            WeakReferenceMessenger.Default.Send(
-                new ValueChangedMessage<(NodeInformation, string, string?)>(
-                    (DownloadNode, value, TestToken)
-                )
-            );
+            WeakReferenceMessenger.Default.Send(new ValueChangedMessage<string>(value));
             SetProperty(ref limbusCompanyPath, value);
         }
     }
 
-    [ObservableProperty]
-    private List<NodeInformation> downloadNodeList;
+    public List<DownloadNode> DownloadNodeList { get; }
 
     [ObservableProperty]
-    private NodeInformation downloadNode;
+    private DownloadNode downloadNode;
+
+    public List<ApiNode> ApiNodeList { get; }
 
     [ObservableProperty]
-    private List<NodeInformation> apiNodeList;
-
-    [ObservableProperty]
-    private NodeInformation apiNode;
+    private ApiNode apiNode;
 
     [ObservableProperty]
     private string? testToken;
@@ -112,11 +105,7 @@ public partial class SettingsViewModel : ObservableObject
         }
         _logger.LogInformation("开始测试节点连接。");
         // TODO: 发送测试请求
-        WeakReferenceMessenger.Default.Send(
-            new ValueChangedMessage<(NodeInformation, string, string?)>(
-                (ApiNode, LimbusCompanyPath, TestToken)
-            )
-        );
+        WeakReferenceMessenger.Default.Send(new ValueChangedMessage<string>(TestToken));
     }
 
     public SettingsViewModel(ILogger<SettingsViewModel> logger, PrimaryNodeList primaryNodeList)
