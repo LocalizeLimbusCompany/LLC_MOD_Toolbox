@@ -2,6 +2,8 @@
 // 我恨XML，这辈子都不想写XML了。
 // （而且内存占用好多
 
+using System.IO;
+using System.Net.Http;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;

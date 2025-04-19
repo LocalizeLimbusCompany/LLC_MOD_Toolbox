@@ -10,7 +10,11 @@
     <ApplicationIcon>favicon.ico</ApplicationIcon>
     <UseWindowsForms>False</UseWindowsForms>
     <Configurations>Debug;Release;LLC_MOD_Toolbox;ReleaseLLCMT</Configurations>
-	<Version>1.1.0</Version>
+	<Version>1.1.1</Version>
+	<Authors>LocalizeLimbusCompany</Authors>
+	<Title>$(AssemblyName)</Title>
+	<Description>A tool to install LLC Language mod easily.</Description>
+	<PackageProjectUrl>https://www.github.com/LocalizeLimbusCompany/LLC_MOD_Toolbox</PackageProjectUrl>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'" />

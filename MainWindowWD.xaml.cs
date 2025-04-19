@@ -13,7 +13,6 @@
 */
 using Downloader;
 using LLC_MOD_Toolbox.Models;
-using log4net;
 using Microsoft.Win32;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -918,7 +917,7 @@ namespace LLC_MOD_Toolbox
         }
         public static void DeleteLanguagePack()
         {
-            DeleteDir(Path.Combine(limbusCompanyDir, "LimbusCompany_Data","Lang","LLC_zh-CN"));
+            DeleteDir(Path.Combine(limbusCompanyDir, "LimbusCompany_Data", "Lang", "LLC_zh-CN"));
             ChangeLCBLangConfig("");
         }
         /// <summary>

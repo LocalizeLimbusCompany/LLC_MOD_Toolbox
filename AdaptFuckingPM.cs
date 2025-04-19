@@ -34,10 +34,10 @@ namespace LLC_MOD_Toolbox
             else
             {
                 Log.logger.Info("开始适配。");
-                TryFixAdapt(LimbusCompanyPath);
+                TryFixAdaptFont(LimbusCompanyPath);
             }
         }
-        public static void TryFixAdapt(string LimbusCompanyPath)
+        public static void TryFixAdaptFont(string LimbusCompanyPath)
         {
             string fontPath = Path.Combine(LimbusCompanyPath, "LimbusCompany_Data", "Lang", "LLC_zh-CN", "Font");
             string fontFile = Path.Combine(fontPath, "ChineseFont.ttf");
