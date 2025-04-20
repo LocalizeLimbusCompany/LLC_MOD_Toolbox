@@ -223,7 +223,7 @@ namespace LLC_MOD_Toolbox
             {
                 Log.logger.Info("正在安装字体文件。");
                 installPhase = 1;
-                string fontDir = Path.Combine(limbusCompanyDir, "LimbusCompany_Data/Lang/LLC_zh-CN/Font");
+                string fontDir = Path.Combine(limbusCompanyDir, "LimbusCompany_Data", "Lang", "LLC_zh-CN", "Font", "Context");
                 Directory.CreateDirectory(fontDir);
                 string fontZIPFile = Path.Combine(limbusCompanyDir, "LLCCN-Font.7z");
                 string fontChinese = Path.Combine(fontDir, "ChineseFont.ttf");
@@ -243,10 +243,19 @@ namespace LLC_MOD_Toolbox
                     await DownloadFileAutoAsync("LLCCN-Font.7z", fontZIPFile);
                 }
                 if (CalculateSHA256(fontZIPFile) == hashCacheObject["font_hash"].Value<string>())
+                {
                     Log.logger.Info("解压字体包中。");
-                Unarchive(fontZIPFile, limbusCompanyDir);
-                Log.logger.Info("删除字体包。");
-                File.Delete(fontZIPFile);
+                    Unarchive(fontZIPFile, limbusCompanyDir);
+                    Log.logger.Info("删除字体包。");
+                    File.Delete(fontZIPFile);
+                }
+                else
+                {
+                    Log.logger.Error("字体哈希校验失败。");
+                    MessageBox.Show("校验Hash失败。\n请等待数分钟或更换节点。\n如果问题仍然出现，请进行反馈。", "校验失败");
+                    await StopInstall();
+                    return;
+                }
             });
         }
         private async Task InstallMod()
