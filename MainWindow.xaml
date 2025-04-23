@@ -297,8 +297,7 @@
                         </TabControl>
                     </TabItem>
                     <TabItem Header="链接">
-                        <!--  虽然可以加上预览，但在运行后会很自然地爆掉，并且设计时效果不佳，所以请移步控件 Link  -->
-                        <views:Link x:Name="LinkPage" />
+                        <views:Link x:Name="LinkPage" d:DataContext="{d:DesignInstance Type=viewmodels:LinkViewModel, IsDesignTimeCreatable=True}" />
                     </TabItem>
                     <TabItem Header="灰度测试">
                         <views:GrayTest />

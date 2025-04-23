@@ -1,4 +1,8 @@
 namespace LLC_MOD_Toolbox.Services
 {
-    internal interface IDialogDisplayService { }
+    public interface IDialogDisplayService
+    {
+        public void ShowError(string message);
+        public bool Confirm(string message);
+    }
 }

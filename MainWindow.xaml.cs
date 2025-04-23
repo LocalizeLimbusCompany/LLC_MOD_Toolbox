@@ -20,11 +20,11 @@ namespace LLC_MOD_Toolbox
         {
             this.logger = logger;
             InitializeComponent();
-            AutoInstallerPage.DataContext =
-                App.Current.Services.GetRequiredService<AutoInstallerViewModel>();
-            SettingsPage.DataContext = App.Current.Services.GetRequiredService<SettingsViewModel>();
-            GachaPage.DataContext = App.Current.Services.GetRequiredService<GachaViewModel>();
-            LinkPage.DataContext = App.Current.Services.GetRequiredService<LinkViewModel>();
+            //AutoInstallerPage.DataContext =
+            //    App.Current.Services.GetRequiredService<AutoInstallerViewModel>();
+            //SettingsPage.DataContext = App.Current.Services.GetRequiredService<SettingsViewModel>();
+            //GachaPage.DataContext = App.Current.Services.GetRequiredService<GachaViewModel>();
+            //LinkPage.DataContext = App.Current.Services.GetRequiredService<LinkViewModel>();
 
             progressTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(0.05) };
             progressTimer.Tick += ProgressTime_Tick;

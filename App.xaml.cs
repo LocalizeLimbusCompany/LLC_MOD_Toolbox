@@ -30,7 +30,8 @@ namespace LLC_MOD_Toolbox
             var services = new ServiceCollection();
 
             // Models
-            services.AddSingleton(_ => PrimaryNodeList.Create("NodeList.json"));
+            services.AddSingleton(PrimaryNodeList.Create("NodeList.json"));
+            services.AddSingleton<Config>();
 
             // Services
             services.AddTransient<IFileDownloadService, FileDownloadService>();
@@ -81,6 +82,7 @@ namespace LLC_MOD_Toolbox
             {
                 SevenZipBase.SetLibraryPath("7z.dll");
                 var http = Services.GetRequiredService<IFileDownloadService>();
+
                 var NodeList = Services.GetRequiredService<PrimaryNodeList>();
                 // TODO: 优化节点选择
                 NodeInformation nodeInformation = NodeList.ApiNode.Last(n => n.IsDefault);

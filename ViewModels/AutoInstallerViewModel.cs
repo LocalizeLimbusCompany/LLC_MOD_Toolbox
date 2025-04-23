@@ -3,8 +3,6 @@ using System.IO;
 using System.Windows;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using CommunityToolkit.Mvvm.Messaging;
-using CommunityToolkit.Mvvm.Messaging.Messages;
 using LLC_MOD_Toolbox.Helpers;
 using LLC_MOD_Toolbox.Models;
 using LLC_MOD_Toolbox.Services;
@@ -16,10 +14,11 @@ public partial class AutoInstallerViewModel : ObservableObject
 {
     private readonly ILogger<AutoInstallerViewModel> _logger;
     private readonly IFileDownloadService fileDownloadService;
+    private readonly IDialogDisplayService dialogDisplayService;
 
-    private NodeInformation selectedEndPoint;
-    private string limbusCompanyPath;
-    private string? testToken;
+    private readonly NodeInformation selectedEndPoint;
+    private readonly string limbusCompanyPath;
+    private readonly string? testToken;
 
     [ObservableProperty]
     private double percent;
@@ -28,29 +27,20 @@ public partial class AutoInstallerViewModel : ObservableObject
     public AutoInstallerViewModel(
         ILogger<AutoInstallerViewModel> logger,
         IFileDownloadService fileDownloadService,
-        PrimaryNodeList primaryNodeList
+        IDialogDisplayService dialogDisplayService,
+        Config config
     )
     {
-        WeakReferenceMessenger.Default.Register<
-            ValueChangedMessage<(NodeInformation, string, string?)>
-        >(this, SettingsChanged);
         _logger = logger;
         this.fileDownloadService = fileDownloadService;
-        selectedEndPoint = primaryNodeList.DownloadNode[0];
+        this.dialogDisplayService = dialogDisplayService;
+        selectedEndPoint = config.DownloadNode;
         limbusCompanyPath =
             ConfigurationManager.AppSettings["GamePath"]
             ?? PathHelper.DetectedLimbusCompanyPath
             ?? PathHelper.SelectPath();
 
         installationProgress = new Progress<double>(value => Percent = value);
-    }
-
-    private void SettingsChanged(
-        object recipient,
-        ValueChangedMessage<(NodeInformation, string, string?)> message
-    )
-    {
-        (selectedEndPoint, limbusCompanyPath, testToken) = message.Value;
     }
 
     [RelayCommand]
@@ -66,16 +56,8 @@ public partial class AutoInstallerViewModel : ObservableObject
             _logger.LogError("当前环境检测到 MelonLoader，提醒用户卸载。");
             return;
         }
-        MessageBoxResult result = MessageBox.Show(
-            """
-            安装前请确保游戏已经关闭。
-            确定继续吗？
-            """,
-            "警告",
-            MessageBoxButton.YesNo,
-            MessageBoxImage.Warning
-        );
-        if (result != MessageBoxResult.Yes)
+
+        if (!dialogDisplayService.Confirm("安装前请确保游戏已经关闭。\n确定继续吗？"))
         {
             _logger.LogInformation("用户取消了安装 BepInEx。");
             return;

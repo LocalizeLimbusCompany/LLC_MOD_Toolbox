@@ -1,4 +1,6 @@
 using System.Windows.Controls;
+using LLC_MOD_Toolbox.ViewModels;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace LLC_MOD_Toolbox.Views
 {
@@ -9,6 +11,7 @@ namespace LLC_MOD_Toolbox.Views
     {
         public AutoInstaller()
         {
+            DataContext = App.Current.Services.GetRequiredService<AutoInstallerViewModel>();
             InitializeComponent();
         }
     }
