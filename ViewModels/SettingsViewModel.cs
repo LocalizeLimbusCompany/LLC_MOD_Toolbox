@@ -3,13 +3,10 @@ using System.IO;
 using System.Windows;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using CommunityToolkit.Mvvm.Messaging;
-using CommunityToolkit.Mvvm.Messaging.Messages;
 using LLC_MOD_Toolbox.Helpers;
 using LLC_MOD_Toolbox.Models;
+using LLC_MOD_Toolbox.Services;
 using Microsoft.Extensions.Logging;
-using ApiNode = LLC_MOD_Toolbox.Models.NodeInformation;
-using DownloadNode = LLC_MOD_Toolbox.Models.NodeInformation;
 
 namespace LLC_MOD_Toolbox.ViewModels;
 
@@ -18,6 +15,8 @@ public partial class SettingsViewModel : ObservableObject
     private string limbusCompanyPath = string.Empty;
 
     private readonly ILogger<SettingsViewModel> _logger;
+
+    private readonly IDialogDisplayService _dialogDisplayService;
 
     public string LimbusCompanyPath
     {
@@ -36,20 +35,20 @@ public partial class SettingsViewModel : ObservableObject
                 return;
             _logger.LogInformation("设置边狱公司路径为：{value}", value);
             ConfigurationManager.AppSettings["GamePath"] = value;
-            WeakReferenceMessenger.Default.Send(new ValueChangedMessage<string>(value));
+
             SetProperty(ref limbusCompanyPath, value);
         }
     }
 
-    public List<DownloadNode> DownloadNodeList { get; }
+    public List<NodeInformation> DownloadNodeList { get; }
 
     [ObservableProperty]
-    private DownloadNode downloadNode;
+    private NodeInformation downloadNode;
 
-    public List<ApiNode> ApiNodeList { get; }
+    public List<NodeInformation> ApiNodeList { get; }
 
     [ObservableProperty]
-    private ApiNode apiNode;
+    private NodeInformation apiNode;
 
     [ObservableProperty]
     private string? testToken;
@@ -58,13 +57,7 @@ public partial class SettingsViewModel : ObservableObject
     private Task ModUnistallation()
     {
         _logger.LogInformation("开始卸载 BepInEx。");
-        MessageBoxResult result = MessageBox.Show(
-            "删除后你需要重新安装汉化补丁。\n确定继续吗？",
-            "警告",
-            MessageBoxButton.YesNo,
-            MessageBoxImage.Warning
-        );
-        if (result != MessageBoxResult.Yes)
+        if (!_dialogDisplayService.Confirm("删除后你需要重新安装汉化补丁。\n确定继续吗？"))
         {
             _logger.LogInformation("取消卸载 BepInEx。");
             return Task.FromCanceled(new CancellationToken(true));
@@ -75,16 +68,18 @@ public partial class SettingsViewModel : ObservableObject
         }
         catch (IOException ex)
         {
-            MessageBox.Show("Limbus Company正在运行中，请先关闭游戏。", "警告");
+            _dialogDisplayService.ShowError("Limbus Company正在运行中，请先关闭游戏。");
             _logger.LogError(ex, "Limbus Company正在运行中，请先关闭游戏。");
+            return Task.FromCanceled(new CancellationToken(true));
         }
         catch (ArgumentNullException ex)
         {
-            MessageBox.Show("注册表内无数据，可能被恶意修改了！", "警告");
+            _dialogDisplayService.ShowError("注册表内无数据，可能被恶意修改了！");
             _logger.LogError(ex, "注册表内无数据，可能被恶意修改了！");
+            return Task.FromCanceled(new CancellationToken(true));
         }
         _logger.LogInformation("已卸载模组");
-        MessageBox.Show("卸载完成。");
+        _dialogDisplayService.Confirm("已卸载模组");
 
         return Task.CompletedTask;
     }
@@ -104,20 +99,21 @@ public partial class SettingsViewModel : ObservableObject
             return;
         }
         _logger.LogInformation("开始测试节点连接。");
-        // TODO: 发送测试请求
-        WeakReferenceMessenger.Default.Send(new ValueChangedMessage<string>(TestToken));
     }
 
-    public SettingsViewModel(ILogger<SettingsViewModel> logger, PrimaryNodeList primaryNodeList)
+    public SettingsViewModel(
+        ILogger<SettingsViewModel> logger,
+        PrimaryNodeList primaryNodeList,
+        Config config,
+        IDialogDisplayService dialogDisplayService
+    )
     {
         _logger = logger;
+        _dialogDisplayService = dialogDisplayService;
         DownloadNodeList = primaryNodeList.DownloadNode;
         ApiNodeList = primaryNodeList.ApiNode;
-        downloadNode = DownloadNodeList.Last(n => n.IsDefault);
+        downloadNode = config.DownloadNode ?? DownloadNodeList.Last(n => n.IsDefault);
         apiNode = ApiNodeList.Last(n => n.IsDefault);
-        LimbusCompanyPath =
-            ConfigurationManager.AppSettings["GamePath"]
-            ?? PathHelper.DetectedLimbusCompanyPath
-            ?? PathHelper.SelectPath();
+        LimbusCompanyPath = config.GamePath;
     }
 }

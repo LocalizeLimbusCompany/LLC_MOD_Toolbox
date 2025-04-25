@@ -17,4 +17,10 @@ internal static class ValidateHelper
         string melonloaderPath = Path.Combine(path, "version.dll");
         return File.Exists(melonloaderPath);
     }
+
+    public static bool CheckBepInEx(string path)
+    {
+        return File.Exists(Path.Combine(path, "winhttp.dll.disabled"))
+            || File.Exists(Path.Combine(path, "winhttp.dll"));
+    }
 }

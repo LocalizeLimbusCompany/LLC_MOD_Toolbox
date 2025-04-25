@@ -52,15 +52,13 @@ internal static class FileHelper
     public static Task<string> LoadNodeListConfigAsync => File.ReadAllTextAsync("NodeList.json");
 
     /// <summary>
-    /// 下载边狱公司的 Mod
+    /// 下载边狱公司的 语言包
     /// </summary>
     /// <exception cref="ArgumentNullException"></exception>
-    public static void InstallPackage(Stream stream, string limbusCompanyPath)
+    public static void ExtractLanguagePackage(Stream stream, string limbusCompanyPath)
     {
-        if (string.IsNullOrEmpty(limbusCompanyPath))
-        {
-            throw new ArgumentNullException(nameof(limbusCompanyPath));
-        }
+        if (Path.Exists(limbusCompanyPath))
+            throw new ArgumentException("路径不存在", nameof(limbusCompanyPath));
         using var extractor = new SevenZip.SevenZipExtractor(stream);
         extractor.ExtractArchive(limbusCompanyPath);
     }
@@ -68,12 +66,24 @@ internal static class FileHelper
     /// <summary>
     /// 删除 Mod，删除内容为 <seealso cref="BepInExFiles"/> 和 <seealso cref="BepInExFolders"/>
     /// </summary>
+    /// <exception cref="ArgumentException">路径不存在</exception>
     public static void DeleteBepInEx(string limbusCompanyPath, ILogger logger)
     {
-        if (string.IsNullOrEmpty(limbusCompanyPath))
+        if (Path.Exists(limbusCompanyPath))
+            throw new ArgumentException("路径不存在", nameof(limbusCompanyPath));
+
+        try
         {
-            throw new ArgumentNullException(nameof(limbusCompanyPath));
+            Directory.Delete(Path.Combine(limbusCompanyPath, "LimbusCompany_Data", "Lang"));
         }
+        catch (DirectoryNotFoundException)
+        {
+            logger.LogWarning("语言包已提前被删除。");
+        }
+
+        if (!ValidateHelper.CheckBepInEx(limbusCompanyPath))
+            return;
+
         foreach (string file in BepInExFiles)
         {
             File.Delete(Path.Combine(limbusCompanyPath, file));
@@ -89,23 +99,5 @@ internal static class FileHelper
                 logger.LogInformation("{}已提前被删除。", folder);
             }
         }
-    }
-
-    /// <summary>
-    /// [未测] 这个，不需要了。
-    /// 添加到 <seealso href="https://learn.microsoft.com/zh-cn/powershell/module/defender/add-mppreference">Windows Defender</seealso> 的排除列表<br/>
-    /// <b>*需要管理员权限</b><br/>
-    /// <b>*危险操作请勿自动进行</b>
-    /// </summary>
-    /// <param name="path"></param>
-    public static void AddToExcludeList(string path)
-    {
-        var processInfo = new System.Diagnostics.ProcessStartInfo("powershell")
-        {
-            Arguments = $"Add-MpPreference -ExclusionPath \"{path}\"",
-            UseShellExecute = true,
-            Verb = "RunAs"
-        };
-        System.Diagnostics.Process.Start(processInfo);
     }
 }

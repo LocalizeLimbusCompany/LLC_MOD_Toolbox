@@ -52,6 +52,7 @@ public partial class AutoInstallerViewModel : ObservableObject
 
         if (ValidateHelper.CheckMelonloader(limbusCompanyPath))
         {
+            dialogDisplayService.ShowError("检测到 MelonLoader，请先卸载。");
             MessageBox.Show("当前环境检测到 MelonLoader，请先卸载", "Warning");
             _logger.LogError("当前环境检测到 MelonLoader，提醒用户卸载。");
             return;
