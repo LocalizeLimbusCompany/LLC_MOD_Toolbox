@@ -365,7 +365,7 @@ namespace LLC_MOD_Toolbox
                     Log.logger.Info("删除模组本体 zip 。");
                     File.Delete(limbusLocalizeZipPath);
                     Log.logger.Info("开始进行模组ENFALLBAK中。");
-                    mainfallback();
+                    MainFallback();
 
                 }
                 else if (!useGithub && needInstall)
@@ -388,37 +388,37 @@ namespace LLC_MOD_Toolbox
                     Log.logger.Info("删除模组本体 zip 。");
                     File.Delete(limbusLocalizeZipPath);
                     Log.logger.Info("开始进行模组ENFALLBAK中。");
-                    mainfallback();
+                    MainFallback();
                 }
             });
         }
-        private static void mainfallback()
+        private static void MainFallback()
         {
-            string or = Path.Combine(limbusCompanyDir, "LimbusCompany_Data", "Assets", "Resources_moved", "Localize", "en");
+            string originalPath = Path.Combine(limbusCompanyDir, "LimbusCompany_Data", "Assets", "Resources_moved", "Localize", "en");
 
-            var d = Directory.EnumerateFiles(Path.Combine(limbusCompanyDir, "LimbusCompany_Data", "Lang", "LLC_zh-CN"), "*", SearchOption.AllDirectories);
-            foreach (var n in d)
+            var DirectoryFiles = Directory.EnumerateFiles(Path.Combine(limbusCompanyDir, "LimbusCompany_Data", "Lang", "LLC_zh-CN"), "*", SearchOption.AllDirectories);
+            foreach (var ProcessingFile in DirectoryFiles)
             {
-                var fn = Path.GetRelativePath(Path.Combine(limbusCompanyDir, "LimbusCompany_Data", "Lang", "LLC_zh-CN"),n);
-                if (Path.GetFileName(fn) == "version.json" || Path.GetExtension(fn) == ".ttf" || Path.GetExtension(fn) == ".otf")
+                var RelativePath = Path.GetRelativePath(Path.Combine(limbusCompanyDir, "LimbusCompany_Data", "Lang", "LLC_zh-CN"),ProcessingFile);
+                if (Path.GetFileName(RelativePath) == "version.json" || Path.GetExtension(RelativePath) == ".ttf" || Path.GetExtension(RelativePath) == ".otf")
                 {
                     continue;
                 }
                 try
                 {
-                    string directory = Path.GetDirectoryName(fn) ?? string.Empty; // 获取文件所在的目录
-                    string fileName = Path.GetFileName(fn); // 获取文件名（不含扩展名）
-                    string newFileName = Path.Combine(directory, $"EN_{fileName}"); // 构造新的文件路径
-                    File.Copy(Path.Combine(or, newFileName), n, false);
+                    string directory = Path.GetDirectoryName(RelativePath) ?? string.Empty;
+                    string fileName = Path.GetFileName(RelativePath);
+                    string newFileName = Path.Combine(directory, $"EN_{fileName}");
+                    File.Copy(Path.Combine(originalPath, newFileName), ProcessingFile, false);
                 } catch (IOException ex)
                 {
                     
                 }
                 try {
-                    string directory = Path.GetDirectoryName(fn) ?? string.Empty; // 获取文件所在的目录
-                    string fileName = Path.GetFileName(fn); // 获取文件名（不含扩展名）
-                    string newFileName = Path.Combine(directory, $"{fileName}"); // 构造新的文件路径
-                    enfallback(fn, Path.Combine(directory, $"EN_{Path.GetFileName(fn)}")); 
+                    string directory = Path.GetDirectoryName(RelativePath) ?? string.Empty;
+                    string fileName = Path.GetFileName(RelativePath);
+                    string newFileName = Path.Combine(directory, $"{fileName}");
+                    enfallback(RelativePath, Path.Combine(directory, $"EN_{Path.GetFileName(RelativePath)}")); 
                 } catch (FileNotFoundException ex)
                 {
                     Log.logger.Warn(ex);
@@ -426,7 +426,6 @@ namespace LLC_MOD_Toolbox
                 }
                 
             }
-            //enfallback()
         }
 
         static void enfallback(string targetjson, string sjson)
@@ -437,7 +436,6 @@ namespace LLC_MOD_Toolbox
             JsonObject sourceJson = null;
             try
             {
-                // 读取目标文件和源文件  
                 targetJson = JsonNode.Parse(File.ReadAllText(targetFilePath)) as JsonObject;
                 sourceJson = JsonNode.Parse(File.ReadAllText(sourceFilePath)) as JsonObject;
             }
@@ -456,38 +454,29 @@ namespace LLC_MOD_Toolbox
             {
                 return;
             }
-
-            // 获取 dataList 数组  
             var targetDataList = targetJson["dataList"]?.AsArray();
             var sourceDataList = sourceJson["dataList"]?.AsArray();
             if (targetDataList == null || sourceDataList == null)
             {
                 return;
             }
-
-            // 获取目标文件中已有的 ID 列表  
             var existingIds = targetDataList
                 .Select(item => item["id"]?.ToString() ?? item["id"]?.GetValue<int>().ToString())
                 .Where(id => id != null)
                 .ToHashSet();
-
-            // 遍历源文件，查找缺失的条目  
             foreach (var sourceItem in sourceDataList)
             {
                 string id = sourceItem["id"]?.ToString() ?? sourceItem["id"]?.GetValue<int>().ToString();
                 if (id != null && !existingIds.Contains(id))
                 {
-                    // 创建 sourceItem 的深拷贝
                     var newItem = JsonNode.Parse(sourceItem.ToJsonString());
                     targetDataList.Add(newItem);
                 }
             }
-
-            // 将更新后的 JSON 写回目标文件  
             File.WriteAllText(targetFilePath, System.Text.Json.JsonSerializer.Serialize(targetJson, new JsonSerializerOptions
             {
                 WriteIndented = true,
-                Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping // 禁用 Unicode 转义
+                Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping
             }));
         }
         private async Task CachedHash()
