@@ -299,10 +299,13 @@ namespace LLC_MOD_Toolbox
                 }
             });
         }
+        Stopwatch timer = new();
+
         private async Task InstallMod()
         {
             await Task.Run(async () =>
             {
+                timer.Start();
                 Log.logger.Info("开始安装模组。");
                 installPhase = 2;
                 string langDir = Path.Combine(limbusCompanyDir, "LimbusCompany_Data/Lang/LLC_zh-CN");
@@ -390,95 +393,108 @@ namespace LLC_MOD_Toolbox
                     Log.logger.Info("开始进行模组ENFALLBAK中。");
                     MainFallback();
                 }
+                timer.Stop();
+                var seconds = timer.ElapsedTicks / (decimal)Stopwatch.Frequency;
+                //MessageBox.Show($"InstallMod完成，耗时：{seconds}秒");
+                Log.logger.Info($"InstallMod完成，耗时：{seconds}秒");
             });
         }
         private static void MainFallback()
         {
+            //??? vs 拖速度可还行
             string originalPath = Path.Combine(limbusCompanyDir, "LimbusCompany_Data", "Assets", "Resources_moved", "Localize", "en");
-
-            var DirectoryFiles = Directory.EnumerateFiles(Path.Combine(limbusCompanyDir, "LimbusCompany_Data", "Lang", "LLC_zh-CN"), "*", SearchOption.AllDirectories);
-            foreach (var ProcessingFile in DirectoryFiles)
+            string langPath = Path.Combine(limbusCompanyDir, "LimbusCompany_Data", "Lang", "LLC_zh-CN");
+            var directoryFiles = Directory.EnumerateFiles(langPath, "*", SearchOption.AllDirectories).ToList();
+            Parallel.ForEach(directoryFiles, processingFile =>
             {
-                var RelativePath = Path.GetRelativePath(Path.Combine(limbusCompanyDir, "LimbusCompany_Data", "Lang", "LLC_zh-CN"),ProcessingFile);
-                if (Path.GetFileName(RelativePath) == "version.json" || Path.GetExtension(RelativePath) == ".ttf" || Path.GetExtension(RelativePath) == ".otf")
+                var relativePath = Path.GetRelativePath(langPath, processingFile);
+                if (Path.GetFileName(relativePath) is "version.json" or ".ttf" or ".otf")
                 {
-                    continue;
+                    return;
                 }
+
+                string directory = Path.GetDirectoryName(relativePath) ?? string.Empty;
+                string fileName = Path.GetFileName(relativePath);
+                string newFileName = Path.Combine(directory, $"EN_{fileName}");
+
                 try
                 {
-                    string directory = Path.GetDirectoryName(RelativePath) ?? string.Empty;
-                    string fileName = Path.GetFileName(RelativePath);
-                    string newFileName = Path.Combine(directory, $"EN_{fileName}");
-                    File.Copy(Path.Combine(originalPath, newFileName), ProcessingFile, false);
-                } catch (IOException ex)
-                {
-                    
+                    // 优化文件复制操作
+                    string sourceFilePath = Path.Combine(originalPath, newFileName);
+                    if (File.Exists(sourceFilePath))
+                    {
+                        File.Copy(sourceFilePath, processingFile, overwrite: false);
+                    }
                 }
-                try {
-                    string directory = Path.GetDirectoryName(RelativePath) ?? string.Empty;
-                    string fileName = Path.GetFileName(RelativePath);
-                    string newFileName = Path.Combine(directory, $"{fileName}");
-                    enfallback(RelativePath, Path.Combine(directory, $"EN_{Path.GetFileName(RelativePath)}")); 
-                } catch (FileNotFoundException ex)
+                catch (IOException)
+                {
+                    //debug时看到报错一堆正常
+                }
+
+                try
+                {
+                    // 优化 JSON 合并操作
+                    EnFallback(relativePath, Path.Combine(directory, $"EN_{fileName}"));
+                }
+                catch (FileNotFoundException ex)
                 {
                     Log.logger.Warn(ex);
-                    continue;
                 }
-                
-            }
+            });
+
+            
         }
 
-        static void enfallback(string targetjson, string sjson)
+        static void EnFallback(string targetJson, string sourceJson)
         {
-            string targetFilePath = Path.Combine(limbusCompanyDir, "LimbusCompany_Data", "Lang", "LLC_zh-CN", targetjson);
-            string sourceFilePath = Path.Combine(limbusCompanyDir, "LimbusCompany_Data", "Assets", "Resources_moved", "Localize", "en", sjson);
-            JsonObject targetJson = null;
-            JsonObject sourceJson = null;
+            string targetFilePath = Path.Combine(limbusCompanyDir, "LimbusCompany_Data", "Lang", "LLC_zh-CN", targetJson);
+            string sourceFilePath = Path.Combine(limbusCompanyDir, "LimbusCompany_Data", "Assets", "Resources_moved", "Localize", "en", sourceJson);
+            if (Path.GetExtension(sourceFilePath) == ".ttf" || Path.GetExtension(sourceFilePath) == ".otf") {
+                return;
+            }
+            if (!File.Exists(targetFilePath) || !File.Exists(sourceFilePath))
+            {
+                Log.logger.Warn($"File not found: {targetJson} or {sourceJson}");
+                return;
+            }
+
             try
             {
-                targetJson = JsonNode.Parse(File.ReadAllText(targetFilePath)) as JsonObject;
-                sourceJson = JsonNode.Parse(File.ReadAllText(sourceFilePath)) as JsonObject;
-            }
-            catch (System.Text.Json.JsonException ex)
-            {
-                Log.logger.Warn($"JSON parsing failed: {ex} \n Suppose need update,In Fact this mean good :)");
-                return;
-            }
-            catch (FileNotFoundException ex)
-            {
-                Log.logger.Warn($"File not found: {ex} \n Suppose need update,In Fact this mean good :)");
-                return;
-            }
+                // 缓存 JSON 文件内容
+                var targetJsonObject = JsonNode.Parse(File.ReadAllText(targetFilePath)) as JsonObject;
+                var sourceJsonObject = JsonNode.Parse(File.ReadAllText(sourceFilePath)) as JsonObject;
 
-            if (targetJson == null || sourceJson == null)
-            {
-                return;
-            }
-            var targetDataList = targetJson["dataList"]?.AsArray();
-            var sourceDataList = sourceJson["dataList"]?.AsArray();
-            if (targetDataList == null || sourceDataList == null)
-            {
-                return;
-            }
-            var existingIds = targetDataList
-                .Select(item => item["id"]?.ToString() ?? item["id"]?.GetValue<int>().ToString())
-                .Where(id => id != null)
-                .ToHashSet();
-            foreach (var sourceItem in sourceDataList)
-            {
-                string id = sourceItem["id"]?.ToString() ?? sourceItem["id"]?.GetValue<int>().ToString();
-                if (id != null && !existingIds.Contains(id))
+                if (targetJsonObject?["dataList"] is JsonArray targetDataList && sourceJsonObject?["dataList"] is JsonArray sourceDataList)
                 {
-                    var newItem = JsonNode.Parse(sourceItem.ToJsonString());
-                    targetDataList.Add(newItem);
+                    var existingIds = targetDataList
+                        .Select(item => item["id"]?.ToString() ?? item["id"]?.GetValue<int>().ToString())
+                        .Where(id => id != null)
+                        .ToHashSet();
+
+                    foreach (var sourceItem in sourceDataList)
+                    {
+                        string id = sourceItem["id"]?.ToString() ?? sourceItem["id"]?.GetValue<int>().ToString();
+                        if (id != null && !existingIds.Contains(id))
+                        {
+                            targetDataList.Add(JsonNode.Parse(sourceItem.ToJsonString()));
+                        }
+                    }
+
+                    // 优化 JSON 写入操作
+                    File.WriteAllText(targetFilePath, System.Text.Json.JsonSerializer.Serialize(targetJsonObject, new JsonSerializerOptions
+                    {
+                        WriteIndented = true,
+                        Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping
+                    }));
                 }
             }
-            File.WriteAllText(targetFilePath, System.Text.Json.JsonSerializer.Serialize(targetJson, new JsonSerializerOptions
+            catch (Exception ex)
             {
-                WriteIndented = true,
-                Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping
-            }));
+                Log.logger.Warn($"Error during JSON processing: {ex}");
+            }
         }
+
+
         private async Task CachedHash()
         {
             string hash = await GetURLText("https://api.zeroasso.top/v2/hash/get_hash");
