@@ -25,6 +25,8 @@ using System.Net;
 using System.Net.Http;
 using System.Reflection;
 using System.Security.Cryptography;
+using System.Text.Json.Nodes;
+using System.Text.Json;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -180,13 +182,13 @@ namespace LLC_MOD_Toolbox
             MessageBoxResult RunResult = new();
             if (isNewestModVersion)
             {
-                RunResult = MessageBox.Show("没有检测到新版本模组！\n您的模组已经为最新。\n点击“确定”立刻运行边狱公司。\n点击“取消”关闭弹窗。\n加载时请耐心等待。", "完成", MessageBoxButton.OKCancel);
+                RunResult = MessageBox.Show("没有检测到新版本模组！\n您的模组已经为最新。\n点击“是”立刻运行边狱公司。\n点击“否”强制重新安装。\n点击“取消”关闭弹窗\n加载时请耐心等待。", "完成", MessageBoxButton.YesNoCancel);
             }
             else
             {
                 RunResult = MessageBox.Show("安装已完成！\n点击“确定”立刻运行边狱公司。\n点击“取消”关闭弹窗。\n加载时请耐心等待。", "完成", MessageBoxButton.OKCancel);
             }
-            if (RunResult == MessageBoxResult.OK)
+            if (RunResult == MessageBoxResult.Yes)
             {
                 try
                 {
@@ -197,8 +199,47 @@ namespace LLC_MOD_Toolbox
                     Log.logger.Error("出现了问题： ", ex);
                     MessageBox.Show("出现了问题。\n" + ex.ToString());
                 }
+            } else if (RunResult == MessageBoxResult.No)
+            {
+                try
+                {
+                    Log.logger.Info("用户选择强制重装。");
+                    StartProgressTimer();
+                    if (!greytestStatus)
+                    {
+                        string langDir = Path.Combine(limbusCompanyDir, "LimbusCompany_Data/Lang/LLC_zh-CN");
+                        Directory.Delete(langDir, true);
+
+                        await CachedHash();
+                        await InstallFont();
+                        await InstallMod();
+                    }
+                    else
+                    {
+                        await InstallGreytestMod();
+                    }
+                    ChangeLCBLangConfig("LLC_zh-CN");
+                }
+                catch (Exception ex)
+                {
+                    ErrorReport(ex, true, "您可以尝试在设置中切换节点。\n");
+                }
+                Log.logger.Info("安装完成。");
+                RunResult = MessageBox.Show("安装已完成！\n点击“确定”立刻运行边狱公司。\n点击“取消”关闭弹窗。\n加载时请耐心等待。", "完成", MessageBoxButton.OKCancel);
+                if (RunResult == MessageBoxResult.Yes)
+                {
+                    try
+                    {
+                        OpenUrl("steam://rungameid/1973530");
+                    }
+                    catch (Exception ex)
+                    {
+                        Log.logger.Error("出现了问题： ", ex);
+                        MessageBox.Show("出现了问题。\n" + ex.ToString());
+                    }
+                }
             }
-            hashCacheObject = null;
+                hashCacheObject = null;
             isInstalling = false;
             progressPercentage = 0;
             await ChangeProgressValue(0);
@@ -323,6 +364,9 @@ namespace LLC_MOD_Toolbox
                     Unarchive(limbusLocalizeZipPath, limbusCompanyDir);
                     Log.logger.Info("删除模组本体 zip 。");
                     File.Delete(limbusLocalizeZipPath);
+                    Log.logger.Info("开始进行模组ENFALLBAK中。");
+                    mainfallback();
+
                 }
                 else if (!useGithub && needInstall)
                 {
@@ -343,8 +387,108 @@ namespace LLC_MOD_Toolbox
                     Unarchive(limbusLocalizeZipPath, limbusCompanyDir);
                     Log.logger.Info("删除模组本体 zip 。");
                     File.Delete(limbusLocalizeZipPath);
+                    Log.logger.Info("开始进行模组ENFALLBAK中。");
+                    mainfallback();
                 }
             });
+        }
+        private static void mainfallback()
+        {
+            string or = Path.Combine(limbusCompanyDir, "LimbusCompany_Data", "Assets", "Resources_moved", "Localize", "en");
+
+            var d = Directory.EnumerateFiles(Path.Combine(limbusCompanyDir, "LimbusCompany_Data", "Lang", "LLC_zh-CN"), "*", SearchOption.AllDirectories);
+            foreach (var n in d)
+            {
+                var fn = Path.GetRelativePath(Path.Combine(limbusCompanyDir, "LimbusCompany_Data", "Lang", "LLC_zh-CN"),n);
+                if (Path.GetFileName(fn) == "version.json" || Path.GetExtension(fn) == ".ttf" || Path.GetExtension(fn) == ".otf")
+                {
+                    continue;
+                }
+                try
+                {
+                    string directory = Path.GetDirectoryName(fn) ?? string.Empty; // 获取文件所在的目录
+                    string fileName = Path.GetFileName(fn); // 获取文件名（不含扩展名）
+                    string newFileName = Path.Combine(directory, $"EN_{fileName}"); // 构造新的文件路径
+                    File.Copy(Path.Combine(or, newFileName), n, false);
+                } catch (IOException ex)
+                {
+                    
+                }
+                try {
+                    string directory = Path.GetDirectoryName(fn) ?? string.Empty; // 获取文件所在的目录
+                    string fileName = Path.GetFileName(fn); // 获取文件名（不含扩展名）
+                    string newFileName = Path.Combine(directory, $"{fileName}"); // 构造新的文件路径
+                    enfallback(fn, Path.Combine(directory, $"EN_{Path.GetFileName(fn)}")); 
+                } catch (FileNotFoundException ex)
+                {
+                    Log.logger.Warn(ex);
+                    continue;
+                }
+                
+            }
+            //enfallback()
+        }
+
+        static void enfallback(string targetjson, string sjson)
+        {
+            string targetFilePath = Path.Combine(limbusCompanyDir, "LimbusCompany_Data", "Lang", "LLC_zh-CN", targetjson);
+            string sourceFilePath = Path.Combine(limbusCompanyDir, "LimbusCompany_Data", "Assets", "Resources_moved", "Localize", "en", sjson);
+            JsonObject targetJson = null;
+            JsonObject sourceJson = null;
+            try
+            {
+                // 读取目标文件和源文件  
+                targetJson = JsonNode.Parse(File.ReadAllText(targetFilePath)) as JsonObject;
+                sourceJson = JsonNode.Parse(File.ReadAllText(sourceFilePath)) as JsonObject;
+            }
+            catch (System.Text.Json.JsonException ex)
+            {
+                Log.logger.Warn($"JSON parsing failed: {ex} \n Suppose need update,In Fact this mean good :)");
+                return;
+            }
+            catch (FileNotFoundException ex)
+            {
+                Log.logger.Warn($"File not found: {ex} \n Suppose need update,In Fact this mean good :)");
+                return;
+            }
+
+            if (targetJson == null || sourceJson == null)
+            {
+                return;
+            }
+
+            // 获取 dataList 数组  
+            var targetDataList = targetJson["dataList"]?.AsArray();
+            var sourceDataList = sourceJson["dataList"]?.AsArray();
+            if (targetDataList == null || sourceDataList == null)
+            {
+                return;
+            }
+
+            // 获取目标文件中已有的 ID 列表  
+            var existingIds = targetDataList
+                .Select(item => item["id"]?.ToString() ?? item["id"]?.GetValue<int>().ToString())
+                .Where(id => id != null)
+                .ToHashSet();
+
+            // 遍历源文件，查找缺失的条目  
+            foreach (var sourceItem in sourceDataList)
+            {
+                string id = sourceItem["id"]?.ToString() ?? sourceItem["id"]?.GetValue<int>().ToString();
+                if (id != null && !existingIds.Contains(id))
+                {
+                    // 创建 sourceItem 的深拷贝
+                    var newItem = JsonNode.Parse(sourceItem.ToJsonString());
+                    targetDataList.Add(newItem);
+                }
+            }
+
+            // 将更新后的 JSON 写回目标文件  
+            File.WriteAllText(targetFilePath, System.Text.Json.JsonSerializer.Serialize(targetJson, new JsonSerializerOptions
+            {
+                WriteIndented = true,
+                Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping // 禁用 Unicode 转义
+            }));
         }
         private async Task CachedHash()
         {
@@ -1302,7 +1446,7 @@ namespace LLC_MOD_Toolbox
                     Random random = new();
                     if (hasVergil && random.Next(1, 10) == 1)
                     {
-                        textBlock.Text = "[★★★★★★] 猩红凝视 维吉里乌斯";
+                        textBlock.Text = "[★★★★★★] 猩红凝视 维吉里乌斯"; // ???
                         textBlock.Foreground = new SolidColorBrush((System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString("#9B0101"));
                         hasVergil = false;
                         alreadyHasVergil = true;
