@@ -18,6 +18,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
 using SevenZip;
+using System;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
@@ -56,6 +57,10 @@ namespace LLC_MOD_Toolbox
         private readonly string VERSION = Assembly.GetExecutingAssembly().GetName().Version?.ToString() ?? "Unknown";
         // Hash Cache
         private JObject hashCacheObject = null;
+        // 配置
+        private static ConfigurationManager configuation = new ConfigurationManager(Path.Combine(currentDir, "config.json"));
+        // 启动器模式
+        private static bool isLauncherMode = Environment.GetCommandLineArgs().Contains("-launcher");
         public MainWindow()
         {
             InitializeComponent();
@@ -80,19 +85,27 @@ namespace LLC_MOD_Toolbox
                 DefaultRequestVersion = HttpVersion.Version11,
                 DefaultVersionPolicy = HttpVersionPolicy.RequestVersionExact
             };
+            await CheckLoadingText();
             InitNode();
             await RefreshPage();
-            await ChangeEEPic("https://api.zeroasso.top/v2/eepic/get_image");
             CheckToolboxUpdate();
-            LoadConfig();
-            InitLink();
             CheckLimbusCompanyPath();
-            await CheckModInstalled();
             SevenZipBase.SetLibraryPath(Path.Combine(currentDir, "7z.dll"));
             await CheckAnno();
             CheckLCBPath();
-            await CheckDNS();
             AdaptFuckingPM.CheckAdapt(limbusCompanyDir);
+            if (!isLauncherMode)
+            {
+                InitLink();
+                LaunchUpdateLoadingThread();
+                await ChangeEEPic();
+                await CheckModInstalled();
+                await CheckDNS();
+            }
+            if ((configuation.Settings.install.installWhenLaunch || isLauncherMode) && !hasNewAnno)
+            {
+                InstallButtonClick(null, null);
+            }
             await EnableGlobalOperations();
             Log.logger.Info("加载流程完成。");
         }
@@ -102,7 +115,7 @@ namespace LLC_MOD_Toolbox
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private async void InstallButtonClick(object sender, RoutedEventArgs e)
+        private async void InstallButtonClick(object? sender, RoutedEventArgs? e)
         {
             isInstalling = true;
             isNewestModVersion = true;
@@ -122,6 +135,7 @@ namespace LLC_MOD_Toolbox
                 Log.logger.Warn("下载节点为空。");
             }
             installPhase = 0;
+            TurnAnotherLoadingText();
             if (File.Exists(limbusCompanyDir + "/version.dll"))
             {
                 Log.logger.Warn("检测到落后800年的Melonloader.");
@@ -177,6 +191,12 @@ namespace LLC_MOD_Toolbox
             }
             installPhase = 0;
             Log.logger.Info("安装完成。");
+            if (configuation.Settings.install.afterInstallClose || isLauncherMode)
+            {
+                OpenUrl("steam://rungameid/1973530");
+                Application.Current.Shutdown();
+                return;
+            }
             MessageBoxResult RunResult = new();
             if (isNewestModVersion)
             {
@@ -348,7 +368,15 @@ namespace LLC_MOD_Toolbox
         }
         private async Task CachedHash()
         {
-            string hash = await GetURLText("https://api.zeroasso.top/v2/hash/get_hash");
+            string hash = "";
+            if (!configuation.Settings.general.internationalMode)
+            {
+                hash = await GetURLText("https://api.zeroasso.top/v2/hash/get_hash");
+            }
+            else
+            {
+                hash = await GetURLText("https://cdn-api.zeroasso.top/v2/hash/get_hash");
+            }
             hashCacheObject = JObject.Parse(hash);
             if (hashCacheObject == null)
             {
@@ -378,8 +406,13 @@ namespace LLC_MOD_Toolbox
             NodeCombobox.Items.Add("恢复默认");
             foreach (var Node in nodeList)
             {
-                if (Node.IsDefault == true)
+                if (Node.IsDefault == true && !configuation.Settings.general.internationalMode)
                 {
+                    defaultEndPoint = Node.Endpoint;
+                }
+                if (Node.Endpoint == "https://api.zeroasso.top/v2/download/files?file_name={0}" && configuation.Settings.general.internationalMode)
+                {
+                    Log.logger.Info("获取到国际下载节点。");
                     defaultEndPoint = Node.Endpoint;
                 }
                 NodeCombobox.Items.Add(Node.Name);
@@ -389,8 +422,14 @@ namespace LLC_MOD_Toolbox
             APICombobox.Items.Add("恢复默认");
             foreach (var api in apiList)
             {
-                if (api.IsDefault == true)
+                if (api.IsDefault == true && !configuation.Settings.general.internationalMode)
                 {
+                    defaultAPIEndPoint = api.Endpoint;
+                    useAPIEndPoint = defaultAPIEndPoint;
+                }
+                if (api.Endpoint == "https://cdn-api.zeroasso.top/{0}" && configuation.Settings.general.internationalMode)
+                {
+                    Log.logger.Info("获取到国际API节点。");
                     defaultAPIEndPoint = api.Endpoint;
                     useAPIEndPoint = defaultAPIEndPoint;
                 }
@@ -546,9 +585,9 @@ namespace LLC_MOD_Toolbox
         }
         private static void CheckLimbusCompanyPath()
         {
-            if (skipLCBPathCheck && !string.IsNullOrEmpty(LCBPath))
+            if (configuation.Settings.general.skipLCBPathCheck && !string.IsNullOrEmpty(configuation.Settings.general.LCBPath))
             {
-                limbusCompanyDir = LCBPath;
+                limbusCompanyDir = configuation.Settings.general.LCBPath;
                 Log.logger.Info("跳过检查路径。");
             }
             else
@@ -561,8 +600,9 @@ namespace LLC_MOD_Toolbox
                 if (CheckLCBPathResult == MessageBoxResult.Yes)
                 {
                     Log.logger.Info("用户确认路径。");
-                    ChangeLCBPathConfig(limbusCompanyDir);
-                    ChangeSkipPathCheckConfig(true);
+                    configuation.Settings.general.LCBPath = limbusCompanyDir;
+                    configuation.Settings.general.skipLCBPathCheck = true;
+                    configuation.SaveConfig();
                 }
                 if (string.IsNullOrEmpty(limbusCompanyDir) || CheckLCBPathResult == MessageBoxResult.No)
                 {
@@ -598,8 +638,9 @@ namespace LLC_MOD_Toolbox
                     else
                     {
                         Log.logger.Info("找到了正确目录。");
-                        ChangeSkipPathCheckConfig(true);
-                        ChangeLCBPathConfig(limbusCompanyDir);
+                        configuation.Settings.general.LCBPath = limbusCompanyDir;
+                        configuation.Settings.general.skipLCBPathCheck = true;
+                        configuation.SaveConfig();
                     }
                 }
             }
@@ -812,7 +853,8 @@ namespace LLC_MOD_Toolbox
         }
         public void FixLCBPath()
         {
-            ChangeSkipPathCheckConfig(false);
+            configuation.Settings.general.LCBPath = string.Empty;
+            configuation.Settings.general.skipLCBPathCheck = false;
             var fileDialog = new OpenFileDialog
             {
                 Title = "请选择你的边狱公司游戏文件，不要选择快捷方式！！！",
@@ -835,8 +877,9 @@ namespace LLC_MOD_Toolbox
             else
             {
                 Log.logger.Info("找到了正确目录。");
-                ChangeSkipPathCheckConfig(true);
-                ChangeLCBPathConfig(limbusCompanyDir);
+                configuation.Settings.general.LCBPath = limbusCompanyDir;
+                configuation.Settings.general.skipLCBPathCheck = true;
+                configuation.SaveConfig();
             }
         }
         public static void ChangeLCBLangConfig(string value)
@@ -1064,112 +1107,6 @@ namespace LLC_MOD_Toolbox
                 File.Delete(limbusCompanyDir + "/LimbusLocalize_Dev.7z");
                 Log.logger.Info("灰度模组安装完成。");
             });
-        }
-        #endregion
-        #region 程序配置
-        public class LLCMTConfig
-        {
-            public bool CskipLCBPathCheck { get; set; }
-            public string? CLCBPath { get; set; }
-            public int? CAnnoVersion { get; set; }
-        }
-        private static bool skipLCBPathCheck = false;
-        private static string? LCBPath = string.Empty;
-        private static int? AnnoVersion = 0;
-        private static readonly string configPath = Path.Combine(currentDir, "config.json");
-        private static void LoadConfig()
-        {
-            Log.logger.Info("加载程序配置。");
-            try
-            {
-                if (File.Exists(configPath))
-                {
-                    string configContent = File.ReadAllText(configPath);
-                    LLCMTConfig LLCMTconfig = JsonConvert.DeserializeObject<LLCMTConfig>(configContent) ?? throw new FileNotFoundException("配置文件未找到。");
-                    skipLCBPathCheck = LLCMTconfig.CskipLCBPathCheck;
-                    LCBPath = LLCMTconfig.CLCBPath;
-                    AnnoVersion = LLCMTconfig.CAnnoVersion;
-                    Log.logger.Info("跳过路径检查：" + skipLCBPathCheck);
-                    Log.logger.Info("路径：" + LCBPath);
-                }
-            }
-            catch (Exception ex)
-            {
-                ErrorReport(ex, false);
-            }
-        }
-        private static void ChangeSkipPathCheckConfig(bool boolValue)
-        {
-            Log.logger.Info("改变跳过路径检查配置，Value：" + boolValue);
-            try
-            {
-                if (File.Exists(configPath))
-                {
-                    string configContent = File.ReadAllText(configPath);
-                    LLCMTConfig LLCMTconfig = JsonConvert.DeserializeObject<LLCMTConfig>(configContent) ?? throw new FileNotFoundException("配置文件未找到。");
-                    LLCMTconfig.CskipLCBPathCheck = boolValue;
-                    string updatedConfigContent = JsonConvert.SerializeObject(LLCMTconfig, Formatting.Indented);
-                    Log.logger.Debug("更新后的配置文件：" + updatedConfigContent);
-                    File.WriteAllText(configPath, updatedConfigContent);
-                    Log.logger.Info("配置文件更新完成。");
-                }
-            }
-            catch (Exception ex)
-            {
-                ErrorReport(ex, false);
-            }
-        }
-        private static void ChangeLCBPathConfig(string? updatedLCBPath)
-        {
-            Log.logger.Info($"改变边狱公司路径配置，Value： {updatedLCBPath}");
-            try
-            {
-                if (string.IsNullOrEmpty(updatedLCBPath))
-                {
-                    Log.logger.Error("修改的值为Null。");
-                    return;
-                }
-                if (File.Exists(configPath))
-                {
-                    string configContent = File.ReadAllText(configPath);
-                    LLCMTConfig LLCMTconfig = JsonConvert.DeserializeObject<LLCMTConfig>(configContent) ?? throw new FileNotFoundException("配置文件未找到。");
-                    LLCMTconfig.CLCBPath = updatedLCBPath;
-                    string updatedConfigContent = JsonConvert.SerializeObject(LLCMTconfig, Formatting.Indented);
-                    Log.logger.Debug("更新后的配置文件：" + updatedConfigContent);
-                    File.WriteAllText(configPath, updatedConfigContent);
-                    Log.logger.Info("配置文件更新完成。");
-                }
-            }
-            catch (Exception ex)
-            {
-                ErrorReport(ex, false);
-            }
-        }
-        private static void ChangeAnnoVersionConfig(int? updatedVersion)
-        {
-            Log.logger.Info($"改变公告版本配置，Value： {updatedVersion}");
-            try
-            {
-                if (updatedVersion == null)
-                {
-                    Log.logger.Error("修改的值为Null。");
-                    return;
-                }
-                if (File.Exists(configPath))
-                {
-                    string configContent = File.ReadAllText(configPath);
-                    LLCMTConfig LLCMTconfig = JsonConvert.DeserializeObject<LLCMTConfig>(configContent) ?? throw new FileNotFoundException("配置文件未找到。");
-                    LLCMTconfig.CAnnoVersion = updatedVersion;
-                    string updatedConfigContent = JsonConvert.SerializeObject(LLCMTconfig, Formatting.Indented);
-                    Log.logger.Debug("更新后的配置文件：" + updatedConfigContent);
-                    File.WriteAllText(configPath, updatedConfigContent);
-                    Log.logger.Info("配置文件更新完成。");
-                }
-            }
-            catch (Exception ex)
-            {
-                ErrorReport(ex, false);
-            }
         }
         #endregion
         #region 抽卡模拟器
@@ -1636,8 +1573,13 @@ namespace LLC_MOD_Toolbox
         private DispatcherTimer _AnnoTimer;
         private int annoLastTime = 0;
         private bool isInAnno = false;
+        private bool hasNewAnno = false;
         private async Task CheckAnno()
         {
+            if (!configuation.Settings.announcement.getAnno)
+            {
+                return;
+            }
             try
             {
                 string annoText = await GetURLText(string.Format(useAPIEndPoint, "/v2/announcement/get_anno"));
@@ -1646,7 +1588,7 @@ namespace LLC_MOD_Toolbox
                     return;
                 }
                 var annoObject = JObject.Parse(annoText);
-                if (annoObject["version"]!.Value<int>() <= AnnoVersion)
+                if (annoObject["version"]!.Value<int>() <= configuation.Settings.announcement.annoVersion)
                 {
                     Log.logger.Info("无新公告。");
                     return;
@@ -1661,8 +1603,10 @@ namespace LLC_MOD_Toolbox
                 int annoVersionNew = annoObject["version"]!.Value<int>();
                 await ChangeLeftButtonStatu(false);
                 await ChangeAnnoText(annoContent);
-                ChangeAnnoVersionConfig(annoVersionNew);
+                configuation.Settings.announcement.annoVersion = annoVersionNew;
+                configuation.SaveConfig();
                 isInAnno = true;
+                hasNewAnno = true;
                 await MakeGridStatuExceptSelf(AnnouncementPage);
                 if (annoLevel == "normal")
                 {
@@ -1706,6 +1650,135 @@ namespace LLC_MOD_Toolbox
         private async void AnnoucementButtonClick(object sender, RoutedEventArgs e)
         {
             await AlreadyReadAnno();
+        }
+        #endregion
+        #region 启动器发生器
+        private void LauncherSender(object sender, EventArgs e)
+        {
+            // 获取桌面路径
+            string desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
+            // 快捷方式完整保存路径
+            string shortcutPath = Path.Combine(desktopPath, "LimbusCompany with LLC.lnk");
+
+            // 创建WshShell对象
+            IWshRuntimeLibrary.WshShell wsh = new IWshRuntimeLibrary.WshShell();
+
+            // 创建快捷方式对象
+            IWshRuntimeLibrary.IWshShortcut shortcut = (IWshRuntimeLibrary.IWshShortcut)wsh.CreateShortcut(shortcutPath);
+
+            // 设置快捷方式属性
+            shortcut.TargetPath = Path.Combine(currentDir, "LLC_MOD_Toolbox.exe");      // 程序目标路径
+            shortcut.Arguments = "-launcher";        // 参数
+            shortcut.WorkingDirectory = currentDir;  // 工作目录
+            shortcut.Description = "启动边狱公司并检查汉化更新";
+            shortcut.IconLocation = Path.Combine(currentDir, "PublicResource", "favicon.ico");
+            shortcut.Save();
+
+            Log.logger.Info($"快捷方式已创建: {shortcutPath}");
+            MessageBox.Show("快捷方式已创建。\n可在桌面上找到“LimbusCompany with LLC”启动。", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+        private void LauncherHelper(object sender, EventArgs e)
+        {
+            OpenUrl("https://www.zeroasso.top/docs/install/hotupdate");
+        }
+        #endregion
+        #region Loading文本
+        private JArray CachedLoadingTexts;
+        private async Task CheckLoadingText()
+        {
+            JObject loadingObject = JObject.Parse(await File.ReadAllTextAsync(Path.Combine(currentDir, "loadingText.json")));
+            if (DateTime.TryParseExact(loadingObject["loadingDate"].Value<string>(), "yyyy-MM-dd HH:mm", null, System.Globalization.DateTimeStyles.None, out DateTime parsedDate))
+            {
+                DateTime today = DateTime.Now;
+                TimeSpan difference = today - parsedDate;
+                if (Math.Abs(difference.TotalDays) >= 14)
+                {
+                    Log.logger.Info("Loading文本需要更新。");
+                    var newLoadingObject = await DownloadNewLoadingText();
+                    if (newLoadingObject != null)
+                    {
+                        loadingObject = newLoadingObject;
+                    }
+                }
+            }
+            else
+            {
+                Log.logger.Error("读取Loading文本日期失败。");
+            }
+            Random random = new();
+            JArray loadingTexts = loadingObject["loadingTexts"] as JArray;
+            CachedLoadingTexts = loadingTexts;
+            int choice = random.Next(0, 100);
+            string loadingText = "出现这个文本绝不是因为出了什么问题...";
+            if (choice < 25)
+            {
+                loadingText = CachedLoadingTexts[1].Value<string>();
+            }
+            else if (choice < 35)
+            {
+                loadingText = CachedLoadingTexts[0].Value<string>();
+            }
+            else
+            {
+                loadingText = CachedLoadingTexts[random.Next(0, CachedLoadingTexts.Count)].Value<string>();
+            }
+            Log.logger.Info("Loading文本：" + loadingText);
+            await ChangeLoadingText(loadingText);
+        }
+        private void LaunchUpdateLoadingThread()
+        {
+            Thread updateLoadingThread = new Thread(async () =>
+            {
+                while (true)
+                {
+                    await Task.Delay(TimeSpan.FromSeconds(30));
+                    await TurnAnotherLoadingText();
+                }
+            });
+            updateLoadingThread.Start();
+        }
+        private async Task TurnAnotherLoadingText()
+        {
+            Random random = new();
+            int choice = random.Next(0, 100);
+            string loadingText = "出现这个文本绝不是因为出了什么问题...";
+            if (choice < 15)
+            {
+                loadingText = CachedLoadingTexts[1].Value<string>();
+            }
+            else if (choice < 25)
+            {
+                loadingText = CachedLoadingTexts[0].Value<string>();
+            }
+            else
+            {
+                loadingText = CachedLoadingTexts[random.Next(0, CachedLoadingTexts.Count)].Value<string>();
+            }
+            Log.logger.Info("Loading文本：" + loadingText);
+            await ChangeLoadingText(loadingText);
+        }
+        private async Task<JObject?> DownloadNewLoadingText()
+        {
+            string loadingText = "";
+            if (!configuation.Settings.general.internationalMode)
+            {
+                loadingText = await GetURLText("https://api.zeroasso.top/v2/loading/get_loading");
+            }
+            else
+            {
+                loadingText = await GetURLText("https://cdn-api.zeroasso.top/v2/loading/get_loading");
+            }
+            if (string.IsNullOrEmpty(loadingText))
+            {
+                return null;
+            }
+            JArray loadingArray = JArray.Parse(loadingText);
+            var loadingObject = JObject.Parse(await File.ReadAllTextAsync(Path.Combine(currentDir, "loadingText.json")));
+            DateTime today = DateTime.Now;
+            loadingObject["loadingDate"] = today.ToString("yyyy-MM-dd HH:mm");
+            loadingObject["loadingTexts"] = loadingArray;
+            File.WriteAllText(Path.Combine(currentDir, "loadingText.json"), loadingObject.ToString());
+            return loadingObject;
         }
         #endregion
     }

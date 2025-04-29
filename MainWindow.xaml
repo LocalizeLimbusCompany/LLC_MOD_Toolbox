@@ -338,15 +338,25 @@ From="1" To="0" Duration="0:0:0.3"/>
             <Image x:Name="AutoInstallBTIng" Visibility="Collapsed" HorizontalAlignment="Center" Panel.ZIndex="10" IsHitTestVisible="False" Opacity="1" Height="70" Margin="0,151,0,0" VerticalAlignment="Top" Width="196" Source="/Picture/Installing.png"/>
             <Image HorizontalAlignment="Center"  IsHitTestVisible="False" Height="123" VerticalAlignment="Top" Width="482" Source="/Picture/StartInstallBackground.png" Margin="0,127,0,0"/>
             <Canvas Margin="-10,294,10,22">
-                <Image x:Name="FullProgress" Height="50" Canvas.Left="26" Canvas.Top="30" Width="624" Source="/Picture/FullProgress.png" Panel.ZIndex="5" HorizontalAlignment="Left" VerticalAlignment="Center">
+                <Image x:Name="FullProgress" Height="50" Canvas.Left="26" Canvas.Top="12" Width="624" Source="/Picture/FullProgress.png" Panel.ZIndex="5" HorizontalAlignment="Left" VerticalAlignment="Center">
                     <Image.Clip>
                         <RectangleGeometry Rect="0,0,0,50" />
                     </Image.Clip>
                 </Image>
-                <Image x:Name="EmptyProgress" Height="50" Canvas.Left="26" Canvas.Top="30" Width="624" Source="/Picture/EmptyProgress.png" Panel.ZIndex="3" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                <Image x:Name="EmptyProgress" Height="50" Canvas.Left="26" Canvas.Top="12" Width="624" Source="/Picture/EmptyProgress.png" Panel.ZIndex="3" HorizontalAlignment="Left" VerticalAlignment="Center"/>
             </Canvas>
-            <Image HorizontalAlignment="Left" Height="288" Margin="11,77,0,0" VerticalAlignment="Top" Width="384" Source="/Picture/xiaoheiNew.png"/>
-            <Image HorizontalAlignment="Left" Height="316" Margin="471,77,0,0" VerticalAlignment="Top" Width="384" Source="/Picture/xiaobaiNew.png"/>
+            <Image HorizontalAlignment="Left" Height="288" Margin="12,58,0,0" VerticalAlignment="Top" Width="384" Source="/Picture/xiaoheiNew.png"/>
+            <Image HorizontalAlignment="Left" Panel.ZIndex="4" Height="316" Margin="467,61,0,0" VerticalAlignment="Top" Width="384" Source="/Picture/xiaobaiNew.png"/>
+            <local:OutlinedTextControl
+    Text="正在加载有趣的Loading..." 
+    Fill="#a16a3b" 
+    Stroke="Black" 
+    StrokeThickness="2"
+    FontSize="18"
+    FontFamily="/Fonts/#Source Han Sans CN"
+    FontWeight="Heavy"
+    TextAlignment="Center"
+                x:Name="LoadingText" Panel.ZIndex="5" IsHitTestVisible="False" Margin="0,347,0,0" Height="27" Width="618" HorizontalAlignment="Center" VerticalAlignment="Top"/>
         </Grid>
         <Grid x:Name="LinkPage" Visibility="Collapsed" Panel.ZIndex="5" Margin="62,55,54,32" Grid.Column="2" Grid.Row="1">
             <Button x:Name="LinkButton1" HorizontalAlignment="Left" Margin="37,40,0,0" VerticalAlignment="Top" Height="40" Width="262" Opacity="1" Background="Transparent" BorderBrush="Transparent" BorderThickness="0" Style="{StaticResource NoHover}" Click="LinkButtonClick">
@@ -721,6 +731,59 @@ From="1" To="0" Duration="0:0:0.3"/>
                     </EventTrigger>
                 </Button.Triggers>
             </Button>
+            <Label Content="发送启动器到桌面" HorizontalAlignment="Left" Margin="100,276,0,0" VerticalAlignment="Top" Height="41" Width="494" FontSize="22" Foreground="#FFFFEED4" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Medium"/>
+            <Image x:Name="SendMainHover" Panel.ZIndex="5" IsHitTestVisible="False" Opacity="0" HorizontalAlignment="Left" Height="34" Margin="511,281,0,0" VerticalAlignment="Top" Width="80" Source="/Picture/SettingButtonHover.png"/>
+            <Image x:Name="SendHelpHover" Panel.ZIndex="5" IsHitTestVisible="False" Opacity="0" HorizontalAlignment="Left" Height="34" Margin="430,282,0,0" VerticalAlignment="Top" Width="80" Source="/Picture/SettingButtonHover.png"/>
+            <Button HorizontalAlignment="Left" Margin="514,284,0,0" VerticalAlignment="Top" Height="28" Width="74" Style="{StaticResource NoHover}" Background="#FFFFEED4" Click="LauncherSender">
+                <Button.Clip>
+                    <RectangleGeometry Rect="0,0,74,28" RadiusX="3" RadiusY="3"/>
+                </Button.Clip>
+                <Button.Triggers>
+                    <EventTrigger RoutedEvent="Button.MouseEnter">
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <DoubleAnimation Storyboard.TargetName="SendMainHover"
+Storyboard.TargetProperty="Opacity"
+From="0" To="1" Duration="0:0:0.3"/>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </EventTrigger>
+                    <EventTrigger RoutedEvent="Button.MouseLeave">
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <DoubleAnimation Storyboard.TargetName="SendMainHover"
+Storyboard.TargetProperty="Opacity"
+From="1" To="0" Duration="0:0:0.3"/>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </EventTrigger>
+                </Button.Triggers>
+            </Button>
+            <Button HorizontalAlignment="Left" Margin="432,284,0,0" VerticalAlignment="Top" Height="28" Width="74" Style="{StaticResource NoHover}" Background="#FFFFEED4" Click="LauncherHelper">
+                <Button.Clip>
+                    <RectangleGeometry Rect="0,0,74,28" RadiusX="3" RadiusY="3"/>
+                </Button.Clip>
+                <Button.Triggers>
+                    <EventTrigger RoutedEvent="Button.MouseEnter">
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <DoubleAnimation Storyboard.TargetName="SendHelpHover"
+Storyboard.TargetProperty="Opacity"
+From="0" To="1" Duration="0:0:0.3"/>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </EventTrigger>
+                    <EventTrigger RoutedEvent="Button.MouseLeave">
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <DoubleAnimation Storyboard.TargetName="SendHelpHover"
+Storyboard.TargetProperty="Opacity"
+From="1" To="0" Duration="0:0:0.3"/>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </EventTrigger>
+                </Button.Triggers>
+            </Button>
             <Button HorizontalAlignment="Left" Margin="271,37,0,0" VerticalAlignment="Top" Height="28" Width="28" Style="{StaticResource NoHover}" Background="#FFFFEED4" Click="WhyShouldIUseThis">
                 <Button.Clip>
                     <RectangleGeometry Rect="0,0,28,28" RadiusX="14" RadiusY="14"/>
@@ -732,6 +795,8 @@ From="1" To="0" Duration="0:0:0.3"/>
                 </Button.Clip>
             </Button>
             <Label Content="卸载" HorizontalAlignment="Left" IsHitTestVisible="False" Margin="531,130,0,0" VerticalAlignment="Top" Height="38" Width="52" FontSize="16" Foreground="Black" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Heavy"/>
+            <Label Content="如何使用" HorizontalAlignment="Left" IsHitTestVisible="False" Margin="432,281,0,0" VerticalAlignment="Top" Height="38" Width="74" FontSize="16" Foreground="Black" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Heavy"/>
+            <Label Content="发送" HorizontalAlignment="Left" IsHitTestVisible="False" Margin="531,281,0,0" VerticalAlignment="Top" Height="38" Width="52" FontSize="16" Foreground="Black" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Heavy"/>
             <Label Content="?" HorizontalAlignment="Left" IsHitTestVisible="False" Margin="276,34,0,0" VerticalAlignment="Top" Height="38" Width="52" FontSize="16" Foreground="Black" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Heavy"/>
             <Label Content="?" HorizontalAlignment="Left" IsHitTestVisible="False" Margin="276,85,0,0" VerticalAlignment="Top" Height="38" Width="52" FontSize="16" Foreground="Black" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Heavy"/>
         </Grid>

@@ -1,11 +1,4 @@
-﻿using log4net.Repository.Hierarchy;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Reflection.Metadata;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.IO;
 using System.Windows;
 
 namespace LLC_MOD_Toolbox

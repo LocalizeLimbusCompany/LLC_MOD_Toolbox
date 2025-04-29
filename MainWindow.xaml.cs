@@ -9,7 +9,6 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Xml.Linq;
 
 namespace LLC_MOD_Toolbox
 {
@@ -330,8 +329,13 @@ namespace LLC_MOD_Toolbox
                 });
             }
         }
-        public async Task ChangeEEPic(string url)
+        public async Task ChangeEEPic()
         {
+            string url = "https://api.zeroasso.top/v2/eepic/get_image";
+            if (configuation.Settings.general.internationalMode)
+            {
+                url = "https://cdn-api.zeroasso.top/v2/eepic/get_image";
+            }
             try
             {
                 using (var client = new HttpClient())
@@ -396,7 +400,7 @@ namespace LLC_MOD_Toolbox
                 }
             }
         }
-        
+
         #endregion
         public async Task ChangeAutoInstallButton()
         {
@@ -466,6 +470,17 @@ namespace LLC_MOD_Toolbox
             nowInstallPage = "auto";
             await ChangeLeftButtonStatu(true);
             await RefreshPage();
+            if (configuation.Settings.install.installWhenLaunch || isLauncherMode)
+            {
+                InstallButtonClick(null, null);
+            }
+        }
+        public async Task ChangeLoadingText(string text)
+        {
+            await this.Dispatcher.BeginInvoke(() =>
+            {
+                LoadingText.Text = text;
+            });
         }
     }
 }

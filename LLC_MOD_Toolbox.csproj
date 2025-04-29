@@ -10,7 +10,7 @@
     <ApplicationIcon>favicon.ico</ApplicationIcon>
     <UseWindowsForms>False</UseWindowsForms>
     <Configurations>Debug;Release;LLC_MOD_Toolbox;ReleaseLLCMT</Configurations>
-	<Version>1.1.2</Version>
+	<Version>1.2.0</Version>
 	<Authors>LocalizeLimbusCompany</Authors>
 	<Title>$(AssemblyName)</Title>
 	<Description>A tool to install LLC Language mod easily.</Description>
@@ -77,6 +77,18 @@
   </ItemGroup>
 
   <ItemGroup>
+    <COMReference Include="IWshRuntimeLibrary">
+      <WrapperTool>tlbimp</WrapperTool>
+      <VersionMinor>0</VersionMinor>
+      <VersionMajor>1</VersionMajor>
+      <Guid>f935dc20-1cf0-11d0-adb9-00c04fd58a0b</Guid>
+      <Lcid>0</Lcid>
+      <Isolated>false</Isolated>
+      <EmbedInteropTypes>true</EmbedInteropTypes>
+    </COMReference>
+  </ItemGroup>
+
+  <ItemGroup>
     <Content Include="favicon.ico" />
     <Resource Include="Picture\ControlBoardHover.png" />
     <Resource Include="Picture\GachaBackground.png" />
@@ -140,7 +152,13 @@
     <None Update="config.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="loadingText.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="NodeList.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="PublicResource\favicon.ico">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>

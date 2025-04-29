@@ -1,5 +1,22 @@
 ﻿{
-  "CskipLCBPathCheck": false,
-  "CLCBPath": null,
-  "CAnnoVersion": 0
+  "general": {
+    "_skipLCBPathCheck": "跳过路径检查逻辑，直接使用配置路径",
+    "skipLCBPathCheck": false,
+    "_LCBPath": "边狱公司游戏路径",
+    "LCBPath": null,
+    "_internationalMode": "国际模式，推荐海外用户使用",
+    "internationalMode": true
+  },
+  "install": {
+    "_installWhenLaunch": "启动工具箱时自动检查更新",
+    "installWhenLaunch": false,
+    "_afterInstallClose": "安装完成后是否自动关闭工具箱同时启动游戏",
+    "afterInstallClose": false
+  },
+  "announcement": {
+    "_getAnno": "是否获取公告",
+    "getAnno": true,
+    "_annoVersion": "公告版本号，请勿更改",
+    "annoVersion": 0
+  }
 }
