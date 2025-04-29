@@ -5,7 +5,7 @@
     "_LCBPath": "边狱公司游戏路径",
     "LCBPath": null,
     "_internationalMode": "国际模式，推荐海外用户使用",
-    "internationalMode": true
+    "internationalMode": false
   },
   "install": {
     "_installWhenLaunch": "启动工具箱时自动检查更新",

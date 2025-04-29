@@ -410,7 +410,7 @@ namespace LLC_MOD_Toolbox
                 {
                     defaultEndPoint = Node.Endpoint;
                 }
-                if (Node.Endpoint == "https://api.zeroasso.top/v2/download/files?file_name={0}" && configuation.Settings.general.internationalMode)
+                if (Node.Endpoint == "https://cdn-download.zeroasso.top/files/{0}" && configuation.Settings.general.internationalMode)
                 {
                     Log.logger.Info("获取到国际下载节点。");
                     defaultEndPoint = Node.Endpoint;
