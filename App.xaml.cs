@@ -8,8 +8,19 @@ namespace LLC_MOD_Toolbox
     /// </summary>
     public partial class App : System.Windows.Application
     {
+        private static Mutex _mutex = null;
         protected override void OnStartup(StartupEventArgs e)
         {
+            bool createdNew;
+
+            _mutex = new Mutex(true, "LLC_MOD_TOOLBOX", out createdNew);
+
+            if (!createdNew)
+            {
+                MessageBox.Show("已有工具箱在运行中！", "提示");
+                Current.Shutdown();
+                return;
+            }
             base.OnStartup(e);
             this.DispatcherUnhandledException += App_DispatcherUnhandledException; ;
         }
