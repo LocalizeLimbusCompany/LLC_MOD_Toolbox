@@ -18,7 +18,7 @@ public partial class SettingsViewModel : ObservableObject
 
     private readonly IDialogDisplayService _dialogDisplayService;
 
-    public string LimbusCompanyPath
+    public string? LimbusCompanyPath
     {
         get
         {
@@ -64,7 +64,10 @@ public partial class SettingsViewModel : ObservableObject
         }
         try
         {
-            FileHelper.DeleteBepInEx(LimbusCompanyPath, _logger);
+            FileHelper.DeleteBepInEx(
+                LimbusCompanyPath ?? throw new ArgumentNullException(nameof(LimbusCompanyPath)),
+                _logger
+            );
         }
         catch (IOException ex)
         {

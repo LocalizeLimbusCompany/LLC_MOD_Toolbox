@@ -9,6 +9,7 @@ using System.Windows.Threading;
 using LLC_MOD_Toolbox.ViewModels;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using SevenZip;
 
 namespace LLC_MOD_Toolbox
 {
@@ -26,8 +27,8 @@ namespace LLC_MOD_Toolbox
             //GachaPage.DataContext = App.Current.Services.GetRequiredService<GachaViewModel>();
             //LinkPage.DataContext = App.Current.Services.GetRequiredService<LinkViewModel>();
 
-            progressTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(0.05) };
-            progressTimer.Tick += ProgressTime_Tick;
+            //progressTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(0.05) };
+            //progressTimer.Tick += ProgressTime_Tick;
         }
 
         private async void Window_Loaded(object sender, RoutedEventArgs e)
@@ -119,5 +120,104 @@ namespace LLC_MOD_Toolbox
             });
         }
         #endregion
+#if false
+        private async void StartGreytestButtonClick(object sender, RoutedEventArgs e)
+        {
+            logger.LogInformation("Z-TECH 灰度测试客户端程序 v2.0 启动。（并不是");
+            if (!greytestStatus)
+            {
+                string token = await GetGreytestBoxText();
+                if (token == string.Empty || token == "请输入秘钥")
+                {
+                    logger.LogInformation("Token为空。");
+                    System.Windows.MessageBox.Show(
+                        "请输入有效的Token。",
+                        "提示",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Error
+                    );
+                    return;
+                }
+                logger.LogInformation("Token为：" + token);
+                string tokenUrl = $"https://dev.zeroasso.top/api/{token}.json";
+                using (HttpClient client = new())
+                {
+                    try
+                    {
+                        HttpResponseMessage response = await client.GetAsync(tokenUrl);
+                        if (response.StatusCode != System.Net.HttpStatusCode.NotFound)
+                        {
+                            logger.LogInformation("秘钥有效。");
+                        }
+                        else
+                        {
+                            logger.LogInformation("秘钥无效。");
+                            System.Windows.MessageBox.Show(
+                                "请输入有效的Token。",
+                                "提示",
+                                MessageBoxButton.OK,
+                                MessageBoxImage.Error
+                            );
+                            return;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        ErrorReport(ex, false);
+                        return;
+                    }
+                }
+                try
+                {
+                    string tokenJson = await GetURLText(tokenUrl);
+                    var tokenObject = JObject.Parse(tokenJson);
+                    string runStatus = tokenObject["status"].Value<string>();
+                    if (runStatus == "test")
+                    {
+                        logger.LogInformation("Token状态正常。");
+                    }
+                    else
+                    {
+                        logger.LogInformation("Token已停止测试。");
+                        System.Windows.MessageBox.Show(
+                            "Token已停止测试。",
+                            "提示",
+                            MessageBoxButton.OK,
+                            MessageBoxImage.Information
+                        );
+                        return;
+                    }
+                    string fileName = tokenObject["file_name"].Value<string>();
+                    string note = tokenObject["note"].Value<string>();
+                    logger.LogInformation($"Token信息：{token}\n混淆文件名：{fileName}\n备注：{note}");
+                    await ChangeLogoToTest();
+                    System.Windows.MessageBox.Show(
+                        $"目前Token有效。\n-------------\nToken信息：\n秘钥：{token}\n混淆文件名：{fileName}\n备注：{note}\n-------------\n灰度测试模式已开启。\n请在自动安装安装此秘钥对应版本汉化。\n秘钥信息请勿外传。",
+                        "提示",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Information
+                    );
+                    greytestStatus = true;
+                    greytestUrl =
+                        "https://dev.zeroasso.top/files/LimbusLocalize_Dev_" + fileName + ".7z";
+                }
+                catch (Exception ex)
+                {
+                    ErrorReport(ex, false);
+                    return;
+                }
+            }
+            else
+            {
+                System.Windows.MessageBox.Show(
+                    "灰度测试模式已开启。\n请在自动安装安装此秘钥对应版本汉化。\n若需要正常使用或更换秘钥，请重启工具箱。",
+                    "提示",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Information
+                );
+                return;
+            }
+        }
+#endif
     }
 }

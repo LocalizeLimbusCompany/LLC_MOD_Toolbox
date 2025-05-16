@@ -37,4 +37,8 @@ internal static class JsonHelper
     /// <exception cref="JsonReaderException">如果不存在对应键值对</exception>
     public static string DeserializeValue(string key, string jsonPayload) =>
         JObject.Parse(jsonPayload).GetValue(key)?.ToString() ?? throw new JsonReaderException();
+
+    public static T Deserialize<T>(string jsonPayload) =>
+        JsonConvert.DeserializeObject<T>(jsonPayload, camelCaseJsonSettings)
+        ?? throw new JsonReaderException();
 }

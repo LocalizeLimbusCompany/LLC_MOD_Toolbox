@@ -39,6 +39,7 @@ public partial class AutoInstallerViewModel : ObservableObject
             ConfigurationManager.AppSettings["GamePath"]
             ?? PathHelper.DetectedLimbusCompanyPath
             ?? PathHelper.SelectPath();
+        testToken = config.Token;
 
         installationProgress = new Progress<double>(value => Percent = value);
     }

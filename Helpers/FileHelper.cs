@@ -30,6 +30,15 @@ internal static class FileHelper
     ];
     private static readonly List<string> BepInExFolders = ["BepInEx", "dotnet",];
 
+    /// <summary>
+    /// 下载文件
+    /// </summary>
+    /// <param name="url"></param>
+    /// <param name="path"></param>
+    /// <param name="onDownloadProgressChanged"></param>
+    /// <param name="onDownloadFileCompleted"></param>
+    /// <param name="logger"></param>
+    /// <returns></returns>
     public static async Task DownloadFileAsync(
         string url,
         string path,
@@ -52,13 +61,16 @@ internal static class FileHelper
     public static Task<string> LoadNodeListConfigAsync => File.ReadAllTextAsync("NodeList.json");
 
     /// <summary>
-    /// 下载边狱公司的 语言包
+    /// 下载边狱公司的语言包
     /// </summary>
-    /// <exception cref="ArgumentNullException"></exception>
+    /// <exception cref="ArgumentException"/>
+    /// <exception cref="ArgumentNullException">预检查流</exception>
     public static void ExtractLanguagePackage(Stream stream, string limbusCompanyPath)
     {
         if (Path.Exists(limbusCompanyPath))
             throw new ArgumentException("路径不存在", nameof(limbusCompanyPath));
+        if (stream == null)
+            throw new ArgumentNullException(nameof(stream), "流不能为空");
         using var extractor = new SevenZip.SevenZipExtractor(stream);
         extractor.ExtractArchive(limbusCompanyPath);
     }
