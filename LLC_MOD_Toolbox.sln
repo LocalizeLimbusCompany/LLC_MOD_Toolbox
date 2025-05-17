@@ -7,12 +7,18 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LLC_MOD_Toolbox", "LLC_MOD_
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
 		LLCMT|Any CPU = LLCMT|Any CPU
+		Release|Any CPU = Release|Any CPU
 		ReleaseLLCMT|Any CPU = ReleaseLLCMT|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{67CD634B-52DA-4C7A-BB24-FC3475670AC2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{67CD634B-52DA-4C7A-BB24-FC3475670AC2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{67CD634B-52DA-4C7A-BB24-FC3475670AC2}.LLCMT|Any CPU.ActiveCfg = Debug|Any CPU
 		{67CD634B-52DA-4C7A-BB24-FC3475670AC2}.LLCMT|Any CPU.Build.0 = Debug|Any CPU
+		{67CD634B-52DA-4C7A-BB24-FC3475670AC2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{67CD634B-52DA-4C7A-BB24-FC3475670AC2}.Release|Any CPU.Build.0 = Release|Any CPU
 		{67CD634B-52DA-4C7A-BB24-FC3475670AC2}.ReleaseLLCMT|Any CPU.ActiveCfg = ReleaseLLCMT|Any CPU
 		{67CD634B-52DA-4C7A-BB24-FC3475670AC2}.ReleaseLLCMT|Any CPU.Build.0 = ReleaseLLCMT|Any CPU
 	EndGlobalSection

@@ -241,13 +241,14 @@ namespace LLC_MOD_Toolbox
         {
             await Task.Run(async () =>
             {
-                Log.logger.Info("正在安装字体文件。");
-                installPhase = 1;
-                string fontDir = Path.Combine(limbusCompanyDir, "LimbusCompany_Data", "Lang", "LLC_zh-CN", "Font", "Context");
-                Directory.CreateDirectory(fontDir);
-                string fontZIPFile = Path.Combine(limbusCompanyDir, "LLCCN-Font.7z");
-                string fontChinese = Path.Combine(fontDir, "ChineseFont.ttf");
-                if (File.Exists(fontChinese))
+            Log.logger.Info("正在安装字体文件。");
+            installPhase = 1;
+            string fontDir = Path.Combine(limbusCompanyDir, "LimbusCompany_Data", "Lang", "LLC_zh-CN", "Font", "Context");
+            Directory.CreateDirectory(fontDir);
+            string fontZIPFile = Path.Combine(limbusCompanyDir, "LLCCN-Font.7z");
+            string fontChinese = Path.Combine(fontDir, "ChineseFont.ttf");
+            string fontBackup = Path.Combine(limbusCompanyDir, "LimbusCompany_Data", "Lang", "LLC_zh-CN", "BackupFont", "ChineseFont.ttf.bak");
+                if (File.Exists(fontChinese) || File.Exists(fontBackup))
                 {
                     Log.logger.Info("检测到已安装字体文件。");
                     return;
@@ -1779,6 +1780,124 @@ namespace LLC_MOD_Toolbox
             loadingObject["loadingTexts"] = loadingArray;
             File.WriteAllText(Path.Combine(currentDir, "loadingText.json"), loadingObject.ToString());
             return loadingObject;
+        }
+        #endregion
+        #region 字体替换
+        private void ExploreFontButtonClick(object sender, RoutedEventArgs e)
+        {
+            var fileDialog = new OpenFileDialog
+            {
+                Title = "请选择你的字体",
+                Filter = "字体文件 (*.ttf;*.otf)|*.ttf;*.otf|所有文件 (*.*)|*.*",
+                Multiselect = false,
+            };
+            if (fileDialog.ShowDialog() == true)
+            {
+                FontReplaceTextBox.Text = Path.GetFullPath(fileDialog.FileName);
+            }
+        }
+        private void PreviewFontButtonClick(object sender, RoutedEventArgs e)
+        {
+            if (IsValidFontFile(FontReplaceTextBox.Text))
+            {
+                Uri fontUri = new Uri(FontReplaceTextBox.Text);
+                FontFamily customFont = new FontFamily(fontUri.AbsoluteUri + "#" + GetFontFamilyName(FontReplaceTextBox.Text));
+                PreviewText.FontFamily = customFont;
+                MessageBox.Show("已将预览文本切换为自定义字体。\n如果出现部分字显示为默认字体，可能影响游戏内显示。", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            else
+            {
+                MessageBox.Show("请选择正确的字体文件。", "提示", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
+        }
+        private void ChangeFontButtonClick(object sender, RoutedEventArgs e)
+        {
+            string oldFontPath = Path.Combine(limbusCompanyDir, "LimbusCompany_Data", "Lang", "LLC_zh-CN", "Font", "Context", "ChineseFont.ttf");
+            if (!File.Exists(oldFontPath))
+            {
+                MessageBox.Show("请先安装汉化，然后再进行字体替换。", "提示", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
+            Directory.CreateDirectory(Path.Combine(limbusCompanyDir, "LimbusCompany_Data", "Lang", "LLC_zh-CN", "BackupFont"));
+            File.Move(oldFontPath, Path.Combine(limbusCompanyDir, "LimbusCompany_Data", "Lang", "LLC_zh-CN", "BackupFont", "ChineseFont.ttf.bak"));
+            if (IsValidFontFile(FontReplaceTextBox.Text))
+            {
+                string extension = new FileInfo(FontReplaceTextBox.Text).Extension;
+                File.Copy(FontReplaceTextBox.Text, Path.Combine(limbusCompanyDir, "LimbusCompany_Data", "Lang", "LLC_zh-CN","Font","Context", $"ChineseFont{extension}"), true);
+                MessageBox.Show("字体替换成功。\n启动游戏以应用更改。", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+        }
+        private void RestoreFontButtonClick(object sender, RoutedEventArgs e)
+        {
+            string backupFontPath = Path.Combine(limbusCompanyDir, "LimbusCompany_Data", "Lang", "LLC_zh-CN", "BackupFont", "ChineseFont.ttf.bak");
+            if (File.Exists(backupFontPath))
+            {
+                string oldFontTTFPath = Path.Combine(limbusCompanyDir, "LimbusCompany_Data", "Lang", "LLC_zh-CN", "Font", "Context", "ChineseFont.ttf");
+                string oldFontOTFPath = Path.Combine(limbusCompanyDir, "LimbusCompany_Data", "Lang", "LLC_zh-CN", "Font", "Context", "ChineseFont.otf");
+                if (File.Exists(oldFontTTFPath))
+                {
+                    File.Delete(oldFontTTFPath);
+                }
+                if (File.Exists(oldFontOTFPath))
+                {
+                    File.Delete(oldFontOTFPath);
+                }
+                File.Move(backupFontPath, oldFontTTFPath);
+                MessageBox.Show("字体还原成功。\n启动游戏以应用更改。", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+        }
+        private bool IsValidFontFile(string filePath)
+        {
+            if (filePath == "输入字体路径")
+            {
+                return false;
+            }
+            // 1. 检查文件扩展名
+            string extension = Path.GetExtension(filePath).ToLowerInvariant();
+            if (extension != ".ttf" && extension != ".otf" && extension != ".ttc")
+            {
+                return false;
+            }
+
+            // 2. 检查文件是否存在并且可以访问
+            if (!File.Exists(filePath))
+            {
+                return false;
+            }
+
+            // 3. 尝试加载字体来验证它是否真的是字体文件
+            try
+            {
+                // 尝试加载字体，如果不是有效的字体文件，这将引发异常
+                using (System.Drawing.Text.PrivateFontCollection fontCollection = new System.Drawing.Text.PrivateFontCollection())
+                {
+                    fontCollection.AddFontFile(filePath);
+                    return fontCollection.Families.Length > 0;
+                }
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        private string GetFontFamilyName(string filePath)
+        {
+            // 获取字体的家族名称
+            try
+            {
+                using (System.Drawing.Text.PrivateFontCollection fontCollection = new System.Drawing.Text.PrivateFontCollection())
+                {
+                    fontCollection.AddFontFile(filePath);
+                    if (fontCollection.Families.Length > 0)
+                    {
+                        return fontCollection.Families[0].Name;
+                    }
+                }
+            }
+            catch { }
+
+            // 如果无法获取字体名称，返回一个默认值
+            return Path.GetFileNameWithoutExtension(filePath);
         }
         #endregion
     }

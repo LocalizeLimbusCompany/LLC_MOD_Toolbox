@@ -31,7 +31,7 @@ namespace LLC_MOD_Toolbox
             MinimizeHover.Opacity = 0;
             // 隐藏面板按钮Hover
             AutoInstallHover.Opacity = 0;
-            ManualInstallHover.Opacity = 0;
+            FontReplaceHover.Opacity = 0;
             ReplaceInstallHover.Opacity = 0;
             // 隐藏自动安装页面Hover
             AutoInstallBTHover.Opacity = 0;
@@ -40,20 +40,25 @@ namespace LLC_MOD_Toolbox
             if (nowPage == "install")
             {
                 AutoInstallDisabled.Visibility = Visibility.Hidden;
+                FontReplaceDisabled.Visibility = Visibility.Hidden;
                 GachaSimDisabled.Visibility = Visibility.Hidden;
                 AutoInstallButton.Visibility = Visibility.Visible;
+                FontReplaceButton.Visibility = Visibility.Visible;
                 GachaSimInstallButton.Visibility = Visibility.Visible;
                 AutoInstallButton.IsHitTestVisible = true;
+                FontReplaceButton.IsHitTestVisible = true;
             }
             else
             {
                 AutoInstallDisabled.Visibility = Visibility.Visible;
-                ManualInstallDisabled.Visibility = Visibility.Visible;
+                FontReplaceDisabled.Visibility = Visibility.Visible;
                 ReplaceInstallDisabled.Visibility = Visibility.Visible;
                 GachaSimDisabled.Visibility = Visibility.Visible;
-                AutoInstallButton.Visibility = Visibility.Hidden;
-                GachaSimInstallButton.Visibility = Visibility.Hidden;
+                AutoInstallButton.Visibility = Visibility.Collapsed;
+                GachaSimInstallButton.Visibility = Visibility.Collapsed;
+                FontReplaceButton.Visibility = Visibility.Collapsed;
                 AutoInstallButton.IsHitTestVisible = false;
+                FontReplaceButton.IsHitTestVisible = false;
             }
             // 安装中相关控件
             if (isInstalling)
@@ -75,6 +80,9 @@ namespace LLC_MOD_Toolbox
                 {
                     case "auto":
                         await MakeGridStatuExceptSelf(AutoInstallPage);
+                        break;
+                    case "font":
+                        await MakeGridStatuExceptSelf(FontReplacePage);
                         break;
                     case "gacha":
                         await MakeGridStatuExceptSelf(GachaPage);
@@ -117,6 +125,7 @@ namespace LLC_MOD_Toolbox
             List<Grid> gridList =
             [
                 AutoInstallPage,
+                FontReplacePage,
                 LinkPage,
                 GreytestPage,
                 SettingsPage,
@@ -220,6 +229,11 @@ namespace LLC_MOD_Toolbox
         private async void AutoInstallButtonClick(object sender, RoutedEventArgs e)
         {
             nowInstallPage = "auto";
+            await RefreshPage();
+        }
+        private async void FontReplaceButtonClick(object sender, RoutedEventArgs e)
+        {
+            nowInstallPage = "font";
             await RefreshPage();
         }
         private async void GachaSimButtonClick(object sender, RoutedEventArgs e)
