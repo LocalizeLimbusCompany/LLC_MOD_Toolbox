@@ -29,6 +29,7 @@ using System.Security.Cryptography;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using static LLC_MOD_Toolbox.SimpleDnsChecker;
 
@@ -1796,13 +1797,28 @@ namespace LLC_MOD_Toolbox
                 FontReplaceTextBox.Text = Path.GetFullPath(fileDialog.FileName);
             }
         }
-        private void PreviewFontButtonClick(object sender, RoutedEventArgs e)
+        private async void PreviewFontButtonClick(object sender, RoutedEventArgs e)
         {
+            double size;
+            if (double.TryParse(FontSizeTextBox.Text, out double fontSize))
+            {
+                size = fontSize;
+            }
+            else
+            {
+                MessageBox.Show("请输入正确的字体大小。", "提示", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
             if (IsValidFontFile(FontReplaceTextBox.Text))
             {
                 Uri fontUri = new Uri(FontReplaceTextBox.Text);
                 FontFamily customFont = new FontFamily(fontUri.AbsoluteUri + "#" + GetFontFamilyName(FontReplaceTextBox.Text));
-                PreviewText.FontFamily = customFont;
+                await this.Dispatcher.BeginInvoke(() =>
+                {
+                    this.Resources["GlobalPreviewFont"] = customFont;
+                    this.Resources["GlobalPreviewFontSize"] = size;
+                    this.Resources["GlobalPreviewSmallFontSize"] = size / 16 * 12;
+                });
                 MessageBox.Show("已将预览文本切换为自定义字体。\n如果出现部分字显示为默认字体，可能影响游戏内显示。", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
             }
             else

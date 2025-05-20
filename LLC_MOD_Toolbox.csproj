@@ -55,6 +55,7 @@
     <None Remove="Picture\ControlBoardHover.png" />
     <None Remove="Picture\EmptyProgress.png" />
     <None Remove="Picture\favicon.ico" />
+    <None Remove="Picture\FontPreviewBase.png" />
     <None Remove="Picture\FullProgress.png" />
     <None Remove="Picture\GachaBackground.png" />
     <None Remove="Picture\Install.png" />
@@ -91,6 +92,7 @@
   <ItemGroup>
     <Content Include="favicon.ico" />
     <Resource Include="Picture\ControlBoardHover.png" />
+    <Resource Include="Picture\FontPreviewBase.png" />
     <Resource Include="Picture\GachaBackground.png" />
     <Resource Include="Picture\LinkBT.png" />
     <Resource Include="Picture\LinkBTHover.png" />
