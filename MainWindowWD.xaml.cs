@@ -1103,7 +1103,8 @@ namespace LLC_MOD_Toolbox
             await Task.Run(async () =>
             {
                 Log.logger.Info("灰度测试模式已开启。开始安装灰度模组。");
-                installPhase = 3;
+                installPhase = 2;
+                isNewestModVersion = false;
                 await DownloadFileAsync(greytestUrl, limbusCompanyDir + "/LimbusLocalize_Dev.7z");
                 Unarchive(limbusCompanyDir + "/LimbusLocalize_Dev.7z", limbusCompanyDir);
                 File.Delete(limbusCompanyDir + "/LimbusLocalize_Dev.7z");
