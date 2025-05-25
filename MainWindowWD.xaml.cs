@@ -886,13 +886,25 @@ namespace LLC_MOD_Toolbox
         }
         public static void ChangeLCBLangConfig(string value)
         {
-            if (File.Exists(Path.Combine(limbusCompanyDir, "LimbusCompany_Data", "Lang", "config.json")))
+            try
             {
-                string configJson = File.ReadAllText(Path.Combine(limbusCompanyDir, "LimbusCompany_Data", "Lang", "config.json"));
-                var configObject = JObject.Parse(configJson);
-                configObject["lang"] = value;
-                string newConfigJson = configObject.ToString();
-                File.WriteAllText(Path.Combine(limbusCompanyDir, "LimbusCompany_Data", "Lang", "config.json"), newConfigJson);
+                if (File.Exists(Path.Combine(limbusCompanyDir, "LimbusCompany_Data", "Lang", "config.json")))
+                {
+                    string configJson = File.ReadAllText(Path.Combine(limbusCompanyDir, "LimbusCompany_Data", "Lang", "config.json"));
+                    var configObject = JObject.Parse(configJson);
+                    configObject["lang"] = value;
+                    string newConfigJson = configObject.ToString();
+                    File.WriteAllText(Path.Combine(limbusCompanyDir, "LimbusCompany_Data", "Lang", "config.json"), newConfigJson);
+                }
+            }
+            catch(JsonReaderException ex)
+            {
+                var result = MessageBox.Show("配置文件出现问题，是否尝试进行修复？\n" + ex.Message, "错误", MessageBoxButton.OKCancel, MessageBoxImage.Error);
+                if (result == MessageBoxResult.OK)
+                {
+                    File.WriteAllText(Path.Combine(limbusCompanyDir, "LimbusCompany_Data", "Lang", "config.json"), "{\"lang\": \"\",\"titleFont\": \"\",\"contextFont\": \"\",\"samplingPointSize\": 78,\"padding\": 5}");
+                    ChangeLCBLangConfig(value);
+                }
             }
         }
         #endregion
