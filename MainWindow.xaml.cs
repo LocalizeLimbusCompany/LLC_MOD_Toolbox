@@ -5,11 +5,7 @@
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
-using System.Windows.Threading;
-using LLC_MOD_Toolbox.ViewModels;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using SevenZip;
 
 namespace LLC_MOD_Toolbox
 {
@@ -26,9 +22,6 @@ namespace LLC_MOD_Toolbox
             //SettingsPage.DataContext = App.Current.Services.GetRequiredService<SettingsViewModel>();
             //GachaPage.DataContext = App.Current.Services.GetRequiredService<GachaViewModel>();
             //LinkPage.DataContext = App.Current.Services.GetRequiredService<LinkViewModel>();
-
-            //progressTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(0.05) };
-            //progressTimer.Tick += ProgressTime_Tick;
         }
 
         private async void Window_Loaded(object sender, RoutedEventArgs e)

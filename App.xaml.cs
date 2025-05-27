@@ -75,6 +75,12 @@ namespace LLC_MOD_Toolbox
                 _logger.LogInformation("检测到启动参数。");
                 throw new NotImplementedException("暂不支持启动参数。");
             }
+            if (e.Args.Contains("--cli"))
+            {
+                _logger.LogInformation("检测到控制台模式参数。");
+                RunAsConsole();
+                return;
+            }
 
             _logger.LogInformation("当前版本：{}", VersionHelper.LocalVersion);
             // 检查更新
@@ -140,6 +146,15 @@ namespace LLC_MOD_Toolbox
             return ex.InnerException == null
                 ? ex.Message
                 : $"{ex.Message} -> {GetExceptionMessage(ex.InnerException)}";
+        }
+
+        private void RunAsConsole()
+        {
+            _logger.LogInformation("工具箱已以控制台模式运行。");
+            Console.WriteLine("欢迎使用 LLC_MOD_Toolbox！");
+            Console.WriteLine("请使用图形界面进行操作。");
+            Console.ReadKey();
+            Current.Shutdown();
         }
     }
 }
