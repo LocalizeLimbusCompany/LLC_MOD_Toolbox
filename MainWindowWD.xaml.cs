@@ -792,10 +792,10 @@ namespace LLC_MOD_Toolbox
                 string latestReleaseTagRaw = JsonObject["tag_name"].Value<string>();
                 string latestReleaseTag = latestReleaseTagRaw.Remove(0, 1);
                 Log.logger.Info("最新安装器tag：" + latestReleaseTag);
-                if (new Version(latestReleaseTag) > Assembly.GetExecutingAssembly().GetName().Version)
+                if (new Version(latestReleaseTag+"1") > Assembly.GetExecutingAssembly().GetName().Version)
                 {
                     Log.logger.Info("安装器存在更新。");
-                    System.Windows.MessageBox.Show("安装器存在更新。\n点击确定进入官网下载最新版本工具箱", "更新提醒", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    System.Windows.MessageBox.Show("点击确定进入官网下载最新版本工具箱", "更新提醒", MessageBoxButton.OK, MessageBoxImage.Warning);
                     OpenUrl("https://www.zeroasso.top/docs/install/autoinstall");
                     System.Windows.Application.Current.Shutdown();
                 }
@@ -1701,6 +1701,7 @@ namespace LLC_MOD_Toolbox
         private JArray CachedLoadingTexts;
         private async Task CheckLoadingText()
         {
+            await File.ReadAllTextAsync(Path.Combine(currentDir, "loadingText.json"));
             JObject loadingObject = JObject.Parse(await File.ReadAllTextAsync(Path.Combine(currentDir, "loadingText.json")));
             if (DateTime.TryParseExact(loadingObject["loadingDate"].Value<string>(), "yyyy-MM-dd HH:mm", null, System.Globalization.DateTimeStyles.None, out DateTime parsedDate))
             {
@@ -1725,19 +1726,26 @@ namespace LLC_MOD_Toolbox
             CachedLoadingTexts = loadingTexts;
             int choice = random.Next(0, 100);
             string loadingText = "出现这个文本绝不是因为出了什么问题...";
-            if (choice < 25)
+            if(CachedLoadingTexts == null || CachedLoadingTexts.Count == 0)
             {
-                loadingText = CachedLoadingTexts[1].Value<string>();
-            }
-            else if (choice < 35)
-            {
-                loadingText = CachedLoadingTexts[0].Value<string>();
+                //对读取数组为空做出记录
             }
             else
             {
-                loadingText = CachedLoadingTexts[random.Next(0, CachedLoadingTexts.Count)].Value<string>();
+                if (choice < 25)
+                {
+                    loadingText = CachedLoadingTexts[1].Value<string>();
+                }
+                else if (choice < 35)
+                {
+                    loadingText = CachedLoadingTexts[0].Value<string>();
+                }
+                else
+                {
+                    loadingText = CachedLoadingTexts[random.Next(0, CachedLoadingTexts.Count)].Value<string>();
+                }
+                Log.logger.Info("Loading文本：" + loadingText);
             }
-            Log.logger.Info("Loading文本：" + loadingText);
             await ChangeLoadingText(loadingText);
         }
         private void LaunchUpdateLoadingThread()
