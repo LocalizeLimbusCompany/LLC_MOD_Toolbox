@@ -1725,17 +1725,25 @@ namespace LLC_MOD_Toolbox
             CachedLoadingTexts = loadingTexts;
             int choice = random.Next(0, 100);
             string loadingText = "出现这个文本绝不是因为出了什么问题...";
-            if (choice < 25)
+            if(CachedLoadingTexts == null || CachedLoadingTexts.Count == 0)
             {
-                loadingText = CachedLoadingTexts[1].Value<string>();
-            }
-            else if (choice < 35)
-            {
-                loadingText = CachedLoadingTexts[0].Value<string>();
+                //对读取数组为空做出记录
             }
             else
             {
-                loadingText = CachedLoadingTexts[random.Next(0, CachedLoadingTexts.Count)].Value<string>();
+                if (choice < 25)
+                {
+                    loadingText = CachedLoadingTexts[1].Value<string>();
+                }
+                else if (choice < 35)
+                {
+                    loadingText = CachedLoadingTexts[0].Value<string>();
+                }
+                else
+                {
+                    loadingText = CachedLoadingTexts[random.Next(0, CachedLoadingTexts.Count)].Value<string>();
+                }
+                Log.logger.Info("Loading文本：" + loadingText);
             }
             Log.logger.Info("Loading文本：" + loadingText);
             await ChangeLoadingText(loadingText);
