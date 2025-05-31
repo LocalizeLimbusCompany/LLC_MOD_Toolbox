@@ -1,4 +1,5 @@
 using System.Net.Http;
+using System.Runtime.InteropServices;
 using System.Windows;
 using LLC_MOD_Toolbox.Helpers;
 using LLC_MOD_Toolbox.Models;
@@ -36,6 +37,15 @@ namespace LLC_MOD_Toolbox
             // Services
             services.AddTransient<IFileDownloadService, FileDownloadService>();
             services.AddTransient<IDialogDisplayService, DialogDisplayService>();
+
+            if (true)
+            {
+                services.AddTransient<ILoadingTextService, FileLoadingTextService>();
+            }
+            else
+            {
+                services.AddTransient<ILoadingTextService, FileLoadingTextService>();
+            }
 
             // Views
             services.AddTransient<MainWindow>();
@@ -151,10 +161,21 @@ namespace LLC_MOD_Toolbox
         private void RunAsConsole()
         {
             _logger.LogInformation("工具箱已以控制台模式运行。");
+
             Console.WriteLine("欢迎使用 LLC_MOD_Toolbox！");
-            Console.WriteLine("请使用图形界面进行操作。");
+            _logger.LogInformation("以控制台方式启动");
+            var config = Services.GetRequiredService<Config>();
+            var fileDownloadService = Services.GetRequiredService<IFileDownloadService>();
+            var paths = UrlHelper.GetCustumApiUrls(config.ApiNode.Endpoint, config.Token);
+            foreach (var path in paths)
+            {
+                fileDownloadService.GetJsonAsync(path);
+            }
             Console.ReadKey();
             Current.Shutdown();
         }
+
+        [DllImport("kernel32.dll")]
+        private static extern bool AllocConsole();
     }
 }
