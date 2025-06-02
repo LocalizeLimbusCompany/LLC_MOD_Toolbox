@@ -802,12 +802,11 @@ namespace LLC_MOD_Toolbox
                 string latestReleaseTagRaw = JsonObject["tag_name"].Value<string>();
                 string latestReleaseTag = latestReleaseTagRaw.Remove(0, 1);
                 Log.logger.Info("最新安装器tag：" + latestReleaseTag);
-                //if (new Version(latestReleaseTag) > Assembly.GetExecutingAssembly().GetName().Version)
-                if (true)
+                if (new Version(latestReleaseTag) > Assembly.GetExecutingAssembly().GetName().Version)
                 {
                     Log.logger.Info("安装器存在更新。");
                     var result = MessageBox.Show("安装器存在更新。\n点击确定下载最新版工具箱安装包并安装。\n你也可以在官网直接下载最新版。", "更新提醒", MessageBoxButton.OKCancel, MessageBoxImage.Warning);
-                    if (result == MessageBoxResult.OK || true)
+                    if (result == MessageBoxResult.OK)
                     {
                         Log.logger.Info("用户选择下载更新。");
                         string installerEXE = Path.Combine(Path.GetTempPath(), "LLC_Mod_Toolbox_Installer.exe");
