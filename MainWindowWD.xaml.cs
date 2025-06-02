@@ -18,7 +18,6 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
 using SevenZip;
-using System;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
@@ -29,7 +28,6 @@ using System.Security.Cryptography;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using static LLC_MOD_Toolbox.SimpleDnsChecker;
 
@@ -242,13 +240,13 @@ namespace LLC_MOD_Toolbox
         {
             await Task.Run(async () =>
             {
-            Log.logger.Info("正在安装字体文件。");
-            installPhase = 1;
-            string fontDir = Path.Combine(limbusCompanyDir, "LimbusCompany_Data", "Lang", "LLC_zh-CN", "Font", "Context");
-            Directory.CreateDirectory(fontDir);
-            string fontZIPFile = Path.Combine(limbusCompanyDir, "LLCCN-Font.7z");
-            string fontChinese = Path.Combine(fontDir, "ChineseFont.ttf");
-            string fontBackup = Path.Combine(limbusCompanyDir, "LimbusCompany_Data", "Lang", "LLC_zh-CN", "BackupFont", "ChineseFont.ttf.bak");
+                Log.logger.Info("正在安装字体文件。");
+                installPhase = 1;
+                string fontDir = Path.Combine(limbusCompanyDir, "LimbusCompany_Data", "Lang", "LLC_zh-CN", "Font", "Context");
+                Directory.CreateDirectory(fontDir);
+                string fontZIPFile = Path.Combine(limbusCompanyDir, "LLCCN-Font.7z");
+                string fontChinese = Path.Combine(fontDir, "ChineseFont.ttf");
+                string fontBackup = Path.Combine(limbusCompanyDir, "LimbusCompany_Data", "Lang", "LLC_zh-CN", "BackupFont", "ChineseFont.ttf.bak");
                 if (File.Exists(fontChinese) || File.Exists(fontBackup))
                 {
                     Log.logger.Info("检测到已安装字体文件。");
@@ -702,6 +700,18 @@ namespace LLC_MOD_Toolbox
             downloader.DownloadFileCompleted += NewOnDownloadProgressCompleted;
             await downloader.DownloadFileTaskAsync(Url, Path);
         }
+        public static async Task DownloadFileAsyncWithoutProgress(string Url, string Path)
+        {
+            Log.logger.Info($"下载 {Url} 到 {Path}");
+            var downloadOpt = new DownloadConfiguration()
+            {
+                BufferBlockSize = 10240,
+                ChunkCount = 8,
+                MaxTryAgainOnFailover = 5,
+            };
+            var downloader = new DownloadService(downloadOpt);
+            await downloader.DownloadFileTaskAsync(Url, Path);
+        }
         public async Task DownloadFileAutoAsync(string File, string Path)
         {
             Log.logger.Info($"自动选择下载节点式下载文件 文件: {File}  路径: {Path}");
@@ -792,12 +802,23 @@ namespace LLC_MOD_Toolbox
                 string latestReleaseTagRaw = JsonObject["tag_name"].Value<string>();
                 string latestReleaseTag = latestReleaseTagRaw.Remove(0, 1);
                 Log.logger.Info("最新安装器tag：" + latestReleaseTag);
-                if (new Version(latestReleaseTag) > Assembly.GetExecutingAssembly().GetName().Version)
+                //if (new Version(latestReleaseTag) > Assembly.GetExecutingAssembly().GetName().Version)
+                if (true)
                 {
                     Log.logger.Info("安装器存在更新。");
-                    System.Windows.MessageBox.Show("安装器存在更新。\n点击确定进入官网下载最新版本工具箱", "更新提醒", MessageBoxButton.OK, MessageBoxImage.Warning);
-                    OpenUrl("https://www.zeroasso.top/docs/install/autoinstall");
-                    System.Windows.Application.Current.Shutdown();
+                    var result = MessageBox.Show("安装器存在更新。\n点击确定下载最新版工具箱安装包并安装。\n你也可以在官网直接下载最新版。", "更新提醒", MessageBoxButton.OKCancel, MessageBoxImage.Warning);
+                    if (result == MessageBoxResult.OK || true)
+                    {
+                        Log.logger.Info("用户选择下载更新。");
+                        string installerEXE = Path.Combine(Path.GetTempPath(), "LLC_Mod_Toolbox_Installer.exe");
+                        await DownloadFileAsyncWithoutProgress("https://download.zeroasso.top/files/LLC_MOD_Toolbox_Installer.exe", installerEXE);
+                        Log.logger.Info("下载完成。");
+                        MessageBox.Show("下载完成，即将启动安装器。", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
+                        string batPath = CreateBatchFile(installerEXE);
+                        StartBatchProcess(batPath);
+                        Application.Current.Shutdown();
+                    }
+                    Application.Current.Shutdown();
                 }
                 Log.logger.Info("没有更新。");
             }
@@ -806,6 +827,38 @@ namespace LLC_MOD_Toolbox
                 Log.logger.Error("检查安装器更新出现问题。", ex);
                 return;
             }
+        }
+
+        private static string CreateBatchFile(string targetExePath)
+        {
+            string currentExePath = System.Reflection.Assembly.GetExecutingAssembly().Location;
+
+            string batPath = Path.Combine(Path.GetTempPath(), "Cleanup_" + Guid.NewGuid() + ".bat");
+
+            string batContent = $@"
+@echo off
+timeout /t 1 /nobreak >nul
+start /wait """" ""{targetExePath}""
+del /f /q ""{targetExePath}""
+del /f /q ""{batPath}""
+";
+
+            File.WriteAllText(batPath, batContent);
+            return batPath;
+        }
+
+        private static void StartBatchProcess(string batPath)
+        {
+            var processInfo = new ProcessStartInfo
+            {
+                FileName = "cmd.exe",
+                Arguments = $"/c \"{batPath}\"",
+                CreateNoWindow = true,
+                UseShellExecute = false,
+                WindowStyle = ProcessWindowStyle.Hidden
+            };
+
+            Process.Start(processInfo);
         }
         private async Task CheckModInstalled()
         {
@@ -897,7 +950,7 @@ namespace LLC_MOD_Toolbox
                     File.WriteAllText(Path.Combine(limbusCompanyDir, "LimbusCompany_Data", "Lang", "config.json"), newConfigJson);
                 }
             }
-            catch(JsonReaderException ex)
+            catch (JsonReaderException ex)
             {
                 var result = MessageBox.Show("配置文件出现问题，是否尝试进行修复？\n" + ex.Message, "错误", MessageBoxButton.OKCancel, MessageBoxImage.Error);
                 if (result == MessageBoxResult.OK)
@@ -1725,9 +1778,9 @@ namespace LLC_MOD_Toolbox
             CachedLoadingTexts = loadingTexts;
             int choice = random.Next(0, 100);
             string loadingText = "出现这个文本绝不是因为出了什么问题...";
-            if(CachedLoadingTexts == null || CachedLoadingTexts.Count == 0)
+            if (CachedLoadingTexts == null || CachedLoadingTexts.Count == 0)
             {
-                //对读取数组为空做出记录
+                Log.logger.Error("Loading文本为空。");
             }
             else
             {
@@ -1765,17 +1818,24 @@ namespace LLC_MOD_Toolbox
             Random random = new();
             int choice = random.Next(0, 100);
             string loadingText = "出现这个文本绝不是因为出了什么问题...";
-            if (choice < 15)
+            if (CachedLoadingTexts == null || CachedLoadingTexts.Count == 0)
             {
-                loadingText = CachedLoadingTexts[1].Value<string>();
-            }
-            else if (choice < 25)
-            {
-                loadingText = CachedLoadingTexts[0].Value<string>();
+                Log.logger.Error("Loading文本为空。");
             }
             else
             {
-                loadingText = CachedLoadingTexts[random.Next(0, CachedLoadingTexts.Count)].Value<string>();
+                if (choice < 15)
+                {
+                    loadingText = CachedLoadingTexts[1].Value<string>();
+                }
+                else if (choice < 25)
+                {
+                    loadingText = CachedLoadingTexts[0].Value<string>();
+                }
+                else
+                {
+                    loadingText = CachedLoadingTexts[random.Next(0, CachedLoadingTexts.Count)].Value<string>();
+                }
             }
             Log.logger.Info("Loading文本：" + loadingText);
             await ChangeLoadingText(loadingText);
@@ -1850,18 +1910,39 @@ namespace LLC_MOD_Toolbox
         private void ChangeFontButtonClick(object sender, RoutedEventArgs e)
         {
             string oldFontPath = Path.Combine(limbusCompanyDir, "LimbusCompany_Data", "Lang", "LLC_zh-CN", "Font", "Context", "ChineseFont.ttf");
-            if (!File.Exists(oldFontPath))
+            string oldOTFFontPath = Path.Combine(limbusCompanyDir, "LimbusCompany_Data", "Lang", "LLC_zh-CN", "Font", "Context", "ChineseFont.otf");
+            string backupFontPath = Path.Combine(limbusCompanyDir, "LimbusCompany_Data", "Lang", "LLC_zh-CN", "BackupFont", "ChineseFont.ttf.bak");
+            if (!File.Exists(oldFontPath) && !File.Exists(backupFontPath))
             {
                 MessageBox.Show("请先安装汉化，然后再进行字体替换。", "提示", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
             }
-            Directory.CreateDirectory(Path.Combine(limbusCompanyDir, "LimbusCompany_Data", "Lang", "LLC_zh-CN", "BackupFont"));
-            File.Move(oldFontPath, Path.Combine(limbusCompanyDir, "LimbusCompany_Data", "Lang", "LLC_zh-CN", "BackupFont", "ChineseFont.ttf.bak"));
-            if (IsValidFontFile(FontReplaceTextBox.Text))
+            if (!IsValidFontFile(FontReplaceTextBox.Text))
             {
-                string extension = new FileInfo(FontReplaceTextBox.Text).Extension;
-                File.Copy(FontReplaceTextBox.Text, Path.Combine(limbusCompanyDir, "LimbusCompany_Data", "Lang", "LLC_zh-CN","Font","Context", $"ChineseFont{extension}"), true);
-                MessageBox.Show("字体替换成功。\n启动游戏以应用更改。", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
+                Log.logger.Info("字体文件无效。");
+                MessageBox.Show("字体文件无效。", "提示", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
+            if (File.Exists(oldFontPath) && !File.Exists(backupFontPath))
+            {
+                Log.logger.Info("正在备份原字体文件。");
+                Directory.CreateDirectory(Path.Combine(limbusCompanyDir, "LimbusCompany_Data", "Lang", "LLC_zh-CN", "BackupFont"));
+                File.Move(oldFontPath, backupFontPath);
+            }
+            if (File.Exists(oldFontPath))
+            {
+                Log.logger.Info("正在删除原TTF字体文件。");
+                File.Delete(oldFontPath);
+            }
+            if (File.Exists(oldOTFFontPath))
+            {
+                Log.logger.Info("正在删除原OTF字体文件。");
+                File.Delete(oldOTFFontPath);
+            }
+            Log.logger.Info("正在替换字体文件。");
+            string extension = new FileInfo(FontReplaceTextBox.Text).Extension;
+            File.Copy(FontReplaceTextBox.Text, Path.Combine(limbusCompanyDir, "LimbusCompany_Data", "Lang", "LLC_zh-CN", "Font", "Context", $"ChineseFont{extension}"), true);
+            MessageBox.Show("字体替换成功。\n启动游戏以应用更改。", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
+            Log.logger.Info("字体替换成功。");
         }
         private void RestoreFontButtonClick(object sender, RoutedEventArgs e)
         {
@@ -1880,6 +1961,11 @@ namespace LLC_MOD_Toolbox
                 }
                 File.Move(backupFontPath, oldFontTTFPath);
                 MessageBox.Show("字体还原成功。\n启动游戏以应用更改。", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            else
+            {
+                Log.logger.Info("没有找到备份字体文件。");
+                MessageBox.Show("没有找到备份字体文件。", "提示", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
         }
         private bool IsValidFontFile(string filePath)
