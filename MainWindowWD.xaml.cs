@@ -1079,6 +1079,7 @@ del /f /q ""{batPath}""
                 {
                     Log.logger.Info("Token为空。");
                     System.Windows.MessageBox.Show("请输入有效的Token。", "提示", MessageBoxButton.OK, MessageBoxImage.Error);
+                    await EnableGlobalOperations();
                     return;
                 }
                 Log.logger.Info("Token为：" + token);
