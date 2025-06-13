@@ -8,6 +8,7 @@ using LLC_MOD_Toolbox.ViewModels;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NLog.Extensions.Logging;
+using NLog.Targets;
 using SevenZip;
 
 namespace LLC_MOD_Toolbox
@@ -28,7 +29,7 @@ namespace LLC_MOD_Toolbox
 
         private static ServiceProvider ConfigureServices()
         {
-            var services = new ServiceCollection();
+            ServiceCollection services = new();
 
             // Models
             services.AddSingleton(PrimaryNodeList.Create("NodeList.json"));
@@ -38,13 +39,16 @@ namespace LLC_MOD_Toolbox
             services.AddTransient<IFileDownloadService, FileDownloadService>();
             services.AddTransient<IDialogDisplayService, DialogDisplayService>();
 
-            if (true)
+            // TODO 尚未实装，因此在中运行时永远忽略
+            if (DateTime.Now > DateTime.MinValue)
             {
                 services.AddTransient<ILoadingTextService, FileLoadingTextService>();
             }
             else
             {
-                services.AddTransient<ILoadingTextService, FileLoadingTextService>();
+#pragma warning disable Api // 类型仅用于评估，在将来的更新中可能会被更改或删除。取消此诊断以继续。
+                services.AddTransient<ILoadingTextService, ApiLoadingTextService>();
+#pragma warning restore Api // 类型仅用于评估，在将来的更新中可能会被更改或删除。取消此诊断以继续。
             }
 
             // Views
@@ -59,7 +63,13 @@ namespace LLC_MOD_Toolbox
             services.AddLogging(builder =>
             {
                 builder.ClearProviders();
+#if DEBUG
+                var config = new NLog.Config.LoggingConfiguration();
+                config.AddTarget("console", new ConsoleTarget());
+                builder.AddNLog(config).SetMinimumLevel(LogLevel.Trace);
+#else
                 builder.AddNLog("Nlog.config");
+#endif
             });
 
             services.AddHttpClient();
@@ -76,15 +86,13 @@ namespace LLC_MOD_Toolbox
 
         private async void Application_Startup(object sender, StartupEventArgs e)
         {
+#if DEBUG
+            AllocConsole();
+#endif
             _logger.LogInformation("—————新日志分割线—————");
             _logger.LogInformation("工具箱已进入加载流程。");
             _logger.LogInformation("We have a lift off.");
 
-            if (e.Args.Length > 0)
-            {
-                _logger.LogInformation("检测到启动参数。");
-                throw new NotImplementedException("暂不支持启动参数。");
-            }
             if (e.Args.Contains("--cli"))
             {
                 _logger.LogInformation("检测到控制台模式参数。");
@@ -97,17 +105,17 @@ namespace LLC_MOD_Toolbox
             try
             {
                 SevenZipBase.SetLibraryPath("7z.dll");
-                var http = Services.GetRequiredService<IFileDownloadService>();
+                IFileDownloadService http = Services.GetRequiredService<IFileDownloadService>();
 
-                var NodeList = Services.GetRequiredService<PrimaryNodeList>();
+                PrimaryNodeList NodeList = Services.GetRequiredService<PrimaryNodeList>();
                 // TODO: 优化节点选择
                 NodeInformation nodeInformation = NodeList.ApiNode.Last(n => n.IsDefault);
-                var jsonPayload = await http.GetJsonAsync(
+                string jsonPayload = await http.GetJsonAsync(
                     UrlHelper.GetReleaseUrl(nodeInformation.Endpoint)
                 );
                 _logger.LogInformation("API 节点连接成功。");
-                var announcement = JsonHelper.DeserializeValue("body", jsonPayload);
-                var latestVersion = JsonHelper.DeserializeValue("tag_name", jsonPayload);
+                string announcement = JsonHelper.DeserializeValue("body", jsonPayload);
+                string latestVersion = JsonHelper.DeserializeValue("tag_name", jsonPayload);
                 _logger.LogInformation("当前网络版本：{latestVersion}", latestVersion);
                 if (VersionHelper.CheckForUpdate(latestVersion))
                 {
@@ -130,7 +138,7 @@ namespace LLC_MOD_Toolbox
             {
                 _logger.LogError(ex, "检查更新时出现异常");
             }
-            var mainWindow = Services.GetRequiredService<MainWindow>();
+            MainWindow mainWindow = Services.GetRequiredService<MainWindow>();
             mainWindow.Show();
         }
 
@@ -164,10 +172,11 @@ namespace LLC_MOD_Toolbox
 
             Console.WriteLine("欢迎使用 LLC_MOD_Toolbox！");
             _logger.LogInformation("以控制台方式启动");
-            var config = Services.GetRequiredService<Config>();
-            var fileDownloadService = Services.GetRequiredService<IFileDownloadService>();
-            var paths = UrlHelper.GetCustumApiUrls(config.ApiNode.Endpoint, config.Token);
-            foreach (var path in paths)
+            Config config = Services.GetRequiredService<Config>();
+            IFileDownloadService fileDownloadService =
+                Services.GetRequiredService<IFileDownloadService>();
+            List<string> paths = UrlHelper.GetCustumApiUrls(config.ApiNode.Endpoint, config.Token);
+            foreach (string path in paths)
             {
                 fileDownloadService.GetJsonAsync(path);
             }
@@ -175,7 +184,10 @@ namespace LLC_MOD_Toolbox
             Current.Shutdown();
         }
 
-        [DllImport("kernel32.dll")]
-        private static extern bool AllocConsole();
+        [System.Security.SuppressUnmanagedCodeSecurity]
+        [DllImport("kernel32", CharSet = CharSet.Auto)]
+#pragma warning disable SYSLIB1054 // 使用 “LibraryImportAttribute” 而不是 “DllImportAttribute” 在编译时生成 P/Invoke 封送代码
+        internal static extern bool AllocConsole();
+#pragma warning restore SYSLIB1054 // 使用 “LibraryImportAttribute” 而不是 “DllImportAttribute” 在编译时生成 P/Invoke 封送代码
     }
 }

@@ -71,7 +71,7 @@ internal static class FileHelper
             throw new ArgumentException("路径不存在", nameof(limbusCompanyPath));
         if (stream == null)
             throw new ArgumentNullException(nameof(stream), "流不能为空");
-        using var extractor = new SevenZip.SevenZipExtractor(stream);
+        using SevenZip.SevenZipExtractor extractor = new SevenZip.SevenZipExtractor(stream);
         extractor.ExtractArchive(limbusCompanyPath);
     }
 

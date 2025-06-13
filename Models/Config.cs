@@ -15,7 +15,7 @@ namespace LLC_MOD_Toolbox.Models
 
         public static Config Create(string url)
         {
-            var jsonPayload = File.ReadAllText(url);
+            string jsonPayload = File.ReadAllText(url);
             return JsonHelper.Deserialize<Config>(jsonPayload);
         }
     }

@@ -22,7 +22,7 @@ public class PrimaryNodeList
 
     public static PrimaryNodeList Create(string url)
     {
-        var jsonPayload = File.ReadAllText(url);
+        string jsonPayload = File.ReadAllText(url);
         return JsonHelper.DeserializePrimaryNodeList(jsonPayload);
     }
 }

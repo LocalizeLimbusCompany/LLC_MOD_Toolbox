@@ -26,7 +26,7 @@ namespace LLC_MOD_Toolbox.Helpers
         public static List<string> GetCustumApiUrls(string url, string? testToken)
         {
             List<string> results = [];
-            foreach (var path in paths)
+            foreach (string path in paths)
             {
                 results.Add(sb.Clear().AppendFormat(url, path).ToString());
             }
@@ -43,9 +43,9 @@ namespace LLC_MOD_Toolbox.Helpers
         )
         {
             List<string> results = [];
-            foreach (var repo in repos)
+            foreach (string repo in repos)
             {
-                var jsonPayload = await fileDownloadService.GetJsonAsync(
+                string jsonPayload = await fileDownloadService.GetJsonAsync(
                     sb.Clear().AppendFormat(endpoint, repo).ToString()
                 );
                 results.Add(JsonHelper.DeserializeValue("browser_download_url", jsonPayload));

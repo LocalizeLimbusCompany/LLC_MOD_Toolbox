@@ -1,7 +1,3 @@
-// 此文件用来处理前端样式相关逻辑。
-// 我恨XML，这辈子都不想写XML了。
-// （而且内存占用好多
-
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;

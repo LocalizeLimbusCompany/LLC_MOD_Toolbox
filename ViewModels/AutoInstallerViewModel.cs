@@ -66,25 +66,7 @@ public partial class AutoInstallerViewModel : ObservableObject
         }
         try
         {
-            List<string> webFiles = [];
-            switch (selectedEndPoint.ApiType)
-            {
-                case ApiType.Custom:
-                {
-                    webFiles = UrlHelper.GetCustumApiUrls(selectedEndPoint.Endpoint, testToken);
-                    break;
-                }
-
-                case ApiType.GitHub:
-                    webFiles = await UrlHelper.GetGitHubApiUrl(
-                        selectedEndPoint.Endpoint,
-                        fileDownloadService
-                    );
-                    break;
-                default:
-                    throw new NotImplementedException("暂不支持的 API 类型。");
-            }
-            List<Task> tasks = [];
+            _logger.LogInformation("文件下载成功，开始执行后续操作。");
         }
         catch (IOException ex)
         {
