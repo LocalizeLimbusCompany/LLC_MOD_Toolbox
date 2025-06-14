@@ -318,7 +318,7 @@ namespace LLC_MOD_Toolbox
                 }
                 else if (!useGithub && !needInstall)
                 {
-                    latestVersion = await GetLatestLimbusLocalizeVersion(true);
+                    latestVersion = await GetLatestLimbusLocalizeVersion(false);
                     Log.logger.Info("最后模组版本： " + latestVersion);
                     versionObj = JObject.Parse(File.ReadAllText(versionJsonPath));
                     currentVersion = versionObj["version"].Value<int>();
