@@ -11,7 +11,6 @@ namespace LLC_MOD_Toolbox.Views
     {
         public Link()
         {
-            DataContext = App.Current.Services.GetRequiredService<LinkViewModel>();
             InitializeComponent();
         }
     }

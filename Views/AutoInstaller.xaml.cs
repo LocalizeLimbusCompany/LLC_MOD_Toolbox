@@ -11,7 +11,6 @@ namespace LLC_MOD_Toolbox.Views
     {
         public AutoInstaller()
         {
-            DataContext = App.Current.Services.GetRequiredService<AutoInstallerViewModel>();
             InitializeComponent();
         }
     }

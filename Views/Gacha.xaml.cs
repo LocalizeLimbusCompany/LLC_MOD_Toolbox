@@ -11,7 +11,6 @@ namespace LLC_MOD_Toolbox.Views
     {
         public Gacha()
         {
-            DataContext = App.Current.Services.GetRequiredService<GachaViewModel>();
             InitializeComponent();
         }
     }

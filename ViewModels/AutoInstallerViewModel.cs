@@ -45,7 +45,7 @@ public partial class AutoInstallerViewModel : ObservableObject
     }
 
     [RelayCommand]
-    private async Task ModInstallation()
+    private Task ModInstallation()
     {
         _logger.LogInformation("开始安装 BepInEx。");
         _logger.LogInformation("选择的下载节点为：{selectedEndPoint}", selectedEndPoint);
@@ -56,13 +56,13 @@ public partial class AutoInstallerViewModel : ObservableObject
             dialogDisplayService.ShowError("检测到 MelonLoader，请先卸载。");
             MessageBox.Show("当前环境检测到 MelonLoader，请先卸载", "Warning");
             _logger.LogError("当前环境检测到 MelonLoader，提醒用户卸载。");
-            return;
+            return Task.CompletedTask;
         }
 
         if (!dialogDisplayService.Confirm("安装前请确保游戏已经关闭。\n确定继续吗？"))
         {
             _logger.LogInformation("用户取消了安装 BepInEx。");
-            return;
+            return Task.CompletedTask;
         }
         try
         {
@@ -88,5 +88,7 @@ public partial class AutoInstallerViewModel : ObservableObject
             MessageBox.Show("未知错误，请联系开发者。", "警告");
             _logger.LogError(ex, "未知错误，请联系开发者。");
         }
+
+        return Task.CompletedTask;
     }
 }

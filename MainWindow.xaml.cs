@@ -1,6 +1,10 @@
+using System.IO;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
+using LLC_MOD_Toolbox.Helpers;
+using LLC_MOD_Toolbox.ViewModels;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 namespace LLC_MOD_Toolbox
@@ -9,15 +13,22 @@ namespace LLC_MOD_Toolbox
     {
         private readonly ILogger<MainWindow> logger;
 
-        public MainWindow(ILogger<MainWindow> logger)
+        public MainWindow(
+            ILogger<MainWindow> logger,
+            MainViewModel mainViewModel,
+            AutoInstallerViewModel autoInstallerViewModel,
+            SettingsViewModel settingsViewModel,
+            GachaViewModel gachaViewModel,
+            LinkViewModel linkViewModel
+        )
         {
-            this.logger = logger;
             InitializeComponent();
-            //AutoInstallerPage.DataContext =
-            //    App.Current.Services.GetRequiredService<AutoInstallerViewModel>();
-            //SettingsPage.DataContext = App.Current.Services.GetRequiredService<SettingsViewModel>();
-            //GachaPage.DataContext = App.Current.Services.GetRequiredService<GachaViewModel>();
-            //LinkPage.DataContext = App.Current.Services.GetRequiredService<LinkViewModel>();
+            this.logger = logger;
+            DataContext = mainViewModel;
+            AutoInstallerPage.DataContext = autoInstallerViewModel;
+            SettingsPage.DataContext = settingsViewModel;
+            GachaPage.DataContext = gachaViewModel;
+            LinkPage.DataContext = linkViewModel;
         }
 
         private async void Window_Loaded(object sender, RoutedEventArgs e)
@@ -25,6 +36,33 @@ namespace LLC_MOD_Toolbox
             await ChangeEEPic("https://dl.kr.zeroasso.top/ee_pic/public/public.png");
 
             logger.LogInformation("加载流程完成。");
+        }
+
+        private void ManualInstallPage_Drop(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(DataFormats.FileDrop))
+            {
+                string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
+                var file = files.FirstOrDefault(f =>
+                    f.EndsWith(".7z", StringComparison.OrdinalIgnoreCase)
+                    || f.EndsWith(".zip", StringComparison.OrdinalIgnoreCase)
+                );
+                if (!string.IsNullOrEmpty(file))
+                {
+                    logger.LogInformation("拖拽文件路径: {filePath}", file);
+                    var fileStream = new FileStream(file, FileMode.Open, FileAccess.Read);
+                    var limbusCompanyPath =
+                        PathHelper.DetectedLimbusCompanyPath ?? PathHelper.SelectPath();
+                    try
+                    {
+                        FileHelper.ExtractLanguagePackage(fileStream, limbusCompanyPath);
+                    }
+                    finally
+                    {
+                        fileStream.Dispose();
+                    }
+                }
+            }
         }
 
         /// <summary>
@@ -109,6 +147,7 @@ namespace LLC_MOD_Toolbox
             });
         }
         #endregion
+
 #if false
         private async void StartGreytestButtonClick(object sender, RoutedEventArgs e)
         {

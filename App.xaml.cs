@@ -39,34 +39,31 @@ namespace LLC_MOD_Toolbox
             services.AddTransient<IFileDownloadService, FileDownloadService>();
             services.AddTransient<IDialogDisplayService, DialogDisplayService>();
 
-            // TODO 尚未实装，因此在中运行时永远忽略
-            if (DateTime.Now > DateTime.MinValue)
-            {
-                services.AddTransient<ILoadingTextService, FileLoadingTextService>();
-            }
-            else
-            {
-#pragma warning disable Api // 类型仅用于评估，在将来的更新中可能会被更改或删除。取消此诊断以继续。
-                services.AddTransient<ILoadingTextService, ApiLoadingTextService>();
-#pragma warning restore Api // 类型仅用于评估，在将来的更新中可能会被更改或删除。取消此诊断以继续。
-            }
+            services.AddScoped<ILoadingTextService, FileLoadingTextService>();
+            //services.AddTransient<ILoadingTextService, ApiLoadingTextService>();
+
 
             // Views
             services.AddTransient<MainWindow>();
 
             // ViewModels
-            services.AddTransient<AutoInstallerViewModel>();
-            services.AddTransient<SettingsViewModel>();
-            services.AddTransient<GachaViewModel>();
-            services.AddTransient<LinkViewModel>();
+            services.AddScoped<MainViewModel>();
+            services.AddScoped<AutoInstallerViewModel>();
+            services.AddScoped<SettingsViewModel>();
+            services.AddScoped<GachaViewModel>();
+            services.AddScoped<LinkViewModel>();
 
             services.AddLogging(builder =>
             {
                 builder.ClearProviders();
 #if DEBUG
                 var config = new NLog.Config.LoggingConfiguration();
-                config.AddTarget("console", new ConsoleTarget());
-                builder.AddNLog(config).SetMinimumLevel(LogLevel.Trace);
+                var consoleTarget = new ConsoleTarget("console");
+                config.AddTarget(consoleTarget);
+                // 添加规则，将所有日志级别从Trace到Fatal的日志路由到控制台
+                config.AddRule(NLog.LogLevel.Trace, NLog.LogLevel.Fatal, consoleTarget);
+                // 应用NLog配置
+                builder.AddNLog().AddConsole();
 #else
                 builder.AddNLog("Nlog.config");
 #endif
@@ -79,6 +76,10 @@ namespace LLC_MOD_Toolbox
 
         public App()
         {
+#if DEBUG
+            AllocConsole();
+            Console.WriteLine("控制台已生成");
+#endif
             Services = ConfigureServices();
             _logger = Services.GetRequiredService<ILogger<App>>();
             AppDomain.CurrentDomain.UnhandledException += Application_HandleException;
@@ -86,18 +87,15 @@ namespace LLC_MOD_Toolbox
 
         private async void Application_Startup(object sender, StartupEventArgs e)
         {
-#if DEBUG
-            AllocConsole();
-#endif
             _logger.LogInformation("—————新日志分割线—————");
             _logger.LogInformation("工具箱已进入加载流程。");
             _logger.LogInformation("We have a lift off.");
 
-            if (e.Args.Contains("--cli"))
+            if (e.Args.Contains("-cli"))
             {
                 _logger.LogInformation("检测到控制台模式参数。");
                 RunAsConsole();
-                return;
+                Shutdown();
             }
 
             _logger.LogInformation("当前版本：{}", VersionHelper.LocalVersion);
@@ -105,6 +103,7 @@ namespace LLC_MOD_Toolbox
             try
             {
                 SevenZipBase.SetLibraryPath("7z.dll");
+                _logger.LogTrace("7z.dll 路径已设置。");
                 IFileDownloadService http = Services.GetRequiredService<IFileDownloadService>();
 
                 PrimaryNodeList NodeList = Services.GetRequiredService<PrimaryNodeList>();
@@ -166,9 +165,24 @@ namespace LLC_MOD_Toolbox
                 : $"{ex.Message} -> {GetExceptionMessage(ex.InnerException)}";
         }
 
+        /// <summary>
+        /// 创建控制台窗口
+        /// </summary>
+        /// <returns>判断是否成功创建控制台窗口</returns>
+        [System.Security.SuppressUnmanagedCodeSecurity]
+        [DllImport("kernel32.dll", CharSet = CharSet.Auto)]
+#pragma warning disable SYSLIB1054 // 使用 “LibraryImportAttribute” 而不是 “DllImportAttribute” 在编译时生成 P/Invoke 封送代码
+        internal static extern bool AllocConsole();
+#pragma warning restore SYSLIB1054 // 使用 “LibraryImportAttribute” 而不是 “DllImportAttribute” 在编译时生成 P/Invoke 封送代码
+
+        /// <summary>
+        /// 仅在控制台模式下运行时调用的方法。
+        /// 注意：请在调用此方法后调用 <see cref="Current.Shutdown"/> 以确保应用程序正确退出。
+        /// </summary>
         private void RunAsConsole()
         {
-            _logger.LogInformation("工具箱已以控制台模式运行。");
+            AllocConsole();
+            _logger.LogTrace("工具箱已以控制台模式运行。");
 
             Console.WriteLine("欢迎使用 LLC_MOD_Toolbox！");
             _logger.LogInformation("以控制台方式启动");
@@ -180,14 +194,10 @@ namespace LLC_MOD_Toolbox
             {
                 fileDownloadService.GetJsonAsync(path);
             }
+            _logger.LogTrace("控制台的汉化安装已完成");
+            Console.WriteLine("控制台的汉化安装已完成。请按任意键退出。");
             Console.ReadKey();
-            Current.Shutdown();
+            UrlHelper.LaunchUrl("steam://rungameid/1973530");
         }
-
-        [System.Security.SuppressUnmanagedCodeSecurity]
-        [DllImport("kernel32", CharSet = CharSet.Auto)]
-#pragma warning disable SYSLIB1054 // 使用 “LibraryImportAttribute” 而不是 “DllImportAttribute” 在编译时生成 P/Invoke 封送代码
-        internal static extern bool AllocConsole();
-#pragma warning restore SYSLIB1054 // 使用 “LibraryImportAttribute” 而不是 “DllImportAttribute” 在编译时生成 P/Invoke 封送代码
     }
 }

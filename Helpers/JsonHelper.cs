@@ -1,3 +1,4 @@
+using System.IO;
 using LLC_MOD_Toolbox.Models;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -41,4 +42,14 @@ internal static class JsonHelper
     public static T Deserialize<T>(string jsonPayload) =>
         JsonConvert.DeserializeObject<T>(jsonPayload, camelCaseJsonSettings)
         ?? throw new JsonReaderException();
+
+    public static void Serialize<T>(T obj, string path)
+    {
+        string jsonPayload = JsonConvert.SerializeObject(
+            obj,
+            Formatting.Indented,
+            camelCaseJsonSettings
+        );
+        File.WriteAllText(path, jsonPayload);
+    }
 }

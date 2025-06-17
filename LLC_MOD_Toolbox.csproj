@@ -9,31 +9,25 @@
     <LangVersion>13</LangVersion>
     <SupportedOSPlatformVersion>7.0</SupportedOSPlatformVersion>
     <ApplicationIcon>favicon.ico</ApplicationIcon>
-    <Configurations>Debug;Release;LLC_MOD_Toolbox;ReleaseLLCMT</Configurations>
+    <Configurations>Debug;Release</Configurations>
 	<Version>2.0.0</Version>
 	<SignAssembly>False</SignAssembly>
 	<EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
 	  <PathMap>$(MSBuildProjectDirectory)=LLC_MOD_Toolbox</PathMap>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <Optimize>False</Optimize>
+  </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <Optimize>False</Optimize>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='LLC_MOD_Toolbox|AnyCPU'">
-    <Optimize>False</Optimize>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseLLCMT|AnyCPU'">
     <Optimize>True</Optimize>
   </PropertyGroup>
 
   <ItemGroup>
     <Resource Include="Assets\Fonts\SourceHanSansCN-Medium.ttf" />
     <Resource Include="favicon.ico" />
-	  
+
 	  <Content Include="Assets\Images\*.png">
 		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		  <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
@@ -66,6 +60,7 @@
     <PackageReference Include="Downloader" Version="*" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="*" />
     <PackageReference Include="Microsoft.Extensions.Http" Version="*" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="*" Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'" />
     <PackageReference Include="Newtonsoft.Json" Version="*" />
     <PackageReference Include="NLog.Extensions.Logging" Version="*" />
     <PackageReference Include="Squid-Box.SevenZipSharp" Version="*" />

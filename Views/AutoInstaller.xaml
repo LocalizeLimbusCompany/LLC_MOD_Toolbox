@@ -28,7 +28,7 @@
             Background="Transparent"
             Value="{Binding Percent}">
             <ProgressBar.Foreground>
-                <ImageBrush ImageSource="pack://application:,,,/LLC_MOD_Toolbox;component/Assets/Images/FullProgress.png" Stretch="Uniform" />
+                <ImageBrush ImageSource="/Assets/Images/FullProgress.png" Stretch="Uniform" />
             </ProgressBar.Foreground>
         </ProgressBar>
     </Grid>

@@ -71,7 +71,7 @@ internal static class FileHelper
             throw new ArgumentException("路径不存在", nameof(limbusCompanyPath));
         if (stream == null)
             throw new ArgumentNullException(nameof(stream), "流不能为空");
-        using SevenZip.SevenZipExtractor extractor = new SevenZip.SevenZipExtractor(stream);
+        using SevenZip.SevenZipExtractor extractor = new(stream);
         extractor.ExtractArchive(limbusCompanyPath);
     }
 
@@ -111,5 +111,18 @@ internal static class FileHelper
                 logger.LogInformation("{}已提前被删除。", folder);
             }
         }
+    }
+
+    public static Task ExtractFileAsync(string filePath, string destinationPath)
+    {
+        if (string.IsNullOrEmpty(destinationPath) || !Directory.Exists(destinationPath))
+        {
+            throw new ArgumentException("目标路径无效或不存在", nameof(destinationPath));
+        }
+        return Task.Run(() =>
+        {
+            using var archive = new SevenZip.SevenZipExtractor(filePath);
+            archive.ExtractArchive(destinationPath);
+        });
     }
 }

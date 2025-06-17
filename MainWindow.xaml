@@ -274,7 +274,10 @@
             </Grid>
             <Grid Grid.Row="1">
 
-                <TabControl Grid.RowSpan="2" TabStripPlacement="Left">
+                <TabControl
+                    x:Name="MainTabControl"
+                    Grid.RowSpan="2"
+                    TabStripPlacement="Left">
                     <TabControl.Background>
                         <ImageBrush ImageSource="/Assets/Images/ControlBoard.png" />
                     </TabControl.Background>
@@ -284,8 +287,11 @@
                                 <views:AutoInstaller x:Name="AutoInstallerPage" />
                             </TabItem>
                             <TabItem Header="手动安装">
-                                <Grid x:Name="ManualInstallPage">
-                                    <TextBlock Style="{StaticResource Information}" Text="手动安装功能尚未开启，敬请期待后续版本。" />
+                                <Grid
+                                    x:Name="ManualInstallPage"
+                                    AllowDrop="True"
+                                    Drop="ManualInstallPage_Drop">
+                                    <TextBlock Style="{StaticResource Information}" Text="请将下载的zip包拖入。" />
                                 </Grid>
                             </TabItem>
                             <TabItem Header="覆盖安装">
@@ -297,7 +303,7 @@
                         </TabControl>
                     </TabItem>
                     <TabItem Header="链接">
-                        <views:Link x:Name="LinkPage" d:DataContext="{d:DesignInstance Type=viewmodels:LinkViewModel, IsDesignTimeCreatable=True}" />
+                        <views:Link x:Name="LinkPage" />
                     </TabItem>
                     <TabItem Header="灰度测试">
                         <views:GrayTest />
