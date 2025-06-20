@@ -56,6 +56,10 @@ namespace LLC_MOD_Toolbox
                     try
                     {
                         FileHelper.ExtractLanguagePackage(fileStream, limbusCompanyPath);
+                        logger.LogInformation(
+                            "成功安装语言包到边狱公司目录：{limbusCompanyPath}",
+                            limbusCompanyPath
+                        );
                     }
                     finally
                     {

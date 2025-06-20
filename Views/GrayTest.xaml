@@ -7,7 +7,6 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:sys="clr-namespace:System;assembly=mscorlib"
     xmlns:viewmodels="clr-namespace:LLC_MOD_Toolbox.ViewModels"
-    d:Background="DarkGray"
     d:DataContext="{d:DesignInstance Type=viewmodels:GrayTestViewModel}"
     d:DesignHeight="450"
     d:DesignWidth="800"
@@ -29,7 +28,7 @@
         <TextBox
             FontSize="16"
             FontWeight="Medium"
-            Text="{Binding TestToken}">
+            Text="{Binding Token}">
             <TextBox.Resources>
                 <VisualBrush
                     x:Key="HelpBrush"

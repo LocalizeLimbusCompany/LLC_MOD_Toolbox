@@ -24,6 +24,14 @@
     WindowStyle="None"
     mc:Ignorable="d">
     <Window.Resources>
+        <ImageBrush
+            x:Key="ProgressBrush"
+            ImageSource="/Assets/Images/FullProgress.png"
+            Stretch="Uniform" />
+        <ImageBrush
+            x:Key="GachaBrush"
+            ImageSource="/Assets/Images/GachaBackground.png"
+            Stretch="Uniform" />
         <Style x:Key="NoHover" TargetType="Button">
             <Setter Property="OverridesDefaultStyle" Value="True" />
             <Setter Property="Cursor" Value="Hand" />
@@ -288,10 +296,10 @@
                             </TabItem>
                             <TabItem Header="手动安装">
                                 <Grid
-                                    x:Name="ManualInstallPage"
                                     AllowDrop="True"
+                                    Background="Transparent"
                                     Drop="ManualInstallPage_Drop">
-                                    <TextBlock Style="{StaticResource Information}" Text="请将下载的zip包拖入。" />
+                                    <TextBlock Style="{StaticResource Information}" Text="请将下载的资源包拖入。" />
                                 </Grid>
                             </TabItem>
                             <TabItem Header="覆盖安装">
@@ -309,7 +317,7 @@
                         <views:GrayTest />
                     </TabItem>
                     <TabItem Header="设置">
-                        <views:Settings x:Name="SettingsPage" d:DataContext="{d:DesignInstance Type=viewmodels:SettingsViewModel}" />
+                        <views:Settings x:Name="SettingsPage" />
                     </TabItem>
                     <TabItem Header="关于">
                         <TextBlock Style="{StaticResource Information}" TextWrapping="Wrap">
