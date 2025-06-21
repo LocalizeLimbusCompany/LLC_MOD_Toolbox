@@ -1,11 +1,8 @@
-// 此文件用来处理前端样式相关逻辑。
-// 我恨XML，这辈子都不想写XML了。
-// （而且内存占用好多
-
+using System.IO;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
-using System.Windows.Threading;
+using LLC_MOD_Toolbox.Helpers;
 using LLC_MOD_Toolbox.ViewModels;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -16,25 +13,60 @@ namespace LLC_MOD_Toolbox
     {
         private readonly ILogger<MainWindow> logger;
 
-        public MainWindow(ILogger<MainWindow> logger)
+        public MainWindow(
+            ILogger<MainWindow> logger,
+            MainViewModel mainViewModel,
+            AutoInstallerViewModel autoInstallerViewModel,
+            SettingsViewModel settingsViewModel,
+            GachaViewModel gachaViewModel,
+            LinkViewModel linkViewModel
+        )
         {
-            this.logger = logger;
             InitializeComponent();
-            AutoInstallerPage.DataContext =
-                App.Current.Services.GetRequiredService<AutoInstallerViewModel>();
-            SettingsPage.DataContext = App.Current.Services.GetRequiredService<SettingsViewModel>();
-            GachaPage.DataContext = App.Current.Services.GetRequiredService<GachaViewModel>();
-            LinkPage.DataContext = App.Current.Services.GetRequiredService<LinkViewModel>();
-
-            progressTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(0.05) };
-            progressTimer.Tick += ProgressTime_Tick;
+            this.logger = logger;
+            DataContext = mainViewModel;
+            AutoInstallerPage.DataContext = autoInstallerViewModel;
+            SettingsPage.DataContext = settingsViewModel;
+            GachaPage.DataContext = gachaViewModel;
+            LinkPage.DataContext = linkViewModel;
         }
 
         private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
             await ChangeEEPic("https://dl.kr.zeroasso.top/ee_pic/public/public.png");
-            InitLink();
+
             logger.LogInformation("加载流程完成。");
+        }
+
+        private void ManualInstallPage_Drop(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(DataFormats.FileDrop))
+            {
+                string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
+                var file = files.FirstOrDefault(f =>
+                    f.EndsWith(".7z", StringComparison.OrdinalIgnoreCase)
+                    || f.EndsWith(".zip", StringComparison.OrdinalIgnoreCase)
+                );
+                if (!string.IsNullOrEmpty(file))
+                {
+                    logger.LogInformation("拖拽文件路径: {filePath}", file);
+                    var fileStream = new FileStream(file, FileMode.Open, FileAccess.Read);
+                    var limbusCompanyPath =
+                        PathHelper.DetectedLimbusCompanyPath ?? PathHelper.SelectPath();
+                    try
+                    {
+                        FileHelper.ExtractLanguagePackage(fileStream, limbusCompanyPath);
+                        logger.LogInformation(
+                            "成功安装语言包到边狱公司目录：{limbusCompanyPath}",
+                            limbusCompanyPath
+                        );
+                    }
+                    finally
+                    {
+                        fileStream.Dispose();
+                    }
+                }
+            }
         }
 
         /// <summary>
@@ -90,30 +122,6 @@ namespace LLC_MOD_Toolbox
             Application.Current.Shutdown();
         }
 
-        private async void GachaSimButtonClick(object sender, RoutedEventArgs e)
-        {
-            if (!isInitGacha)
-            {
-                MessageBoxResult messageBoxResult = MessageBox.Show(
-                    "本抽卡模拟器资源来源自维基，可能信息更新不准时。\n本模拟器 不 会 对您的游戏数据造成任何影响。\n若您已知悉，请点击“确定”进行初始化。",
-                    "提示",
-                    MessageBoxButton.OKCancel,
-                    MessageBoxImage.Information
-                );
-                if (messageBoxResult == MessageBoxResult.OK)
-                {
-                    //nowInstallPage = "gacha";
-                    await InitGacha();
-                    //await RefreshPage();
-                }
-            }
-            //else
-            //{
-            //    //nowInstallPage = "gacha";
-            //    //await RefreshPage();
-            //}
-        }
-
         //private void GreytestInfoButtonClick(object sender, RoutedEventArgs e)
         //{
         //    HttpHelper.LaunchUrl("https://www.zeroasso.top/docs/community/llcdev");
@@ -130,26 +138,6 @@ namespace LLC_MOD_Toolbox
                         await ChangeEEVB(true);
                     }
                 }*/
-        public async Task ChangeEEVB(bool b)
-        {
-            if (b)
-            {
-                await this.Dispatcher.BeginInvoke(() =>
-                {
-                    EEOption.Visibility = Visibility.Visible;
-                    EEOption.IsHitTestVisible = true;
-                });
-            }
-            else
-            {
-                await this.Dispatcher.BeginInvoke(() =>
-                {
-                    EEOption.Visibility = Visibility.Collapsed;
-                    EEOption.IsHitTestVisible = false;
-                });
-            }
-        }
-
         public async Task ChangeEEPic(string url)
         {
             logger.LogDebug("更改彩蛋图片为： {url}", url);
@@ -163,21 +151,105 @@ namespace LLC_MOD_Toolbox
             });
         }
         #endregion
-        #region 链接
-        public Dictionary<string, string> linkDictionary = [];
 
-        private void InitLink()
+#if false
+        private async void StartGreytestButtonClick(object sender, RoutedEventArgs e)
         {
-            linkDictionary.Add("LinkButton1", "https://www.zeroasso.top");
-            linkDictionary.Add("LinkButton2", "https://space.bilibili.com/1247764479");
-            linkDictionary.Add("LinkButton3", "https://github.com/LocalizeLimbusCompany");
-            linkDictionary.Add("LinkButton4", "https://afdian.com/a/Limbus_zero");
-            linkDictionary.Add("LinkButton5", "https://paratranz.cn/projects/6860/leaderboard");
-            linkDictionary.Add("LinkButton6", "https://paratranz.cn");
-            linkDictionary.Add("LinkButton7", "https://weidian.com/?userid=1655827241");
-            linkDictionary.Add("LinkButton8", "https://limbuscompany.huijiwiki.com");
+            logger.LogInformation("Z-TECH 灰度测试客户端程序 v2.0 启动。（并不是");
+            if (!greytestStatus)
+            {
+                string token = await GetGreytestBoxText();
+                if (token == string.Empty || token == "请输入秘钥")
+                {
+                    logger.LogInformation("Token为空。");
+                    System.Windows.MessageBox.Show(
+                        "请输入有效的Token。",
+                        "提示",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Error
+                    );
+                    return;
+                }
+                logger.LogInformation("Token为：" + token);
+                string tokenUrl = $"https://dev.zeroasso.top/api/{token}.json";
+                using (HttpClient client = new())
+                {
+                    try
+                    {
+                        HttpResponseMessage response = await client.GetAsync(tokenUrl);
+                        if (response.StatusCode != System.Net.HttpStatusCode.NotFound)
+                        {
+                            logger.LogInformation("秘钥有效。");
+                        }
+                        else
+                        {
+                            logger.LogInformation("秘钥无效。");
+                            System.Windows.MessageBox.Show(
+                                "请输入有效的Token。",
+                                "提示",
+                                MessageBoxButton.OK,
+                                MessageBoxImage.Error
+                            );
+                            return;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        ErrorReport(ex, false);
+                        return;
+                    }
+                }
+                try
+                {
+                    string tokenJson = await GetURLText(tokenUrl);
+                    var tokenObject = JObject.Parse(tokenJson);
+                    string runStatus = tokenObject["status"].Value<string>();
+                    if (runStatus == "test")
+                    {
+                        logger.LogInformation("Token状态正常。");
+                    }
+                    else
+                    {
+                        logger.LogInformation("Token已停止测试。");
+                        System.Windows.MessageBox.Show(
+                            "Token已停止测试。",
+                            "提示",
+                            MessageBoxButton.OK,
+                            MessageBoxImage.Information
+                        );
+                        return;
+                    }
+                    string fileName = tokenObject["file_name"].Value<string>();
+                    string note = tokenObject["note"].Value<string>();
+                    logger.LogInformation($"Token信息：{token}\n混淆文件名：{fileName}\n备注：{note}");
+                    await ChangeLogoToTest();
+                    System.Windows.MessageBox.Show(
+                        $"目前Token有效。\n-------------\nToken信息：\n秘钥：{token}\n混淆文件名：{fileName}\n备注：{note}\n-------------\n灰度测试模式已开启。\n请在自动安装安装此秘钥对应版本汉化。\n秘钥信息请勿外传。",
+                        "提示",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Information
+                    );
+                    greytestStatus = true;
+                    greytestUrl =
+                        "https://dev.zeroasso.top/files/LimbusLocalize_Dev_" + fileName + ".7z";
+                }
+                catch (Exception ex)
+                {
+                    ErrorReport(ex, false);
+                    return;
+                }
+            }
+            else
+            {
+                System.Windows.MessageBox.Show(
+                    "灰度测试模式已开启。\n请在自动安装安装此秘钥对应版本汉化。\n若需要正常使用或更换秘钥，请重启工具箱。",
+                    "提示",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Information
+                );
+                return;
+            }
         }
-
-        #endregion
+#endif
     }
 }

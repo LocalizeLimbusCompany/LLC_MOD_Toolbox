@@ -30,6 +30,15 @@ internal static class FileHelper
     ];
     private static readonly List<string> BepInExFolders = ["BepInEx", "dotnet",];
 
+    /// <summary>
+    /// 下载文件
+    /// </summary>
+    /// <param name="url"></param>
+    /// <param name="path"></param>
+    /// <param name="onDownloadProgressChanged"></param>
+    /// <param name="onDownloadFileCompleted"></param>
+    /// <param name="logger"></param>
+    /// <returns></returns>
     public static async Task DownloadFileAsync(
         string url,
         string path,
@@ -52,28 +61,41 @@ internal static class FileHelper
     public static Task<string> LoadNodeListConfigAsync => File.ReadAllTextAsync("NodeList.json");
 
     /// <summary>
-    /// 下载边狱公司的 Mod
+    /// 下载边狱公司的语言包
     /// </summary>
-    /// <exception cref="ArgumentNullException"></exception>
-    public static void InstallPackage(Stream stream, string limbusCompanyPath)
+    /// <exception cref="ArgumentException"/>
+    /// <exception cref="ArgumentNullException">预检查流</exception>
+    public static void ExtractLanguagePackage(Stream stream, string limbusCompanyPath)
     {
-        if (string.IsNullOrEmpty(limbusCompanyPath))
-        {
-            throw new Exception("未找到边狱公司路径。可能是注册表被恶意修改了！");
-        }
-        using var extractor = new SevenZip.SevenZipExtractor(stream);
+        if (Path.Exists(limbusCompanyPath))
+            throw new ArgumentException("路径不存在", nameof(limbusCompanyPath));
+        if (stream == null)
+            throw new ArgumentNullException(nameof(stream), "流不能为空");
+        using SevenZip.SevenZipExtractor extractor = new(stream);
         extractor.ExtractArchive(limbusCompanyPath);
     }
 
     /// <summary>
     /// 删除 Mod，删除内容为 <seealso cref="BepInExFiles"/> 和 <seealso cref="BepInExFolders"/>
     /// </summary>
+    /// <exception cref="ArgumentException">路径不存在</exception>
     public static void DeleteBepInEx(string limbusCompanyPath, ILogger logger)
     {
-        if (string.IsNullOrEmpty(limbusCompanyPath))
+        if (Path.Exists(limbusCompanyPath))
+            throw new ArgumentException("路径不存在", nameof(limbusCompanyPath));
+
+        try
         {
-            throw new Exception("未找到边狱公司路径。可能是注册表被恶意修改了！");
+            Directory.Delete(Path.Combine(limbusCompanyPath, "LimbusCompany_Data", "Lang"));
         }
+        catch (DirectoryNotFoundException)
+        {
+            logger.LogWarning("语言包已提前被删除。");
+        }
+
+        if (!ValidateHelper.CheckBepInEx(limbusCompanyPath))
+            return;
+
         foreach (string file in BepInExFiles)
         {
             File.Delete(Path.Combine(limbusCompanyPath, file));
@@ -84,28 +106,23 @@ internal static class FileHelper
             {
                 Directory.Delete(Path.Combine(limbusCompanyPath, folder), true);
             }
-            catch (DirectoryNotFoundException ex)
+            catch (DirectoryNotFoundException)
             {
-                logger.LogInformation(ex, "{}已提前被删除。", folder);
+                logger.LogInformation("{}已提前被删除。", folder);
             }
         }
     }
 
-    /// <summary>
-    /// [未测]
-    /// 添加到 <seealso href="https://learn.microsoft.com/zh-cn/powershell/module/defender/add-mppreference">Windows Defender</seealso> 的排除列表<br/>
-    /// <b>*需要管理员权限</b><br/>
-    /// <b>*危险操作请勿自动进行</b>
-    /// </summary>
-    /// <param name="path"></param>
-    public static void AddToExcludeList(string path)
+    public static Task ExtractFileAsync(string filePath, string destinationPath)
     {
-        var processInfo = new System.Diagnostics.ProcessStartInfo("powershell")
+        if (string.IsNullOrEmpty(destinationPath) || !Directory.Exists(destinationPath))
         {
-            Arguments = $"Add-MpPreference -ExclusionPath \"{path}\"",
-            UseShellExecute = true,
-            Verb = "RunAs"
-        };
-        System.Diagnostics.Process.Start(processInfo);
+            throw new ArgumentException("目标路径无效或不存在", nameof(destinationPath));
+        }
+        return Task.Run(() =>
+        {
+            using var archive = new SevenZip.SevenZipExtractor(filePath);
+            archive.ExtractArchive(destinationPath);
+        });
     }
 }

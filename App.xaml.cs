@@ -1,4 +1,5 @@
 using System.Net.Http;
+using System.Runtime.InteropServices;
 using System.Windows;
 using LLC_MOD_Toolbox.Helpers;
 using LLC_MOD_Toolbox.Models;
@@ -7,6 +8,7 @@ using LLC_MOD_Toolbox.ViewModels;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NLog.Extensions.Logging;
+using NLog.Targets;
 using SevenZip;
 
 namespace LLC_MOD_Toolbox
@@ -27,35 +29,57 @@ namespace LLC_MOD_Toolbox
 
         private static ServiceProvider ConfigureServices()
         {
-            var services = new ServiceCollection();
+            ServiceCollection services = new();
 
             // Models
-            services.AddSingleton(_ => PrimaryNodeList.Create("NodeList.json"));
+            services.AddSingleton(PrimaryNodeList.ReadFrom("NodeList.json"));
+            services.AddSingleton(p => Config.ReadFrom("config.json", p));
 
             // Services
-            services.AddTransient<IFileDownloadService, RegularFileDownloadService>();
+            services.AddTransient<IFileDownloadService, FileDownloadService>();
+            services.AddTransient<IDialogDisplayService, DialogDisplayService>();
+
+            services.AddScoped<ILoadingTextService, FileLoadingTextService>();
+            //services.AddTransient<ILoadingTextService, ApiLoadingTextService>();
+
 
             // Views
             services.AddTransient<MainWindow>();
 
             // ViewModels
-            services.AddTransient<AutoInstallerViewModel>();
-            services.AddTransient<SettingsViewModel>();
-            services.AddTransient<GachaViewModel>();
-            services.AddTransient<LinkViewModel>();
+            services.AddScoped<MainViewModel>();
+            services.AddScoped<AutoInstallerViewModel>();
+            services.AddScoped<SettingsViewModel>();
+            services.AddScoped<GachaViewModel>();
+            services.AddScoped<LinkViewModel>();
 
             services.AddLogging(builder =>
             {
                 builder.ClearProviders();
+#if DEBUG
+                var config = new NLog.Config.LoggingConfiguration();
+                var consoleTarget = new ConsoleTarget("console");
+                config.AddTarget(consoleTarget);
+                // 添加规则，将所有日志级别从Trace到Fatal的日志路由到控制台
+                config.AddRule(NLog.LogLevel.Trace, NLog.LogLevel.Fatal, consoleTarget);
+                // 应用NLog配置
+                builder.AddNLog().AddConsole();
+#else
                 builder.AddNLog("Nlog.config");
+#endif
             });
 
             services.AddHttpClient();
+
             return services.BuildServiceProvider();
         }
 
         public App()
         {
+#if DEBUG
+            AllocConsole();
+            Console.WriteLine("控制台已生成");
+#endif
             Services = ConfigureServices();
             _logger = Services.GetRequiredService<ILogger<App>>();
             AppDomain.CurrentDomain.UnhandledException += Application_HandleException;
@@ -67,35 +91,38 @@ namespace LLC_MOD_Toolbox
             _logger.LogInformation("工具箱已进入加载流程。");
             _logger.LogInformation("We have a lift off.");
 
-            SevenZipBase.SetLibraryPath("7z.dll");
-            if (e.Args.Length > 0)
+            if (e.Args.Contains("-cli"))
             {
-                _logger.LogInformation("检测到启动参数。");
-                throw new NotImplementedException("暂不支持启动参数。");
+                _logger.LogInformation("检测到控制台模式参数。");
+                RunAsConsole();
+                Shutdown();
             }
 
             _logger.LogInformation("当前版本：{}", VersionHelper.LocalVersion);
             // 检查更新
             try
             {
-                var http = Services.GetRequiredService<IFileDownloadService>();
-                var NodeList = Services.GetRequiredService<PrimaryNodeList>();
+                SevenZipBase.SetLibraryPath("7z.dll");
+                _logger.LogTrace("7z.dll 路径已设置。");
+                IFileDownloadService http = Services.GetRequiredService<IFileDownloadService>();
+
+                PrimaryNodeList NodeList = Services.GetRequiredService<PrimaryNodeList>();
                 // TODO: 优化节点选择
                 NodeInformation nodeInformation = NodeList.ApiNode.Last(n => n.IsDefault);
-                var jsonPayload = await http.GetJsonAsync(
+                string jsonPayload = await http.GetJsonAsync(
                     UrlHelper.GetReleaseUrl(nodeInformation.Endpoint)
                 );
                 _logger.LogInformation("API 节点连接成功。");
-                var announcement = JsonHelper.DeserializeValue("body", jsonPayload);
-                var latestVersion = JsonHelper.DeserializeValue("tag_name", jsonPayload);
+                string announcement = JsonHelper.DeserializeValue("body", jsonPayload);
+                string latestVersion = JsonHelper.DeserializeValue("tag_name", jsonPayload);
                 _logger.LogInformation("当前网络版本：{latestVersion}", latestVersion);
                 if (VersionHelper.CheckForUpdate(latestVersion))
                 {
+                    MessageBox.Show(announcement);
                     _logger.LogInformation("检测到新版本，打开链接。");
                     UrlHelper.LaunchUrl("https://www.zeroasso.top/docs/install/autoinstall");
                     throw new NotImplementedException("暂不支持自动更新。");
                 }
-                MessageBox.Show(announcement);
             }
             catch (HttpRequestException ex)
             {
@@ -110,7 +137,7 @@ namespace LLC_MOD_Toolbox
             {
                 _logger.LogError(ex, "检查更新时出现异常");
             }
-            var mainWindow = Services.GetRequiredService<MainWindow>();
+            MainWindow mainWindow = Services.GetRequiredService<MainWindow>();
             mainWindow.Show();
         }
 
@@ -123,14 +150,50 @@ namespace LLC_MOD_Toolbox
 
         private void Application_Exit(object sender, ExitEventArgs e)
         {
+            Services.GetRequiredService<Config>().WriteTo("config.json");
             _logger.LogInformation("工具箱已退出。");
         }
 
+        /// <summary>
+        /// 获取异常信息
+        /// </summary>
+        /// <param name="ex"></param>
+        /// <returns>获取异常对象的内部信息</returns>
         private static string GetExceptionMessage(Exception ex)
         {
             return ex.InnerException == null
                 ? ex.Message
                 : $"{ex.Message} -> {GetExceptionMessage(ex.InnerException)}";
+        }
+
+        /// <summary>
+        /// 创建控制台窗口
+        /// </summary>
+        /// <returns>判断是否成功创建控制台窗口</returns>
+        [System.Security.SuppressUnmanagedCodeSecurity]
+        [DllImport("kernel32.dll", CharSet = CharSet.Auto)]
+#pragma warning disable SYSLIB1054 // 使用 “LibraryImportAttribute” 而不是 “DllImportAttribute” 在编译时生成 P/Invoke 封送代码
+        internal static extern bool AllocConsole();
+#pragma warning restore SYSLIB1054 // 使用 “LibraryImportAttribute” 而不是 “DllImportAttribute” 在编译时生成 P/Invoke 封送代码
+
+        /// <summary>
+        /// 仅在控制台模式下运行时调用的方法。<br/>
+        /// <b>注意</b>：建议在调用此方法后调用 <c>Application.Current.Shutdown();</c> 以确保应用程序正确退出。
+        /// </summary>
+        private void RunAsConsole()
+        {
+            AllocConsole();
+            _logger.LogTrace("工具箱已以控制台模式运行。");
+
+            Console.WriteLine("欢迎使用 LLC_MOD_Toolbox！");
+            _logger.LogInformation("以控制台方式启动");
+            IFileDownloadService fileDownloadService =
+                Services.GetRequiredService<IFileDownloadService>();
+
+            _logger.LogTrace("控制台的汉化安装已完成");
+            Console.WriteLine("控制台的汉化安装已完成。请按任意键退出。");
+            Console.ReadKey();
+            UrlHelper.LaunchUrl("steam://rungameid/1973530");
         }
     }
 }

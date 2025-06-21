@@ -1,0 +1,60 @@
+<UserControl
+    x:Class="LLC_MOD_Toolbox.Views.GrayTest"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:LLC_MOD_Toolbox.Views"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:sys="clr-namespace:System;assembly=mscorlib"
+    xmlns:viewmodels="clr-namespace:LLC_MOD_Toolbox.ViewModels"
+    d:DataContext="{d:DesignInstance Type=viewmodels:GrayTestViewModel}"
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    FontFamily="Assets/Fonts/#Source Han Sans CN"
+    FontSize="20"
+    FontWeight="Medium"
+    Foreground="#FFFFEED4"
+    mc:Ignorable="d">
+    <StackPanel>
+
+        <TextBlock TextWrapping="Wrap">
+            请您在文本框当中输入提供的测试密钥，并点击确认。
+            成功进入灰度测试模式之后，请使用自动安装页面进行安装。
+            此时，自动安装的文件将会是密钥相对应的灰度测试文件。
+        </TextBlock>
+
+        <Image Source="/Assets/Images/NormalLine.png" />
+        <TextBlock FontWeight="Bold" Text="秘钥" />
+        <TextBox
+            FontSize="16"
+            FontWeight="Medium"
+            Text="{Binding Token}">
+            <TextBox.Resources>
+                <VisualBrush
+                    x:Key="HelpBrush"
+                    AlignmentX="Left"
+                    Opacity="0.3"
+                    Stretch="None"
+                    TileMode="None">
+                    <VisualBrush.Visual>
+                        <TextBlock Foreground="Gray" Text="请输入测试秘钥" />
+                    </VisualBrush.Visual>
+                </VisualBrush>
+            </TextBox.Resources>
+            <TextBox.Style>
+                <Style TargetType="TextBox">
+                    <Style.Triggers>
+                        <Trigger Property="Text" Value="">
+                            <Setter Property="Background" Value="{StaticResource HelpBrush}" />
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </TextBox.Style>
+        </TextBox>
+        <Button
+            Command="{Binding CheckGrayTestCommand}"
+            Content="校验"
+            FontSize="16"
+            FontWeight="Heavy" />
+    </StackPanel>
+</UserControl>

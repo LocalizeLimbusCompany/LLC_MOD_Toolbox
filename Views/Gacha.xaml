@@ -10,14 +10,18 @@
     d:DesignHeight="450"
     d:DesignWidth="800"
     mc:Ignorable="d">
-    <Grid>
-        <Grid.Background>
-            <ImageBrush ImageSource="pack://application:,,,/LLC_MOD_Toolbox;component/Assets/Images/GachaBackground.png" Stretch="Uniform" />
-        </Grid.Background>
+    <UserControl.Resources>
+        <d:ImageBrush
+            x:Key="GachaBrush"
+            ImageSource="/Assets/Images/GachaBackground.png"
+            Stretch="Uniform" />
+    </UserControl.Resources>
+    <Grid Background="{DynamicResource GachaBrush}">
         <ListBox Background="Transparent" />
         <Button
             Width="190"
             Height="60"
+            Command="{Binding GachaCommand}"
             Content="开始抽卡" />
     </Grid>
 </UserControl>

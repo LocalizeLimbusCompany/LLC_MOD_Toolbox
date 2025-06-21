@@ -1,12 +1,5 @@
 {
   "$schema": "https://raw.githubusercontent.com/ProjektMing/LLC_MOD_Toolbox/refactor/schema.json",
-  "apiNode": [
-    {
-      "name": "零协会官方 API",
-      "endpoint": "https://api.zeroasso.top/v2/get_api/get/{0}",
-      "isDefault": true
-    }
-  ],
   "downloadNode": [
     {
       "name": "自动选择节点",
@@ -15,17 +8,24 @@
     },
     {
       "name": "零协会镇江节点",
-      "endpoint": "http://download.zeroasso.top/files/{0}",
+      "endpoint": "https://download.zeroasso.top/files/{0}",
       "isDefault": false
     },
     {
-      "name": "Onedrive For Business",
-      "endpoint": "https://node.zeroasso.top/d/od/{0}",
+      "name": "CloudFlare CDN(海外)",
+      "endpoint": "https://cdn-download.zeroasso.top/files/{0}",
       "isDefault": false
+    }
+  ],
+  "apiNode": [
+    {
+      "name": "零协会官方 API",
+      "endpoint": "https://api.zeroasso.top/{0}",
+      "isDefault": true
     },
     {
-      "name": "天翼云盘",
-      "endpoint": "https://node.zeroasso.top/d/tianyi/{0}",
+      "name": "CloudFlare CDN API(海外)",
+      "endpoint": "https://cdn-api.zeroasso.top/{0}",
       "isDefault": false
     }
   ]

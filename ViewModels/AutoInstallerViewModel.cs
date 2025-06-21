@@ -3,8 +3,6 @@ using System.IO;
 using System.Windows;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using CommunityToolkit.Mvvm.Messaging;
-using CommunityToolkit.Mvvm.Messaging.Messages;
 using LLC_MOD_Toolbox.Helpers;
 using LLC_MOD_Toolbox.Models;
 using LLC_MOD_Toolbox.Services;
@@ -16,92 +14,59 @@ public partial class AutoInstallerViewModel : ObservableObject
 {
     private readonly ILogger<AutoInstallerViewModel> _logger;
     private readonly IFileDownloadService fileDownloadService;
+    private readonly IDialogDisplayService dialogDisplayService;
 
-    private NodeInformation selectedEndPoint;
-    private string limbusCompanyPath;
+    private readonly NodeInformation selectedEndPoint;
+    private readonly string limbusCompanyPath;
+    private readonly string? testToken;
 
     [ObservableProperty]
-    private Progress<double> installationProgress = new();
+    private double percent;
+    private readonly Progress<double> installationProgress;
 
     public AutoInstallerViewModel(
         ILogger<AutoInstallerViewModel> logger,
         IFileDownloadService fileDownloadService,
-        PrimaryNodeList primaryNodeList
+        IDialogDisplayService dialogDisplayService,
+        Config config
     )
     {
-        WeakReferenceMessenger.Default.Register<ValueChangedMessage<(NodeInformation, string)>>(
-            this,
-            SettingsChanged
-        );
         _logger = logger;
         this.fileDownloadService = fileDownloadService;
-        selectedEndPoint = primaryNodeList.DownloadNode[0];
+        this.dialogDisplayService = dialogDisplayService;
+        selectedEndPoint = config.DownloadNode;
         limbusCompanyPath =
             ConfigurationManager.AppSettings["GamePath"]
             ?? PathHelper.DetectedLimbusCompanyPath
             ?? PathHelper.SelectPath();
-    }
+        testToken = config.Token;
 
-    private void SettingsChanged(
-        object recipient,
-        ValueChangedMessage<(NodeInformation, string)> message
-    )
-    {
-        (selectedEndPoint, limbusCompanyPath) = message.Value;
+        installationProgress = new Progress<double>(value => Percent = value);
     }
 
     [RelayCommand]
-    private async Task ModInstallation()
+    private Task ModInstallation()
     {
         _logger.LogInformation("开始安装 BepInEx。");
         _logger.LogInformation("选择的下载节点为：{selectedEndPoint}", selectedEndPoint);
         _logger.LogInformation("边狱公司路径为：{limbusCompanyPath}", limbusCompanyPath);
-        MessageBoxResult result = MessageBox.Show(
-            """
-            安装前请确保游戏已经关闭。
-            确定继续吗？
-            """,
-            "警告",
-            MessageBoxButton.YesNo,
-            MessageBoxImage.Warning
-        );
-        if (result != MessageBoxResult.Yes)
-        {
-            _logger.LogInformation("用户取消了安装 BepInEx。");
-            return;
-        }
+
         if (ValidateHelper.CheckMelonloader(limbusCompanyPath))
         {
+            dialogDisplayService.ShowError("检测到 MelonLoader，请先卸载。");
             MessageBox.Show("当前环境检测到 MelonLoader，请先卸载", "Warning");
             _logger.LogError("当前环境检测到 MelonLoader，提醒用户卸载。");
-            return;
+            return Task.CompletedTask;
+        }
+
+        if (!dialogDisplayService.Confirm("安装前请确保游戏已经关闭。\n确定继续吗？"))
+        {
+            _logger.LogInformation("用户取消了安装 BepInEx。");
+            return Task.CompletedTask;
         }
         try
         {
-            string[] files =
-            [
-                UrlHelper.GetBepInExUrl(selectedEndPoint.Endpoint),
-                UrlHelper.GetTmpUrl(selectedEndPoint.Endpoint)
-            ];
-            using var stream = await fileDownloadService.DownloadFileAsync(
-                selectedEndPoint.Endpoint,
-                limbusCompanyPath,
-                InstallationProgress
-            );
-            var onlineHash = await fileDownloadService.GetHashAsync(selectedEndPoint.Endpoint);
-            if (!await ValidateHelper.CheckHashAsync(stream, onlineHash))
-                throw new HashException();
-            FileHelper.InstallPackage(stream, limbusCompanyPath);
-            _logger.LogInformation("BepInEx 安装完成。");
-            Stream tmpStream = await fileDownloadService.GetTmpAsync(selectedEndPoint.Endpoint);
-            FileHelper.InstallPackage(tmpStream, limbusCompanyPath);
-            _logger.LogInformation("Fonts 安装完成。");
-
-            Stream locolizeStream = await fileDownloadService.GetModAsync(
-                selectedEndPoint.Endpoint
-            );
-            FileHelper.InstallPackage(locolizeStream, limbusCompanyPath);
-            _logger.LogInformation("Localize 安装完成。");
+            _logger.LogInformation("文件下载成功，开始执行后续操作。");
         }
         catch (IOException ex)
         {
@@ -123,5 +88,7 @@ public partial class AutoInstallerViewModel : ObservableObject
             MessageBox.Show("未知错误，请联系开发者。", "警告");
             _logger.LogError(ex, "未知错误，请联系开发者。");
         }
+
+        return Task.CompletedTask;
     }
 }

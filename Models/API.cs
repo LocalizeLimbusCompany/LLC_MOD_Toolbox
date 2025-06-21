@@ -20,9 +20,9 @@ public class PrimaryNodeList
     public List<NodeInformation> ApiNode { get; } =
         [new("默认", "https://api.zeroasso.top/v2/get_api/get/{0}", true)];
 
-    public static PrimaryNodeList Create(string url)
+    public static PrimaryNodeList ReadFrom(string url)
     {
-        var jsonPayload = File.ReadAllText(url);
+        string jsonPayload = File.ReadAllText(url);
         return JsonHelper.DeserializePrimaryNodeList(jsonPayload);
     }
 }
@@ -43,6 +43,5 @@ public record NodeInformation(
 public enum ApiType
 {
     GitHub,
-    Mirror,
     Custom,
 }

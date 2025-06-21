@@ -1,3 +1,4 @@
+using System.IO;
 using LLC_MOD_Toolbox.Models;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -37,4 +38,18 @@ internal static class JsonHelper
     /// <exception cref="JsonReaderException">如果不存在对应键值对</exception>
     public static string DeserializeValue(string key, string jsonPayload) =>
         JObject.Parse(jsonPayload).GetValue(key)?.ToString() ?? throw new JsonReaderException();
+
+    public static T Deserialize<T>(string jsonPayload) =>
+        JsonConvert.DeserializeObject<T>(jsonPayload, camelCaseJsonSettings)
+        ?? throw new JsonReaderException();
+
+    public static void Serialize<T>(T obj, string path)
+    {
+        string jsonPayload = JsonConvert.SerializeObject(
+            obj,
+            Formatting.Indented,
+            camelCaseJsonSettings
+        );
+        File.WriteAllText(path, jsonPayload);
+    }
 }

@@ -11,6 +11,12 @@
     d:DesignWidth="800"
     Background="Transparent"
     mc:Ignorable="d">
+    <UserControl.Resources>
+        <d:ImageBrush
+            x:Key="ProgressBrush"
+            ImageSource="/Assets/Images/FullProgress.png"
+            Stretch="Uniform" />
+    </UserControl.Resources>
     <Grid Background="Transparent">
         <Grid.RowDefinitions>
             <RowDefinition Height="auto" />
@@ -26,10 +32,8 @@
             Grid.Row="1"
             d:Value="100"
             Background="Transparent"
-            Value="{Binding InstallationProgress, Mode=OneWay}">
-            <ProgressBar.Foreground>
-                <ImageBrush ImageSource="pack://application:,,,/LLC_MOD_Toolbox;component/Assets/Images/FullProgress.png" Stretch="Uniform" />
-            </ProgressBar.Foreground>
-        </ProgressBar>
+            Foreground="{DynamicResource ProgressBrush}"
+            Value="{Binding Percent}" />
+
     </Grid>
 </UserControl>

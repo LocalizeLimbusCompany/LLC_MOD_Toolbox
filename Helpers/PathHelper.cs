@@ -1,4 +1,5 @@
-using System.Configuration;
+using LLC_MOD_Toolbox.Models;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Win32;
 
 namespace LLC_MOD_Toolbox.Helpers
@@ -25,6 +26,8 @@ namespace LLC_MOD_Toolbox.Helpers
                 new() { DefaultDirectory = DetectedLimbusCompanyPath, Title = "选择边狱公司文件夹" };
             if (openFolderDialog.ShowDialog() == true)
             {
+                App.Current.Services.GetRequiredService<Config>().GamePath =
+                    openFolderDialog.FolderName;
                 return openFolderDialog.FolderName;
             }
             return SelectPath();

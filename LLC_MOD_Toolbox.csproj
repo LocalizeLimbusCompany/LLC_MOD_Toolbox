@@ -6,39 +6,61 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
+    <LangVersion>13</LangVersion>
     <SupportedOSPlatformVersion>7.0</SupportedOSPlatformVersion>
     <ApplicationIcon>favicon.ico</ApplicationIcon>
-    <Configurations>Debug;Release;LLC_MOD_Toolbox;ReleaseLLCMT</Configurations>
+    <Configurations>Debug;Release</Configurations>
 	<Version>2.0.0</Version>
 	<SignAssembly>False</SignAssembly>
 	<EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
+	  <PathMap>$(MSBuildProjectDirectory)=LLC_MOD_Toolbox</PathMap>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <Optimize>False</Optimize>
+  </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <Optimize>False</Optimize>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='LLC_MOD_Toolbox|AnyCPU'">
-    <Optimize>False</Optimize>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseLLCMT|AnyCPU'">
     <Optimize>True</Optimize>
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Include="favicon.ico" />
-    <Resource Include="Assets/Images/*.png" />
-    <Resource Include="Assets/Fonts/*.ttf" />
+    <Resource Include="Assets\Fonts\SourceHanSansCN-Medium.ttf" />
+    <Resource Include="favicon.ico" />
+
+	  <Content Include="Assets\Images\*.png">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		  <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+	  </Content>
+	  <Content Include="Assets\Fonts\*.ttf">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		  <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+	  </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+	  <Content Include="LICENSE.txt">
+		  <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+	  </Content>
+    <Content Include="NLog.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		<CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="NodeList.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		<CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="schema.json">
+		<CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="CommunityToolkit.Mvvm" Version="*" />
     <PackageReference Include="Downloader" Version="*" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="*" />
-    <PackageReference Include="Microsoft.Extensions.Http" Version="9.0.2" />
+    <PackageReference Include="Microsoft.Extensions.Http" Version="*" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="*" Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'" />
     <PackageReference Include="Newtonsoft.Json" Version="*" />
     <PackageReference Include="NLog.Extensions.Logging" Version="*" />
     <PackageReference Include="Squid-Box.SevenZipSharp" Version="*" />
@@ -49,13 +71,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="App.config">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="NLog.config">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="NodeList.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="Properties/Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -70,9 +85,4 @@
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
   </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Assets\I18n\" />
-  </ItemGroup>
-
 </Project>
