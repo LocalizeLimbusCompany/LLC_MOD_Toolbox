@@ -6,18 +6,18 @@ using CommunityToolkit.Mvvm.Input;
 using LLC_MOD_Toolbox.Helpers;
 using LLC_MOD_Toolbox.Models;
 using LLC_MOD_Toolbox.Services;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 namespace LLC_MOD_Toolbox.ViewModels;
 
 public partial class SettingsViewModel : ObservableObject
 {
-    private string limbusCompanyPath = string.Empty;
-
     private readonly ILogger<SettingsViewModel> _logger;
 
     private readonly IDialogDisplayService _dialogDisplayService;
 
+    private string? limbusCompanyPath;
     public string? LimbusCompanyPath
     {
         get
@@ -31,24 +31,69 @@ public partial class SettingsViewModel : ObservableObject
         }
         set
         {
-            if (!Directory.Exists(value))
-                return;
-            _logger.LogInformation("设置边狱公司路径为：{value}", value);
-            ConfigurationManager.AppSettings["GamePath"] = value;
+            if (Directory.Exists(value))
+            {
+                _logger.LogInformation("设置边狱公司路径为：{value}", value);
+                App.Current.Services.GetRequiredService<Config>().GamePath = value;
 
-            SetProperty(ref limbusCompanyPath, value);
+                SetProperty(ref limbusCompanyPath, value);
+            }
         }
     }
 
     public List<NodeInformation> DownloadNodeList { get; }
 
-    [ObservableProperty]
-    private NodeInformation downloadNode;
+    private NodeInformation? downloadNode;
+    public NodeInformation DownloadNode
+    {
+        get
+        {
+            if (downloadNode == null)
+            {
+                _logger.LogWarning("下载节点未设置，使用默认节点。");
+                downloadNode = DownloadNodeList.Last(n => n.IsDefault);
+            }
+            return downloadNode;
+        }
+        set
+        {
+            if (value == null)
+            {
+                _logger.LogWarning("尝试设置下载节点为 null，操作被忽略。");
+                return;
+            }
+            _logger.LogInformation("设置下载节点为：{value}", value);
+            App.Current.Services.GetRequiredService<Config>().DownloadNode = value;
+            SetProperty(ref downloadNode, value);
+        }
+    }
 
     public List<NodeInformation> ApiNodeList { get; }
 
-    [ObservableProperty]
-    private NodeInformation apiNode;
+    private NodeInformation? apiNode;
+    public NodeInformation ApiNode
+    {
+        get
+        {
+            if (apiNode == null)
+            {
+                _logger.LogWarning("API节点未设置，使用默认节点。");
+                apiNode = ApiNodeList.Last(n => n.IsDefault);
+            }
+            return apiNode;
+        }
+        set
+        {
+            if (value == null)
+            {
+                _logger.LogWarning("尝试设置API节点为 null，操作被忽略。");
+                return;
+            }
+            _logger.LogInformation("设置API节点为：{value}", value);
+            App.Current.Services.GetRequiredService<Config>().ApiNode = value;
+            SetProperty(ref apiNode, value);
+        }
+    }
 
     [ObservableProperty]
     private string? testToken;
@@ -115,8 +160,8 @@ public partial class SettingsViewModel : ObservableObject
         _dialogDisplayService = dialogDisplayService;
         DownloadNodeList = primaryNodeList.DownloadNode;
         ApiNodeList = primaryNodeList.ApiNode;
-        downloadNode = config.DownloadNode ?? DownloadNodeList.Last(n => n.IsDefault);
-        apiNode = ApiNodeList.Last(n => n.IsDefault);
+        DownloadNode = config.DownloadNode;
+        ApiNode = config.ApiNode;
         LimbusCompanyPath = config.GamePath;
     }
 }

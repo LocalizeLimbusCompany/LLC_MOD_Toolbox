@@ -32,8 +32,8 @@ namespace LLC_MOD_Toolbox
             ServiceCollection services = new();
 
             // Models
-            services.AddSingleton(PrimaryNodeList.Create("NodeList.json"));
-            services.AddSingleton<Config>();
+            services.AddSingleton(PrimaryNodeList.ReadFrom("NodeList.json"));
+            services.AddSingleton(p => Config.ReadFrom("config.json", p));
 
             // Services
             services.AddTransient<IFileDownloadService, FileDownloadService>();
@@ -150,6 +150,7 @@ namespace LLC_MOD_Toolbox
 
         private void Application_Exit(object sender, ExitEventArgs e)
         {
+            Services.GetRequiredService<Config>().WriteTo("config.json");
             _logger.LogInformation("工具箱已退出。");
         }
 
@@ -176,8 +177,8 @@ namespace LLC_MOD_Toolbox
 #pragma warning restore SYSLIB1054 // 使用 “LibraryImportAttribute” 而不是 “DllImportAttribute” 在编译时生成 P/Invoke 封送代码
 
         /// <summary>
-        /// 仅在控制台模式下运行时调用的方法。
-        /// 注意：请在调用此方法后调用 <see cref="Current.Shutdown"/> 以确保应用程序正确退出。
+        /// 仅在控制台模式下运行时调用的方法。<br/>
+        /// <b>注意</b>：建议在调用此方法后调用 <c>Application.Current.Shutdown();</c> 以确保应用程序正确退出。
         /// </summary>
         private void RunAsConsole()
         {
@@ -186,14 +187,9 @@ namespace LLC_MOD_Toolbox
 
             Console.WriteLine("欢迎使用 LLC_MOD_Toolbox！");
             _logger.LogInformation("以控制台方式启动");
-            Config config = Services.GetRequiredService<Config>();
             IFileDownloadService fileDownloadService =
                 Services.GetRequiredService<IFileDownloadService>();
-            List<string> paths = UrlHelper.GetCustumApiUrls(config.ApiNode.Endpoint, config.Token);
-            foreach (string path in paths)
-            {
-                fileDownloadService.GetJsonAsync(path);
-            }
+
             _logger.LogTrace("控制台的汉化安装已完成");
             Console.WriteLine("控制台的汉化安装已完成。请按任意键退出。");
             Console.ReadKey();

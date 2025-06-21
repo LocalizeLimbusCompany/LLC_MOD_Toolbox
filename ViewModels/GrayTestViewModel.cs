@@ -15,10 +15,7 @@ internal partial class GrayTestViewModel : ObservableObject
     [RelayCommand(CanExecute = nameof(CanExecuteCheckGrayTest))]
     private void CheckGrayTest()
     {
-        // 模拟灰机测试逻辑
-        IsGrayTestValid = true; // 假设测试通过
-        // 实际逻辑可以根据需要进行修改
-        // 例如调用某个服务或执行某个操作来验证灰机状态
+        IsGrayTestValid = true;
     }
 
     private bool CanExecuteCheckGrayTest() => !string.IsNullOrWhiteSpace(Token);
