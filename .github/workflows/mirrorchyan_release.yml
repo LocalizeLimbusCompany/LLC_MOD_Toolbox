@@ -1,0 +1,22 @@
+name: mirrorchyan_release
+
+on:
+  workflow_dispatch:
+  release:
+    types: [released]
+
+jobs:
+  mirrorchyan:
+    runs-on: macos-latest
+
+    steps:
+      - uses: MirrorChyan/uploading-action@v1
+        with:
+          filetype: latest-release
+          filename: "LLC_MOD_Toolbox_Installer.exe"
+          mirrorchyan_rid: LLC_MOD_Toolbox
+
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          owner: LocalizeLimbusCompany
+          repo: LLC_MOD_Toolbox
+          upload_token: ${{ secrets.MirrorChyanUploadToken }}
