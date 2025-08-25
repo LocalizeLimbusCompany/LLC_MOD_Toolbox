@@ -1,0 +1,73 @@
+﻿<Window x:Class="LLC_MOD_Toolbox.UniversalDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="{Binding DialogTitle}" 
+        Height="Auto" Width="400"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="NoResize"
+        ShowInTaskbar="False"
+        SizeToContent="Height">
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <!-- 消息文本 -->
+            <RowDefinition Height="Auto"/>
+            <!-- 输入区域 -->
+            <RowDefinition Height="Auto"/>
+            <!-- 间距 -->
+            <RowDefinition Height="Auto"/>
+            <!-- 按钮区域 -->
+        </Grid.RowDefinitions>
+
+        <!-- 消息文本 -->
+        <TextBlock Grid.Row="0" 
+                   Text="{Binding MessageText}" 
+                   Margin="0,0,0,15"
+                   TextWrapping="Wrap"
+                   Visibility="{Binding MessageVisibility}"/>
+
+        <!-- 输入区域 -->
+        <StackPanel Grid.Row="1" 
+                    Visibility="{Binding InputVisibility}"
+                    Margin="0,0,0,15">
+
+            <!-- 输入框标签 -->
+            <TextBlock Text="{Binding InputLabel}" 
+                       Margin="0,0,0,5"
+                       FontWeight="Medium"
+                       Visibility="{Binding InputLabelVisibility}"/>
+
+            <!-- 输入框容器 -->
+            <Grid>
+                <!-- 普通输入框 -->
+                <TextBox x:Name="InputTextBox"
+                         Text="{Binding InputText, UpdateSourceTrigger=PropertyChanged}"
+                         Height="25"
+                         Visibility="{Binding TextBoxVisibility}"/>
+
+                <!-- 密码输入框 -->
+                <PasswordBox x:Name="InputPasswordBox"
+                             Height="25"
+                             Visibility="{Binding PasswordBoxVisibility}"
+                             PasswordChanged="InputPasswordBox_PasswordChanged"/>
+
+                <!-- 多行文本输入框 -->
+                <TextBox x:Name="MultilineTextBox"
+                         Text="{Binding InputText, UpdateSourceTrigger=PropertyChanged}"
+                         Height="80"
+                         TextWrapping="Wrap"
+                         AcceptsReturn="True"
+                         VerticalScrollBarVisibility="Auto"
+                         Visibility="{Binding MultilineTextBoxVisibility}"/>
+            </Grid>
+        </StackPanel>
+
+        <!-- 按钮区域 -->
+        <StackPanel Grid.Row="3" 
+                    Orientation="Horizontal" 
+                    HorizontalAlignment="Right"
+                    x:Name="ButtonPanel">
+            <!-- 按钮将通过代码动态添加 -->
+        </StackPanel>
+    </Grid>
+</Window>

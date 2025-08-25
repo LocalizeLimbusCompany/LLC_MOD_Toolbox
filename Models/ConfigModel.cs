@@ -16,11 +16,17 @@
         public bool getAnno { get; set; } = true;
         public int annoVersion { get; set; } = 0;
     }
+    public class MirrorChyanConfig
+    {
+        public bool enable { get; set; } = false;
+        public bool notice { get; set; } = false;
+    }
     public class AppSettings
     {
         public GeneralConfig general { get; set; } = new GeneralConfig();
         public InstallConfig install { get; set; } = new InstallConfig();
         public AnnouncementConfig announcement { get; set; } = new AnnouncementConfig();
+        public MirrorChyanConfig mirrorChyan { get; set; } = new MirrorChyanConfig();
     }
 
 }

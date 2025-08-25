@@ -1,0 +1,70 @@
+﻿<Window x:Class="LLC_MOD_Toolbox.InputMirrorChyan"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="等下，你有Mirror酱秘钥吗？" Height="300" Width="600"
+        FontFamily="/Fonts/#Source Han Sans CN"
+        FontWeight="Normal"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="NoResize"
+        ShowInTaskbar="False">
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <!-- 新增：输入框标签行 -->
+            <RowDefinition Height="Auto"/>
+            <!-- 输入框行 -->
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- 提示文本 -->
+        <TextBlock Grid.Row="0" 
+                   Text="{Binding PromptText}" 
+                   Margin="0,0,0,15"
+                   TextWrapping="Wrap"/>
+
+        <!-- 输入框标签 -->
+        <TextBlock Grid.Row="1" 
+                   Text="{Binding InputLabel}" 
+                   Margin="0,0,0,5"
+                   FontWeight="Medium"
+                   Visibility="{Binding InputLabelVisibility}"/>
+
+        <!-- 输入框容器 -->
+        <Grid Grid.Row="2" Margin="0,0,0,15">
+            <!-- 普通输入框 -->
+            <TextBox x:Name="InputTextBox"
+                     Text="{Binding InputText, UpdateSourceTrigger=PropertyChanged}"
+                     Height="25"/>
+
+            <!-- 密码输入框 -->
+            <PasswordBox x:Name="InputPasswordBox"
+                         Visibility="Collapsed"
+                         Height="25"/>
+        </Grid>
+
+        <!-- 按钮 -->
+        <StackPanel Grid.Row="4" 
+                    Orientation="Horizontal" 
+                    HorizontalAlignment="Right">
+            <Button Content="确定" 
+                    Width="75" 
+                    Height="25" 
+                    Margin="0,0,30,0"
+                    IsDefault="True"
+                    Click="OkButton_Click"/>
+            <Button Content="取消" 
+                    Width="75" 
+                    Height="25"
+                    IsCancel="True"
+                    Margin="0,0,30,0"
+                    Click="CancelButton_Click"/>
+            <Button Content="我想了解一下Mirror酱" 
+                Width="150" 
+                Height="25"
+                IsCancel="True"
+                Click="InformationButton_Click"/>
+        </StackPanel>
+    </Grid>
+</Window>

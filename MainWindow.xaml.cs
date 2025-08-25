@@ -240,8 +240,8 @@ namespace LLC_MOD_Toolbox
         {
             if (!isInitGacha)
             {
-                MessageBoxResult messageBoxResult = System.Windows.MessageBox.Show("本抽卡模拟器资源来源自维基，可能信息更新不准时。\n本模拟器 不 会 对您的游戏数据造成任何影响。\n若您已知悉，请点击“确定”进行初始化。", "提示", MessageBoxButton.OKCancel, MessageBoxImage.Information);
-                if (messageBoxResult == MessageBoxResult.OK)
+                bool messageBoxResult = UniversalDialog.ShowConfirm("本抽卡模拟器资源来源自维基，可能信息更新不准时。\n本模拟器 不 会 对您的游戏数据造成任何影响。\n若您已知悉，请点击“确定”进行初始化。", "提示", this);
+                if (messageBoxResult)
                 {
                     nowInstallPage = "gacha";
                     await InitGacha();
@@ -385,6 +385,7 @@ namespace LLC_MOD_Toolbox
             linkDictionary.Add("LinkButton7", "https://weidian.com/?userid=1655827241");
             linkDictionary.Add("LinkButton8", "https://limbuscompany.huijiwiki.com");
             linkDictionary.Add("LinkButton9", "https://simpfun.cn");
+            linkDictionary.Add("LinkButton10", "https://mirrorchyan.com/");
         }
         private async Task<string?> GetSenderName(System.Windows.Controls.Control? control)
         {

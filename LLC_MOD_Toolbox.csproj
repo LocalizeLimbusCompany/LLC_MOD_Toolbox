@@ -10,7 +10,7 @@
     <ApplicationIcon>favicon.ico</ApplicationIcon>
     <UseWindowsForms>False</UseWindowsForms>
     <Configurations>Debug;Release;LLC_MOD_Toolbox;ReleaseLLCMT</Configurations>
-	<Version>1.2.1</Version>
+	<Version>1.3.0</Version>
 	<Authors>LocalizeLimbusCompany</Authors>
 	<Title>$(AssemblyName)</Title>
 	<Description>A tool to install LLC Language mod easily.</Description>
@@ -64,6 +64,7 @@
     <None Remove="Picture\LinkBT.png" />
     <None Remove="Picture\LinkBTHover.png" />
     <None Remove="Picture\Lunacy.png" />
+    <None Remove="Picture\MirrorChyan.png" />
     <None Remove="Picture\NormalLine.png" />
     <None Remove="Picture\SettingButton.png" />
     <None Remove="Picture\SettingButtonHover.png" />
@@ -97,6 +98,7 @@
     <Resource Include="Picture\LinkBT.png" />
     <Resource Include="Picture\LinkBTHover.png" />
     <Resource Include="Picture\Lunacy.png" />
+    <Resource Include="Picture\MirrorChyan.png" />
     <Resource Include="Picture\NormalLine.png" />
     <Resource Include="Picture\SettingButton.png" />
     <Resource Include="Picture\SettingButtonHover.png" />

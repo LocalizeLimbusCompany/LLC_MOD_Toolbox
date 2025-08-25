@@ -25,6 +25,8 @@ using System.Net;
 using System.Net.Http;
 using System.Reflection;
 using System.Security.Cryptography;
+using System.Security.Policy;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -60,6 +62,9 @@ namespace LLC_MOD_Toolbox
         private static ConfigurationManager configuation = new ConfigurationManager(Path.Combine(currentDir, "config.json"));
         // 启动器模式
         private static bool isLauncherMode = Environment.GetCommandLineArgs().Contains("-launcher");
+        // MirrorChyan Mode
+        internal static bool isMirrorChyanMode = false;
+        internal static string mirrorChyanToken = "";
         public MainWindow()
         {
             InitializeComponent();
@@ -84,10 +89,22 @@ namespace LLC_MOD_Toolbox
                 DefaultRequestVersion = HttpVersion.Version11,
                 DefaultVersionPolicy = HttpVersionPolicy.RequestVersionExact
             };
+            CheckMirrorChyan();
             await CheckLoadingText();
-            InitNode();
+            if (!isMirrorChyanMode)
+            {
+                InitNode();
+            }
+            else
+            {
+                await this.Dispatcher.BeginInvoke(() =>
+                {
+                    NodeCombobox.Items.Add("已使用Mirror酱");
+                    NodeCombobox.IsEnabled = false;
+                });
+            }
             await RefreshPage();
-            CheckToolboxUpdate();
+            CheckToolboxUpdate(isMirrorChyanMode);
             CheckLimbusCompanyPath();
             SevenZipBase.SetLibraryPath(Path.Combine(currentDir, "7z.dll"));
             await CheckAnno();
@@ -128,6 +145,7 @@ namespace LLC_MOD_Toolbox
             PrintInstallInfo("节点列表数量：", nodeList.Count);
             PrintInstallInfo("使用节点", useEndPoint);
             PrintInstallInfo("灰度测试状态：", greytestStatus);
+            PrintInstallInfo("MirrorChyan模式：", isMirrorChyanMode);
             Log.logger.Info("**********安装信息打印**********");
             if (useEndPoint == null)
             {
@@ -138,8 +156,8 @@ namespace LLC_MOD_Toolbox
             if (File.Exists(limbusCompanyDir + "/version.dll"))
             {
                 Log.logger.Warn("检测到落后800年的Melonloader.");
-                MessageBoxResult DialogResult = System.Windows.MessageBox.Show("检测到MelonLoader框架！\nMelonLoader框架已过时，且其可能导致您的账号遭到封禁，导致您无法进行游戏！\n建议您进行一次卸载后继续安装模组。\n若您**及其确定这是个误判**，请点击确定，否则请点击取消返回，之后您可以在设置中找到卸载，将MelonLoader卸载后重新安装。", "警告", MessageBoxButton.OKCancel, MessageBoxImage.Hand);
-                if (DialogResult == MessageBoxResult.Cancel)
+                bool confirmed = UniversalDialog.ShowConfirm("检测到MelonLoader框架！\nMelonLoader框架已过时，且其可能导致您的账号遭到封禁，导致您无法进行游戏！\n建议您进行一次卸载后继续安装模组。\n若您**及其确定这是个误判**，请点击是，否则请点击否返回，之后您可以在设置中找到卸载，将MelonLoader卸载后重新安装。", "警告", this);
+                if (!confirmed)
                 {
                     await StopInstall();
                     return;
@@ -149,8 +167,8 @@ namespace LLC_MOD_Toolbox
             if (File.Exists(limbusCompanyDir + "/winhttp.dll"))
             {
                 Log.logger.Warn("检测到BepInEx框架.");
-                MessageBoxResult DialogResult = System.Windows.MessageBox.Show("检测到BepInEx框架（旧版本模组）！\n使用旧版本汉化模组可能遭到月亮计划的封禁！\n建议您进行一次卸载后继续安装模组。\n若您**及其确定这是个误判**，请点击“确定”。\n否则，请点击“取消”停止安装，之后您可以在设置中找到卸载，将BepInEx卸载后重新安装。", "警告", MessageBoxButton.OKCancel, MessageBoxImage.Hand);
-                if (DialogResult == MessageBoxResult.Cancel)
+                bool confirmed = UniversalDialog.ShowConfirm("检测到BepInEx框架（旧版本模组）！\n使用旧版本汉化模组可能遭到月亮计划的封禁！\n建议您进行一次卸载后继续安装模组。\n若您**及其确定这是个误判**，请点击“是”。\n否则，请点击“否”停止安装，之后您可以在设置中找到卸载，将BepInEx卸载后重新安装。", "警告", this);
+                if (!confirmed)
                 {
                     await StopInstall();
                     return;
@@ -161,8 +179,8 @@ namespace LLC_MOD_Toolbox
             if (limbusProcess.Length > 0)
             {
                 Log.logger.Warn("LimbusCompany仍然开启。");
-                MessageBoxResult DialogResult = System.Windows.MessageBox.Show("检测到 Limbus Company 仍然处于开启状态！\n建议您关闭游戏后继续安装模组。\n若您已经关闭了 Limbus Company，请点击确定，否则请点击取消返回。", "警告", MessageBoxButton.OKCancel, MessageBoxImage.Hand);
-                if (DialogResult == MessageBoxResult.Cancel)
+                bool confirmed = UniversalDialog.ShowConfirm("检测到 Limbus Company 仍然处于开启状态！\n建议您关闭游戏后继续安装模组。\n若您已经关闭了 Limbus Company，请点击是，否则请点击否返回。", "警告", this);
+                if (!confirmed)
                 {
                     await StopInstall();
                     return;
@@ -174,7 +192,10 @@ namespace LLC_MOD_Toolbox
                 StartProgressTimer();
                 if (!greytestStatus)
                 {
-                    await CachedHash();
+                    if (!isMirrorChyanMode)
+                    {
+                        await CachedHash();
+                    }
                     await InstallFont();
                     await InstallMod();
                 }
@@ -196,16 +217,16 @@ namespace LLC_MOD_Toolbox
                 Application.Current.Shutdown();
                 return;
             }
-            MessageBoxResult RunResult = new();
+            bool runResult = false;
             if (isNewestModVersion)
             {
-                RunResult = MessageBox.Show("没有检测到新版本模组！\n您的模组已经为最新。\n点击“确定”立刻运行边狱公司。\n点击“取消”关闭弹窗。\n加载时请耐心等待。", "完成", MessageBoxButton.OKCancel);
+                runResult = UniversalDialog.ShowConfirm("没有检测到新版本模组！\n您的模组已经为最新。\n点击“是”立刻运行边狱公司。\n点击“否”关闭弹窗。\n加载时请耐心等待。", "提示", this);
             }
             else
             {
-                RunResult = MessageBox.Show("安装已完成！\n点击“确定”立刻运行边狱公司。\n点击“取消”关闭弹窗。\n加载时请耐心等待。", "完成", MessageBoxButton.OKCancel);
+                runResult = UniversalDialog.ShowConfirm("安装已完成！\n点击“是”立刻运行边狱公司。\n点击“否”关闭弹窗。\n加载时请耐心等待。", "提示", this);
             }
-            if (RunResult == MessageBoxResult.OK)
+            if (runResult)
             {
                 try
                 {
@@ -214,7 +235,7 @@ namespace LLC_MOD_Toolbox
                 catch (Exception ex)
                 {
                     Log.logger.Error("出现了问题： ", ex);
-                    MessageBox.Show("出现了问题。\n" + ex.ToString());
+                    UniversalDialog.ShowMessage("出现了问题。\n" + ex.ToString(), "提示", null, this);
                 }
             }
             hashCacheObject = null;
@@ -237,6 +258,21 @@ namespace LLC_MOD_Toolbox
             await RefreshPage();
         }
         private async Task InstallFont()
+        {
+            if (isMirrorChyanMode)
+            {
+                await InstallFontWithMirrorChyan();
+            }
+            else
+            {
+                await InstallFontWithoutMirrorChyan();
+            }
+        }
+        private async Task InstallFontWithMirrorChyan()
+        {
+            // todo: implement mirror chyan mode
+        }
+        private async Task InstallFontWithoutMirrorChyan()
         {
             await Task.Run(async () =>
             {
@@ -272,13 +308,146 @@ namespace LLC_MOD_Toolbox
                 else
                 {
                     Log.logger.Error("字体哈希校验失败。");
-                    MessageBox.Show("校验Hash失败。\n请等待数分钟或更换节点。\n如果问题仍然出现，请进行反馈。", "校验失败");
+                    UniversalDialog.ShowMessage("校验Hash失败。\n请等待数分钟或更换节点。\n如果问题仍然出现，请进行反馈。", "校验失败", null, this);
                     await StopInstall();
                     return;
                 }
             });
         }
         private async Task InstallMod()
+        {
+            if (isMirrorChyanMode)
+            {
+                await InstallModWithMirrorChyan();
+            }
+            else
+            {
+                await InstallModWithoutMirrorChyan();
+            }
+        }
+        private async Task InstallModWithMirrorChyan()
+        {
+            await Task.Run(async () =>
+            {
+                Log.logger.Info("开始安装模组，Mirror酱，合体！");
+                installPhase = 2;
+                string langDir = Path.Combine(limbusCompanyDir, "LimbusCompany_Data/Lang/LLC_zh-CN");
+                string versionJsonPath = Path.Combine(langDir, "Info", "version.json");
+                string limbusLocalizeZipPath = Path.Combine(limbusCompanyDir, "LimbusLocalize.7z");
+                int latestVersion = -1;
+                int currentVersion = -1;
+                bool needInstall = false;
+                JObject versionObj;
+                if (!File.Exists(versionJsonPath))
+                {
+                    Log.logger.Info("模组不存在。开始安装。");
+                    needInstall = true;
+                    isNewestModVersion = false;
+                }
+                if (!needInstall)
+                {
+                    latestVersion = await GetLatestLimbusLocalizeVersionWithMirrorChyan();
+                    if (latestVersion == -100)
+                    {
+                        StopInstall();
+                        return;
+                    }
+                    Log.logger.Info("最后模组版本： " + latestVersion);
+                    versionObj = JObject.Parse(File.ReadAllText(versionJsonPath));
+                    currentVersion = versionObj["version"].Value<int>();
+                    Log.logger.Info("当前模组版本： " + currentVersion);
+                    if (currentVersion >= latestVersion)
+                    {
+                        Log.logger.Info("模组无需更新。");
+                        return;
+                    }
+                    else
+                    {
+                        needInstall = true;
+                        isNewestModVersion = false;
+                        Log.logger.Info("模组需要更新。进行安装。");
+                    }
+                }
+                if (needInstall)
+                {
+                    string url = "";
+                    string sha256 = "";
+                    (latestVersion, url, sha256) = await GetLatestLimbusLocalizeInfoWithMirrorChyan();
+                    await DownloadFileAsync(url, limbusLocalizeZipPath);
+                    if (sha256 != CalculateSHA256(limbusLocalizeZipPath))
+                    {
+                        Log.logger.Error("校验Hash失败。");
+                        UniversalDialog.ShowMessage("校验Hash失败。\n请等待数分钟或更换节点。\n如果问题仍然出现，请进行反馈。", "校验失败", null, this);
+                        await StopInstall();
+                        return;
+                    }
+                    else
+                    {
+                        Log.logger.Info("校验Hash成功。");
+                    }
+                    Log.logger.Info("解压模组本体 zip 中。");
+                    Unarchive(limbusLocalizeZipPath, limbusCompanyDir);
+                    Log.logger.Info("删除模组本体 zip 。");
+                    File.Delete(limbusLocalizeZipPath);
+                }
+            });
+        }
+        private async Task<int> GetLatestLimbusLocalizeVersionWithMirrorChyan()
+        {
+            try
+            {
+                Log.logger.Info("获取模组标签。");
+                string version;
+                string raw = await GetURLText("https://mirrorchyan.com/api/resources/LLC/latest?current_version=&cdk=");
+                var json = ParseMirrorChyanJson(raw);
+                version = json["data"]["version_name"].Value<string>();
+                Log.logger.Info($"汉化模组最后标签为： {version}");
+                int parseVersion = int.Parse(version);
+                return parseVersion;
+            }
+            catch (MirrorChyanException ex)
+            {
+                ErrorReport(ex, false);
+                return -100;
+            }
+            catch (Exception ex)
+            {
+                ErrorReport(ex, false);
+                return -100;
+            }
+        }
+        /// <summary>
+        /// 解析MirrorChyan返回的Json，获取Mod信息
+        /// 注意！消耗配额！
+        /// </summary>
+        /// <returns>最新版本号，下载地址，SHA256</returns>
+        private async Task<(int, string, string)> GetLatestLimbusLocalizeInfoWithMirrorChyan()
+        {
+            try
+            {
+                Log.logger.Info("获取模组标签。");
+                string version;
+                string raw = await GetURLText($"https://mirrorchyan.com/api/resources/LLC/latest?current_version=&cdk={mirrorChyanToken}");
+                var json = ParseMirrorChyanJson(raw);
+                version = json["data"]["version_name"].Value<string>();
+                Log.logger.Info($"汉化模组最后标签为： {version}");
+                int parseVersion = int.Parse(version);
+                string url = json["data"]["url"].Value<string>();
+                string sha256 = json["data"]["sha256"].Value<string>();
+                return (parseVersion, url, sha256);
+            }
+            catch (MirrorChyanException ex)
+            {
+                ErrorReport(ex, false);
+                return (-100, string.Empty, string.Empty);
+            }
+            catch (Exception ex)
+            {
+                ErrorReport(ex, false);
+                return (-100, string.Empty, string.Empty);
+            }
+        }
+        private async Task InstallModWithoutMirrorChyan()
         {
             await Task.Run(async () =>
             {
@@ -351,7 +520,7 @@ namespace LLC_MOD_Toolbox
                     if (hashCacheObject["main_hash"].Value<string>() != CalculateSHA256(limbusLocalizeZipPath))
                     {
                         Log.logger.Error("校验Hash失败。");
-                        MessageBox.Show("校验Hash失败。\n请等待数分钟或更换节点。\n如果问题仍然出现，请进行反馈。", "校验失败");
+                        UniversalDialog.ShowMessage("校验Hash失败。\n请等待数分钟或更换节点。\n如果问题仍然出现，请进行反馈。", "校验失败", null, this);
                         await StopInstall();
                         return;
                     }
@@ -381,7 +550,7 @@ namespace LLC_MOD_Toolbox
             if (hashCacheObject == null)
             {
                 Log.logger.Error("获取Hash失败。");
-                MessageBox.Show("获取Hash失败。\n请等待数分钟或更换节点。\n如果问题仍然出现，请进行反馈。", "获取Hash失败");
+                UniversalDialog.ShowMessage("获取Hash失败。\n请等待数分钟或更换节点。\n如果问题仍然出现，请进行反馈。", "获取Hash失败", null, this);
                 await StopInstall();
                 return;
             }
@@ -503,7 +672,7 @@ namespace LLC_MOD_Toolbox
                 else if (nodeComboboxText == "Github直连")
                 {
                     Log.logger.Info("选择Github节点。");
-                    System.Windows.MessageBox.Show("如果您没有使用代理软件（包括Watt Toolkit）\n请不要使用此节点。\nGithub由于不可抗力因素，对国内网络十分不友好。\n如果您是国外用户，才应该使用此选项。", "警告", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    UniversalDialog.ShowMessage("如果您没有使用代理软件（包括Watt Toolkit）\n请不要使用此节点。\nGithub由于不可抗力因素，对国内网络十分不友好。\n如果您是国外用户，才应该使用此选项。", "警告", null, this);
                     useEndPoint = string.Empty;
                     useGithub = true;
                 }
@@ -512,7 +681,7 @@ namespace LLC_MOD_Toolbox
                     useEndPoint = FindNodeEndpoint(nodeComboboxText);
                     useGithub = false;
                     Log.logger.Info("当前Endpoint：" + useEndPoint);
-                    System.Windows.MessageBox.Show("切换成功。", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
+                    UniversalDialog.ShowMessage("切换成功。", "提示", null, this);
                 }
             }
             else
@@ -537,7 +706,7 @@ namespace LLC_MOD_Toolbox
                     {
                         useAPIEndPoint = FindAPIEndpoint(apiComboboxText);
                         Log.logger.Info("当前API Endpoint：" + useAPIEndPoint);
-                        System.Windows.MessageBox.Show("切换成功。", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
+                        UniversalDialog.ShowMessage("切换成功。", "提示", null, this);
                     }
                 }
                 else
@@ -549,7 +718,7 @@ namespace LLC_MOD_Toolbox
             {
                 await SetAPIComboboxText("恢复默认");
                 Log.logger.Info("已开启Github。无法切换API。");
-                System.Windows.MessageBox.Show("切换失败。\n无法在节点为Github直连的情况下切换API。", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
+                UniversalDialog.ShowMessage("切换失败。\n无法在节点为Github直连的情况下切换API。", "提示", null, this);
             }
             APPChangeAPIUI = false;
         }
@@ -592,24 +761,24 @@ namespace LLC_MOD_Toolbox
             }
             else
             {
-                MessageBoxResult CheckLCBPathResult = MessageBoxResult.OK;
+                bool CheckLCBPathResult = false;
                 if (!string.IsNullOrEmpty(limbusCompanyDir))
                 {
-                    CheckLCBPathResult = System.Windows.MessageBox.Show($"这是您的边狱公司地址吗？\n{limbusCompanyDir}", "检查路径", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                    CheckLCBPathResult = UniversalDialog.ShowConfirm($"这是您的边狱公司地址吗？\n{limbusCompanyDir}", "检查路径");
                 }
-                if (CheckLCBPathResult == MessageBoxResult.Yes)
+                if (CheckLCBPathResult)
                 {
                     Log.logger.Info("用户确认路径。");
                     configuation.Settings.general.LCBPath = limbusCompanyDir;
                     configuation.Settings.general.skipLCBPathCheck = true;
                     configuation.SaveConfig();
                 }
-                if (string.IsNullOrEmpty(limbusCompanyDir) || CheckLCBPathResult == MessageBoxResult.No)
+                if (string.IsNullOrEmpty(limbusCompanyDir) || !CheckLCBPathResult)
                 {
                     if (string.IsNullOrEmpty(limbusCompanyDir))
                     {
                         Log.logger.Warn("未能找到 Limbus Company 目录，手动选择模式。");
-                        System.Windows.MessageBox.Show("未能找到 Limbus Company 目录。请手动选择。", "提示");
+                        UniversalDialog.ShowMessage("未能找到 Limbus Company 目录。请手动选择。", "提示", null, null);
                     }
                     else
                     {
@@ -632,7 +801,7 @@ namespace LLC_MOD_Toolbox
                     if (!File.Exists(limbusCompanyGameDir))
                     {
                         Log.logger.Error("选择了错误目录，关闭。");
-                        System.Windows.MessageBox.Show("选择目录有误，没有在当前目录找到游戏。", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                        UniversalDialog.ShowMessage("选择目录有误，没有在当前目录找到游戏。", "错误", null, null);
                         System.Windows.Application.Current.Shutdown();
                     }
                     else
@@ -730,7 +899,7 @@ namespace LLC_MOD_Toolbox
         /// 获取最新汉化模组标签。
         /// </summary>
         /// <returns>返回模组标签</returns>
-        private static async Task<int> GetLatestLimbusLocalizeVersion(bool useGithub)
+        private async Task<int> GetLatestLimbusLocalizeVersion(bool useGithub)
         {
             Log.logger.Info("获取模组标签。");
             string version;
@@ -756,23 +925,64 @@ namespace LLC_MOD_Toolbox
         /// </summary>
         /// <param name="Url">网址</param>
         /// <returns></returns>
-        public static async Task<string> GetURLText(string Url)
+        public async Task<string> GetURLText(string url, bool reportError = true, int maxRetries = 3, int delayMs = 300)
         {
-            try
+            if (string.IsNullOrWhiteSpace(url))
             {
-                Log.logger.Info($"获取 {Url} 文本内容。");
-                using HttpClient client = new();
-                client.DefaultRequestHeaders.Add("User-Agent", "LLC_MOD_Toolbox");
-                string raw = string.Empty;
-                raw = await client.GetStringAsync(Url);
-                return raw;
-            }
-            catch (Exception ex)
-            {
-                ErrorReport(ex, false);
+                Log.logger.Error("URL不能为空");
                 return string.Empty;
             }
+
+            Log.logger.Info($"获取 {url} 文本内容。");
+
+            using HttpClient client = new();
+            client.DefaultRequestHeaders.Add("User-Agent", "LLC_MOD_Toolbox");
+
+            for (int attempt = 1; attempt <= maxRetries; attempt++)
+            {
+                try
+                {
+                    if (attempt > 1)
+                    {
+                        Log.logger.Info($"第 {attempt} 次尝试获取 {url}");
+                    }
+
+                    string result = await client.GetStringAsync(url);
+
+                    if (attempt > 1)
+                    {
+                        Log.logger.Info($"第 {attempt} 次尝试成功获取内容");
+                    }
+
+                    return result;
+                }
+                catch (Exception ex)
+                {
+                    bool isLastAttempt = attempt == maxRetries;
+
+                    if (isLastAttempt)
+                    {
+                        // 最后一次尝试失败，记录错误
+                        if (reportError)
+                        {
+                            ErrorReport(ex, false);
+                        }
+                        else
+                        {
+                            Log.logger.Error($"获取网址文本内容失败，已重试 {maxRetries} 次。", ex);
+                        }
+                    }
+                    else
+                    {
+                        // 非最后一次尝试，记录警告并准备重试
+                        Log.logger.Warn($"第 {attempt} 次获取失败，{delayMs}ms 后重试Ms");
+                    }
+                }
+            }
+
+            return string.Empty;
         }
+
         /// <summary>
         /// 打开指定网址。
         /// </summary>
@@ -792,40 +1002,110 @@ namespace LLC_MOD_Toolbox
         /// <param name="version">当前版本</param>
         /// <param name="IsGithub">是否使用Github</param>
         /// <returns>是否存在更新</returns>
-        private static async void CheckToolboxUpdate()
+        private async void CheckToolboxUpdate(bool isMirrorChyanMode)
         {
             try
             {
                 Log.logger.Info("正在检查工具箱更新。");
-                string raw = await GetURLText(string.Format(useAPIEndPoint, "v2/get_api/get/repos/LocalizeLimbusCompany/LLC_Mod_Toolbox/releases/latest"));
-                var JsonObject = JObject.Parse(raw);
-                string latestReleaseTagRaw = JsonObject["tag_name"].Value<string>();
-                string latestReleaseTag = latestReleaseTagRaw.Remove(0, 1);
-                Log.logger.Info("最新安装器tag：" + latestReleaseTag);
-                if (new Version(latestReleaseTag) > Assembly.GetExecutingAssembly().GetName().Version)
+                if (isMirrorChyanMode)
                 {
-                    Log.logger.Info("安装器存在更新。");
-                    var result = MessageBox.Show("安装器存在更新。\n点击确定下载最新版工具箱安装包并安装。\n你也可以在官网直接下载最新版。", "更新提醒", MessageBoxButton.OKCancel, MessageBoxImage.Warning);
-                    if (result == MessageBoxResult.OK)
-                    {
-                        Log.logger.Info("用户选择下载更新。");
-                        string installerEXE = Path.Combine(Path.GetTempPath(), "LLC_Mod_Toolbox_Installer.exe");
-                        await DownloadFileAsyncWithoutProgress("https://download.zeroasso.top/files/LLC_MOD_Toolbox_Installer.exe", installerEXE);
-                        Log.logger.Info("下载完成。");
-                        MessageBox.Show("下载完成，即将启动安装器。", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
-                        string batPath = CreateBatchFile(installerEXE);
-                        StartBatchProcess(batPath);
-                        Application.Current.Shutdown();
-                    }
-                    Application.Current.Shutdown();
+                    await CheckToolboxUpdateWithMirrorChyan();
                 }
-                Log.logger.Info("没有更新。");
+                else
+                {
+                    await CheckToolboxUpdateWithoutMirrorChyan();
+                }
             }
             catch (Exception ex)
             {
                 Log.logger.Error("检查安装器更新出现问题。", ex);
                 return;
             }
+        }
+        private async Task<string> GetToolboxMirrorChyanDownloadUrl()
+        {
+            try
+            {
+                string withCDKRaw = await GetURLText($"https://mirrorchyan.com/api/resources/LLC_MOD_Toolbox/latest?current_version=&cdk={mirrorChyanToken}");
+                JObject withCDK = ParseMirrorChyanJson(withCDKRaw);
+                string url = withCDK["data"]["url"].Value<string>();
+                return url;
+            }
+            catch (MirrorChyanException ex)
+            {
+                ErrorReport(ex, false);
+                Log.logger.Error("获取下载链接失败。", ex);
+                return string.Empty;
+            }
+            catch (Exception ex)
+            {
+                ErrorReport(ex, false);
+                Log.logger.Error("获取下载链接失败。", ex);
+                return string.Empty;
+            }
+        }
+        private async Task CheckToolboxUpdateWithMirrorChyan()
+        {
+            string noCDKRaw = await GetURLText("https://mirrorchyan.com/api/resources/LLC_MOD_Toolbox/latest?current_version=&cdk=");
+            JObject noCDKObject = ParseMirrorChyanJson(noCDKRaw);
+            if (noCDKObject == null)
+            {
+                Log.logger.Error("获取最新版本失败。");
+                return;
+            }
+            string latestReleaseTagRaw = noCDKObject["data"]["version_name"].Value<string>();
+            string latestReleaseTag = latestReleaseTagRaw.Remove(0, 1);
+            Log.logger.Info("最新安装器tag：" + latestReleaseTag);
+            if (new Version(latestReleaseTag) > Assembly.GetExecutingAssembly().GetName().Version)
+            {
+                Log.logger.Info("安装器存在更新。");
+                bool result = UniversalDialog.ShowConfirm("安装器存在更新。\n点击是下载最新版工具箱安装包并安装。\n你也可以在官网直接下载最新版。", "安装器更新", this);
+                if (result)
+                {
+                    string installerEXE = Path.Combine(Path.GetTempPath(), "LLC_Mod_Toolbox_Installer.exe");
+
+                    string mirrorChyanUrl = await GetToolboxMirrorChyanDownloadUrl();
+                    await DownloadFileAsyncWithoutProgress(mirrorChyanUrl, installerEXE);
+
+                    Log.logger.Info("下载完成。");
+                    UniversalDialog.ShowMessage("下载完成，即将启动安装器。", "提示", null, this);
+                    string batPath = CreateBatchFile(installerEXE);
+                    StartBatchProcess(batPath);
+                    Application.Current.Shutdown();
+                    return;
+                }
+                else
+                {
+                    Application.Current.Shutdown();
+                }
+            }
+        }
+        private async Task CheckToolboxUpdateWithoutMirrorChyan()
+        {
+            string raw = await GetURLText(string.Format(useAPIEndPoint, "v2/get_api/get/repos/LocalizeLimbusCompany/LLC_Mod_Toolbox/releases/latest"));
+            var JsonObject = JObject.Parse(raw);
+            string latestReleaseTagRaw = JsonObject["tag_name"].Value<string>();
+            string latestReleaseTag = latestReleaseTagRaw.Remove(0, 1);
+            Log.logger.Info("最新安装器tag：" + latestReleaseTag);
+            if (new Version(latestReleaseTag) > Assembly.GetExecutingAssembly().GetName().Version)
+            {
+                Log.logger.Info("安装器存在更新。");
+                bool result = UniversalDialog.ShowConfirm("安装器存在更新。\n点击是下载最新版工具箱安装包并安装。\n你也可以在官网直接下载最新版。", "安装器更新", this);
+                if (result)
+                {
+                    Log.logger.Info("用户选择下载更新。");
+                    string installerEXE = Path.Combine(Path.GetTempPath(), "LLC_Mod_Toolbox_Installer.exe");
+                    await DownloadFileAsyncWithoutProgress("https://download.zeroasso.top/files/LLC_MOD_Toolbox_Installer.exe", installerEXE);
+                    Log.logger.Info("下载完成。");
+                    UniversalDialog.ShowMessage("下载完成，即将启动安装器。", "提示", null, this);
+                    string batPath = CreateBatchFile(installerEXE);
+                    StartBatchProcess(batPath);
+                    Application.Current.Shutdown();
+                    return;
+                }
+                Application.Current.Shutdown();
+            }
+            Log.logger.Info("没有更新。");
         }
 
         private static string CreateBatchFile(string targetExePath)
@@ -925,7 +1205,7 @@ del /f /q ""{batPath}""
             if (!File.Exists(limbusCompanyGameDir))
             {
                 Log.logger.Error("选择了错误目录，关闭游戏。");
-                System.Windows.MessageBox.Show("选择目录有误，没有在当前目录找到游戏。", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                UniversalDialog.ShowMessage("选择目录有误，没有在当前目录找到游戏。", "错误", null, this);
                 System.Windows.Application.Current.Shutdown();
             }
             else
@@ -936,7 +1216,7 @@ del /f /q ""{batPath}""
                 configuation.SaveConfig();
             }
         }
-        public static void ChangeLCBLangConfig(string value)
+        public void ChangeLCBLangConfig(string value)
         {
             try
             {
@@ -951,8 +1231,8 @@ del /f /q ""{batPath}""
             }
             catch (JsonReaderException ex)
             {
-                var result = MessageBox.Show("配置文件出现问题，是否尝试进行修复？\n" + ex.Message, "错误", MessageBoxButton.OKCancel, MessageBoxImage.Error);
-                if (result == MessageBoxResult.OK)
+                bool result = UniversalDialog.ShowConfirm("配置文件出现问题，是否尝试进行修复？\n" + ex.Message, "确认删除", this);
+                if (result)
                 {
                     File.WriteAllText(Path.Combine(limbusCompanyDir, "LimbusCompany_Data", "Lang", "config.json"), "{\"lang\": \"\",\"titleFont\": \"\",\"contextFont\": \"\",\"samplingPointSize\": 78,\"padding\": 5}");
                     ChangeLCBLangConfig(value);
@@ -980,8 +1260,8 @@ del /f /q ""{batPath}""
         private async void UninstallButtonClick(object sender, RoutedEventArgs e)
         {
             Log.logger.Info("点击删除模组");
-            MessageBoxResult result = System.Windows.MessageBox.Show("删除后你需要重新安装汉化补丁。\n确定继续吗？", "警告", MessageBoxButton.YesNo, MessageBoxImage.Warning);
-            if (result == MessageBoxResult.Yes)
+            bool result = UniversalDialog.ShowConfirm("删除后你需要重新安装汉化补丁。\n确定继续吗？", "警告", this);
+            if (result)
             {
                 Log.logger.Info("确定删除模组。");
                 try
@@ -994,10 +1274,10 @@ del /f /q ""{batPath}""
                 }
                 catch (Exception ex)
                 {
-                    System.Windows.MessageBox.Show("删除过程中出现了一些问题： " + ex.ToString(), "警告");
+                    UniversalDialog.ShowMessage("删除过程中出现了一些问题： " + ex.ToString(), "警告", null, this);
                     Log.logger.Error("删除过程中出现了一些问题： ", ex);
                 }
-                System.Windows.MessageBox.Show("删除完成。", "提示");
+                UniversalDialog.ShowMessage("删除完成。", "提示", null, this);
                 Log.logger.Info("删除完成。");
             }
         }
@@ -1033,7 +1313,7 @@ del /f /q ""{batPath}""
                 Log.logger.Info("文件不存在： " + path);
             }
         }
-        public static void DeleteLanguagePack()
+        public void DeleteLanguagePack()
         {
             DeleteDir(Path.Combine(limbusCompanyDir, "LimbusCompany_Data", "Lang", "LLC_zh-CN"));
             ChangeLCBLangConfig("");
@@ -1078,7 +1358,7 @@ del /f /q ""{batPath}""
                 if (token == string.Empty || token == "请输入秘钥")
                 {
                     Log.logger.Info("Token为空。");
-                    System.Windows.MessageBox.Show("请输入有效的Token。", "提示", MessageBoxButton.OK, MessageBoxImage.Error);
+                    UniversalDialog.ShowMessage("请输入有效的Token。", "提示", null, this);
                     await EnableGlobalOperations();
                     return;
                 }
@@ -1096,7 +1376,7 @@ del /f /q ""{batPath}""
                         else
                         {
                             Log.logger.Info("秘钥无效。");
-                            System.Windows.MessageBox.Show("请输入有效的Token。", "提示", MessageBoxButton.OK, MessageBoxImage.Error);
+                            UniversalDialog.ShowMessage("请输入有效的Token。", "提示", null, this);
                             await EnableGlobalOperations();
                             return;
                         }
@@ -1120,15 +1400,14 @@ del /f /q ""{batPath}""
                     else
                     {
                         Log.logger.Info("Token已停止测试。");
-                        System.Windows.MessageBox.Show("Token已停止测试。", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
+                        UniversalDialog.ShowMessage("Token已停止测试。", "提示", null, this);
                         await EnableGlobalOperations();
                         return;
                     }
                     string note = tokenObject["note"].Value<string>();
                     Log.logger.Info($"Token：{token}\n备注：{note}");
                     await ChangeLogoToTest();
-                    MessageBox.Show(
-                        $"目前Token有效。\n-------------\nToken信息：\n秘钥：{token}\n备注：{note}\n-------------\n灰度测试模式已开启。\n请在自动安装安装此秘钥对应版本汉化。\n秘钥信息请勿外传。", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
+                    UniversalDialog.ShowMessage($"目前Token有效。\n-------------\nToken信息：\n秘钥：{token}\n备注：{note}\n-------------\n灰度测试模式已开启。\n请在自动安装安装此秘钥对应版本汉化。\n秘钥信息请勿外传。", "提示", null, this);
                     greytestStatus = true;
                     greytestUrl = string.Format(useAPIEndPoint, $"/v2/grey_test/get_file?code={token}");
                     await EnableGlobalOperations();
@@ -1142,7 +1421,7 @@ del /f /q ""{batPath}""
             }
             else
             {
-                System.Windows.MessageBox.Show("灰度测试模式已开启。\n请在自动安装安装此秘钥对应版本汉化。\n若需要正常使用或更换秘钥，请重启工具箱。", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
+                UniversalDialog.ShowMessage("灰度测试模式已开启。\n请在自动安装安装此秘钥对应版本汉化。\n若需要正常使用或更换秘钥，请重启工具箱。", "提示", null, this);
                 await EnableGlobalOperations();
                 return;
             }
@@ -1196,7 +1475,7 @@ del /f /q ""{batPath}""
             if (string.IsNullOrEmpty(gachaText))
             {
                 Log.logger.Error("初始化失败。");
-                System.Windows.MessageBox.Show("初始化失败。请检查网络情况。", "提示");
+                UniversalDialog.ShowMessage("初始化失败。请检查网络情况。", "", null, this);
                 isInitGachaFailed = true;
                 hasVergil = false;
                 await EnableGlobalOperations();
@@ -1214,7 +1493,8 @@ del /f /q ""{batPath}""
             personalInfos2star = personalInfos.Where(p => p.Unique == 2).ToList();
             personalInfos3star = personalInfos.Where(p => p.Unique == 3).ToList();
             // 明明可以用 personalInfos.GroupBy(p => p.Unique)
-            System.Windows.MessageBox.Show("初始化完成。", "提示");
+            // 阅，能用就不要管那么多
+            UniversalDialog.ShowMessage("初始化完成。", "提示", null, this);
             isInitGacha = true;
             await EnableGlobalOperations();
         }
@@ -1225,7 +1505,7 @@ del /f /q ""{batPath}""
             if (isInitGachaFailed)
             {
                 Log.logger.Info("初始化失败。");
-                System.Windows.MessageBox.Show("初始化失败，无法进行抽卡操作。", "提示");
+                UniversalDialog.ShowMessage("初始化失败，无法进行抽卡操作。", "提示", null, this);
                 return;
             }
             Random random = new();
@@ -1246,7 +1526,7 @@ del /f /q ""{batPath}""
             catch (Exception ex)
             {
                 Log.logger.Info("出现了问题。", ex);
-                System.Windows.MessageBox.Show("出了点小问题！\n要不再试一次？\n————————\n" + ex.ToString());
+                UniversalDialog.ShowMessage("出了点小问题！\n要不再试一次？\n————————\n" + ex.ToString(), "啊呀，出了点小问题", null, this);
                 gachaTimer?.Stop();
                 _currentIndex = 0;
                 await this.Dispatcher.BeginInvoke(() =>
@@ -1387,6 +1667,8 @@ del /f /q ""{batPath}""
                 return input;
             }
         }
+        bool someEggIGuess = false;
+        bool someEggBroken = false;
         private async void GachaTimerTick(object? sender, EventArgs? e)
         {
             if (_currentIndex < 10)
@@ -1407,33 +1689,59 @@ del /f /q ""{batPath}""
                 });
                 Random random = new();
                 gachaCount += 1;
+                if (random.Next(1, 100001) == 100000 && !someEggBroken)
+                {
+                    if (!someEggIGuess)
+                    {
+                        UniversalDialog.ShowMessage("Bro。\n这是一个十万分之一概率的弹窗。\n你怎么会触发它呢，它几乎是一个不可能事件——\n算了，无所谓了。\n总之你现在可以向朋友炫耀一下了，我猜。\n比如说你中了一个零协会的彩蛋？\n当然我不会给你什么的，例如狂气又或者合成玉之类。\n不过我倒是可以告诉你一个秘密：", "什么？？？", null, this);
+                        UniversalDialog.ShowMessage("凯尔希很可爱。", "嗯。", null, this);
+                        UniversalDialog.ShowMessage("不满意？\n那随便你，总之彩蛋我写完了。", "你应该不会再触发一次这个文本，对吧？", null, this);
+                        someEggIGuess = true;
+                        return;
+                    }
+                    else
+                    {
+                        UniversalDialog.ShowMessage("你真再触发了一次啊？", "哇靠", null, this);
+                        UniversalDialog.ShowMessage("额，我可以说我没什么能告诉你了吗。\n放心，合成玉或者源石什么的我还是不会给的。", "什么？？？", null, this);
+                        UniversalDialog.ShowMessage("这样吧，你先下载明日方舟，然后前往中坚卡池抽取凯尔希，后面忘了", "嗯，即使这样我也什么都不会说了");
+                        UniversalDialog.ShowMessage("然后你可以不用抽了，没文本了。", "真的没有了！！！");
+                        UniversalDialog.ShowMessage("当然你仍然可能会觉得：\n工具箱一定在骗我，一定还有彩蛋！\n如果你真的这么想然后抽1000抽没有结果，然后往网上传图，我会不留余力嘲笑你的。\n就这样。", "真的没彩蛋了，实在不行你双击一下小黑小白？", null, this);
+                        File.WriteAllText(Path.Combine(currentDir, "W0wS0meE99.DOYOUWANTCHECKME"), Convert.ToBase64String(Encoding.UTF8.GetBytes("是吧，我还是骗你了，不过你能发现这个彩蛋也算你厉害了。\n这条信息会被BASE64加密，如果你能成功解密这条消息……\n呃，呃……\n谢谢喜欢？")));
+                        someEggBroken = true;
+                        return;
+                    }
+                }
                 if (alreadyHasVergil)
                 {
-                    System.Windows.MessageBox.Show("当你不见前路，不知应去往何方时……\n向导会为你指引方向。\n但丁。", "？？？", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    UniversalDialog.ShowMessage("当你不见前路，不知应去往何方时……\n向导会为你指引方向。\n但丁。", "？？？", null, this);
                     alreadyHasVergil = false;
                     return;
                 }
                 switch (gachaCount)
                 {
                     case 10:
-                        System.Windows.MessageBox.Show("你已经抽了100抽了，你上头了？", "提示");
+                        UniversalDialog.ShowMessage("你已经抽了100抽了，你上头了？", "提示", null, this);
                         return;
                     case 20:
-                        System.Windows.MessageBox.Show("恭喜你，你已经抽了一个井了！\n珍爱生命，远离抽卡啊亲！", "提示");
+                        UniversalDialog.ShowMessage("恭喜你，你已经抽了一个井了！\n珍爱生命，远离抽卡啊亲！", "提示", null, this);
                         return;
                     case 40:
-                        System.Windows.MessageBox.Show("两个井了，你算算已经砸了多少狂气了？", "提示");
+                        UniversalDialog.ShowMessage("两个井了，你算算已经砸了多少狂气了？", "提示", null, this);
                         return;
                     case 60:
-                        System.Windows.MessageBox.Show("收手吧！你不算砸了多少狂气我算了！\n你已经砸了60x1300=78000狂气了！", "提示");
+                        UniversalDialog.ShowMessage("收手吧！你不算砸了多少狂气我算了！\n你已经砸了60x1300=78000狂气了！", "提示", null, this);
                         return;
                     case 100:
-                        System.Windows.MessageBox.Show("我是来恭喜你，你已经扔进去1000抽，简称130000狂气了。\n你花了多少时间到这里？", "提示");
+                        UniversalDialog.ShowMessage("我是来恭喜你，你已经扔进去1000抽，简称130000狂气了。\n你花了多少时间到这里？", "提示", null, this);
+                        return;
+                    case 200:
+                        UniversalDialog.ShowMessage("2000抽。\n有这个毅力你做什么都会成功的。", "提示", null, this);
                         return;
                 }
                 if (uniqueCount == null)
                 {
-                    System.Windows.MessageBox.Show("抽卡完成。", "提示");
+                    Log.logger.Error("uniqueCount为空。");
+                    UniversalDialog.ShowMessage("抽卡完成。", "提示", null, this);
                     return;
                 }
                 else if (uniqueCount[0] == 9 && uniqueCount[1] == 1)
@@ -1441,15 +1749,15 @@ del /f /q ""{batPath}""
                     int choice = random.Next(1, 4);
                     if (choice == 1)
                     {
-                        System.Windows.MessageBox.Show("恭喜九白一红~！", "提示");
+                        UniversalDialog.ShowMessage("恭喜九白一红~！", "提示", null, this);
                     }
                     else if (choice == 2)
                     {
-                        System.Windows.MessageBox.Show("正常发挥正常发挥~", "提示");
+                        UniversalDialog.ShowMessage("正常发挥正常发挥~", "提示", null, this);
                     }
                     else
                     {
-                        System.Windows.MessageBox.Show("还好没拿真狂气抽吧！", "提示");
+                        UniversalDialog.ShowMessage("还好没拿真狂气抽吧！", "提示", null, this);
                     }
                 }
                 else if (uniqueCount[0] == 8 && uniqueCount[1] == 2)
@@ -1457,15 +1765,15 @@ del /f /q ""{batPath}""
                     int choice = random.Next(1, 4);
                     if (choice == 1)
                     {
-                        System.Windows.MessageBox.Show("至少比九白一红好一点，不是么？", "提示");
+                        UniversalDialog.ShowMessage("至少比九白一红好一点，不是么？", "提示", null, this);
                     }
                     else if (choice == 2)
                     {
-                        System.Windows.MessageBox.Show("你要不先去洗洗手？", "提示");
+                        UniversalDialog.ShowMessage("你要不先去洗洗手？", "提示", null, this);
                     }
                     else
                     {
-                        System.Windows.MessageBox.Show("真是可惜，看来这次运气没有站在你这边.jpg", "提示");
+                        UniversalDialog.ShowMessage("真是可惜，看来这次运气没有站在你这边.jpg", "提示", null, this);
                     }
                 }
                 else if (uniqueCount[0] == 7 && uniqueCount[1] == 3)
@@ -1473,15 +1781,15 @@ del /f /q ""{batPath}""
                     int choice = random.Next(1, 4);
                     if (choice == 1)
                     {
-                        System.Windows.MessageBox.Show("三个二星！这是多少碎片来着？", "提示");
+                        UniversalDialog.ShowMessage("三个二星！这是多少碎片来着？", "提示", null, this);
                     }
                     else if (choice == 2)
                     {
-                        System.Windows.MessageBox.Show("工具箱的概率可是十分严谨的！\n所以肯定不是工具箱的问题！", "提示");
+                        UniversalDialog.ShowMessage("工具箱的概率可是十分严谨的！\n所以肯定不是工具箱的问题！", "提示", null, this);
                     }
                     else
                     {
-                        System.Windows.MessageBox.Show("要是抽不中就算了吧，散伙散伙！", "提示");
+                        UniversalDialog.ShowMessage("要是抽不中就算了吧，散伙散伙！", "提示", null, this);
                     }
                 }
                 else if (uniqueCount[2] == 1)
@@ -1489,15 +1797,15 @@ del /f /q ""{batPath}""
                     int choice = random.Next(1, 4);
                     if (choice == 1)
                     {
-                        System.Windows.MessageBox.Show("金色传说！虽然说就一个。", "提示");
+                        UniversalDialog.ShowMessage("金色传说！虽然说就一个。", "提示", null, this);
                     }
                     else if (choice == 2)
                     {
-                        System.Windows.MessageBox.Show("恭喜恭喜~不知道抽了多少次了？", "提示");
+                        UniversalDialog.ShowMessage("恭喜恭喜~不知道抽了多少次了？", "提示", null, this);
                     }
                     else
                     {
-                        System.Windows.MessageBox.Show("ALL IN！", "提示");
+                        UniversalDialog.ShowMessage("ALL IN！", "提示", null, this);
                     }
                 }
                 else if (uniqueCount[2] == 2)
@@ -1505,15 +1813,15 @@ del /f /q ""{batPath}""
                     int choice = random.Next(1, 4);
                     if (choice == 1)
                     {
-                        System.Windows.MessageBox.Show("双黄蛋？希望你瓦夜的时候也能这样。", "提示");
+                        UniversalDialog.ShowMessage("双黄蛋？希望你瓦夜的时候也能这样。", "提示", null, this);
                     }
                     else if (choice == 2)
                     {
-                        System.Windows.MessageBox.Show("100碎片而已，我一点都不羡慕！", "提示");
+                        UniversalDialog.ShowMessage("100碎片而已，我一点都不羡慕！", "提示", null, this);
                     }
                     else
                     {
-                        System.Windows.MessageBox.Show("恭喜恭喜~", "提示");
+                        UniversalDialog.ShowMessage("恭喜恭喜~", "提示", null, this);
                     }
                 }
                 else if (uniqueCount[2] == 3)
@@ -1521,15 +1829,15 @@ del /f /q ""{batPath}""
                     int choice = random.Next(1, 4);
                     if (choice == 1)
                     {
-                        System.Windows.MessageBox.Show("真的假的三黄。。？", "提示");
+                        UniversalDialog.ShowMessage("真的假的三黄。。？", "提示", null, this);
                     }
                     else if (choice == 2)
                     {
-                        System.Windows.MessageBox.Show("你平时运气也这么好？！", "提示");
+                        UniversalDialog.ShowMessage("你平时运气也这么好？！", "提示", null, this);
                     }
                     else
                     {
-                        System.Windows.MessageBox.Show("爽了，再来再来！", "提示");
+                        UniversalDialog.ShowMessage("爽了，再来再来！", "提示", null, this);
                     }
                 }
                 else if (uniqueCount[2] >= 4)
@@ -1538,13 +1846,13 @@ del /f /q ""{batPath}""
                     switch (choice)
                     {
                         case 1:
-                            System.Windows.MessageBox.Show("不可能……不可能啊？！", "提示");
+                            UniversalDialog.ShowMessage("不可能……不可能啊？！", "提示", null, this);
                             break;
                         case 2:
-                            System.Windows.MessageBox.Show("欧吃矛！", "提示");
+                            UniversalDialog.ShowMessage("欧吃矛！", "提示", null, this);
                             break;
                         case 3:
-                            System.Windows.MessageBox.Show("再抽池子就要空了！", "提示");
+                            UniversalDialog.ShowMessage("再抽池子就要空了！", "提示", null, this);
                             break;
                     }
                 }
@@ -1553,15 +1861,15 @@ del /f /q ""{batPath}""
                     int choice = random.Next(1, 4);
                     if (choice == 1)
                     {
-                        System.Windows.MessageBox.Show("怎么样？再来一次么？", "提示");
+                        UniversalDialog.ShowMessage("怎么样？再来一次么？", "提示", null, this);
                     }
                     else if (choice == 2)
                     {
-                        System.Windows.MessageBox.Show("冷知识：概率真的完全真实。", "提示");
+                        UniversalDialog.ShowMessage("冷知识：概率真的完全真实。", "提示", null, this);
                     }
                     else
                     {
-                        System.Windows.MessageBox.Show("你平时抽卡也这个结果吗？", "提示");
+                        UniversalDialog.ShowMessage("你平时抽卡也这个结果吗？", "提示", null, this);
                     }
                 }
             }
@@ -1591,21 +1899,37 @@ del /f /q ""{batPath}""
         /// <param name="ex"></param>
         /// <param name="CloseWindow">是否关闭窗体。</param>
         /// <param name="advice">提供建议</param>
-        public static void ErrorReport(Exception ex, bool CloseWindow, string advice = "")
+        public void ErrorReport(Exception ex, bool CloseWindow, string advice = "")
         {
             Log.logger.Error("出现了问题：\n", ex);
             string errorMessage = ReturnExceptionText(ex);
             if (CloseWindow)
             {
-                System.Windows.MessageBox.Show($"运行中出现了问题，且在这个错误发生后，工具箱将关闭。\n{advice}若要反馈，请带上链接或日志。\n反馈请勿！请勿截图此页面！\n错误分析原因：\n{errorMessage}", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                UniversalDialog.ShowMessage($"运行中出现了问题，且在这个错误发生后，工具箱将关闭。\n{advice}若要反馈，请带上链接或日志。\n反馈请勿！请勿截图此页面！\n错误分析原因：\n{errorMessage}", "错误", null, this);
             }
             else
             {
-                System.Windows.MessageBox.Show($"运行中出现了问题。但你仍然能够使用工具箱（大概）。\n{advice}若要反馈，请带上链接或日志。\n反馈请勿！请勿截图此页面！\n——————————\n错误分析原因：\n{errorMessage}", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                UniversalDialog.ShowMessage($"运行中出现了问题。但你仍然能够使用工具箱（大概）。\n{advice}若要反馈，请带上链接或日志。\n反馈请勿！请勿截图此页面！\n——————————\n错误分析原因：\n{errorMessage}", "错误", null, this);
             }
             if (CloseWindow)
             {
-                System.Windows.Application.Current.Shutdown();
+                Application.Current.Shutdown();
+            }
+        }
+        public void ErrorReport(MirrorChyanException ex, bool CloseWindow)
+        {
+            Log.logger.Error("访问 Mirror 酱服务中出现了错误\n", ex);
+            if (CloseWindow)
+            {
+                UniversalDialog.ShowMessage($"访问 Mirror 酱服务出现了问题，且在这个错误发生后，工具箱将关闭。\n出现该问题原因：{ex.Message}\n若要反馈，请带上链接或日志。\n反馈请勿！请勿截图此页面！", "错误", null, this);
+            }
+            else
+            {
+                UniversalDialog.ShowMessage($"访问 Mirror 酱服务出现了问题。但你仍然能够使用工具箱（大概）。\n出现该问题原因：{ex.Message}\n若要反馈，请带上链接或日志。\n反馈请勿！请勿截图此页面！", "错误", null, this);
+            }
+            if (CloseWindow)
+            {
+                Application.Current.Shutdown();
             }
         }
         public static string ReturnExceptionText(Exception ex)
@@ -1698,7 +2022,7 @@ del /f /q ""{batPath}""
             }
             catch (Exception ex)
             {
-                ErrorReport(ex, false);
+                Log.logger.Error("检查公告失败。", ex);
             }
         }
         private async void AnnoTimer_Tick(object? sender, EventArgs e)
@@ -1743,7 +2067,7 @@ del /f /q ""{batPath}""
             shortcut.Save();
 
             Log.logger.Info($"快捷方式已创建: {shortcutPath}");
-            MessageBox.Show("快捷方式已创建。\n可在桌面上找到“LimbusCompany with LLC”启动。", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
+            UniversalDialog.ShowMessage("快捷方式已创建。\n可在桌面上找到“LimbusCompany with LLC”启动。", "提示", null, this);
         }
         private void LauncherHelper(object sender, EventArgs e)
         {
@@ -1845,11 +2169,11 @@ del /f /q ""{batPath}""
             string loadingText = "";
             if (!configuation.Settings.general.internationalMode)
             {
-                loadingText = await GetURLText("https://api.zeroasso.top/v2/loading/get_loading");
+                loadingText = await GetURLText("https://api.zeroasso.top/v2/loading/get_loading", false);
             }
             else
             {
-                loadingText = await GetURLText("https://cdn-api.zeroasso.top/v2/loading/get_loading");
+                loadingText = await GetURLText("https://cdn-api.zeroasso.top/v2/loading/get_loading", false);
             }
             if (string.IsNullOrEmpty(loadingText))
             {
@@ -1887,7 +2211,7 @@ del /f /q ""{batPath}""
             }
             else
             {
-                MessageBox.Show("请输入正确的字体大小。", "提示", MessageBoxButton.OK, MessageBoxImage.Warning);
+                UniversalDialog.ShowMessage("请输入正确的字体大小。", "提示", null, this);
                 return;
             }
             if (IsValidFontFile(FontReplaceTextBox.Text))
@@ -1900,11 +2224,11 @@ del /f /q ""{batPath}""
                     this.Resources["GlobalPreviewFontSize"] = size;
                     this.Resources["GlobalPreviewSmallFontSize"] = size / 16 * 12;
                 });
-                MessageBox.Show("已将预览文本切换为自定义字体。\n如果出现部分字显示为默认字体，可能影响游戏内显示。", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
+                UniversalDialog.ShowMessage("已将预览文本切换为自定义字体。\n如果出现部分字显示为默认字体，可能影响游戏内显示。", "提示", null, this);
             }
             else
             {
-                MessageBox.Show("请选择正确的字体文件。", "提示", MessageBoxButton.OK, MessageBoxImage.Warning);
+                UniversalDialog.ShowMessage("请选择正确的字体文件。", "提示", null, this);
             }
         }
         private void ChangeFontButtonClick(object sender, RoutedEventArgs e)
@@ -1914,13 +2238,13 @@ del /f /q ""{batPath}""
             string backupFontPath = Path.Combine(limbusCompanyDir, "LimbusCompany_Data", "Lang", "LLC_zh-CN", "BackupFont", "ChineseFont.ttf.bak");
             if (!File.Exists(oldFontPath) && !File.Exists(backupFontPath))
             {
-                MessageBox.Show("请先安装汉化，然后再进行字体替换。", "提示", MessageBoxButton.OK, MessageBoxImage.Warning);
+                UniversalDialog.ShowMessage("请先安装汉化，然后再进行字体替换。", "提示", null, this);
                 return;
             }
             if (!IsValidFontFile(FontReplaceTextBox.Text))
             {
                 Log.logger.Info("字体文件无效。");
-                MessageBox.Show("字体文件无效。", "提示", MessageBoxButton.OK, MessageBoxImage.Warning);
+                UniversalDialog.ShowMessage("字体文件无效。", "提示", null, this);
             }
             if (File.Exists(oldFontPath) && !File.Exists(backupFontPath))
             {
@@ -1941,7 +2265,7 @@ del /f /q ""{batPath}""
             Log.logger.Info("正在替换字体文件。");
             string extension = new FileInfo(FontReplaceTextBox.Text).Extension;
             File.Copy(FontReplaceTextBox.Text, Path.Combine(limbusCompanyDir, "LimbusCompany_Data", "Lang", "LLC_zh-CN", "Font", "Context", $"ChineseFont{extension}"), true);
-            MessageBox.Show("字体替换成功。\n启动游戏以应用更改。", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
+            UniversalDialog.ShowMessage("字体替换成功。\n启动游戏以应用更改。", "提示", null, this);
             Log.logger.Info("字体替换成功。");
         }
         private void RestoreFontButtonClick(object sender, RoutedEventArgs e)
@@ -1960,12 +2284,12 @@ del /f /q ""{batPath}""
                     File.Delete(oldFontOTFPath);
                 }
                 File.Move(backupFontPath, oldFontTTFPath);
-                MessageBox.Show("字体还原成功。\n启动游戏以应用更改。", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
+                UniversalDialog.ShowMessage("字体还原成功。\n启动游戏以应用更改。", "提示", null, this);
             }
             else
             {
                 Log.logger.Info("没有找到备份字体文件。");
-                MessageBox.Show("没有找到备份字体文件。", "提示", MessageBoxButton.OK, MessageBoxImage.Warning);
+                UniversalDialog.ShowMessage("没有找到备份字体文件。", "提示", null, this);
             }
         }
         private bool IsValidFontFile(string filePath)
@@ -2021,6 +2345,128 @@ del /f /q ""{batPath}""
 
             // 如果无法获取字体名称，返回一个默认值
             return Path.GetFileNameWithoutExtension(filePath);
+        }
+        #endregion
+        #region MirrorChyan
+        internal void CheckMirrorChyan()
+        {
+            // 如果是首用，显示介绍并获取token
+            if (!configuation.Settings.mirrorChyan.notice)
+            {
+                HandleFirstTimeSetup();
+                return;
+            }
+
+            // 如果已启用，加载token
+            if (configuation.Settings.mirrorChyan.enable && SecureStringStorage.HasSavedData())
+            {
+                HandleExistingSetup();
+            }
+        }
+
+        private void HandleFirstTimeSetup()
+        {
+            string token = ShowMirrorChyanDialog();
+            // 标记已显示过提示
+            configuation.Settings.mirrorChyan.notice = true;
+
+            if (string.IsNullOrWhiteSpace(token))
+            {
+                configuation.SaveConfig();
+                return;
+            }
+
+            // 设置Mirror酱模式
+            SetupMirrorChyanMode(token);
+            Log.logger.Info("MirrorChyan Mode 已开启。");
+            Log.logger.Info("MirrorChyan Token： 什么，这种东西当然不可能放日志了，我是傻吗");
+            // 有的时候也是需要测试的
+            // Log.logger.Info("MirrorChyan Token：" + token);
+        }
+
+        private void HandleExistingSetup()
+        {
+            mirrorChyanToken = SecureStringStorage.LoadToken();
+            // Also only for debug
+            // Log.logger.Info("MirrorChyan Token：" + mirrorChyanToken);
+
+            if (!string.IsNullOrWhiteSpace(mirrorChyanToken))
+            {
+                Log.logger.Info("设置Mirror酱模式。");
+                this.Dispatcher.Invoke(() =>
+                {
+                    MirrorChyanLogo.Visibility = Visibility.Visible;
+                });
+                isMirrorChyanMode = true;
+                return;
+            }
+
+            // token加载失败，询问用户是否重新输入
+            bool result = UniversalDialog.ShowConfirm("读取Mirror酱秘钥失败，你想要再输入一次秘钥吗？", "提示", this);
+
+            if (result)
+            {
+                HandleTokenReInput();
+            }
+            else
+            {
+                DisableMirrorChyanMode();
+            }
+        }
+
+        private void HandleTokenReInput()
+        {
+            var token = ShowMirrorChyanDialog();
+
+            if (string.IsNullOrWhiteSpace(token))
+                return;
+
+            SetupMirrorChyanMode(token);
+            Log.logger.Info("MirrorChyan Mode 已开启。");
+        }
+
+        private void SetupMirrorChyanMode(string token)
+        {
+            Log.logger.Info("设置Mirror酱模式。");
+            this.Dispatcher.Invoke(() =>
+            {
+                MirrorChyanLogo.Visibility = Visibility.Visible;
+            });
+            isMirrorChyanMode = true;
+            mirrorChyanToken = token.Trim();
+            SecureStringStorage.SaveToken(mirrorChyanToken);
+            configuation.Settings.mirrorChyan.enable = true;
+            configuation.SaveConfig();
+        }
+
+        private void DisableMirrorChyanMode()
+        {
+            configuation.Settings.mirrorChyan.enable = false;
+            configuation.SaveConfig();
+            Log.logger.Info("MirrorChyan Mode 已关闭。");
+        }
+
+        private string? ShowMirrorChyanDialog()
+        {
+            const string message = "Mirror酱是一个第三方应用分发平台，让开源应用的更新更简单。\n" +
+                                  "用户付费使用，收益与开发者共享。\n" +
+                                  "如果你拥有Mirror酱秘钥，能够缓解你在使用本软件时可能遇到的网络问题。\n" +
+                                  "没有？没关系，你也可以忽略本提示，零协会仍然提供免费镜像源。\n" +
+                                  "想了解一下？点击右下角按钮。";
+
+            const string title = "等下，你有Mirror酱秘钥吗？";
+
+            return InputMirrorChyan.ShowDialog(message, title, "Mirror酱秘钥", true, this);
+        }
+        internal JObject ParseMirrorChyanJson(string json)
+        {
+            JObject parsed = JObject.Parse(json);
+            int code = parsed["code"].Value<int>();
+            if (code != 0)
+            {
+                throw new MirrorChyanException(code);
+            }
+            return parsed;
         }
         #endregion
     }

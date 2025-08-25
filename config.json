@@ -18,5 +18,11 @@
     "getAnno": true,
     "_annoVersion": "公告版本号，请勿更改",
     "annoVersion": 0
+  },
+  "mirrorChyan": {
+    "_enable": "是否启用Mirror酱服务",
+    "enable": false,
+    "_notice": "已提示Mirror酱弹窗",
+    "notice": false
   }
 }

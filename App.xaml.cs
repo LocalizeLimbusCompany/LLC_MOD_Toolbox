@@ -17,7 +17,7 @@ namespace LLC_MOD_Toolbox
 
             if (!createdNew)
             {
-                MessageBox.Show("已有工具箱在运行中！", "提示");
+                UniversalDialog.ShowMessage("已有工具箱在运行中！", "提示", null, null);
                 Current.Shutdown();
                 return;
             }
@@ -28,7 +28,7 @@ namespace LLC_MOD_Toolbox
         {
             Exception ex = e.Exception;
             Log.logger.Error("出现了问题：\n", ex);
-            MessageBox.Show($"运行中出现了未经处理的严重问题，且在这个错误发生后，工具箱将关闭。\n若要反馈，请带上链接或日志。\n反馈请勿！请勿截图此页面！\n错误分析原因：\n{ex.Message}", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+            UniversalDialog.ShowMessage($"运行中出现了未经处理的严重问题，且在这个错误发生后，工具箱将关闭。\n若要反馈，请带上链接或日志。\n反馈请勿！请勿截图此页面！\n错误分析原因：\n{ex.Message}", "错误", null, null);
             e.Handled = true;
             Application.Current.Shutdown();
         }
