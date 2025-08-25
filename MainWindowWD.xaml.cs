@@ -272,7 +272,66 @@ namespace LLC_MOD_Toolbox
         }
         private async Task InstallFontWithMirrorChyan()
         {
-            // todo: implement mirror chyan mode
+            await Task.Run(async () =>
+            {
+                Log.logger.Info("正在安装字体文件。");
+                installPhase = 1;
+                string fontDir = Path.Combine(limbusCompanyDir, "LimbusCompany_Data", "Lang", "LLC_zh-CN", "Font", "Context");
+                Directory.CreateDirectory(fontDir);
+                string fontZIPFile = Path.Combine(limbusCompanyDir, "LLCCN-Font.7z");
+                string fontChinese = Path.Combine(fontDir, "ChineseFont.ttf");
+                string fontBackup = Path.Combine(limbusCompanyDir, "LimbusCompany_Data", "Lang", "LLC_zh-CN", "BackupFont", "ChineseFont.ttf.bak");
+                if (File.Exists(fontChinese) || File.Exists(fontBackup))
+                {
+                    Log.logger.Info("检测到已安装字体文件。");
+                    return;
+                }
+                isNewestModVersion = false;
+                string url = "";
+                string sha256 = "";
+                (url, sha256) = await GetFontInfoWithMirrorChyan();
+                if (string.IsNullOrWhiteSpace(url) || string.IsNullOrWhiteSpace(sha256))
+                {
+                    await StopInstall();
+                }
+                await DownloadFileAsync(url, fontZIPFile);
+                if (CalculateSHA256(fontZIPFile) == sha256)
+                {
+                    Log.logger.Info("解压字体包中。");
+                    Unarchive(fontZIPFile, limbusCompanyDir);
+                    Log.logger.Info("删除字体包。");
+                    File.Delete(fontZIPFile);
+                }
+                else
+                {
+                    Log.logger.Error("字体哈希校验失败。");
+                    UniversalDialog.ShowMessage("校验Hash失败。\n请等待数分钟或更换节点。\n如果问题仍然出现，请进行反馈。", "校验失败", null, this);
+                    await StopInstall();
+                    return;
+                }
+            });
+        }
+        private async Task<(string, string)> GetFontInfoWithMirrorChyan()
+        {
+            try
+            {
+                Log.logger.Info("获取字体MirrorChyan链接。");
+                string raw = await GetURLText($"https://mirrorchyan.com/api/resources/LLCCN-Font/latest?current_version=&cdk={mirrorChyanToken}");
+                var json = ParseMirrorChyanJson(raw);
+                string url = json["data"]["url"].Value<string>();
+                string sha256 = json["data"]["sha256"].Value<string>();
+                return (url, sha256);
+            }
+            catch (MirrorChyanException ex)
+            {
+                ErrorReport(ex, false);
+                return (string.Empty, string.Empty);
+            }
+            catch (Exception ex)
+            {
+                ErrorReport(ex, false);
+                return (string.Empty, string.Empty);
+            }
         }
         private async Task InstallFontWithoutMirrorChyan()
         {
@@ -351,7 +410,7 @@ namespace LLC_MOD_Toolbox
                     latestVersion = await GetLatestLimbusLocalizeVersionWithMirrorChyan();
                     if (latestVersion == -100)
                     {
-                        StopInstall();
+                        await StopInstall();
                         return;
                     }
                     Log.logger.Info("最后模组版本： " + latestVersion);
