@@ -2587,9 +2587,9 @@ del /f /q ""{batPath}""
             else
             {
                 var result = UniversalDialog.ShowInput(
-                    "请输入密码",
-                    "密码验证",
-                    "密码：",
+                    "请输入你的 Mirror 酱 CDK。\n你可以在 Mirror 酱官网购买。",
+                    "输入秘钥",
+                    "Mirror 酱 CDK",
                     InputType.Password,
                     new List<DialogButton> { new DialogButton("确定", true, false), new DialogButton("取消", false, true) },
                     this);
