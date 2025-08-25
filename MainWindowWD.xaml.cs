@@ -2142,6 +2142,22 @@ del /f /q ""{batPath}""
         {
             OpenUrl("https://www.zeroasso.top/docs/install/hotupdate");
         }
+        internal void HowToUseHotUpdate(object sender, EventArgs e)
+        {
+            UniversalDialog.ShowMessage("你想要知道怎么用热更新？那你可找对地方了兄弟！" +
+                "\n你现在有两种方式，随你便，你想用哪个就用哪个：" +
+                "\n1. 从快捷方式启动" +
+                "\n - 点击旁边的发送按钮" +
+                "\n - 后续在桌面点击 LimbusCompany with LLC即可在启动游戏前检查是否更新汉化并自动安装" +
+                "\n2. 从Steam启动" +
+                "\n - 打开安装器的所在文件夹，选中LLC_MOD_Toolbox.exe，并复制其地址" +
+                "\n * 怎么复制地址：右键LLC_MOD_Toolbox-复制文件地址" +
+                "\n - 打开您的Steam库页面，在最左下角唤起“添加非Steam游戏”菜单" +
+                "\n - 在该菜单中选择并打开LLC_MOD_Toolbox.exe，直接在文件名那里粘贴你刚刚复制的地址然后回车就可以了" +
+                "\n - LLC_MOD_Toolbox将会出现在选单内，确认其选中状态并确认添加" +
+                "\n - 在您的Steam库中找到LLC_MOD_Toolbox，在启动选项内填入-launcher(全小写)" +
+                "\n这两种方法效果相同，根据自己喜好选择。", "热更新教程", null, this);
+        }
         #endregion
         #region Loading文本
         private JArray CachedLoadingTexts;
@@ -2467,6 +2483,7 @@ del /f /q ""{batPath}""
                     MirrorChyanLogo.Visibility = Visibility.Visible;
                 });
                 isMirrorChyanMode = true;
+                MirrorChyanConfigButtonLabelChanger(isMirrorChyanMode);
                 return;
             }
 
@@ -2502,6 +2519,7 @@ del /f /q ""{batPath}""
                 MirrorChyanLogo.Visibility = Visibility.Visible;
             });
             isMirrorChyanMode = true;
+            MirrorChyanConfigButtonLabelChanger(isMirrorChyanMode);
             mirrorChyanToken = token.Trim();
             SecureStringStorage.SaveToken(mirrorChyanToken);
             configuation.Settings.mirrorChyan.enable = true;
@@ -2536,6 +2554,60 @@ del /f /q ""{batPath}""
                 throw new MirrorChyanException(code);
             }
             return parsed;
+        }
+        internal void MirrorChyanConfigButtonLabelChanger(bool mirrorChyanMode)
+        {
+            Dispatcher.Invoke(() =>
+            {
+                if (mirrorChyanMode)
+                {
+                    MirrorChyanConfigButtonLabel.Content = "禁用";
+                }
+                else
+                {
+                    MirrorChyanConfigButtonLabel.Content = "填写秘钥";
+                }
+            });
+        }
+        internal void MirrorChyanConfigButtonSender(object sender, RoutedEventArgs e)
+        {
+            if (isMirrorChyanMode)
+            {
+                bool result = UniversalDialog.ShowConfirm("确定要禁用Mirror酱吗？\n关闭后，你可以在设置重新开启Mirror酱的服务。", "提示", this);
+                if (!result)
+                {
+                    return;
+                }
+                SecureStringStorage.DeleteSecretFile();
+                configuation.Settings.mirrorChyan.enable = false;
+                configuation.SaveConfig();
+                UniversalDialog.ShowMessage("已禁用Mirror酱并删除你的Mirror酱CDK。\n为了处理，软件将关闭，再次启动后效果生效。", "提示", null, this);
+                Application.Current.Shutdown();
+            }
+            else
+            {
+                var result = UniversalDialog.ShowInput(
+                    "请输入密码",
+                    "密码验证",
+                    "密码：",
+                    InputType.Password,
+                    new List<DialogButton> { new DialogButton("确定", true, false), new DialogButton("取消", false, true) },
+                    this);
+                if (result.IsCanceled)
+                {
+                    return;
+                }
+                if (result.IsSuccess && !string.IsNullOrEmpty(result.Input))
+                {
+                    SetupMirrorChyanMode(result.Input);
+                    UniversalDialog.ShowMessage("Mirror酱秘钥设置成功。\n为了处理，软件将关闭，再次启动后效果生效。", "提示", null, this);
+                    Application.Current.Shutdown();
+                }
+                else
+                {
+                    UniversalDialog.ShowMessage("设置失败。", "提示", null, this);
+                }
+            }
         }
         #endregion
     }

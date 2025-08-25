@@ -261,6 +261,13 @@ namespace LLC_MOD_Toolbox
             string inputLabel = null, InputType inputType = InputType.Text,
             List<DialogButton> buttons = null, Window owner = null)
         {
+            if (buttons == null)
+            {
+                buttons =
+                [
+                    new DialogButton("确认", true, false)
+                ];
+            }
             var dialog = new UniversalDialog
             {
                 DialogTitle = title,
