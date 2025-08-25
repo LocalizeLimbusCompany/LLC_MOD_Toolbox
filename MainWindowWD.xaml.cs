@@ -13,6 +13,7 @@
 */
 using Downloader;
 using LLC_MOD_Toolbox.Models;
+using log4net.Config;
 using Microsoft.Win32;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -25,7 +26,6 @@ using System.Net;
 using System.Net.Http;
 using System.Reflection;
 using System.Security.Cryptography;
-using System.Security.Policy;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
@@ -77,6 +77,7 @@ namespace LLC_MOD_Toolbox
 
         private async void WindowLoaded(object sender, RoutedEventArgs e)
         {
+            XmlConfigurator.Configure();
             Log.logger.Info("—————新日志分割线—————");
             Log.logger.Info("工具箱已进入加载流程。");
             Log.logger.Info("We have a lift off.");
@@ -91,16 +92,17 @@ namespace LLC_MOD_Toolbox
             };
             CheckMirrorChyan();
             await CheckLoadingText();
-            if (!isMirrorChyanMode)
-            {
-                InitNode();
-            }
-            else
+            InitNode();
+            if (isMirrorChyanMode)
             {
                 await this.Dispatcher.BeginInvoke(() =>
                 {
-                    NodeCombobox.Items.Add("已使用Mirror酱");
+                    NodeCombobox.Items.Clear();
+                    NodeCombobox.SelectedItem = "已使用Mirror酱";
                     NodeCombobox.IsEnabled = false;
+                    APICombobox.Items.Clear();
+                    APICombobox.SelectedItem = "已使用Mirror酱";
+                    APICombobox.IsEnabled = false;
                 });
             }
             await RefreshPage();
@@ -836,7 +838,6 @@ namespace LLC_MOD_Toolbox
         /// <param name="e"></param>
         private void NewOnDownloadProgressChanged(object? sender, Downloader.DownloadProgressChangedEventArgs e)
         {
-            Log.logger.Debug("ProgressPercentage: " + e.ProgressPercentage + " ProgressPercentage(Int): " + (int)(e.ProgressPercentage));
             if (installPhase != 0)
             {
                 progressPercentage = (float)((installPhase - 1) * 50 + e.ProgressPercentage * 0.5);
@@ -857,7 +858,7 @@ namespace LLC_MOD_Toolbox
         /// <returns></returns>
         public async Task DownloadFileAsync(string Url, string Path)
         {
-            Log.logger.Info($"下载 {Url} 到 {Path}");
+            Log.logger.Info(ProcessLogText($"下载 {Url} 到 {Path}"));
             var downloadOpt = new DownloadConfiguration()
             {
                 BufferBlockSize = 10240,
@@ -869,9 +870,9 @@ namespace LLC_MOD_Toolbox
             downloader.DownloadFileCompleted += NewOnDownloadProgressCompleted;
             await downloader.DownloadFileTaskAsync(Url, Path);
         }
-        public static async Task DownloadFileAsyncWithoutProgress(string Url, string Path)
+        public async Task DownloadFileAsyncWithoutProgress(string Url, string Path)
         {
-            Log.logger.Info($"下载 {Url} 到 {Path}");
+            Log.logger.Info(ProcessLogText($"下载 {Url} 到 {Path}"));
             var downloadOpt = new DownloadConfiguration()
             {
                 BufferBlockSize = 10240,
@@ -883,7 +884,7 @@ namespace LLC_MOD_Toolbox
         }
         public async Task DownloadFileAutoAsync(string File, string Path)
         {
-            Log.logger.Info($"自动选择下载节点式下载文件 文件: {File}  路径: {Path}");
+            Log.logger.Info(ProcessLogText($"自动选择下载节点式下载文件 文件: {File}  路径: {Path}"));
             if (!string.IsNullOrEmpty(useEndPoint))
             {
                 string DownloadUrl = string.Format(useEndPoint, File);
@@ -933,7 +934,7 @@ namespace LLC_MOD_Toolbox
                 return string.Empty;
             }
 
-            Log.logger.Info($"获取 {url} 文本内容。");
+            Log.logger.Info(ProcessLogText($"获取 {url} 文本内容。"));
 
             using HttpClient client = new();
             client.DefaultRequestHeaders.Add("User-Agent", "LLC_MOD_Toolbox");
@@ -1238,6 +1239,15 @@ del /f /q ""{batPath}""
                     ChangeLCBLangConfig(value);
                 }
             }
+        }
+        public string ProcessLogText(string raw)
+        {
+            string newLog = raw;
+            if (raw.Contains(mirrorChyanToken))
+            {
+                newLog = raw.Replace(mirrorChyanToken, new string('*', mirrorChyanToken.Length));
+            }
+            return newLog;
         }
         #endregion
         #region 进度条系统

@@ -63,7 +63,6 @@
             <Button Content="我想了解一下Mirror酱" 
                 Width="150" 
                 Height="25"
-                IsCancel="True"
                 Click="InformationButton_Click"/>
         </StackPanel>
     </Grid>

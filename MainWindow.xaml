@@ -338,7 +338,7 @@ From="1" To="0" Duration="0:0:0.3"/>
         <Image x:Name="SettingHover" HorizontalAlignment="Left" IsHitTestVisible="False" Opacity="0" Height="48" Margin="15,197,0,0" Grid.Row="1" VerticalAlignment="Top" Width="168" Source="/Picture/ButtonHover.png" Grid.ColumnSpan="3"/>
         <Image x:Name="AboutHover" HorizontalAlignment="Left" IsHitTestVisible="False" Opacity="0" Height="49" Margin="15,247,0,0" Grid.Row="1" VerticalAlignment="Top" Width="168" Source="/Picture/ButtonHover.png" Grid.ColumnSpan="3"/>
         <Image x:Name="EEHover" HorizontalAlignment="Left" IsHitTestVisible="False" Opacity="0" Height="49" Margin="15,296,0,0" Grid.Row="1" VerticalAlignment="Top" Width="168" Source="/Picture/ButtonHover.png" Grid.ColumnSpan="3"/>
-        <Grid x:Name="AutoInstallPage" Visibility="Collapsed" Panel.ZIndex="5" Margin="62,55,54,32" Grid.Column="2" Grid.Row="1">
+        <Grid x:Name="AutoInstallPage" Visibility="Visible" Panel.ZIndex="5" Margin="62,55,54,32" Grid.Column="2" Grid.Row="1">
 
             <Button x:Name="AutoInstallStartButton" HorizontalAlignment="Center" Margin="0,151,0,0" VerticalAlignment="Top" Panel.ZIndex="3" Width="196" Height="70" Background="Transparent" BorderBrush="Transparent" BorderThickness="0" Style="{StaticResource NoHover}" Click="InstallButtonClick">
                 <Button.Content>
@@ -527,7 +527,7 @@ From="1" To="0" Duration="0:0:0.3"/>
             <Image x:Name="RestoreFontHover" Panel.ZIndex="5" IsHitTestVisible="False" Opacity="0" HorizontalAlignment="Left" Height="34" Margin="236,331,0,0" VerticalAlignment="Top" Width="80" Source="/Picture/SettingButtonHover.png"/>
             <Image HorizontalAlignment="Left" Height="100" Margin="57,170,0,0" VerticalAlignment="Top" Width="100"/>
         </Grid>
-        <Grid x:Name="LinkPage" Visibility="Visible" Panel.ZIndex="5" Margin="62,55,54,32" Grid.Column="2" Grid.Row="1">
+        <Grid x:Name="LinkPage" Visibility="Collapsed" Panel.ZIndex="5" Margin="62,55,54,32" Grid.Column="2" Grid.Row="1">
             <Button x:Name="LinkButton1" HorizontalAlignment="Left" Margin="37,40,0,0" VerticalAlignment="Top" Height="40" Width="262" Opacity="1" Background="Transparent" BorderBrush="Transparent" BorderThickness="0" Style="{StaticResource NoHover}" Click="LinkButtonClick">
                 <Button.Content>
                     <Image Height="40" Width="262" Source="/Picture/LinkBT.png"/>
@@ -763,7 +763,7 @@ From="1" To="0" Duration="0:0:0.3"/>
                     </EventTrigger>
                 </Button.Triggers>
             </Button>
-            <Button x:Name="LinkButton10" Grid.Column="2" HorizontalAlignment="Left" Margin="352,220,0,0" VerticalAlignment="Top" Height="40" Width="262" Opacity="1" Background="Transparent" BorderBrush="Transparent" BorderThickness="0" Style="{StaticResource BlackWhite}" Click="LinkButtonClick">
+            <Button x:Name="LinkButton10" Grid.Column="2" HorizontalAlignment="Left" Margin="352,220,0,0" VerticalAlignment="Top" Height="40" Width="262" Opacity="1" Background="Transparent" BorderBrush="Transparent" BorderThickness="0" Style="{StaticResource NoHover}" Click="LinkButtonClick">
                 <Button.Content>
                     <Image Height="40" Width="262" Source="/Picture/LinkBT.png"/>
                 </Button.Content>
@@ -771,7 +771,7 @@ From="1" To="0" Duration="0:0:0.3"/>
                     <EventTrigger RoutedEvent="Button.MouseEnter">
                         <BeginStoryboard>
                             <Storyboard>
-                                <DoubleAnimation Storyboard.TargetName="LinkButtonHover9"
+                                <DoubleAnimation Storyboard.TargetName="LinkButtonHover10"
 Storyboard.TargetProperty="Opacity"
 From="0" To="1" Duration="0:0:0.3"/>
                             </Storyboard>
@@ -780,7 +780,7 @@ From="0" To="1" Duration="0:0:0.3"/>
                     <EventTrigger RoutedEvent="Button.MouseLeave">
                         <BeginStoryboard>
                             <Storyboard>
-                                <DoubleAnimation Storyboard.TargetName="LinkButtonHover9"
+                                <DoubleAnimation Storyboard.TargetName="LinkButtonHover10"
 Storyboard.TargetProperty="Opacity"
 From="1" To="0" Duration="0:0:0.3"/>
                             </Storyboard>
