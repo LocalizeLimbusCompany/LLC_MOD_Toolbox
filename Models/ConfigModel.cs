@@ -21,12 +21,18 @@
         public bool enable { get; set; } = false;
         public bool notice { get; set; } = false;
     }
+    public class NodeConfig
+    {
+        public string defaultNode { get; set; } = "";
+        public string defaultApiNode { get; set; } = "";
+    }
     public class AppSettings
     {
         public GeneralConfig general { get; set; } = new GeneralConfig();
         public InstallConfig install { get; set; } = new InstallConfig();
         public AnnouncementConfig announcement { get; set; } = new AnnouncementConfig();
         public MirrorChyanConfig mirrorChyan { get; set; } = new MirrorChyanConfig();
+        public NodeConfig nodeSelect { get; set; } = new NodeConfig();
     }
 
 }

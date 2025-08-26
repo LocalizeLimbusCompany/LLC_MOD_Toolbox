@@ -228,31 +228,62 @@ namespace LLC_MOD_Toolbox
 
         #region 静态方法
 
-        /// <summary>
-        /// 显示消息对话框
-        /// </summary>
         public static DialogResult ShowMessage(string message, string title = "提示",
-            List<DialogButton>? buttons = null, Window owner = null)
+    List<DialogButton>? buttons = null, Window owner = null)
         {
-            if (buttons == null)
-            {
-                buttons =
-                [
-                    new DialogButton("确认", true, false)
-                ];
-            }
-            var dialog = new UniversalDialog
-            {
-                DialogTitle = title,
-                MessageText = message,
-                InputType = InputType.None,
-                Buttons = buttons,
-                Owner = owner
-            };
+            var dispatcher = Application.Current?.Dispatcher;
 
-            dialog.ShowDialog();
-            return new DialogResult(dialog.ClickedButton, dialog.InputResult);
+            if (dispatcher == null)
+            {
+                throw new InvalidOperationException("无法获取UI调度器");
+            }
+
+            if (dispatcher.CheckAccess())
+            {
+                // 已经在正确的UI线程上
+                return ShowMessageInternal(message, title, buttons, owner);
+            }
+            else
+            {
+                // 切换到UI线程
+                return dispatcher.Invoke(() => ShowMessageInternal(message, title, buttons, owner));
+            }
         }
+
+        private static DialogResult ShowMessageInternal(string message, string title,
+            List<DialogButton>? buttons, Window owner)
+        {
+            try
+            {
+                if (buttons == null)
+                {
+                    buttons = new List<DialogButton>
+            {
+                new DialogButton("确认", true, false)
+            };
+                }
+
+                var dialog = new UniversalDialog
+                {
+                    DialogTitle = title,
+                    MessageText = message,
+                    InputType = InputType.None,
+                    Buttons = buttons,
+                    Owner = owner
+                };
+
+                var dialogResult = dialog.ShowDialog();
+                return new DialogResult(dialog.ClickedButton, dialog.InputResult);
+            }
+            catch (Exception ex)
+            {
+                // 记录错误或处理异常
+                System.Diagnostics.Debug.WriteLine($"显示对话框时出错: {ex.Message}");
+                throw;
+            }
+        }
+
+
 
         /// <summary>
         /// 显示输入对话框

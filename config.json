@@ -24,5 +24,11 @@
     "enable": false,
     "_notice": "已提示Mirror酱弹窗",
     "notice": false
+  },
+  "nodeSelect": {
+    "_defaultNode": "默认节点",
+    "defaultNode": "",
+    "_defaultApiNode": "默认API节点",
+    "defaultApiNode": ""
   }
 }

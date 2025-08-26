@@ -65,6 +65,8 @@ namespace LLC_MOD_Toolbox
         // MirrorChyan Mode
         internal static bool isMirrorChyanMode = false;
         internal static string mirrorChyanToken = "";
+
+        internal bool isLaunching = false;
         public MainWindow()
         {
             InitializeComponent();
@@ -78,6 +80,7 @@ namespace LLC_MOD_Toolbox
         private async void WindowLoaded(object sender, RoutedEventArgs e)
         {
             XmlConfigurator.Configure();
+            isLaunching = true;
             Log.logger.Info("—————新日志分割线—————");
             Log.logger.Info("工具箱已进入加载流程。");
             Log.logger.Info("We have a lift off.");
@@ -98,15 +101,22 @@ namespace LLC_MOD_Toolbox
                 await this.Dispatcher.BeginInvoke(() =>
                 {
                     NodeCombobox.Items.Clear();
+                    NodeCombobox.Items.Add("已使用Mirror酱");
                     NodeCombobox.SelectedItem = "已使用Mirror酱";
                     NodeCombobox.IsEnabled = false;
                     APICombobox.Items.Clear();
+                    APICombobox.Items.Add("已使用Mirror酱");
                     APICombobox.SelectedItem = "已使用Mirror酱";
                     APICombobox.IsEnabled = false;
                 });
             }
+            else
+            {
+                ReadConfigNode();
+            }
+            bool needUpdate = await ChangeHomePageVersion();
             await RefreshPage();
-            CheckToolboxUpdate(isMirrorChyanMode);
+            await CheckToolboxUpdate(isMirrorChyanMode);
             CheckLimbusCompanyPath();
             SevenZipBase.SetLibraryPath(Path.Combine(currentDir, "7z.dll"));
             await CheckAnno();
@@ -120,11 +130,12 @@ namespace LLC_MOD_Toolbox
                 await CheckModInstalled();
                 await CheckDNS();
             }
-            if ((configuation.Settings.install.installWhenLaunch || isLauncherMode) && !hasNewAnno)
+            if ((configuation.Settings.install.installWhenLaunch || isLauncherMode) && !hasNewAnno && needUpdate)
             {
                 InstallButtonClick(null, null);
             }
             await EnableGlobalOperations();
+            isLaunching = false;
             Log.logger.Info("加载流程完成。");
         }
         #region 安装功能
@@ -316,7 +327,12 @@ namespace LLC_MOD_Toolbox
             try
             {
                 Log.logger.Info("获取字体MirrorChyan链接。");
-                string raw = await GetURLText($"https://mirrorchyan.com/api/resources/LLCCN-Font/latest?current_version=&cdk={mirrorChyanToken}");
+                string raw = await GetURLText($"https://mirrorchyan.com/api/resources/LLCCN-Font/latest?current_version=&cdk={mirrorChyanToken}", parseErrorJson: true);
+                if (string.IsNullOrEmpty(raw))
+                {
+                    Log.logger.Error("获取字体MirrorChyan链接失败。");
+                    return (string.Empty, string.Empty);
+                }
                 var json = ParseMirrorChyanJson(raw);
                 string url = json["data"]["url"].Value<string>();
                 string sha256 = json["data"]["sha256"].Value<string>();
@@ -324,7 +340,7 @@ namespace LLC_MOD_Toolbox
             }
             catch (MirrorChyanException ex)
             {
-                ErrorReport(ex, false);
+                ErrorReportMirrorChyan(ex, false);
                 return (string.Empty, string.Empty);
             }
             catch (Exception ex)
@@ -450,6 +466,7 @@ namespace LLC_MOD_Toolbox
                     Unarchive(limbusLocalizeZipPath, limbusCompanyDir);
                     Log.logger.Info("删除模组本体 zip 。");
                     File.Delete(limbusLocalizeZipPath);
+                    await CHangeFkingHomeVersion(latestVersion.ToString());
                 }
             });
         }
@@ -468,7 +485,7 @@ namespace LLC_MOD_Toolbox
             }
             catch (MirrorChyanException ex)
             {
-                ErrorReport(ex, false);
+                ErrorReportMirrorChyan(ex, false);
                 return -100;
             }
             catch (Exception ex)
@@ -488,7 +505,7 @@ namespace LLC_MOD_Toolbox
             {
                 Log.logger.Info("获取模组标签。");
                 string version;
-                string raw = await GetURLText($"https://mirrorchyan.com/api/resources/LLC/latest?current_version=&cdk={mirrorChyanToken}");
+                string raw = await GetURLText($"https://mirrorchyan.com/api/resources/LLC/latest?current_version=&cdk={mirrorChyanToken}", parseErrorJson: true);
                 var json = ParseMirrorChyanJson(raw);
                 version = json["data"]["version_name"].Value<string>();
                 Log.logger.Info($"汉化模组最后标签为： {version}");
@@ -499,7 +516,7 @@ namespace LLC_MOD_Toolbox
             }
             catch (MirrorChyanException ex)
             {
-                ErrorReport(ex, false);
+                ErrorReportMirrorChyan(ex, false);
                 return (-100, string.Empty, string.Empty);
             }
             catch (Exception ex)
@@ -573,6 +590,7 @@ namespace LLC_MOD_Toolbox
                     Unarchive(limbusLocalizeZipPath, limbusCompanyDir);
                     Log.logger.Info("删除模组本体 zip 。");
                     File.Delete(limbusLocalizeZipPath);
+                    await CHangeFkingHomeVersion(latestVersion.ToString());
                 }
                 else if (!useGithub && needInstall)
                 {
@@ -593,6 +611,7 @@ namespace LLC_MOD_Toolbox
                     Unarchive(limbusLocalizeZipPath, limbusCompanyDir);
                     Log.logger.Info("删除模组本体 zip 。");
                     File.Delete(limbusLocalizeZipPath);
+                    await CHangeFkingHomeVersion(latestVersion.ToString());
                 }
             });
         }
@@ -720,6 +739,7 @@ namespace LLC_MOD_Toolbox
         }
         private async void NodeComboboxSelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
+            if (isMirrorChyanMode) return;
             string nodeComboboxText = await GetNodeComboboxText();
             Log.logger.Info("选择节点。");
             if (nodeComboboxText != string.Empty)
@@ -728,12 +748,17 @@ namespace LLC_MOD_Toolbox
                 {
                     useEndPoint = string.Empty;
                     useGithub = false;
+                    SetDownloadNodeConfig("");
                     Log.logger.Info("已恢复默认Endpoint。");
                 }
                 else if (nodeComboboxText == "Github直连")
                 {
                     Log.logger.Info("选择Github节点。");
-                    UniversalDialog.ShowMessage("如果您没有使用代理软件（包括Watt Toolkit）\n请不要使用此节点。\nGithub由于不可抗力因素，对国内网络十分不友好。\n如果您是国外用户，才应该使用此选项。", "警告", null, this);
+                    if (!isLaunching)
+                    {
+                        UniversalDialog.ShowMessage("如果您没有使用代理软件（包括Watt Toolkit）\n请不要使用此节点。\nGithub由于不可抗力因素，对国内网络十分不友好。\n如果您是国外用户，才应该使用此选项。", "警告", null, this);
+                    }
+                    SetDownloadNodeConfig("Github直连");
                     useEndPoint = string.Empty;
                     useGithub = true;
                 }
@@ -741,6 +766,7 @@ namespace LLC_MOD_Toolbox
                 {
                     useEndPoint = FindNodeEndpoint(nodeComboboxText);
                     useGithub = false;
+                    SetDownloadNodeConfig(nodeComboboxText);
                     Log.logger.Info("当前Endpoint：" + useEndPoint);
                     UniversalDialog.ShowMessage("切换成功。", "提示", null, this);
                 }
@@ -752,6 +778,7 @@ namespace LLC_MOD_Toolbox
         }
         private async void APIComboboxSelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
+            if (isMirrorChyanMode) return;
             if (!useGithub)
             {
                 string apiComboboxText = await GetAPIComboboxText();
@@ -761,11 +788,13 @@ namespace LLC_MOD_Toolbox
                     if (apiComboboxText == "恢复默认")
                     {
                         useAPIEndPoint = defaultAPIEndPoint;
+                        SetApiNodeConfig("");
                         Log.logger.Info("已恢复默认API Endpoint。");
                     }
                     else
                     {
                         useAPIEndPoint = FindAPIEndpoint(apiComboboxText);
+                        SetApiNodeConfig(apiComboboxText);
                         Log.logger.Info("当前API Endpoint：" + useAPIEndPoint);
                         UniversalDialog.ShowMessage("切换成功。", "提示", null, this);
                     }
@@ -782,6 +811,42 @@ namespace LLC_MOD_Toolbox
                 UniversalDialog.ShowMessage("切换失败。\n无法在节点为Github直连的情况下切换API。", "提示", null, this);
             }
             APPChangeAPIUI = false;
+        }
+        internal void SetDownloadNodeConfig(string node)
+        {
+            Log.logger.Info("设置下载节点:" + node);
+            configuation.Settings.nodeSelect.defaultNode = node;
+            configuation.SaveConfig();
+        }
+        internal void SetApiNodeConfig(string api)
+        {
+            Log.logger.Info("设置API节点:" + api);
+            configuation.Settings.nodeSelect.defaultApiNode = api;
+            configuation.SaveConfig();
+        }
+        internal void ReadConfigNode()
+        {
+            string defaultNode = configuation.Settings.nodeSelect.defaultNode;
+            string defaultApiNode = configuation.Settings.nodeSelect.defaultApiNode;
+            if (defaultNode != "")
+            {
+                if (defaultNode == "Github直连")
+                {
+                    Log.logger.Info("从配置使用Github节点。");
+                    useGithub = true;
+                    useEndPoint = string.Empty;
+                    NodeCombobox.SelectedItem = "Github直连";
+                    return;
+                }
+                Log.logger.Info("从配置使用节点：" + defaultNode);
+                useEndPoint = FindNodeEndpoint(defaultNode);
+                useGithub = false;
+            }
+            if (defaultApiNode != "")
+            {
+                Log.logger.Info("从配置使用API节点：" + defaultApiNode);
+                useAPIEndPoint = FindAPIEndpoint(defaultApiNode);
+            }
         }
         private void WhyShouldIUseThis(object sender, RoutedEventArgs e)
         {
@@ -961,31 +1026,38 @@ namespace LLC_MOD_Toolbox
         /// <returns>返回模组标签</returns>
         private async Task<int> GetLatestLimbusLocalizeVersion(bool useGithub)
         {
-            Log.logger.Info("获取模组标签。");
-            string version;
-            if (!useGithub)
+            try
             {
-                string raw = await GetURLText(string.Format(useAPIEndPoint, "v2/resource/get_version"));
-                var json = JObject.Parse(raw);
-                version = json["version"].Value<string>();
+                Log.logger.Info("获取模组标签。");
+                string version;
+                if (!useGithub)
+                {
+                    string raw = await GetURLText(string.Format(useAPIEndPoint, "v2/resource/get_version"));
+                    var json = JObject.Parse(raw);
+                    version = json["version"].Value<string>();
+                }
+                else
+                {
+                    string raw = await GetURLText("https://api.github.com/repos/LocalizeLimbusCompany/LocalizeLimbusCompany/releases/latest");
+                    var json = JObject.Parse(raw);
+                    version = json["tag_name"].Value<string>();
+                }
+                Log.logger.Info($"汉化模组最后标签为： {version}");
+                int parseVersion = int.Parse(version);
+                return parseVersion;
             }
-            else
+            catch (Exception ex)
             {
-                string raw = await GetURLText("https://api.github.com/repos/LocalizeLimbusCompany/LocalizeLimbusCompany/releases/latest");
-                var json = JObject.Parse(raw);
-                version = json["tag_name"].Value<string>();
+                Log.logger.Error("获取模组标签失败。", ex);
+                return -100;
             }
-            Log.logger.Info($"汉化模组最后标签为： {version}");
-            int parseVersion = int.Parse(version);
-            return parseVersion;
-
         }
         /// <summary>
         /// 获取该网址的文本，通常用于API。
         /// </summary>
         /// <param name="Url">网址</param>
         /// <returns></returns>
-        public async Task<string> GetURLText(string url, bool reportError = true, int maxRetries = 3, int delayMs = 300)
+        public async Task<string> GetURLText(string url, bool reportError = true, int maxRetries = 3, int delayMs = 300, bool parseErrorJson = false)
         {
             if (string.IsNullOrWhiteSpace(url))
             {
@@ -1004,10 +1076,24 @@ namespace LLC_MOD_Toolbox
                 {
                     if (attempt > 1)
                     {
-                        Log.logger.Info($"第 {attempt} 次尝试获取 {url}");
+                        Log.logger.Info(ProcessLogText($"第 {attempt} 次尝试获取 {url}"));
                     }
 
-                    string result = await client.GetStringAsync(url);
+                    // 使用 GetAsync 而不是 GetStringAsync，这样可以获取状态码
+                    HttpResponseMessage response = await client.GetAsync(url);
+
+                    // 检查是否为403状态码且需要解析错误JSON
+                    if (response.StatusCode == HttpStatusCode.Forbidden && parseErrorJson)
+                    {
+                        string errorContent = await response.Content.ReadAsStringAsync();
+                        await HandleErrorJson(errorContent, url);
+                        return string.Empty; // 如果解析了错误JSON，返回空字符串
+                    }
+
+                    // 确保响应成功
+                    response.EnsureSuccessStatusCode();
+
+                    string result = await response.Content.ReadAsStringAsync();
 
                     if (attempt > 1)
                     {
@@ -1015,6 +1101,19 @@ namespace LLC_MOD_Toolbox
                     }
 
                     return result;
+                }
+                catch (MirrorChyanException ex)
+                {
+                    ErrorReportMirrorChyan(ex, false);
+                    return string.Empty;
+                }
+                catch (HttpRequestException ex) when (ex.Data.Contains("StatusCode") &&
+                                                   (HttpStatusCode)ex.Data["StatusCode"] == HttpStatusCode.Forbidden &&
+                                                   parseErrorJson)
+                {
+                    // 这个catch块处理EnsureSuccessStatusCode抛出的403异常
+                    // 但实际上上面的逻辑应该已经处理了，这里作为备用
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -1035,13 +1134,54 @@ namespace LLC_MOD_Toolbox
                     else
                     {
                         // 非最后一次尝试，记录警告并准备重试
-                        Log.logger.Warn($"第 {attempt} 次获取失败，{delayMs}ms 后重试Ms");
+                        Log.logger.Warn($"第 {attempt} 次获取失败，{delayMs}ms 后重试");
+                        await Task.Delay(delayMs); // 添加延迟
                     }
                 }
             }
 
             return string.Empty;
         }
+
+        // 处理错误JSON的辅助方法
+        private async Task HandleErrorJson(string jsonContent, string url)
+        {
+            try
+            {
+                // 检查是否为有效的JSON
+                if (string.IsNullOrWhiteSpace(jsonContent) ||
+                    (!jsonContent.TrimStart().StartsWith("{") && !jsonContent.TrimStart().StartsWith("[")))
+                {
+                    Log.logger.Warn($"403响应内容不是有效的JSON格式: {url}");
+                    return;
+                }
+
+                // 使用 Newtonsoft.Json 解析JSON
+                JObject jsonObject = JObject.Parse(jsonContent);
+
+                // 查找code字段
+                JToken codeToken = jsonObject["code"];
+                if (codeToken != null)
+                {
+                    int errorCode = codeToken.Value<int>();
+
+                    Log.logger.Error($"MirrorChyan API返回了错误码: {errorCode}");
+
+                    // 抛出MirrorChyan异常
+                    throw new MirrorChyanException(errorCode);
+                }
+                else
+                {
+                    Log.logger.Warn($"403响应的JSON中未找到code字段: {url}");
+                }
+            }
+            catch (JsonReaderException ex)
+            {
+                Log.logger.Warn($"解析403响应JSON失败: {url}, Error: {ex.Message}");
+            }
+        }
+
+
 
         /// <summary>
         /// 打开指定网址。
@@ -1062,7 +1202,7 @@ namespace LLC_MOD_Toolbox
         /// <param name="version">当前版本</param>
         /// <param name="IsGithub">是否使用Github</param>
         /// <returns>是否存在更新</returns>
-        private async void CheckToolboxUpdate(bool isMirrorChyanMode)
+        private async Task CheckToolboxUpdate(bool isMirrorChyanMode)
         {
             try
             {
@@ -1086,14 +1226,14 @@ namespace LLC_MOD_Toolbox
         {
             try
             {
-                string withCDKRaw = await GetURLText($"https://mirrorchyan.com/api/resources/LLC_MOD_Toolbox/latest?current_version=&cdk={mirrorChyanToken}");
+                string withCDKRaw = await GetURLText($"https://mirrorchyan.com/api/resources/LLC_MOD_Toolbox/latest?current_version=&cdk={mirrorChyanToken}", parseErrorJson: true);
                 JObject withCDK = ParseMirrorChyanJson(withCDKRaw);
                 string url = withCDK["data"]["url"].Value<string>();
                 return url;
             }
             catch (MirrorChyanException ex)
             {
-                ErrorReport(ex, false);
+                ErrorReportMirrorChyan(ex, false);
                 Log.logger.Error("获取下载链接失败。", ex);
                 return string.Empty;
             }
@@ -1301,6 +1441,10 @@ del /f /q ""{batPath}""
         }
         public string ProcessLogText(string raw)
         {
+            if (string.IsNullOrWhiteSpace(mirrorChyanToken))
+            {
+                return raw;
+            }
             string newLog = raw;
             if (raw.Contains(mirrorChyanToken))
             {
@@ -1347,6 +1491,7 @@ del /f /q ""{batPath}""
                     Log.logger.Error("删除过程中出现了一些问题： ", ex);
                 }
                 UniversalDialog.ShowMessage("删除完成。", "提示", null, this);
+                await CHangeFkingHomeVersion("未安装");
                 Log.logger.Info("删除完成。");
             }
         }
@@ -1537,10 +1682,12 @@ del /f /q ""{batPath}""
         private int[]? uniqueCount;
         private bool hasVergil = false;
         private bool alreadyHasVergil = false;
+        private bool gachaing = false;
         private async Task InitGacha()
         {
             await DisableGlobalOperations();
             string gachaText = await GetURLText("https://download.zeroasso.top/wiki/wiki_personal.json");
+            gachaing = false;
             if (string.IsNullOrEmpty(gachaText))
             {
                 Log.logger.Error("初始化失败。");
@@ -1553,7 +1700,7 @@ del /f /q ""{batPath}""
 
             gachaTimer = new DispatcherTimer
             {
-                Interval = TimeSpan.FromSeconds(0.15)
+                Interval = TimeSpan.FromSeconds(0.05)
             };
             gachaTimer.Tick += GachaTimerTick;
             List<PersonalInfo> personalInfos = TranformTextToList(gachaText);
@@ -1569,12 +1716,15 @@ del /f /q ""{batPath}""
         }
         private async void InGachaButtonClick(object sender, RoutedEventArgs e)
         {
+            if (gachaing) return;
             Log.logger.Info("点击抽卡。");
+            gachaing = true;
             await CollapsedAllGacha();
             if (isInitGachaFailed)
             {
                 Log.logger.Info("初始化失败。");
                 UniversalDialog.ShowMessage("初始化失败，无法进行抽卡操作。", "提示", null, this);
+                gachaing = false;
                 return;
             }
             Random random = new();
@@ -1602,6 +1752,7 @@ del /f /q ""{batPath}""
                 {
                     InGachaButton.IsHitTestVisible = true;
                 });
+                gachaing = false;
                 return;
             }
             if (gachaTimer != null)
@@ -1766,6 +1917,7 @@ del /f /q ""{batPath}""
                         UniversalDialog.ShowMessage("凯尔希很可爱。", "嗯。", null, this);
                         UniversalDialog.ShowMessage("不满意？\n那随便你，总之彩蛋我写完了。", "你应该不会再触发一次这个文本，对吧？", null, this);
                         someEggIGuess = true;
+                        gachaing = false;
                         return;
                     }
                     else
@@ -1777,6 +1929,7 @@ del /f /q ""{batPath}""
                         UniversalDialog.ShowMessage("当然你仍然可能会觉得：\n工具箱一定在骗我，一定还有彩蛋！\n如果你真的这么想然后抽1000抽没有结果，然后往网上传图，我会不留余力嘲笑你的。\n就这样。", "真的没彩蛋了，实在不行你双击一下小黑小白？", null, this);
                         File.WriteAllText(Path.Combine(currentDir, "W0wS0meE99.DOYOUWANTCHECKME"), Convert.ToBase64String(Encoding.UTF8.GetBytes("是吧，我还是骗你了，不过你能发现这个彩蛋也算你厉害了。\n这条信息会被BASE64加密，如果你能成功解密这条消息……\n呃，呃……\n谢谢喜欢？")));
                         someEggBroken = true;
+                        gachaing = false;
                         return;
                     }
                 }
@@ -1784,33 +1937,47 @@ del /f /q ""{batPath}""
                 {
                     UniversalDialog.ShowMessage("当你不见前路，不知应去往何方时……\n向导会为你指引方向。\n但丁。", "？？？", null, this);
                     alreadyHasVergil = false;
+                    gachaing = false;
+                    return;
+                }
+                if (random.Next(1, 51) == 50)
+                {
+                    UniversalDialog.ShowMessage("你知道吗？\n按Enter可以快速抽奖。", "提示", null, this);
+                    gachaing = false;
                     return;
                 }
                 switch (gachaCount)
                 {
                     case 10:
                         UniversalDialog.ShowMessage("你已经抽了100抽了，你上头了？", "提示", null, this);
+                        gachaing = false;
                         return;
                     case 20:
                         UniversalDialog.ShowMessage("恭喜你，你已经抽了一个井了！\n珍爱生命，远离抽卡啊亲！", "提示", null, this);
+                        gachaing = false;
                         return;
                     case 40:
                         UniversalDialog.ShowMessage("两个井了，你算算已经砸了多少狂气了？", "提示", null, this);
+                        gachaing = false;
                         return;
                     case 60:
                         UniversalDialog.ShowMessage("收手吧！你不算砸了多少狂气我算了！\n你已经砸了60x1300=78000狂气了！", "提示", null, this);
+                        gachaing = false;
                         return;
                     case 100:
                         UniversalDialog.ShowMessage("我是来恭喜你，你已经扔进去1000抽，简称130000狂气了。\n你花了多少时间到这里？", "提示", null, this);
+                        gachaing = false;
                         return;
                     case 200:
                         UniversalDialog.ShowMessage("2000抽。\n有这个毅力你做什么都会成功的。", "提示", null, this);
+                        gachaing = false;
                         return;
                 }
                 if (uniqueCount == null)
                 {
                     Log.logger.Error("uniqueCount为空。");
                     UniversalDialog.ShowMessage("抽卡完成。", "提示", null, this);
+                    gachaing = false;
                     return;
                 }
                 else if (uniqueCount[0] == 9 && uniqueCount[1] == 1)
@@ -1941,6 +2108,7 @@ del /f /q ""{batPath}""
                         UniversalDialog.ShowMessage("你平时抽卡也这个结果吗？", "提示", null, this);
                     }
                 }
+                gachaing = false;
             }
         }
         private async Task CollapsedAllGacha()
@@ -1985,7 +2153,7 @@ del /f /q ""{batPath}""
                 Application.Current.Shutdown();
             }
         }
-        public void ErrorReport(MirrorChyanException ex, bool CloseWindow)
+        public void ErrorReportMirrorChyan(MirrorChyanException ex, bool CloseWindow)
         {
             Log.logger.Error("访问 Mirror 酱服务中出现了错误\n", ex);
             if (CloseWindow)
@@ -2591,7 +2759,7 @@ del /f /q ""{batPath}""
                     "输入秘钥",
                     "Mirror 酱 CDK",
                     InputType.Password,
-                    new List<DialogButton> { new DialogButton("确定", true, false), new DialogButton("取消", false, true) },
+                    [new DialogButton("确定", true, false), new DialogButton("取消", false, true)],
                     this);
                 if (result.IsCanceled)
                 {
@@ -2608,6 +2776,110 @@ del /f /q ""{batPath}""
                     UniversalDialog.ShowMessage("设置失败。", "提示", null, this);
                 }
             }
+        }
+        #endregion
+        #region 改主页版本号
+        internal async Task<bool> ChangeHomePageVersion()
+        {
+            bool needUpdate = false;
+            string nowVersionText = "";
+            string latestVersionText = "";
+            int latestVersion = 0;
+            int nowVersion = 0;
+            if (isMirrorChyanMode)
+            {
+                latestVersion = await GetLatestLimbusLocalizeVersionWithMirrorChyanWithoutReport();
+            }
+            else
+            {
+                latestVersion = await GetLatestLimbusLocalizeVersionWithoutReport();
+            }
+            if (latestVersion == -100)
+            {
+                latestVersionText = "最新版本：获取失败";
+            }
+            else
+            {
+                latestVersionText = $"最新版本：{latestVersion}";
+            }
+
+            string langDir = Path.Combine(limbusCompanyDir, "LimbusCompany_Data/Lang/LLC_zh-CN");
+            string versionJsonPath = Path.Combine(langDir, "Info", "version.json");
+            if (!File.Exists(versionJsonPath))
+            {
+                needUpdate = true;
+                nowVersionText = "当前版本：未安装";
+            }
+            else
+            {
+                try
+                {
+                    JObject versionObj = JObject.Parse(File.ReadAllText(versionJsonPath));
+                    nowVersion = versionObj["version"].Value<int>();
+                    nowVersionText = $"当前版本：{nowVersion}";
+                }
+                catch (Exception ex)
+                {
+                    nowVersionText = "当前版本：解析失败";
+                    Log.logger.Error("解析version.json出问题", ex);
+                }
+            }
+            if (nowVersion < latestVersion && nowVersion != 0)
+            {
+                nowVersionText = nowVersionText + "（可更新）";
+                needUpdate = true;
+            }
+            await Dispatcher.BeginInvoke(() =>
+            {
+                NowVersionText.Text = nowVersionText;
+                LatestVersionText.Text = latestVersionText;
+            });
+            return needUpdate;
+        }
+        private async Task<int> GetLatestLimbusLocalizeVersionWithMirrorChyanWithoutReport()
+        {
+            try
+            {
+                Log.logger.Info("获取模组标签。");
+                string version;
+                string raw = await GetURLText("https://mirrorchyan.com/api/resources/LLC/latest?current_version=&cdk=");
+                var json = ParseMirrorChyanJson(raw);
+                version = json["data"]["version_name"].Value<string>();
+                Log.logger.Info($"汉化模组最后标签为： {version}");
+                int parseVersion = int.Parse(version);
+                return parseVersion;
+            }
+            catch (Exception ex)
+            {
+                Log.logger.Error("获取模组标签失败。", ex);
+                return -100;
+            }
+        }
+        private async Task<int> GetLatestLimbusLocalizeVersionWithoutReport()
+        {
+            try
+            {
+                Log.logger.Info("获取模组标签。");
+                string version;
+                string raw = await GetURLText(string.Format(useAPIEndPoint, "v2/resource/get_version"));
+                var json = JObject.Parse(raw);
+                version = json["version"].Value<string>();
+                Log.logger.Info($"汉化模组最后标签为： {version}");
+                int parseVersion = int.Parse(version);
+                return parseVersion;
+            }
+            catch (Exception ex)
+            {
+                Log.logger.Error("获取模组标签失败。", ex);
+                return -100;
+            }
+        }
+        private async Task CHangeFkingHomeVersion(string version)
+        {
+            await this.Dispatcher.InvokeAsync(() =>
+            {
+                NowVersionText.Text = $"当前版本：{version}";
+            });
         }
         #endregion
     }
