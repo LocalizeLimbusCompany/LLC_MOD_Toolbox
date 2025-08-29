@@ -114,13 +114,13 @@ namespace LLC_MOD_Toolbox
             {
                 ReadConfigNode();
             }
-            bool needUpdate = await ChangeHomePageVersion();
             await RefreshPage();
             await CheckToolboxUpdate(isMirrorChyanMode);
             CheckLimbusCompanyPath();
             SevenZipBase.SetLibraryPath(Path.Combine(currentDir, "7z.dll"));
             await CheckAnno();
             CheckLCBPath();
+            bool needUpdate = await ChangeHomePageVersion();
             AdaptFuckingPM.CheckAdapt(limbusCompanyDir);
             if (!isLauncherMode)
             {
@@ -129,6 +129,19 @@ namespace LLC_MOD_Toolbox
                 await ChangeEEPic();
                 await CheckModInstalled();
                 await CheckDNS();
+            }
+            if(isLauncherMode && !hasNewAnno && !needUpdate)
+            {
+                try
+                {
+                    OpenUrl("steam://rungameid/1973530");
+                }
+                catch (Exception ex)
+                {
+                    Log.logger.Error("出现了问题： ", ex);
+                    UniversalDialog.ShowMessage("出现了问题。\n" + ex.ToString(), "提示", null, this);
+                }
+                Environment.Exit(0);
             }
             if ((configuation.Settings.install.installWhenLaunch || isLauncherMode) && !hasNewAnno && needUpdate)
             {
