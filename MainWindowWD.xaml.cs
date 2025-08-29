@@ -114,13 +114,13 @@ namespace LLC_MOD_Toolbox
             {
                 ReadConfigNode();
             }
-            bool needUpdate = await ChangeHomePageVersion();
             await RefreshPage();
             await CheckToolboxUpdate(isMirrorChyanMode);
             CheckLimbusCompanyPath();
             SevenZipBase.SetLibraryPath(Path.Combine(currentDir, "7z.dll"));
             await CheckAnno();
             CheckLCBPath();
+            bool needUpdate = await ChangeHomePageVersion();
             AdaptFuckingPM.CheckAdapt(limbusCompanyDir);
             if (!isLauncherMode)
             {
@@ -129,6 +129,19 @@ namespace LLC_MOD_Toolbox
                 await ChangeEEPic();
                 await CheckModInstalled();
                 await CheckDNS();
+            }
+            if(isLauncherMode && !hasNewAnno && !needUpdate)
+            {
+                try
+                {
+                    OpenUrl("steam://rungameid/1973530");
+                }
+                catch (Exception ex)
+                {
+                    Log.logger.Error("出现了问题： ", ex);
+                    UniversalDialog.ShowMessage("出现了问题。\n" + ex.ToString(), "提示", null, this);
+                }
+                Environment.Exit(0);
             }
             if ((configuation.Settings.install.installWhenLaunch || isLauncherMode) && !hasNewAnno && needUpdate)
             {
@@ -327,7 +340,7 @@ namespace LLC_MOD_Toolbox
             try
             {
                 Log.logger.Info("获取字体MirrorChyan链接。");
-                string raw = await GetURLText($"https://mirrorchyan.com/api/resources/LLCCN-Font/latest?current_version=&cdk={mirrorChyanToken}", parseErrorJson: true);
+                string raw = await GetURLText($"https://mirrorchyan.com/api/resources/LLCCN-Font/latest?user_agent=LLC_MOD_Toolbox&current_version=&cdk={mirrorChyanToken}", parseErrorJson: true);
                 if (string.IsNullOrEmpty(raw))
                 {
                     Log.logger.Error("获取字体MirrorChyan链接失败。");
@@ -476,7 +489,7 @@ namespace LLC_MOD_Toolbox
             {
                 Log.logger.Info("获取模组标签。");
                 string version;
-                string raw = await GetURLText("https://mirrorchyan.com/api/resources/LLC/latest?current_version=&cdk=");
+                string raw = await GetURLText("https://mirrorchyan.com/api/resources/LLC/latest?user_agent=LLC_MOD_Toolbox&current_version=&cdk=");
                 var json = ParseMirrorChyanJson(raw);
                 version = json["data"]["version_name"].Value<string>();
                 Log.logger.Info($"汉化模组最后标签为： {version}");
@@ -505,7 +518,7 @@ namespace LLC_MOD_Toolbox
             {
                 Log.logger.Info("获取模组标签。");
                 string version;
-                string raw = await GetURLText($"https://mirrorchyan.com/api/resources/LLC/latest?current_version=&cdk={mirrorChyanToken}", parseErrorJson: true);
+                string raw = await GetURLText($"https://mirrorchyan.com/api/resources/LLC/latest?user_agent=LLC_MOD_Toolbox&current_version=&cdk={mirrorChyanToken}", parseErrorJson: true);
                 var json = ParseMirrorChyanJson(raw);
                 version = json["data"]["version_name"].Value<string>();
                 Log.logger.Info($"汉化模组最后标签为： {version}");
@@ -888,6 +901,23 @@ namespace LLC_MOD_Toolbox
             else
             {
                 bool CheckLCBPathResult = false;
+                // 尝试使用注册表的方式查找
+                if (string.IsNullOrEmpty(limbusCompanyDir))
+                {
+                    try
+                    {
+                        limbusCompanyDir = SteamLocator.FindLimbusCompanyPath(
+                            appId: "1973530",
+                            executableName: "LimbusCompany.exe"
+                        );
+
+                        Log.logger.Info($"找到 Limbus Company 安装路径：{limbusCompanyDir}");
+                    }
+                    catch (Exception ex)
+                    {
+                        Log.logger.Info($"未找到：{ex.Message}");
+                    }
+                }
                 if (!string.IsNullOrEmpty(limbusCompanyDir))
                 {
                     CheckLCBPathResult = UniversalDialog.ShowConfirm($"这是您的边狱公司地址吗？\n{limbusCompanyDir}", "检查路径");
@@ -1226,7 +1256,7 @@ namespace LLC_MOD_Toolbox
         {
             try
             {
-                string withCDKRaw = await GetURLText($"https://mirrorchyan.com/api/resources/LLC_MOD_Toolbox/latest?current_version=&cdk={mirrorChyanToken}", parseErrorJson: true);
+                string withCDKRaw = await GetURLText($"https://mirrorchyan.com/api/resources/LLC_MOD_Toolbox/latest?user_agent=LLC_MOD_Toolbox&current_version=&cdk={mirrorChyanToken}", parseErrorJson: true);
                 JObject withCDK = ParseMirrorChyanJson(withCDKRaw);
                 string url = withCDK["data"]["url"].Value<string>();
                 return url;
@@ -1246,7 +1276,7 @@ namespace LLC_MOD_Toolbox
         }
         private async Task CheckToolboxUpdateWithMirrorChyan()
         {
-            string noCDKRaw = await GetURLText("https://mirrorchyan.com/api/resources/LLC_MOD_Toolbox/latest?current_version=&cdk=");
+            string noCDKRaw = await GetURLText("https://mirrorchyan.com/api/resources/LLC_MOD_Toolbox/latest?user_agent=LLC_MOD_Toolbox&current_version=&cdk=");
             JObject noCDKObject = ParseMirrorChyanJson(noCDKRaw);
             if (noCDKObject == null)
             {
@@ -2603,12 +2633,13 @@ del /f /q ""{batPath}""
         #region MirrorChyan
         internal void CheckMirrorChyan()
         {
-            // 如果是首用，显示介绍并获取token
-            if (!configuation.Settings.mirrorChyan.notice)
-            {
-                HandleFirstTimeSetup();
-                return;
-            }
+            // 禁用弹窗
+            //// 如果是首用，显示介绍并获取token
+            //if (!configuation.Settings.mirrorChyan.notice)
+            //{
+            //    HandleFirstTimeSetup();
+            //    return;
+            //}
 
             // 如果已启用，加载token
             if (configuation.Settings.mirrorChyan.enable && SecureStringStorage.HasSavedData())
@@ -2617,25 +2648,25 @@ del /f /q ""{batPath}""
             }
         }
 
-        private void HandleFirstTimeSetup()
-        {
-            string token = ShowMirrorChyanDialog();
-            // 标记已显示过提示
-            configuation.Settings.mirrorChyan.notice = true;
+        //private void HandleFirstTimeSetup()
+        //{
+        //    string token = ShowMirrorChyanDialog();
+        //    // 标记已显示过提示
+        //    configuation.Settings.mirrorChyan.notice = true;
 
-            if (string.IsNullOrWhiteSpace(token))
-            {
-                configuation.SaveConfig();
-                return;
-            }
+        //    if (string.IsNullOrWhiteSpace(token))
+        //    {
+        //        configuation.SaveConfig();
+        //        return;
+        //    }
 
-            // 设置Mirror酱模式
-            SetupMirrorChyanMode(token);
-            Log.logger.Info("MirrorChyan Mode 已开启。");
-            Log.logger.Info("MirrorChyan Token： 什么，这种东西当然不可能放日志了，我是傻吗");
-            // 有的时候也是需要测试的
-            // Log.logger.Info("MirrorChyan Token：" + token);
-        }
+        //    // 设置Mirror酱模式
+        //    SetupMirrorChyanMode(token);
+        //    Log.logger.Info("MirrorChyan Mode 已开启。");
+        //    Log.logger.Info("MirrorChyan Token： 什么，这种东西当然不可能放日志了，我是傻吗");
+        //    // 有的时候也是需要测试的
+        //    // Log.logger.Info("MirrorChyan Token：" + token);
+        //}
 
         private void HandleExistingSetup()
         {
@@ -2842,7 +2873,7 @@ del /f /q ""{batPath}""
             {
                 Log.logger.Info("获取模组标签。");
                 string version;
-                string raw = await GetURLText("https://mirrorchyan.com/api/resources/LLC/latest?current_version=&cdk=");
+                string raw = await GetURLText("https://mirrorchyan.com/api/resources/LLC/latest?user_agent=LLC_MOD_Toolbox&current_version=&cdk=");
                 var json = ParseMirrorChyanJson(raw);
                 version = json["data"]["version_name"].Value<string>();
                 Log.logger.Info($"汉化模组最后标签为： {version}");

@@ -27,7 +27,8 @@ namespace LLC_MOD_Toolbox
                 {
                     if (!File.Exists(_configFilePath))
                     {
-                        File.WriteAllText(JsonConvert.SerializeObject(new AppSettings(), Formatting.Indented), _configFilePath);
+                        // 修复参数错位
+                        File.WriteAllText(_configFilePath, JsonConvert.SerializeObject(new AppSettings(), Formatting.Indented));
                     }
                     var json = File.ReadAllText(_configFilePath);
                     var serializerSettings = new JsonSerializerSettings
