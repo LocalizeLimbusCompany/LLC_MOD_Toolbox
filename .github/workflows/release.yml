@@ -1,0 +1,120 @@
+name: Build & Release
+
+on:
+  workflow_dispatch:     
+  release:
+    types: [published] 
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      # .NET 8
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+
+      # MSBuild
+      - name: Setup MSBuild
+        uses: microsoft/setup-msbuild@v2
+
+      # NuGet
+      - name: Restore
+        shell: pwsh
+        run: dotnet restore
+
+      # 编译 Release
+      - name: Build (Release)
+        shell: pwsh
+        run: msbuild .\LLC_MOD_Toolbox.sln /m /p:Configuration=Release
+
+      # 找到主 exe，并把完整运行目录整理到 dist/
+      - name: Prepare dist folder
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = "Stop"
+          $exeName = "LLC_MOD_Toolbox.exe"
+
+          $exe = Get-ChildItem -Path . -Recurse -Filter $exeName |
+                 Where-Object { $_.FullName -match "\\bin\\Release" } |
+                 Select-Object -First 1
+          if (-not $exe) { throw "找不到 $exeName（请确认项目名/输出路径）" }
+
+          $outDir = $exe.Directory.FullName
+          Write-Host "Detected output dir: $outDir"
+
+          # dist 里放“平铺”的可运行内容（exe + dll + 资源）
+          New-Item -ItemType Directory -Force -Path dist | Out-Null
+          Copy-Item -Recurse -Force "$outDir\*" "dist\"
+
+      # 安装 7-Zip（用于 .7z 和自解压包）
+      - name: Install 7-Zip
+        shell: pwsh
+        run: |
+          choco install 7zip -y
+          $env:SEVENZIP = "${env:ProgramFiles}\7-Zip\7z.exe"
+          if (!(Test-Path $env:SEVENZIP)) { throw "7z.exe not found" }
+
+      # 生成 LLC_MOD_Toolbox.7z 和 LLC_MOD_Toolbox_SFX.exe
+      - name: Build archives (.7z / SFX)
+        shell: pwsh
+        run: |
+          $SEVENZIP = "${env:ProgramFiles}\7-Zip\7z.exe"
+          & $SEVENZIP a -t7z -mx=9 "LLC_MOD_Toolbox.7z" ".\dist\*" | Out-Host
+          & $SEVENZIP a -sfx   "LLC_MOD_Toolbox_SFX.exe" ".\dist\*" | Out-Host
+
+      # 计算版本号
+      - name: Compute version
+        shell: pwsh
+        run: |
+          $ref = "${{ github.ref_name }}"
+          if ($ref -and $ref -match "^[vV]\d") {
+            $ver = $ref.TrimStart('v','V')
+          } else {
+            $ver = (Get-Date -Format "yyyy.MM.dd-HHmm")
+          }
+          echo "VER=$ver" >> $env:GITHUB_ENV
+          Write-Host "Version => $ver"
+
+      # 用 Inno Setup 编译安装包
+      - name: List dist
+        shell: pwsh
+        run: |
+          Write-Host "Workspace: $env:GITHUB_WORKSPACE"
+          Get-ChildItem "$env:GITHUB_WORKSPACE\dist" -Recurse | Select-Object FullName
+      - name: Compile Installer (Inno Setup)
+        uses: Minionguyjpro/Inno-Setup-Action@v1.2.2
+        with:
+          path: installer/exportInstaller.iss
+          options: >
+            /DInputDir="${{ github.workspace }}\dist"
+            /DOutputDir="${{ github.workspace }}"
+            /DMyAppVersion="${{ env.VER }}"
+
+      # （可选）把三件套作为构建工件存档
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-bundles
+          path: |
+            LLC_MOD_Toolbox.7z
+            LLC_MOD_Toolbox_SFX.exe
+            LLC_MOD_Toolbox_Installer.exe
+
+      # 上传到 Release
+      - name: Publish Release Assets
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            LLC_MOD_Toolbox.7z
+            LLC_MOD_Toolbox_SFX.exe
+            LLC_MOD_Toolbox_Installer.exe
+          token: ${{ secrets.GITHUB_TOKEN }}
+          generate_release_notes: true
