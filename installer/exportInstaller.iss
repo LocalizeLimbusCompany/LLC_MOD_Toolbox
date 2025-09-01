@@ -41,7 +41,7 @@ AppSupportURL={#MyAppURL}
 AppUpdatesURL={#MyAppURL}
 
 ; 安装目录（自动选择 64 位 Program Files 或 32 位）
-DefaultDirName={autopf}\{#MyAppName}
+DefaultDirName={localappdata}\Programs\LLC_MOD_Toolbox
 DefaultGroupName={#MyAppName}
 DisableProgramGroupPage=yes
 AllowNoIcons=yes
@@ -58,8 +58,7 @@ SolidCompression=yes
 ArchitecturesAllowed=x64 x86
 ArchitecturesInstallIn64BitMode=x64
 
-; 需要管理员权限安装到 Program Files
-PrivilegesRequired=admin
+PrivilegesRequired=lowest
 
 ; 安装/卸载显示图标：若 dist 下有图标则使用
 #ifexist "{#InputDir}\favicon.ico"
@@ -73,6 +72,7 @@ UninstallDisplayIcon={app}\{#MyAppExeName}
 VersionInfoVersion={#MyAppVersion}
 VersionInfoCompany={#MyAppPublisher}
 VersionInfoProductName={#MyAppName}
+UsePreviousAppDir=yes
 
 ; -------------------------
 ; 语言
