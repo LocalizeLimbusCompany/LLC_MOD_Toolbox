@@ -2565,6 +2565,7 @@ del /f /q ""{batPath}""
             {
                 Log.logger.Info("字体文件无效。");
                 UniversalDialog.ShowMessage("字体文件无效。", "提示", null, this);
+                return;
             }
             if (File.Exists(oldFontPath) && !File.Exists(backupFontPath))
             {
