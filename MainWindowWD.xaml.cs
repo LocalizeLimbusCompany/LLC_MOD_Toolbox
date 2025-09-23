@@ -1607,7 +1607,7 @@ del /f /q ""{batPath}""
                     return;
                 }
                 Log.logger.Info("Token为：" + token);
-                string tokenUrl = string.Format(useAPIEndPoint, $"/v2/grey_test/get_token?code={token}");
+                string tokenUrl = string.Format(useAPIEndPoint, $"v2/grey_test/get_token?code={token}");
                 using (HttpClient client = new())
                 {
                     try
@@ -1653,7 +1653,7 @@ del /f /q ""{batPath}""
                     await ChangeLogoToTest();
                     UniversalDialog.ShowMessage($"目前Token有效。\n-------------\nToken信息：\n秘钥：{token}\n备注：{note}\n-------------\n灰度测试模式已开启。\n请在自动安装安装此秘钥对应版本汉化。\n秘钥信息请勿外传。", "提示", null, this);
                     greytestStatus = true;
-                    greytestUrl = string.Format(useAPIEndPoint, $"/v2/grey_test/get_file?code={token}");
+                    greytestUrl = string.Format(useAPIEndPoint, $"v2/grey_test/get_file?code={token}");
                     await EnableGlobalOperations();
                 }
                 catch (Exception ex)
@@ -2278,7 +2278,7 @@ del /f /q ""{batPath}""
             }
             try
             {
-                string annoText = await GetURLText(string.Format(useAPIEndPoint, "/v2/announcement/get_anno"));
+                string annoText = await GetURLText(string.Format(useAPIEndPoint, "v2/announcement/get_anno"));
                 if (string.IsNullOrEmpty(annoText))
                 {
                     return;
