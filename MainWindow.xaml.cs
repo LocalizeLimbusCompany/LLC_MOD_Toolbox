@@ -32,7 +32,7 @@ namespace LLC_MOD_Toolbox
             // 隐藏面板按钮Hover
             AutoInstallHover.Opacity = 0;
             FontReplaceHover.Opacity = 0;
-            ReplaceInstallHover.Opacity = 0;
+            SkinHover.Opacity = 0;
             // 隐藏自动安装页面Hover
             AutoInstallBTHover.Opacity = 0;
             // 若在安装页面，则隐藏禁用标识
@@ -42,9 +42,11 @@ namespace LLC_MOD_Toolbox
                 AutoInstallDisabled.Visibility = Visibility.Hidden;
                 FontReplaceDisabled.Visibility = Visibility.Hidden;
                 GachaSimDisabled.Visibility = Visibility.Hidden;
+                SkinDisabled.Visibility = Visibility.Hidden;
                 AutoInstallButton.Visibility = Visibility.Visible;
                 FontReplaceButton.Visibility = Visibility.Visible;
                 GachaSimInstallButton.Visibility = Visibility.Visible;
+                SkinButton.Visibility = Visibility.Visible;
                 AutoInstallButton.IsHitTestVisible = true;
                 FontReplaceButton.IsHitTestVisible = true;
             }
@@ -52,11 +54,12 @@ namespace LLC_MOD_Toolbox
             {
                 AutoInstallDisabled.Visibility = Visibility.Visible;
                 FontReplaceDisabled.Visibility = Visibility.Visible;
-                ReplaceInstallDisabled.Visibility = Visibility.Visible;
+                SkinDisabled.Visibility = Visibility.Visible;
                 GachaSimDisabled.Visibility = Visibility.Visible;
                 AutoInstallButton.Visibility = Visibility.Collapsed;
                 GachaSimInstallButton.Visibility = Visibility.Collapsed;
                 FontReplaceButton.Visibility = Visibility.Collapsed;
+                SkinButton.Visibility = Visibility.Collapsed;
                 AutoInstallButton.IsHitTestVisible = false;
                 FontReplaceButton.IsHitTestVisible = false;
             }
@@ -86,6 +89,9 @@ namespace LLC_MOD_Toolbox
                         break;
                     case "gacha":
                         await MakeGridStatuExceptSelf(GachaPage);
+                        break;
+                    case "skin":
+                        await MakeGridStatuExceptSelf(SkinPage);
                         break;
                 }
             }
@@ -132,7 +138,8 @@ namespace LLC_MOD_Toolbox
                 AboutPage,
                 EEPage,
                 GachaPage,
-                AnnouncementPage
+                AnnouncementPage,
+                SkinPage
             ];
             gridList.Remove(g);
             MakeGridStatu(g, true);
@@ -234,6 +241,11 @@ namespace LLC_MOD_Toolbox
         private async void FontReplaceButtonClick(object sender, RoutedEventArgs e)
         {
             nowInstallPage = "font";
+            await RefreshPage();
+        }
+        private async void SkinButtonClick(object sender, RoutedEventArgs e)
+        {
+            nowInstallPage = "skin";
             await RefreshPage();
         }
         private async void GachaSimButtonClick(object sender, RoutedEventArgs e)

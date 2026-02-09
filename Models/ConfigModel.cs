@@ -26,6 +26,10 @@
         public string defaultNode { get; set; } = "";
         public string defaultApiNode { get; set; } = "";
     }
+    public class SkinConfig
+    {
+        public string currentSkin { get; set; } = "default";
+    }
     public class AppSettings
     {
         public GeneralConfig general { get; set; } = new GeneralConfig();
@@ -33,6 +37,7 @@
         public AnnouncementConfig announcement { get; set; } = new AnnouncementConfig();
         public MirrorChyanConfig mirrorChyan { get; set; } = new MirrorChyanConfig();
         public NodeConfig nodeSelect { get; set; } = new NodeConfig();
+        public SkinConfig skin { get; set; } = new SkinConfig();
     }
 
 }

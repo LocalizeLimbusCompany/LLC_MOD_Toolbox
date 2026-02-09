@@ -64,17 +64,17 @@
             <RowDefinition Height="39*"/>
             <RowDefinition Height="161*"/>
         </Grid.RowDefinitions>
-        <Image HorizontalAlignment="Left" Height="600" VerticalAlignment="Top" Width="960" Source="/Picture/Background.png" Grid.RowSpan="2" Grid.ColumnSpan="3">
+        <Image x:Name="Background" HorizontalAlignment="Left" Height="600" VerticalAlignment="Top" Width="960" Source="Picture/Background.png" Grid.RowSpan="2" Grid.ColumnSpan="3">
             <Image.Clip>
                 <RectangleGeometry Rect="0,0,960,600" RadiusX="20" RadiusY="20"/>
             </Image.Clip>
         </Image>
-        <Image HorizontalAlignment="Left" Height="480" Margin="18,116,0,0" VerticalAlignment="Top" Width="162" Source="/Picture/ButtonBackground.png" Grid.RowSpan="2" Grid.ColumnSpan="2"/>
-        <Image HorizontalAlignment="Left" Height="87" VerticalAlignment="Top" Width="960" Grid.ColumnSpan="3" Margin="0,13,0,0" Source="/Picture/TitleBar.png"/>
-        <Image x:Name="MinimizeHover" HorizontalAlignment="Left" VerticalAlignment="Top" Opacity="0" IsHitTestVisible="False" Margin="573,16,0,0" Height="80" Width="81" Panel.ZIndex="5" Source="/Picture/MinimizeHover.png" Grid.Column="2" />
+        <Image x:Name="ButtonBackground" HorizontalAlignment="Left" Height="480" Margin="18,116,0,0" VerticalAlignment="Top" Width="162" Source="Picture/ButtonBackground.png" Grid.RowSpan="2" Grid.ColumnSpan="2"/>
+        <Image x:Name="TitleBar" HorizontalAlignment="Left" Height="87" VerticalAlignment="Top" Width="960" Grid.ColumnSpan="3" Margin="0,13,0,0" Source="Picture/TitleBar.png"/>
+        <Image x:Name="MinimizeHover" HorizontalAlignment="Left" VerticalAlignment="Top" Opacity="0" IsHitTestVisible="False" Margin="573,16,0,0" Height="80" Width="81" Panel.ZIndex="5" Source="Picture/MinimizeHover.png" Grid.Column="2" />
         <Button Grid.Column="2" HorizontalAlignment="Left" Margin="574,17,0,0" VerticalAlignment="Top" Height="78" Width="80" Opacity="1" Background="Transparent" BorderBrush="Transparent" BorderThickness="0" Style="{StaticResource NoHover}" Click="MinimizeButtonClick">
             <Button.Content>
-                <Image Height="78" Width="80" Source="/Picture/Minimize.png" />
+                <Image x:Name="MinimizeButton" Height="78" Width="80" Source="Picture/Minimize.png" />
             </Button.Content>
             <Button.Triggers>
                 <EventTrigger RoutedEvent="Button.MouseEnter">
@@ -97,10 +97,10 @@
                 </EventTrigger>
             </Button.Triggers>
         </Button>
-        <Image x:Name="CloseHover" HorizontalAlignment="Left" VerticalAlignment="Top" Opacity="0" IsHitTestVisible="False" Margin="661,16,0,0" Height="80" Width="81" Panel.ZIndex="5" Source="/Picture/MinimizeHover.png" Grid.Column="2" />
+        <Image x:Name="CloseHover" HorizontalAlignment="Left" VerticalAlignment="Top" Opacity="0" IsHitTestVisible="False" Margin="661,16,0,0" Height="80" Width="81" Panel.ZIndex="5" Source="Picture/MinimizeHover.png" Grid.Column="2" />
         <Button Grid.Column="2" HorizontalAlignment="Left" Margin="662,17,0,0" VerticalAlignment="Top" Height="78" Width="80" Opacity="1" Background="Transparent" BorderBrush="Transparent" BorderThickness="0" Click="CloseButtonClick" Style="{StaticResource NoHover}">
             <Button.Content>
-                <Image Height="78" Width="80" Source="/Picture/Close.png" />
+                <Image x:Name="CloseButton" Height="78" Width="80" Source="Picture/Close.png" />
             </Button.Content>
             <Button.Triggers>
                 <EventTrigger RoutedEvent="Button.MouseEnter">
@@ -123,17 +123,17 @@
                 </EventTrigger>
             </Button.Triggers>
         </Button>
-        <Image Grid.Column="1" HorizontalAlignment="Left" Height="516" VerticalAlignment="Top" Width="796" Source="/Picture/ControlBoard.png" Margin="142,84,0,0" Grid.RowSpan="2" Grid.ColumnSpan="2"/>
-        <Image x:Name="GachaSimDisabled" Grid.Column="2" Opacity="1" HorizontalAlignment="Left" Height="17" Margin="569,18,0,0" Grid.Row="1" VerticalAlignment="Top" Width="91" Source="/Picture/DisableButton.png"/>
-        <Image x:Name="ZALogo"  Visibility="Collapsed" HorizontalAlignment="Left" Height="123" Margin="7,-8,0,0" VerticalAlignment="Top" Width="123" Source="/Picture/ZALogoA.png" Grid.Column="1"/>
-        <Image x:Name="MirrorChyanLogo" Visibility="Collapsed" IsHitTestVisible="False" Height="48" VerticalAlignment="Top" Source="/Picture/MirrorChyan.png" Margin="67,52,30,0" Grid.Column="1"/>
-        <Image x:Name="AutoInstallDisabled" Grid.Column="2" HorizontalAlignment="Left" Height="17" Margin="128,18,0,0" Grid.Row="1" VerticalAlignment="Top" Width="91" Source="/Picture/DisableButton.png"/>
-        <Image x:Name="FontReplaceDisabled" Grid.Column="2" HorizontalAlignment="Left" Height="17" Margin="275,18,0,0" Grid.Row="1" VerticalAlignment="Top" Width="91" Source="/Picture/DisableButton.png"/>
-        <Image x:Name="ReplaceInstallDisabled" Grid.Column="2" HorizontalAlignment="Left" Height="17" Margin="424,18,0,0" Grid.Row="1" VerticalAlignment="Top" Width="90" Source="/Picture/DisableButton.png"/>
-        <Image x:Name="AutoInstallHover" IsHitTestVisible="False" Panel.ZIndex="5" Grid.Column="2" Opacity="0" HorizontalAlignment="Left" Height="46" Margin="105,4,0,0" Grid.Row="1" VerticalAlignment="Top" Width="134" Source="/Picture/ControlBoardHover.png"/>
-        <Image x:Name="FontReplaceHover" IsHitTestVisible="False" Panel.ZIndex="5" Grid.Column="2" Opacity="0" HorizontalAlignment="Left" Height="46" Margin="252,4,0,0" Grid.Row="1" VerticalAlignment="Top" Width="134" Source="/Picture/ControlBoardHover.png"/>
-        <Image x:Name="ReplaceInstallHover" IsHitTestVisible="False" Panel.ZIndex="5" Grid.Column="2" Opacity="0" HorizontalAlignment="Left" Height="46" Margin="400,4,0,0" Grid.Row="1" VerticalAlignment="Top" Width="134" Source="/Picture/ControlBoardHover.png"/>
-        <Image x:Name="GachaSimHover" IsHitTestVisible="False" Panel.ZIndex="5" Grid.Column="2" Opacity="0" HorizontalAlignment="Left" Height="46" Margin="548,4,0,0" Grid.Row="1" VerticalAlignment="Top" Width="134" Source="/Picture/ControlBoardHover.png"/>
+        <Image x:Name="ControlBoard" Grid.Column="1" HorizontalAlignment="Left" Height="516" VerticalAlignment="Top" Width="796" Source="Picture/ControlBoard.png" Margin="142,84,0,0" Grid.RowSpan="2" Grid.ColumnSpan="2"/>
+        <Image x:Name="GachaSimDisabled" Grid.Column="2" Opacity="1" HorizontalAlignment="Left" Height="17" Margin="569,18,0,0" Grid.Row="1" VerticalAlignment="Top" Width="91" Source="Picture/DisableButton.png"/>
+        <Image x:Name="ZALogo"  Visibility="Collapsed" HorizontalAlignment="Left" Height="123" Margin="7,-8,0,0" VerticalAlignment="Top" Width="123" Source="Picture/ZALogoA.png" Grid.Column="1"/>
+        <Image x:Name="MirrorChyanLogo" Visibility="Collapsed" IsHitTestVisible="False" Height="48" VerticalAlignment="Top" Source="Picture/MirrorChyan.png" Margin="67,52,30,0" Grid.Column="1"/>
+        <Image x:Name="AutoInstallDisabled" Grid.Column="2" HorizontalAlignment="Left" Height="17" Margin="128,18,0,0" Grid.Row="1" VerticalAlignment="Top" Width="91" Source="Picture/DisableButton.png"/>
+        <Image x:Name="FontReplaceDisabled" Grid.Column="2" HorizontalAlignment="Left" Height="17" Margin="275,18,0,0" Grid.Row="1" VerticalAlignment="Top" Width="91" Source="Picture/DisableButton.png"/>
+        <Image x:Name="SkinDisabled" Grid.Column="2" HorizontalAlignment="Left" Height="17" Margin="424,18,0,0" Grid.Row="1" VerticalAlignment="Top" Width="90" Source="Picture/DisableButton.png"/>
+        <Image x:Name="AutoInstallHover" IsHitTestVisible="False" Panel.ZIndex="5" Grid.Column="2" Opacity="0" HorizontalAlignment="Left" Height="46" Margin="105,4,0,0" Grid.Row="1" VerticalAlignment="Top" Width="134" Source="Picture/ControlBoardHover.png"/>
+        <Image x:Name="FontReplaceHover" IsHitTestVisible="False" Panel.ZIndex="5" Grid.Column="2" Opacity="0" HorizontalAlignment="Left" Height="46" Margin="252,4,0,0" Grid.Row="1" VerticalAlignment="Top" Width="134" Source="Picture/ControlBoardHover.png"/>
+        <Image x:Name="SkinHover" IsHitTestVisible="False" Panel.ZIndex="5" Grid.Column="2" Opacity="0" HorizontalAlignment="Left" Height="46" Margin="400,4,0,0" Grid.Row="1" VerticalAlignment="Top" Width="134" Source="Picture/ControlBoardHover.png"/>
+        <Image x:Name="GachaSimHover" IsHitTestVisible="False" Panel.ZIndex="5" Grid.Column="2" Opacity="0" HorizontalAlignment="Left" Height="46" Margin="548,4,0,0" Grid.Row="1" VerticalAlignment="Top" Width="134" Source="Picture/ControlBoardHover.png"/>
         <Button x:Name="AutoInstallButton" Grid.Column="2" Visibility="Collapsed" Content="自动安装" HorizontalAlignment="Left" Margin="122,4,0,0" Grid.Row="1" VerticalAlignment="Top" Height="40" Width="101" Background="Transparent" BorderBrush="Transparent" BorderThickness="0" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Bold" Foreground="#FFFFEED4" FontSize="18" Style="{StaticResource NoHover}" Click="AutoInstallButtonClick">
             <Button.Triggers>
                 <EventTrigger RoutedEvent="Button.MouseEnter">
@@ -178,7 +178,29 @@
                 </EventTrigger>
             </Button.Triggers>
         </Button>
-        <Button x:Name="GachaSimInstallButton" Grid.Column="2" Visibility="Collapsed" Content="抽卡模拟器" HorizontalAlignment="Left" Margin="564,5,0,0" Grid.Row="1" VerticalAlignment="Top" Height="40" Width="102" Background="Transparent" BorderBrush="Transparent" BorderThickness="0" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Bold" Foreground="#FFFFEED4" FontSize="18" Style="{StaticResource NoHover}" Click="GachaSimButtonClick">
+        <Button x:Name="SkinButton" Grid.Column="2" Visibility="Collapsed" Content="皮肤管理" HorizontalAlignment="Left" Margin="419,4,0,0" Grid.Row="1" VerticalAlignment="Top" Height="40" Width="101" Background="Transparent" BorderBrush="Transparent" BorderThickness="0" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Bold" Foreground="#FFFFEED4" FontSize="18" Style="{StaticResource NoHover}" Click="SkinButtonClick">
+            <Button.Triggers>
+                <EventTrigger RoutedEvent="Button.MouseEnter">
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation Storyboard.TargetName="SkinHover"
+         Storyboard.TargetProperty="Opacity"
+         From="0" To="1" Duration="0:0:0.3"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger>
+                <EventTrigger RoutedEvent="Button.MouseLeave">
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation Storyboard.TargetName="SkinHover"
+         Storyboard.TargetProperty="Opacity"
+         From="1" To="0" Duration="0:0:0.3"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger>
+            </Button.Triggers>
+        </Button>
+        <Button x:Name="GachaSimInstallButton" Grid.Column="2" Visibility="Collapsed" Content="抽卡模拟器" HorizontalAlignment="Left" Margin="564,4,0,0" Grid.Row="1" VerticalAlignment="Top" Height="40" Width="102" Background="Transparent" BorderBrush="Transparent" BorderThickness="0" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Bold" Foreground="#FFFFEED4" FontSize="18" Style="{StaticResource NoHover}" Click="GachaSimButtonClick">
             <Button.Triggers>
                 <EventTrigger RoutedEvent="Button.MouseEnter">
                     <BeginStoryboard>
@@ -332,17 +354,16 @@ From="1" To="0" Duration="0:0:0.3"/>
                 </EventTrigger>
             </Button.Triggers>
         </Button>
-        <Image x:Name="InstallHover" HorizontalAlignment="Left" IsHitTestVisible="False" Opacity="0" Height="49" Margin="15,47,0,0" Grid.Row="1" VerticalAlignment="Top" Width="168" Source="/Picture/ButtonHover.png" Grid.ColumnSpan="3"/>
-        <Image x:Name="LinkHover" HorizontalAlignment="Left" IsHitTestVisible="False" Opacity="0" Height="49" Margin="15,96,0,0" Grid.Row="1" VerticalAlignment="Top" Width="168" Source="/Picture/ButtonHover.png" Grid.ColumnSpan="3"/>
-        <Image x:Name="GreytestHover" HorizontalAlignment="Left" IsHitTestVisible="False" Opacity="0" Height="49" Margin="15,146,0,0" Grid.Row="1" VerticalAlignment="Top" Width="168" Source="/Picture/ButtonHover.png" Grid.ColumnSpan="3"/>
-        <Image x:Name="SettingHover" HorizontalAlignment="Left" IsHitTestVisible="False" Opacity="0" Height="48" Margin="15,197,0,0" Grid.Row="1" VerticalAlignment="Top" Width="168" Source="/Picture/ButtonHover.png" Grid.ColumnSpan="3"/>
-        <Image x:Name="AboutHover" HorizontalAlignment="Left" IsHitTestVisible="False" Opacity="0" Height="49" Margin="15,247,0,0" Grid.Row="1" VerticalAlignment="Top" Width="168" Source="/Picture/ButtonHover.png" Grid.ColumnSpan="3"/>
-        <Image x:Name="EEHover" HorizontalAlignment="Left" IsHitTestVisible="False" Opacity="0" Height="49" Margin="15,296,0,0" Grid.Row="1" VerticalAlignment="Top" Width="168" Source="/Picture/ButtonHover.png" Grid.ColumnSpan="3"/>
+        <Image x:Name="InstallHover" HorizontalAlignment="Left" IsHitTestVisible="False" Opacity="0" Height="49" Margin="15,47,0,0" Grid.Row="1" VerticalAlignment="Top" Width="168" Source="Picture/ButtonHover.png" Grid.ColumnSpan="3"/>
+        <Image x:Name="LinkHover" HorizontalAlignment="Left" IsHitTestVisible="False" Opacity="0" Height="49" Margin="15,96,0,0" Grid.Row="1" VerticalAlignment="Top" Width="168" Source="Picture/ButtonHover.png" Grid.ColumnSpan="3"/>
+        <Image x:Name="GreytestHover" HorizontalAlignment="Left" IsHitTestVisible="False" Opacity="0" Height="49" Margin="15,146,0,0" Grid.Row="1" VerticalAlignment="Top" Width="168" Source="Picture/ButtonHover.png" Grid.ColumnSpan="3"/>
+        <Image x:Name="SettingHover" HorizontalAlignment="Left" IsHitTestVisible="False" Opacity="0" Height="48" Margin="15,197,0,0" Grid.Row="1" VerticalAlignment="Top" Width="168" Source="Picture/ButtonHover.png" Grid.ColumnSpan="3"/>
+        <Image x:Name="AboutHover" HorizontalAlignment="Left" IsHitTestVisible="False" Opacity="0" Height="49" Margin="15,247,0,0" Grid.Row="1" VerticalAlignment="Top" Width="168" Source="Picture/ButtonHover.png" Grid.ColumnSpan="3"/>
+        <Image x:Name="EEHover" HorizontalAlignment="Left" IsHitTestVisible="False" Opacity="0" Height="49" Margin="15,296,0,0" Grid.Row="1" VerticalAlignment="Top" Width="168" Source="Picture/ButtonHover.png" Grid.ColumnSpan="3"/>
         <Grid x:Name="AutoInstallPage" Visibility="Visible" Panel.ZIndex="5" Margin="62,55,54,32" Grid.Column="2" Grid.Row="1">
-
             <Button x:Name="AutoInstallStartButton" HorizontalAlignment="Center" Margin="0,151,0,0" VerticalAlignment="Top" Panel.ZIndex="3" Width="196" Height="70" Background="Transparent" BorderBrush="Transparent" BorderThickness="0" Style="{StaticResource NoHover}" Click="InstallButtonClick">
                 <Button.Content>
-                    <Image x:Name="AutoInstallStartButtonIMG" Height="70" Width="195" Source="/Picture/Install.png" />
+                    <Image x:Name="AutoInstallStartButtonIMG" Height="70" Width="195" Source="Picture/Install.png" />
                 </Button.Content>
                 <Button.Triggers>
                     <EventTrigger RoutedEvent="Button.MouseEnter">
@@ -365,19 +386,19 @@ From="1" To="0" Duration="0:0:0.3"/>
                     </EventTrigger>
                 </Button.Triggers>
             </Button>
-            <Image x:Name="AutoInstallBTHover" HorizontalAlignment="Center" Panel.ZIndex="5" IsHitTestVisible="False" Opacity="0" Height="70" Margin="0,151,0,0" VerticalAlignment="Top" Width="196" Source="/Picture/InstallHover.png"/>
-            <Image x:Name="AutoInstallBTIng" Visibility="Collapsed" HorizontalAlignment="Center" Panel.ZIndex="10" IsHitTestVisible="False" Opacity="1" Height="70" Margin="0,151,0,0" VerticalAlignment="Top" Width="196" Source="/Picture/Installing.png"/>
-            <Image HorizontalAlignment="Center"  IsHitTestVisible="False" Height="123" VerticalAlignment="Top" Width="482" Source="/Picture/StartInstallBackground.png" Margin="0,127,0,0"/>
+            <Image x:Name="AutoInstallBTHover" HorizontalAlignment="Center" Panel.ZIndex="5" IsHitTestVisible="False" Opacity="0" Height="70" Margin="0,151,0,0" VerticalAlignment="Top" Width="196" Source="Picture/InstallHover.png"/>
+            <Image x:Name="AutoInstallBTIng" Visibility="Collapsed" HorizontalAlignment="Center" Panel.ZIndex="10" IsHitTestVisible="False" Opacity="1" Height="70" Margin="0,151,0,0" VerticalAlignment="Top" Width="196" Source="Picture/Installing.png"/>
+            <Image x:Name="StartInstallBackground" HorizontalAlignment="Center"  IsHitTestVisible="False" Height="123" VerticalAlignment="Top" Width="482" Source="Picture/StartInstallBackground.png" Margin="0,127,0,0"/>
             <Canvas Margin="-10,294,10,22">
-                <Image x:Name="FullProgress" Height="50" Canvas.Left="26" Canvas.Top="12" Width="624" Source="/Picture/FullProgress.png" Panel.ZIndex="5" HorizontalAlignment="Left" VerticalAlignment="Center">
+                <Image x:Name="FullProgress" Height="50" Canvas.Left="26" Canvas.Top="12" Width="624" Source="Picture/FullProgress.png" Panel.ZIndex="5" HorizontalAlignment="Left" VerticalAlignment="Center">
                     <Image.Clip>
                         <RectangleGeometry Rect="0,0,0,50" />
                     </Image.Clip>
                 </Image>
-                <Image x:Name="EmptyProgress" Height="50" Canvas.Left="26" Canvas.Top="12" Width="624" Source="/Picture/EmptyProgress.png" Panel.ZIndex="3" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                <Image x:Name="EmptyProgress" Height="50" Canvas.Left="26" Canvas.Top="12" Width="624" Source="Picture/EmptyProgress.png" Panel.ZIndex="3" HorizontalAlignment="Left" VerticalAlignment="Center"/>
             </Canvas>
-            <Image HorizontalAlignment="Left" Height="288" Margin="12,58,0,0" VerticalAlignment="Top" Width="384" Source="/Picture/xiaoheiNew.png"/>
-            <Image HorizontalAlignment="Left" Panel.ZIndex="4" Height="316" Margin="467,61,0,0" VerticalAlignment="Top" Width="384" Source="/Picture/xiaobaiNew.png"/>
+            <Image x:Name="AutoInstallXiaoHei" HorizontalAlignment="Left" Height="218" Margin="18,98,0,0" VerticalAlignment="Top" Width="290" Source="Picture/B.png"/>
+            <Image x:Name="AutoInstallXiaobai"  HorizontalAlignment="Left" Panel.ZIndex="4" Height="212" Margin="503,104,0,0" VerticalAlignment="Top" Width="258" Source="Picture/W.png"/>
             <local:OutlinedTextControl
 Text="当前版本：获取中" 
 Fill="#a16a3b" 
@@ -460,8 +481,8 @@ From="1" To="0" Duration="0:0:0.3"/>
             <Label Content="ΓΔΘΙΛΞΠΣΦΨΩαβγδεζνξπηθικλμτω" Panel.ZIndex="5" HorizontalAlignment="Left" IsHitTestVisible="False" Margin="321,254,0,0" VerticalAlignment="Top" Height="25" Width="231" FontSize="{DynamicResource GlobalPreviewSmallFontSize}" Foreground="#ebcaa2" FontFamily="{DynamicResource GlobalPreviewFont}"/>
             <Label Content="!#$%'()*+,-./:;=?@[\]^_`{|}~～，。、；" Panel.ZIndex="5" HorizontalAlignment="Left" IsHitTestVisible="False" Margin="321,267,0,0" VerticalAlignment="Top" Height="26" Width="231" FontSize="{DynamicResource GlobalPreviewSmallFontSize}" Foreground="#ebcaa2" FontFamily="{DynamicResource GlobalPreviewFont}"/>
             <Label Content="‘’【】、《》？！：“”·——…﹢﹣×÷±+-" Panel.ZIndex="5" HorizontalAlignment="Left" IsHitTestVisible="False" Margin="314,283,0,0" VerticalAlignment="Top" Height="25" Width="231" FontSize="{DynamicResource GlobalPreviewSmallFontSize}" Foreground="#ebcaa2" FontFamily="{DynamicResource GlobalPreviewFont}"/>
-            <Image x:Name="ExploreFontHover" Panel.ZIndex="5" IsHitTestVisible="False" Opacity="0" HorizontalAlignment="Left" Height="34" Margin="551,52,0,0" VerticalAlignment="Top" Width="80" Source="/Picture/SettingButtonHover.png"/>
-            <Image Opacity="1" HorizontalAlignment="Left" Height="209" Margin="20,120,0,0" VerticalAlignment="Top" Width="621" Source="/Picture/FontPreviewBase.png"/>
+            <Image x:Name="ExploreFontHover" Panel.ZIndex="5" IsHitTestVisible="False" Opacity="0" HorizontalAlignment="Left" Height="34" Margin="551,52,0,0" VerticalAlignment="Top" Width="80" Source="Picture/SettingButtonHover.png"/>
+            <Image x:Name="FontPreviewBase" Opacity="1" HorizontalAlignment="Left" Height="209" Margin="20,120,0,0" VerticalAlignment="Top" Width="621" Source="Picture/FontPreviewBase.png"/>
             <Label x:Name="PreviewText" HorizontalAlignment="Center" Margin="0,117,0,0" VerticalAlignment="Top" Height="208" Width="644" Foreground="#FFFFEED4" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Medium">
                 <TextBlock FontSize="13.5" Text="" TextWrapping="Wrap" Height="234"/>
             </Label>
@@ -491,7 +512,7 @@ From="1" To="0" Duration="0:0:0.3"/>
                 </Button.Triggers>
             </Button>
             <Label Content="预览字体" HorizontalAlignment="Left" IsHitTestVisible="False" Margin="20,330,0,0" VerticalAlignment="Top" Height="38" Width="74" FontSize="16" Foreground="Black" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Heavy"/>
-            <Image x:Name="PreviewFontHover" Panel.ZIndex="5" IsHitTestVisible="False" Opacity="0" HorizontalAlignment="Left" Height="34" Margin="17,331,0,0" VerticalAlignment="Top" Width="80" Source="/Picture/SettingButtonHover.png"/>
+            <Image x:Name="PreviewFontHover" Panel.ZIndex="5" IsHitTestVisible="False" Opacity="0" HorizontalAlignment="Left" Height="34" Margin="17,331,0,0" VerticalAlignment="Top" Width="80" Source="Picture/SettingButtonHover.png"/>
             <Button HorizontalAlignment="Left" Margin="129,334,0,0" VerticalAlignment="Top" Height="28" Width="74" Style="{StaticResource NoHover}" Background="#FFFFEED4" Click="ChangeFontButtonClick">
                 <Button.Clip>
                     <RectangleGeometry Rect="0,0,74,28" RadiusX="3" RadiusY="3"/>
@@ -518,7 +539,7 @@ From="1" To="0" Duration="0:0:0.3"/>
                 </Button.Triggers>
             </Button>
             <Label Content="切换字体" HorizontalAlignment="Left" IsHitTestVisible="False" Margin="129,330,0,0" VerticalAlignment="Top" Height="38" Width="74" FontSize="16" Foreground="Black" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Heavy"/>
-            <Image x:Name="ChangeFontHover" Panel.ZIndex="5" IsHitTestVisible="False" Opacity="0" HorizontalAlignment="Left" Height="34" Margin="126,331,0,0" VerticalAlignment="Top" Width="80" Source="/Picture/SettingButtonHover.png"/>
+            <Image x:Name="ChangeFontHover" Panel.ZIndex="5" IsHitTestVisible="False" Opacity="0" HorizontalAlignment="Left" Height="34" Margin="126,331,0,0" VerticalAlignment="Top" Width="80" Source="Picture/SettingButtonHover.png"/>
             <Button HorizontalAlignment="Left" Margin="240,334,0,0" VerticalAlignment="Top" Height="28" Width="74" Style="{StaticResource NoHover}" Background="#FFFFEED4" Click="RestoreFontButtonClick">
                 <Button.Clip>
                     <RectangleGeometry Rect="0,0,74,28" RadiusX="3" RadiusY="3"/>
@@ -545,13 +566,13 @@ From="1" To="0" Duration="0:0:0.3"/>
                 </Button.Triggers>
             </Button>
             <Label Content="还原字体" HorizontalAlignment="Left" IsHitTestVisible="False" Margin="240,330,0,0" VerticalAlignment="Top" Height="38" Width="74" FontSize="16" Foreground="Black" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Heavy"/>
-            <Image x:Name="RestoreFontHover" Panel.ZIndex="5" IsHitTestVisible="False" Opacity="0" HorizontalAlignment="Left" Height="34" Margin="236,331,0,0" VerticalAlignment="Top" Width="80" Source="/Picture/SettingButtonHover.png"/>
+            <Image x:Name="RestoreFontHover" Panel.ZIndex="5" IsHitTestVisible="False" Opacity="0" HorizontalAlignment="Left" Height="34" Margin="236,331,0,0" VerticalAlignment="Top" Width="80" Source="Picture/SettingButtonHover.png"/>
             <Image HorizontalAlignment="Left" Height="100" Margin="57,170,0,0" VerticalAlignment="Top" Width="100"/>
         </Grid>
         <Grid x:Name="LinkPage" Visibility="Collapsed" Panel.ZIndex="5" Margin="62,55,54,32" Grid.Column="2" Grid.Row="1">
             <Button x:Name="LinkButton1" HorizontalAlignment="Left" Margin="37,40,0,0" VerticalAlignment="Top" Height="40" Width="262" Opacity="1" Background="Transparent" BorderBrush="Transparent" BorderThickness="0" Style="{StaticResource NoHover}" Click="LinkButtonClick">
                 <Button.Content>
-                    <Image Height="40" Width="262" Source="/Picture/LinkBT.png"/>
+                    <Image x:Name="LinkButton1IMG" Height="40" Width="262" Source="Picture/LinkBT.png"/>
                 </Button.Content>
                 <Button.Triggers>
                     <EventTrigger RoutedEvent="Button.MouseEnter">
@@ -576,7 +597,7 @@ From="1" To="0" Duration="0:0:0.3"/>
             </Button>
             <Button x:Name="LinkButton3" Grid.Column="2" HorizontalAlignment="Left" Margin="37,85,0,0" VerticalAlignment="Top" Height="40" Width="262" Opacity="1" Background="Transparent" BorderBrush="Transparent" BorderThickness="0" Style="{StaticResource NoHover}" Click="LinkButtonClick">
                 <Button.Content>
-                    <Image Height="40" Width="262" Source="/Picture/LinkBT.png"/>
+                    <Image x:Name="LinkButton3IMG" Height="40" Width="262" Source="Picture/LinkBT.png"/>
                 </Button.Content>
                 <Button.Triggers>
                     <EventTrigger RoutedEvent="Button.MouseEnter">
@@ -601,7 +622,7 @@ From="1" To="0" Duration="0:0:0.3"/>
             </Button>
             <Button x:Name="LinkButton5" Grid.Column="2" HorizontalAlignment="Left" Margin="37,130,0,0" VerticalAlignment="Top" Height="40" Width="262" Opacity="1" Background="Transparent" BorderBrush="Transparent" BorderThickness="0" Style="{StaticResource NoHover}" Click="LinkButtonClick">
                 <Button.Content>
-                    <Image Height="40" Width="262" Source="/Picture/LinkBT.png"/>
+                    <Image x:Name="LinkButton5IMG" Height="40" Width="262" Source="Picture/LinkBT.png"/>
                 </Button.Content>
                 <Button.Triggers>
                     <EventTrigger RoutedEvent="Button.MouseEnter">
@@ -626,7 +647,7 @@ From="1" To="0" Duration="0:0:0.3"/>
             </Button>
             <Button x:Name="LinkButton7" Grid.Column="2" HorizontalAlignment="Left" Margin="37,175,0,0" VerticalAlignment="Top" Height="40" Width="262" Opacity="1" Background="Transparent" BorderBrush="Transparent" BorderThickness="0" Style="{StaticResource NoHover}" Click="LinkButtonClick">
                 <Button.Content>
-                    <Image Height="40" Width="262" Source="/Picture/LinkBT.png"/>
+                    <Image x:Name="LinkButton7IMG" Height="40" Width="262" Source="Picture/LinkBT.png"/>
                 </Button.Content>
                 <Button.Triggers>
                     <EventTrigger RoutedEvent="Button.MouseEnter">
@@ -651,7 +672,7 @@ From="1" To="0" Duration="0:0:0.3"/>
             </Button>
             <Button x:Name="LinkButton9" Grid.Column="2" HorizontalAlignment="Left" Margin="37,220,0,0" VerticalAlignment="Top" Height="40" Width="262" Opacity="1" Background="Transparent" BorderBrush="Transparent" BorderThickness="0" Style="{StaticResource NoHover}" Click="LinkButtonClick">
                 <Button.Content>
-                    <Image Height="40" Width="262" Source="/Picture/LinkBT.png"/>
+                    <Image x:Name="LinkButton9IMG" Height="40" Width="262" Source="Picture/LinkBT.png"/>
                 </Button.Content>
                 <Button.Triggers>
                     <EventTrigger RoutedEvent="Button.MouseEnter">
@@ -676,17 +697,17 @@ From="1" To="0" Duration="0:0:0.3"/>
             </Button>
             <Button Grid.Column="2" HorizontalAlignment="Left" Margin="37,265,0,0" VerticalAlignment="Top" Height="40" Width="262" Opacity="1" Background="Transparent" BorderBrush="Transparent" BorderThickness="0" Style="{StaticResource BlackWhite}">
                 <Button.Content>
-                    <Image Height="40" Width="262" Source="/Picture/LinkBT.png"/>
+                    <Image x:Name="LinkButton11IMG" Height="40" Width="262" Source="Picture/LinkBT.png"/>
                 </Button.Content>
             </Button>
             <Button Grid.Column="2" HorizontalAlignment="Left" Margin="37,310,0,0" VerticalAlignment="Top" Height="40" Width="262" Opacity="1" Background="Transparent" BorderBrush="Transparent" BorderThickness="0" Style="{StaticResource BlackWhite}">
                 <Button.Content>
-                    <Image Height="40" Width="262" Source="/Picture/LinkBT.png"/>
+                    <Image x:Name="LinkButton12IMG" Height="40" Width="262" Source="Picture/LinkBT.png"/>
                 </Button.Content>
             </Button>
             <Button x:Name="LinkButton2" Grid.Column="2" HorizontalAlignment="Left" Margin="352,40,0,0" VerticalAlignment="Top" Height="40" Width="262" Opacity="1" Background="Transparent" BorderBrush="Transparent" BorderThickness="0" Style="{StaticResource NoHover}" Click="LinkButtonClick">
                 <Button.Content>
-                    <Image Height="40" Width="262" Source="/Picture/LinkBT.png"/>
+                    <Image x:Name="LinkButton2IMG" Height="40" Width="262" Source="Picture/LinkBT.png"/>
                 </Button.Content>
                 <Button.Triggers>
                     <EventTrigger RoutedEvent="Button.MouseEnter">
@@ -711,7 +732,7 @@ From="1" To="0" Duration="0:0:0.3"/>
             </Button>
             <Button x:Name="LinkButton4" Grid.Column="2" HorizontalAlignment="Left" Margin="352,85,0,0" VerticalAlignment="Top" Height="40" Width="262" Opacity="1" Background="Transparent" BorderBrush="Transparent" BorderThickness="0" Style="{StaticResource NoHover}" Click="LinkButtonClick">
                 <Button.Content>
-                    <Image Height="40" Width="262" Source="/Picture/LinkBT.png"/>
+                    <Image x:Name="LinkButton4IMG" Height="40" Width="262" Source="Picture/LinkBT.png"/>
                 </Button.Content>
                 <Button.Triggers>
                     <EventTrigger RoutedEvent="Button.MouseEnter">
@@ -736,7 +757,7 @@ From="1" To="0" Duration="0:0:0.3"/>
             </Button>
             <Button x:Name="LinkButton6" Grid.Column="2" HorizontalAlignment="Left" Margin="352,130,0,0" VerticalAlignment="Top" Height="40" Width="262" Opacity="1" Background="Transparent" BorderBrush="Transparent" BorderThickness="0" Style="{StaticResource NoHover}" Click="LinkButtonClick">
                 <Button.Content>
-                    <Image Height="40" Width="262" Source="/Picture/LinkBT.png"/>
+                    <Image x:Name="LinkButton6IMG" Height="40" Width="262" Source="Picture/LinkBT.png"/>
                 </Button.Content>
                 <Button.Triggers>
                     <EventTrigger RoutedEvent="Button.MouseEnter">
@@ -761,7 +782,7 @@ From="1" To="0" Duration="0:0:0.3"/>
             </Button>
             <Button x:Name="LinkButton8" Grid.Column="2" HorizontalAlignment="Left" Margin="352,175,0,0" VerticalAlignment="Top" Height="40" Width="262" Opacity="1" Background="Transparent" BorderBrush="Transparent" BorderThickness="0" Style="{StaticResource NoHover}" Click="LinkButtonClick">
                 <Button.Content>
-                    <Image Height="40" Width="262" Source="/Picture/LinkBT.png"/>
+                    <Image x:Name="LinkButton8IMG" Height="40" Width="262" Source="Picture/LinkBT.png"/>
                 </Button.Content>
                 <Button.Triggers>
                     <EventTrigger RoutedEvent="Button.MouseEnter">
@@ -786,7 +807,7 @@ From="1" To="0" Duration="0:0:0.3"/>
             </Button>
             <Button x:Name="LinkButton10" Grid.Column="2" HorizontalAlignment="Left" Margin="352,220,0,0" VerticalAlignment="Top" Height="40" Width="262" Opacity="1" Background="Transparent" BorderBrush="Transparent" BorderThickness="0" Style="{StaticResource NoHover}" Click="LinkButtonClick">
                 <Button.Content>
-                    <Image Height="40" Width="262" Source="/Picture/LinkBT.png"/>
+                    <Image x:Name="LinkButton10IMG" Height="40" Width="262" Source="Picture/LinkBT.png"/>
                 </Button.Content>
                 <Button.Triggers>
                     <EventTrigger RoutedEvent="Button.MouseEnter">
@@ -811,24 +832,24 @@ From="1" To="0" Duration="0:0:0.3"/>
             </Button>
             <Button Grid.Column="2" HorizontalAlignment="Left" Margin="352,265,0,0" VerticalAlignment="Top" Height="40" Width="262" Opacity="1" Background="Transparent" BorderBrush="Transparent" BorderThickness="0" Style="{StaticResource BlackWhite}">
                 <Button.Content>
-                    <Image Height="40" Width="262" Source="/Picture/LinkBT.png"/>
+                    <Image x:Name="LinkButton13IMG" Height="40" Width="262" Source="Picture/LinkBT.png"/>
                 </Button.Content>
             </Button>
             <Button Grid.Column="2" HorizontalAlignment="Left" Margin="352,310,0,0" VerticalAlignment="Top" Height="40" Width="262" Opacity="1" Background="Transparent" BorderBrush="Transparent" BorderThickness="0" Style="{StaticResource BlackWhite}">
                 <Button.Content>
-                    <Image Height="40" Width="262" Source="/Picture/LinkBT.png"/>
+                    <Image x:Name="LinkButton14IMG" Height="40" Width="262" Source="Picture/LinkBT.png"/>
                 </Button.Content>
             </Button>
-            <Image x:Name="LinkButtonHover1" IsHitTestVisible="False" Opacity="0" HorizontalAlignment="Left" Height="46" Margin="34,38,0,0" VerticalAlignment="Top" Width="268" Source="/Picture/LinkBTHover.png"/>
-            <Image x:Name="LinkButtonHover2" IsHitTestVisible="False" Opacity="0" HorizontalAlignment="Left" Height="46" Margin="349,37,0,0" VerticalAlignment="Top" Width="268" Source="/Picture/LinkBTHover.png"/>
-            <Image x:Name="LinkButtonHover3" IsHitTestVisible="False" Opacity="0" HorizontalAlignment="Left" Height="46" Margin="34,82,0,0" VerticalAlignment="Top" Width="268" Source="/Picture/LinkBTHover.png"/>
-            <Image x:Name="LinkButtonHover4" IsHitTestVisible="False" Opacity="0" HorizontalAlignment="Left" Height="46" Margin="349,82,0,0" VerticalAlignment="Top" Width="268" Source="/Picture/LinkBTHover.png"/>
-            <Image x:Name="LinkButtonHover5" IsHitTestVisible="False" Opacity="0" HorizontalAlignment="Left" Height="46" Margin="34,127,0,0" VerticalAlignment="Top" Width="268" Source="/Picture/LinkBTHover.png"/>
-            <Image x:Name="LinkButtonHover6" IsHitTestVisible="False" Opacity="0" HorizontalAlignment="Left" Height="46" Margin="349,127,0,0" VerticalAlignment="Top" Width="268" Source="/Picture/LinkBTHover.png"/>
-            <Image x:Name="LinkButtonHover7" IsHitTestVisible="False" Opacity="0" HorizontalAlignment="Left" Height="46" Margin="34,172,0,0" VerticalAlignment="Top" Width="268" Source="/Picture/LinkBTHover.png"/>
-            <Image x:Name="LinkButtonHover8" IsHitTestVisible="False" Opacity="0" HorizontalAlignment="Left" Height="46" Margin="349,172,0,0" VerticalAlignment="Top" Width="268" Source="/Picture/LinkBTHover.png"/>
-            <Image x:Name="LinkButtonHover9" IsHitTestVisible="False" Opacity="0" HorizontalAlignment="Left" Height="46" Margin="34,217,0,0" VerticalAlignment="Top" Width="268" Source="/Picture/LinkBTHover.png"/>
-            <Image x:Name="LinkButtonHover10" IsHitTestVisible="False" Opacity="0" HorizontalAlignment="Left" Height="46" Margin="349,217,0,0" VerticalAlignment="Top" Width="268" Source="/Picture/LinkBTHover.png"/>
+            <Image x:Name="LinkButtonHover1" IsHitTestVisible="False" Opacity="0" HorizontalAlignment="Left" Height="46" Margin="34,38,0,0" VerticalAlignment="Top" Width="268" Source="Picture/LinkBTHover.png"/>
+            <Image x:Name="LinkButtonHover2" IsHitTestVisible="False" Opacity="0" HorizontalAlignment="Left" Height="46" Margin="349,37,0,0" VerticalAlignment="Top" Width="268" Source="Picture/LinkBTHover.png"/>
+            <Image x:Name="LinkButtonHover3" IsHitTestVisible="False" Opacity="0" HorizontalAlignment="Left" Height="46" Margin="34,82,0,0" VerticalAlignment="Top" Width="268" Source="Picture/LinkBTHover.png"/>
+            <Image x:Name="LinkButtonHover4" IsHitTestVisible="False" Opacity="0" HorizontalAlignment="Left" Height="46" Margin="349,82,0,0" VerticalAlignment="Top" Width="268" Source="Picture/LinkBTHover.png"/>
+            <Image x:Name="LinkButtonHover5" IsHitTestVisible="False" Opacity="0" HorizontalAlignment="Left" Height="46" Margin="34,127,0,0" VerticalAlignment="Top" Width="268" Source="Picture/LinkBTHover.png"/>
+            <Image x:Name="LinkButtonHover6" IsHitTestVisible="False" Opacity="0" HorizontalAlignment="Left" Height="46" Margin="349,127,0,0" VerticalAlignment="Top" Width="268" Source="Picture/LinkBTHover.png"/>
+            <Image x:Name="LinkButtonHover7" IsHitTestVisible="False" Opacity="0" HorizontalAlignment="Left" Height="46" Margin="34,172,0,0" VerticalAlignment="Top" Width="268" Source="Picture/LinkBTHover.png"/>
+            <Image x:Name="LinkButtonHover8" IsHitTestVisible="False" Opacity="0" HorizontalAlignment="Left" Height="46" Margin="349,172,0,0" VerticalAlignment="Top" Width="268" Source="Picture/LinkBTHover.png"/>
+            <Image x:Name="LinkButtonHover9" IsHitTestVisible="False" Opacity="0" HorizontalAlignment="Left" Height="46" Margin="34,217,0,0" VerticalAlignment="Top" Width="268" Source="Picture/LinkBTHover.png"/>
+            <Image x:Name="LinkButtonHover10" IsHitTestVisible="False" Opacity="0" HorizontalAlignment="Left" Height="46" Margin="349,217,0,0" VerticalAlignment="Top" Width="268" Source="Picture/LinkBTHover.png"/>
             <Label Content="都市零协会文档站" IsHitTestVisible="False" HorizontalAlignment="Left" Margin="37,40,0,0" VerticalAlignment="Top" FontSize="20" Foreground="#FFFFEED4" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Bold" Height="37" Width="262" HorizontalContentAlignment="Center"/>
             <Label Content="LLC on GitHub" IsHitTestVisible="False" HorizontalAlignment="Left" Margin="37,85,0,0" VerticalAlignment="Top" FontSize="20" Foreground="#FFFFEED4" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Bold" Height="37" Width="262" HorizontalContentAlignment="Center"/>
             <Label Content="翻译项目译者" IsHitTestVisible="False" HorizontalAlignment="Left" Margin="37,130,0,0" VerticalAlignment="Top" FontSize="20" Foreground="#FFFFEED4" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Bold" Height="37" Width="262" HorizontalContentAlignment="Center"/>
@@ -844,10 +865,10 @@ From="1" To="0" Duration="0:0:0.3"/>
             <Label HorizontalAlignment="Center" Margin="0,30,0,0" VerticalAlignment="Top" Height="97" Width="644" FontSize="20" Foreground="#FFFFEED4" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Medium">
                 <TextBlock Text="请您在文本框当中输入提供的测试密钥，并点击确认。成功进入灰度测试模式之后，请使用自动安装页面进行安装。此时，自动安装的文件将会是密钥相对应的灰度测试文件。" TextWrapping="Wrap"/>
             </Label>
-            <Image HorizontalAlignment="Left" Height="10" Margin="10,140,0,0" VerticalAlignment="Top" Width="626" Source="/Picture/NormalLine.png"/>
+            <Image x:Name="NormalLine" HorizontalAlignment="Left" Height="10" Margin="10,140,0,0" VerticalAlignment="Top" Width="626" Source="Picture/NormalLine.png"/>
             <Label Content="秘钥" HorizontalAlignment="Left" Margin="18,162,0,0" VerticalAlignment="Top" FontSize="20" Foreground="#FFFFEED4" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Bold"/>
             <TextBox x:Name="GreytestTokenBox" HorizontalAlignment="Left" Margin="87,169,0,0" TextWrapping="Wrap" Text="请输入秘钥" VerticalAlignment="Top" Width="539" Height="25" FontSize="16" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Medium"/>
-            <Image x:Name="GreytestButtonHover" Panel.ZIndex="5" IsHitTestVisible="False" Opacity="0" HorizontalAlignment="Left" Height="34" Margin="548,199,0,0" VerticalAlignment="Top" Width="80" Source="/Picture/SettingButtonHover.png"/>
+            <Image x:Name="GreytestButtonHover" Panel.ZIndex="5" IsHitTestVisible="False" Opacity="0" HorizontalAlignment="Left" Height="34" Margin="548,199,0,0" VerticalAlignment="Top" Width="80" Source="Picture/SettingButtonHover.png"/>
             <Button HorizontalAlignment="Left" Margin="551,202,0,0" VerticalAlignment="Top" Height="28" Width="74" Style="{StaticResource NoHover}" Background="#FFFFEED4" Click="StartGreytestButtonClick">
                 <Button.Clip>
                     <RectangleGeometry Rect="0,0,74,28" RadiusX="3" RadiusY="3"/>
@@ -874,7 +895,7 @@ From="1" To="0" Duration="0:0:0.3"/>
                 </Button.Triggers>
             </Button>
             <Label Content="校验" HorizontalAlignment="Left" IsHitTestVisible="False" Margin="568,199,0,0" VerticalAlignment="Top" Height="38" Width="52" FontSize="16" Foreground="Black" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Heavy"/>
-            <Image x:Name="GreytestInfoButtonHover" Panel.ZIndex="5" IsHitTestVisible="False" Opacity="0" HorizontalAlignment="Left" Height="34" Margin="447,199,0,0" VerticalAlignment="Top" Width="80" Source="/Picture/SettingButtonHover.png"/>
+            <Image x:Name="GreytestInfoButtonHover" Panel.ZIndex="5" IsHitTestVisible="False" Opacity="0" HorizontalAlignment="Left" Height="34" Margin="447,199,0,0" VerticalAlignment="Top" Width="80" Source="Picture/SettingButtonHover.png"/>
             <Button HorizontalAlignment="Left" Margin="450,202,0,0" VerticalAlignment="Top" Height="28" Width="74" Style="{StaticResource NoHover}" Background="#FFFFEED4" Click="GreytestInfoButtonClick">
                 <Button.Clip>
                     <RectangleGeometry Rect="0,0,74,28" RadiusX="3" RadiusY="3"/>
@@ -916,8 +937,8 @@ From="1" To="0" Duration="0:0:0.3"/>
                 </ComboBox.Clip>
             </ComboBox>
             <Label Content="卸载模组" HorizontalAlignment="Left" Margin="100,128,0,0" VerticalAlignment="Top" Height="41" Width="494" FontSize="22" Foreground="#FFFFEED4" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Medium"/>
-            <Image HorizontalAlignment="Center" Height="249" VerticalAlignment="Center" Width="524" Source="/Picture/SettingsLine.png"/>
-            <Image x:Name="UninstallHover" Panel.ZIndex="5" IsHitTestVisible="False" Opacity="0" HorizontalAlignment="Left" Height="34" Margin="511,131,0,0" VerticalAlignment="Top" Width="80" Source="/Picture/SettingButtonHover.png"/>
+            <Image x:Name="SettingsLine" HorizontalAlignment="Center" Height="249" VerticalAlignment="Center" Width="524" Source="Picture/SettingsLine.png"/>
+            <Image x:Name="UninstallHover" Panel.ZIndex="5" IsHitTestVisible="False" Opacity="0" HorizontalAlignment="Left" Height="34" Margin="511,131,0,0" VerticalAlignment="Top" Width="80" Source="Picture/SettingButtonHover.png"/>
             <Button HorizontalAlignment="Left" Margin="514,134,0,0" VerticalAlignment="Top" Height="28" Width="74" Style="{StaticResource NoHover}" Background="#FFFFEED4" Click="UninstallButtonClick">
                 <Button.Clip>
                     <RectangleGeometry Rect="0,0,74,28" RadiusX="3" RadiusY="3"/>
@@ -944,8 +965,8 @@ From="1" To="0" Duration="0:0:0.3"/>
                 </Button.Triggers>
             </Button>
             <Label Content="发送启动器到桌面" HorizontalAlignment="Left" Margin="100,276,0,0" VerticalAlignment="Top" Height="41" Width="494" FontSize="22" Foreground="#FFFFEED4" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Medium"/>
-            <Image x:Name="SendMainHover" Panel.ZIndex="5" IsHitTestVisible="False" Opacity="0" HorizontalAlignment="Left" Height="34" Margin="511,281,0,0" VerticalAlignment="Top" Width="80" Source="/Picture/SettingButtonHover.png"/>
-            <Image x:Name="SendHelpHover" Panel.ZIndex="5" IsHitTestVisible="False" Opacity="0" HorizontalAlignment="Left" Height="34" Margin="430,282,0,0" VerticalAlignment="Top" Width="80" Source="/Picture/SettingButtonHover.png"/>
+            <Image x:Name="SendMainHover" Panel.ZIndex="5" IsHitTestVisible="False" Opacity="0" HorizontalAlignment="Left" Height="34" Margin="511,281,0,0" VerticalAlignment="Top" Width="80" Source="Picture/SettingButtonHover.png"/>
+            <Image x:Name="SendHelpHover" Panel.ZIndex="5" IsHitTestVisible="False" Opacity="0" HorizontalAlignment="Left" Height="34" Margin="430,282,0,0" VerticalAlignment="Top" Width="80" Source="Picture/SettingButtonHover.png"/>
             <Button HorizontalAlignment="Left" Margin="514,284,0,0" VerticalAlignment="Top" Height="28" Width="74" Style="{StaticResource NoHover}" Background="#FFFFEED4" Click="LauncherSender">
                 <Button.Clip>
                     <RectangleGeometry Rect="0,0,74,28" RadiusX="3" RadiusY="3"/>
@@ -1045,20 +1066,20 @@ From="1" To="0" Duration="0:0:0.3"/>
                 </Button.Triggers>
             </Button>
             <Label x:Name="MirrorChyanConfigButtonLabel" Content="填写秘钥" HorizontalContentAlignment="Center" HorizontalAlignment="Left" IsHitTestVisible="False" Margin="514,233,0,0" VerticalAlignment="Top" Height="38" Width="74" FontSize="16" Foreground="Black" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Heavy"/>
-            <Image x:Name="MirrorChyanConfigButtonHover" Panel.ZIndex="5" IsHitTestVisible="False" Opacity="0" HorizontalAlignment="Left" Height="34" Margin="511,234,0,0" VerticalAlignment="Top" Width="80" Source="/Picture/SettingButtonHover.png"/>
+            <Image x:Name="MirrorChyanConfigButtonHover" Panel.ZIndex="5" IsHitTestVisible="False" Opacity="0" HorizontalAlignment="Left" Height="34" Margin="511,234,0,0" VerticalAlignment="Top" Width="80" Source="Picture/SettingButtonHover.png"/>
         </Grid>
         <Grid x:Name="AboutPage" Visibility="Collapsed" Panel.ZIndex="5" Margin="62,55,54,32" Grid.Column="2" Grid.Row="1">
             <Label HorizontalAlignment="Center" Margin="0,15,0,0" VerticalAlignment="Top" Height="357" Width="644" FontSize="15" Foreground="#FFFFEED4" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Medium">
-                <TextBlock Text="都市零协会工具箱 (LLC_MOD_Toolbox) 是服务于都市零协会汉化模组 (LocalizeLimbusCompany) 的自动化安装工具。本软件使用库的许可证请于零协会官网 (https://www.zeroasso.top) 查看。&#10;- LLCMT工具箱&#10;  - 代码实现：曾小皮、明（ProjektMing）、10291029&#10;  - 美术设计：记得保存、玉佩（抽卡模拟器）、Napstablook-owo（部分美术资源）&#10;- LLC翻译模组&#10;  - 翻译文本：零协会翻译组全体译者&#10;  - 汉化模组代码：奈芙Nephthys&#10;  - 汉化模组字体：茜、北岚&#10;- 特别鸣谢&#10;  - 服务器运维 &amp; 开发：曾小皮 &#10;  - 零协会广播局全体创作者&#10;  - 翻译工具：Paratranz&#10;  - 服务器赞助：简幻欢&#10;人无语言则茫然无依。" TextWrapping="Wrap" Height="351"/>
+                <TextBlock Text="都市零协会工具箱 (LLC_MOD_Toolbox) 是服务于都市零协会汉化模组 (LocalizeLimbusCompany) 的自动化安装工具。本软件使用库的许可证请于零协会官网 (https://www.zeroasso.top) 查看。&#10;- LLCMT工具箱&#10;  - 代码实现：曾小皮、明（ProjektMing）、10291029&#10;  - 美术设计：记得保存、玉佩（抽卡模拟器）、小迪（部分美术资源）&#10;- LLC翻译模组&#10;  - 翻译文本：零协会翻译组全体译者&#10;  - 汉化模组代码：奈芙Nephthys&#10;  - 汉化模组字体：茜、北岚&#10;- 特别鸣谢&#10;  - 服务器运维 &amp; 开发：曾小皮 &#10;  - 零协会广播局全体创作者&#10;  - 翻译工具：Paratranz&#10;  - 服务器赞助：简幻欢&#10;人无语言则茫然无依。" TextWrapping="Wrap" Height="351"/>
             </Label>
         </Grid>
         <Grid x:Name="EEPage" Visibility="Collapsed" Panel.ZIndex="5" Margin="62,55,54,32" Grid.Column="2" Grid.Row="1">
             <Image x:Name="EEPageImage" HorizontalAlignment="Left" Height="330" Margin="12,27,0,0" VerticalAlignment="Top" Width="630"/>
         </Grid>
         <Grid x:Name="GachaPage" Visibility="Collapsed" Panel.ZIndex="5" Margin="62,55,54,32" Grid.Column="2" Grid.Row="1">
-            <Image HorizontalAlignment="Left" Height="330" Margin="12,27,0,0" VerticalAlignment="Top" Width="630" Source="/Picture/GachaBackground.png"/>
-            <Image Panel.ZIndex="5" IsHitTestVisible="False" HorizontalAlignment="Left" Height="30" Margin="43,325,0,0" VerticalAlignment="Top" Width="30" Source="/Picture/Lunacy.png"/>
-            <Image x:Name="GachaButtonHover" Panel.ZIndex="5" IsHitTestVisible="False" Opacity="0" HorizontalAlignment="Left" Height="53" Margin="25,312,0,0" VerticalAlignment="Top" Width="125" Source="/Picture/SettingButtonHover.png"/>
+            <Image x:Name="GachaBackground" HorizontalAlignment="Left" Height="330" Margin="12,27,0,0" VerticalAlignment="Top" Width="630" Source="Picture/GachaBackground.png"/>
+            <Image x:Name="Lunacy" Panel.ZIndex="5" IsHitTestVisible="False" HorizontalAlignment="Left" Height="30" Margin="43,325,0,0" VerticalAlignment="Top" Width="30" Source="Picture/Lunacy.png"/>
+            <Image x:Name="GachaButtonHover" Panel.ZIndex="5" IsHitTestVisible="False" Opacity="0" HorizontalAlignment="Left" Height="53" Margin="25,312,0,0" VerticalAlignment="Top" Width="125" Source="Picture/SettingButtonHover.png"/>
             <Button x:Name="InGachaButton" HorizontalAlignment="Left" Margin="31,318,0,0" VerticalAlignment="Top" Height="42" Width="113" Style="{StaticResource NoHover}" Background="#FFFFEED4" Click="InGachaButtonClick">
                 <Button.Clip>
                     <RectangleGeometry Rect="0,0,113,42" RadiusX="3" RadiusY="3"/>
@@ -1145,7 +1166,7 @@ From="1" To="0" Duration="0:0:0.3"/>
             <Label HorizontalAlignment="Center" Margin="0,70,0,0" VerticalAlignment="Top" Height="269" Width="644" FontSize="15" Foreground="#FFFFEED4" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Medium">
                 <TextBlock x:Name="AnnoucementText" Text="测试文本测试文本测试文本测试文本测试文本测试文本测试文本测试文本测试文本测试文本测试文本测试文本测试文本测试文本测试文本测试文本测试文本测试文本测试文本测试文本测试文本测试文本测试文本测试文本测试文本测试文本测试文本测试文本测试文本测试文本测试文本测试文本测试文本测试文本测试文本测试文本测试文本测试文本测" TextWrapping="Wrap" Height="262" Width="634"/>
             </Label>
-            <Image x:Name="AnnouncementButtonHover" Panel.ZIndex="5" IsHitTestVisible="False" Opacity="0" HorizontalAlignment="Center" Height="34" Margin="0,340,0,0" VerticalAlignment="Top" Width="80" Source="/Picture/SettingButtonHover.png"/>
+            <Image x:Name="AnnouncementButtonHover" Panel.ZIndex="5" IsHitTestVisible="False" Opacity="0" HorizontalAlignment="Center" Height="34" Margin="0,340,0,0" VerticalAlignment="Top" Width="80" Source="Picture/SettingButtonHover.png"/>
             <Button x:Name="AnnoucementButton" IsHitTestVisible="False" HorizontalAlignment="Center" Margin="0,343,0,0" VerticalAlignment="Top" Height="28" Width="74" Style="{StaticResource NoHover}" Background="#FFFFEED4" Click="AnnoucementButtonClick">
                 <Button.Clip>
                     <RectangleGeometry Rect="0,0,74,28" RadiusX="3" RadiusY="3"/>
@@ -1174,6 +1195,22 @@ From="1" To="0" Duration="0:0:0.3"/>
             <Label x:Name="AnnoucementButtonText"  Content="已阅" HorizontalAlignment="Left" IsHitTestVisible="False" Margin="311,340,0,0" VerticalAlignment="Top" Height="38" Width="52" FontSize="16" Foreground="Black" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Heavy"/>
             <Label HorizontalAlignment="Left" Margin="377,341,0,0" VerticalAlignment="Top" Height="33" Width="264" FontSize="12" Foreground="#FFFFEED4" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Medium">
                 <TextBlock x:Name="AnnoucementButtonTip" Text="由于本次公告较为重要，您需要继续阅读N秒。" TextWrapping="Wrap" Height="23" Width="254"/>
+            </Label>
+        </Grid>
+        <Grid x:Name="SkinPage" Visibility="Collapsed" Panel.ZIndex="5" Margin="62,55,54,32" Grid.Column="2" Grid.Row="1">
+            <Label HorizontalAlignment="Center" Margin="0,21,0,0" VerticalAlignment="Top" Height="55" Width="644" FontSize="15" Foreground="#FFFFEED4" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Medium">
+                <TextBlock Text="选择皮肤，其将立刻生效并作用于下次启动。" Height="45"/>
+            </Label>
+            <Label HorizontalAlignment="Center" Margin="0,49,0,0" VerticalAlignment="Top" Height="55" Width="644" FontSize="20" Foreground="#FFFFEED4" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Bold">
+                <TextBlock Text="皮肤选择" Height="45"/>
+            </Label>
+            <ComboBox x:Name="SkinBox" Margin="108,54,266,311" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Medium" Foreground="Black" FontSize="16" SelectionChanged="SkinBoxSelectionChanged">
+                <ComboBox.Clip>
+                    <RectangleGeometry Rect="0,0,290,31" RadiusX="3" RadiusY="3"/>
+                </ComboBox.Clip>
+            </ComboBox>
+            <Label x:Name="SkinDesc" HorizontalAlignment="Center" Margin="0,85,0,0" VerticalAlignment="Top" Height="55" Width="644" FontSize="15" Foreground="#FFFFEED4" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Medium">
+                <TextBlock Text="默认皮肤。" TextWrapping="Wrap" Height="45"/>
             </Label>
         </Grid>
         <Button Grid.Column="1" HorizontalAlignment="Center" Margin="0,350,0,0" Grid.Row="1" VerticalAlignment="Top" Height="41" Width="155" Style="{StaticResource BlackWhite}" Background="Transparent" BorderBrush="Transparent" BorderThickness="0" MouseDoubleClick="WhiteBlackClickDouble" />

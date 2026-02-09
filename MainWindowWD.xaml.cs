@@ -85,6 +85,10 @@ namespace LLC_MOD_Toolbox
             Log.logger.Info("工具箱已进入加载流程。");
             Log.logger.Info("We have a lift off.");
             Log.logger.Info($"WPF架构工具箱 版本：{VERSION} 。");
+
+            // 加载皮肤
+            LoadAndApplySkin();
+
             await DisableGlobalOperations();
             // 设置网络协议
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls13;
@@ -96,6 +100,7 @@ namespace LLC_MOD_Toolbox
             CheckMirrorChyan();
             await CheckLoadingText();
             InitNode();
+            InitializeSkinComboBox();
             if (isMirrorChyanMode)
             {
                 await this.Dispatcher.BeginInvoke(() =>
@@ -831,6 +836,115 @@ namespace LLC_MOD_Toolbox
             configuation.Settings.nodeSelect.defaultNode = node;
             configuation.SaveConfig();
         }
+        private void InitializeSkinComboBox()
+        {
+            try
+            {
+                Log.logger.Info("初始化皮肤选择框。");
+                SkinBox.Items.Clear();
+
+                var availableSkins = SkinManager.Instance.GetAvailableSkins();
+
+                foreach (var skinName in availableSkins)
+                {
+                    var skinInfo = SkinManager.Instance.GetSkinInfo(skinName);
+                    if (skinInfo != null)
+                    {
+                        SkinBox.Items.Add(skinInfo.displayName);
+                    }
+                }
+
+                // 设置当前选中的皮肤
+                var currentSkin = SkinManager.Instance.CurrentSkinInfo;
+                if (currentSkin != null)
+                {
+                    SkinBox.SelectedItem = currentSkin.displayName;
+                    UpdateSkinDescription(currentSkin);
+                }
+
+                Log.logger.Info($"皮肤选择框初始化完成，共 {availableSkins.Count} 个皮肤。");
+            }
+            catch (Exception ex)
+            {
+                Log.logger.Error($"初始化皮肤选择框失败: {ex.Message}");
+            }
+        }
+
+        private void SkinBoxSelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            try
+            {
+                if (SkinBox.SelectedItem == null) return;
+
+                string selectedDisplayName = SkinBox.SelectedItem.ToString();
+                Log.logger.Info($"选择皮肤: {selectedDisplayName}");
+
+                // 查找对应的皮肤名称
+                var availableSkins = SkinManager.Instance.GetAvailableSkins();
+                string selectedSkinName = null;
+
+                foreach (var skinName in availableSkins)
+                {
+                    var skinInfo = SkinManager.Instance.GetSkinInfo(skinName);
+                    if (skinInfo != null && skinInfo.displayName == selectedDisplayName)
+                    {
+                        selectedSkinName = skinName;
+                        break;
+                    }
+                }
+
+                if (selectedSkinName != null)
+                {
+                    // 加载并应用皮肤
+                    bool success = SkinManager.Instance.LoadSkin(selectedSkinName);
+                    if (success)
+                    {
+                        SkinManager.Instance.ApplySkinToWindow(this);
+
+                        // 更新描述
+                        var skinInfo = SkinManager.Instance.GetSkinInfo(selectedSkinName);
+                        UpdateSkinDescription(skinInfo);
+
+                        configuation.Settings.skin.currentSkin = selectedSkinName;
+                        configuation.SaveConfig();
+
+                        Log.logger.Info($"皮肤 {selectedDisplayName} 应用成功。");
+                    }
+                    else
+                    {
+                        Log.logger.Error($"皮肤 {selectedDisplayName} 应用失败。");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.logger.Error($"切换皮肤时出错: {ex.Message}");
+            }
+        }
+
+        private void UpdateSkinDescription(SkinDefinition skinInfo)
+        {
+            if (skinInfo == null) return;
+
+            try
+            {
+                this.Dispatcher.BeginInvoke(() =>
+                {
+                    if (SkinDesc != null && SkinDesc.Content is TextBlock textBlock)
+                    {
+                        // 处理 \n 转换为真正的换行
+                        string description = skinInfo.desc ?? "暂无描述。";
+                        description = description.Replace("\\n", "\n");
+                        textBlock.Text = description;
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                Log.logger.Error($"更新皮肤描述时出错: {ex.Message}");
+            }
+        }
+
         internal void SetApiNodeConfig(string api)
         {
             Log.logger.Info("设置API节点:" + api);
@@ -2949,6 +3063,103 @@ del /f /q ""{batPath}""
             {
                 NowVersionText.Text = $"当前版本：{version}";
             });
+        }
+        #endregion
+        #region 皮肤系统
+        /// <summary>
+        /// 加载并应用配置的皮肤
+        /// </summary>
+        private void LoadAndApplySkin()
+        {
+            try
+            {
+                // 确保skin配置存在
+                if (configuation.Settings.skin == null)
+                {
+                    configuation.Settings.skin = new SkinConfig();
+                    configuation.SaveConfig();
+                }
+
+                string skinName = configuation.Settings.skin.currentSkin ?? "default";
+                Log.logger.Info($"正在加载皮肤: {skinName}");
+
+                var skinManager = SkinManager.Instance;
+                bool loaded = skinManager.LoadSkin(skinName);
+
+                if (loaded)
+                {
+                    skinManager.ApplySkinToWindow(this);
+                    Log.logger.Info($"皮肤加载成功: {skinManager.CurrentSkinName}");
+                }
+                else
+                {
+                    Log.logger.Warn("皮肤加载失败，使用默认外观");
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.logger.Error("加载皮肤时出错", ex);
+            }
+        }
+
+        /// <summary>
+        /// 运行时切换皮肤
+        /// </summary>
+        /// <param name="skinName">皮肤名称</param>
+        /// <returns>是否切换成功</returns>
+        public bool ChangeSkin(string skinName)
+        {
+            try
+            {
+                Log.logger.Info($"正在切换皮肤到: {skinName}");
+
+                var skinManager = SkinManager.Instance;
+                bool loaded = skinManager.LoadSkin(skinName);
+
+                if (loaded)
+                {
+                    this.Dispatcher.Invoke(() =>
+                    {
+                        skinManager.ApplySkinToWindow(this);
+                    });
+
+                    // 保存到配置
+                    configuation.Settings.skin.currentSkin = skinName;
+                    configuation.SaveConfig();
+
+                    Log.logger.Info($"皮肤切换成功: {skinManager.CurrentSkinName}");
+                    return true;
+                }
+                else
+                {
+                    Log.logger.Warn($"皮肤切换失败: {skinName}");
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.logger.Error("切换皮肤时出错", ex);
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// 获取可用的皮肤列表
+        /// </summary>
+        /// <returns>皮肤名称列表</returns>
+        public List<string> GetAvailableSkins()
+        {
+            return SkinManager.Instance.GetAvailableSkins();
+        }
+
+        /// <summary>
+        /// 获取指定皮肤的信息
+        /// </summary>
+        /// <param name="skinName">皮肤名称</param>
+        /// <returns>皮肤定义对象</returns>
+        public SkinDefinition GetSkinInfo(string skinName)
+        {
+            return SkinManager.Instance.GetSkinInfo(skinName);
         }
         #endregion
     }

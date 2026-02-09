@@ -363,3 +363,7 @@ MigrationBackup/
 FodyWeavers.xsd
 
 makeInstaller.bat
+
+# Vibe Coding
+CLAUDE.md
+.claude/
