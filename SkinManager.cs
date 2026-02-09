@@ -170,14 +170,31 @@ namespace LLC_MOD_Toolbox
 
             try
             {
+                Log.logger.Info("开始应用皮肤到窗口...");
                 var images = FindAllImages(window);
+                Log.logger.Info($"找到 {images.Count} 个Image元素");
+
+                // 输出前几个找到的图片名称用于调试
+                var imageNames = images.Where(img => !string.IsNullOrEmpty(img.Name))
+                                      .Select(img => img.Name)
+                                      .Take(10)
+                                      .ToList();
+                if (imageNames.Any())
+                {
+                    Log.logger.Debug($"前10个图片元素: {string.Join(", ", imageNames)}");
+                }
+
                 int successCount = 0;
                 int failCount = 0;
+                int skippedCount = 0;
 
                 foreach (var image in images)
                 {
                     if (string.IsNullOrEmpty(image.Name))
+                    {
+                        skippedCount++;
                         continue;
+                    }
 
                     if (ApplySkinToImage(image))
                         successCount++;
@@ -185,7 +202,7 @@ namespace LLC_MOD_Toolbox
                         failCount++;
                 }
 
-                Log.logger.Info($"皮肤应用完成: 成功 {successCount} 个，失败 {failCount} 个");
+                Log.logger.Info($"皮肤应用完成: 成功 {successCount} 个，失败 {failCount} 个，跳过 {skippedCount} 个");
 
                 // 应用可见性设置
                 ApplyVisibilityToWindow(window);
@@ -217,6 +234,7 @@ namespace LLC_MOD_Toolbox
                 {
                     hasConfig = true;
                     imagePath = GetFullImagePath(_currentSkinDefinition.name, _currentSkinImages[imageName]);
+                    Log.logger.Debug($"从当前皮肤获取图片: {imageName} -> {imagePath}");
                 }
 
                 // 如果当前皮肤没有或文件不存在，尝试从默认皮肤获取
@@ -226,12 +244,14 @@ namespace LLC_MOD_Toolbox
                     {
                         hasConfig = true;
                         imagePath = GetFullImagePath(_defaultSkinName, _defaultSkinImages[imageName]);
+                        Log.logger.Debug($"从默认皮肤获取图片: {imageName} -> {imagePath}");
                     }
                 }
 
                 // 如果皮肤配置中没有这个图片，跳过（使用 XAML 中的默认资源）
                 if (!hasConfig)
                 {
+                    Log.logger.Debug($"图片 {imageName} 未在皮肤配置中定义，跳过");
                     return false;
                 }
 
@@ -246,11 +266,13 @@ namespace LLC_MOD_Toolbox
                     bitmap.Freeze();
 
                     image.Source = bitmap;
+                    Log.logger.Debug($"成功应用图片: {imageName} -> {imagePath}");
                     return true;
                 }
                 else
                 {
-                    Log.logger.Warn($"皮肤配置了图片 '{imageName}' 但文件不存在: {imagePath}");
+                    Log.logger.Warn($"皮肤配置了图片 '{imageName}' 但文件不存在: {imagePath}，保留原始图片");
+                    // 保留 XAML 中的原始 Source，不做修改
                 }
             }
             catch (Exception ex)
@@ -295,6 +317,12 @@ namespace LLC_MOD_Toolbox
                     images.Add(image);
                 }
 
+                // 特殊处理：如果是 Button，检查其 Content 是否为 Image
+                if (child is Button button && button.Content is Image contentImage)
+                {
+                    images.Add(contentImage);
+                }
+
                 images.AddRange(FindAllImages(child));
             }
 
@@ -305,33 +333,30 @@ namespace LLC_MOD_Toolbox
         {
             try
             {
-                window.Dispatcher.BeginInvoke(() =>
+                var elements = FindAllNamedElements(window);
+                int visibleCount = 0;
+                int hiddenCount = 0;
+
+                foreach (var element in elements)
                 {
-                    var elements = FindAllNamedElements(window);
-                    int visibleCount = 0;
-                    int hiddenCount = 0;
+                    if (string.IsNullOrEmpty(element.Name))
+                        continue;
 
-                    foreach (var element in elements)
+                    bool? visibility = GetElementVisibility(element.Name);
+                    if (visibility.HasValue)
                     {
-                        if (string.IsNullOrEmpty(element.Name))
-                            continue;
-
-                        bool? visibility = GetElementVisibility(element.Name);
-                        if (visibility.HasValue)
-                        {
-                            element.Visibility = visibility.Value ? Visibility.Visible : Visibility.Collapsed;
-                            if (visibility.Value)
-                                visibleCount++;
-                            else
-                                hiddenCount++;
-                        }
+                        element.Visibility = visibility.Value ? Visibility.Visible : Visibility.Collapsed;
+                        if (visibility.Value)
+                            visibleCount++;
+                        else
+                            hiddenCount++;
                     }
+                }
 
-                    if (visibleCount > 0 || hiddenCount > 0)
-                    {
-                        Log.logger.Info($"可见性设置应用完成: 显示 {visibleCount} 个，隐藏 {hiddenCount} 个");
-                    }
-                }).Wait();
+                if (visibleCount > 0 || hiddenCount > 0)
+                {
+                    Log.logger.Info($"可见性设置应用完成: 显示 {visibleCount} 个，隐藏 {hiddenCount} 个");
+                }
             }
             catch (Exception ex)
             {
@@ -381,36 +406,33 @@ namespace LLC_MOD_Toolbox
         {
             try
             {
-                window.Dispatcher.BeginInvoke(() =>
+                var elements = FindAllNamedElements(window);
+                int appliedCount = 0;
+
+                foreach (var element in elements)
                 {
-                    var elements = FindAllNamedElements(window);
-                    int appliedCount = 0;
+                    if (string.IsNullOrEmpty(element.Name))
+                        continue;
 
-                    foreach (var element in elements)
+                    string marginValue = GetElementMargin(element.Name);
+                    if (!string.IsNullOrEmpty(marginValue))
                     {
-                        if (string.IsNullOrEmpty(element.Name))
-                            continue;
-
-                        string marginValue = GetElementMargin(element.Name);
-                        if (!string.IsNullOrEmpty(marginValue))
+                        if (TryParseMargin(marginValue, out Thickness margin))
                         {
-                            if (TryParseMargin(marginValue, out Thickness margin))
-                            {
-                                element.Margin = margin;
-                                appliedCount++;
-                            }
-                            else
-                            {
-                                Log.logger.Warn($"无法解析边距值: {element.Name} = {marginValue}");
-                            }
+                            element.Margin = margin;
+                            appliedCount++;
+                        }
+                        else
+                        {
+                            Log.logger.Warn($"无法解析边距值: {element.Name} = {marginValue}");
                         }
                     }
+                }
 
-                    if (appliedCount > 0)
-                    {
-                        Log.logger.Info($"边距设置应用完成: 应用 {appliedCount} 个");
-                    }
-                }).Wait();
+                if (appliedCount > 0)
+                {
+                    Log.logger.Info($"边距设置应用完成: 应用 {appliedCount} 个");
+                }
             }
             catch (Exception ex)
             {

@@ -62,7 +62,22 @@
     "LinkButtonHover7": "/Picture/LinkBTHover.png",
     "LinkButtonHover8": "/Picture/LinkBTHover.png",
     "LinkButtonHover9": "/Picture/LinkBTHover.png",
-    "LinkButtonHover10": "/Picture/LinkBTHover.png"
+    "LinkButtonHover10": "/Picture/LinkBTHover.png",
+    "FullProgress": "/Picture/FullProgress.png",
+    "EmptyProgress": "/Picture/EmptyProgress.png",
+    "AutoInstallXiaoHei": "/Picture/B.png",
+    "AutoInstallXiaobai": "/Picture/W.png",
+    "GachaSimDisabled": "/Picture/DisableButton.png",
+    "ZALogo": "/Picture/ZALogoA.png",
+    "MirrorChyanLogo": "/Picture/MirrorChyan.png",
+    "AutoInstallDisabled": "/Picture/DisableButton.png",
+    "FontReplaceDisabled": "/Picture/DisableButton.png",
+    "SkinDisabled": "/Picture/DisableButton.png",
+    "FontPreviewBase": "/Picture/FontPreviewBase.png",
+    "NormalLine": "/Picture/NormalLine.png",
+    "SettingsLine": "/Picture/SettingsLine.png",
+    "GachaBackground": "/Picture/GachaBackground.png",
+    "Lunacy": "/Picture/Lunacy.png"
   },
   "visibility": {
   },

@@ -51,6 +51,7 @@
     <None Remove="Fonts\TitleFont.ttf" />
     <None Remove="Minimize.png" />
     <None Remove="MinimizeHover.png" />
+    <None Remove="nul" />
     <None Remove="Picture\favicon.ico" />
     <None Remove="TitleBar.png" />
   </ItemGroup>

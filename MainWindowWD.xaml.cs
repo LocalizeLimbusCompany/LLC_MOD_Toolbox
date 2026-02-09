@@ -3088,6 +3088,7 @@ del /f /q ""{batPath}""
 
                 if (loaded)
                 {
+                    // 直接应用皮肤，不使用异步调度
                     skinManager.ApplySkinToWindow(this);
                     Log.logger.Info($"皮肤加载成功: {skinManager.CurrentSkinName}");
                 }
