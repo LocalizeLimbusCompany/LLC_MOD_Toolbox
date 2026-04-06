@@ -7,7 +7,7 @@
   "images": {
     "Background": "/Picture/Background.png",
     "MinimizeHover": "/Picture/MinimizeHover.png",
-    "CloseHover": "/Picture/Close.png",
+    "CloseHover": "/Picture/MinimizeHover.png",
     "AutoInstallHover": "/Picture/ControlBoardHover.png",
     "FontReplaceHover": "/Picture/ControlBoardHover.png",
     "SkinHover": "/Picture/ControlBoardHover.png",

@@ -12,11 +12,44 @@
         <Label HorizontalAlignment="Center" Margin="0,30,0,0" VerticalAlignment="Top" Height="97" Width="644" FontSize="20" Foreground="#FFFFEED4" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Medium">
             <TextBlock Text="请您在文本框当中输入提供的测试密钥，并点击确认。成功进入灰度测试模式之后，请使用自动安装页面进行安装。此时，自动安装的文件将会是密钥相对应的灰度测试文件。" TextWrapping="Wrap"/>
         </Label>
-        <Image x:Name="NormalLine" HorizontalAlignment="Left" Height="10" Margin="10,140,0,0" VerticalAlignment="Top" Width="626" Source="pack://siteoforigin:,,,/Picture/NormalLine.png"/>
-        <Label Content="秘钥" HorizontalAlignment="Left" Margin="18,162,0,0" VerticalAlignment="Top" FontSize="20" Foreground="#FFFFEED4" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Bold"/>
-        <TextBox x:Name="GreytestTokenBox" HorizontalAlignment="Left" Margin="87,169,0,0" TextWrapping="Wrap" Text="{Binding GreytestToken, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Top" Width="539" Height="25" FontSize="16" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Medium"/>
-        <Image x:Name="GreytestButtonHover" Panel.ZIndex="5" IsHitTestVisible="False" Opacity="0" HorizontalAlignment="Left" Height="34" Margin="548,199,0,0" VerticalAlignment="Top" Width="80" Source="pack://siteoforigin:,,,/Picture/SettingButtonHover.png"/>
-        <Button HorizontalAlignment="Left" Margin="551,202,0,0" VerticalAlignment="Top" Height="28" Width="74" Style="{DynamicResource NoHover}" Background="#FFFFEED4" Command="{Binding StartGreytestCommand}">
+        <Label HorizontalAlignment="Center" Margin="0,115,0,0" VerticalAlignment="Top" Height="97" Width="644" FontSize="20" Foreground="#FFFFEED4" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Medium">
+            <TextBlock Text="注意，不要把你的Mirror酱秘钥输入到这里！！！" TextWrapping="Wrap">
+                <TextBlock.Foreground>
+                    <LinearGradientBrush StartPoint="0,0.5" EndPoint="1,0.5" MappingMode="RelativeToBoundingBox" SpreadMethod="Repeat">
+                        <LinearGradientBrush.RelativeTransform>
+                            <TranslateTransform x:Name="RainbowFlowTransform" X="-1"/>
+                        </LinearGradientBrush.RelativeTransform>
+                        <GradientStop Color="#FFFF4D4D" Offset="0.00"/>
+                        <GradientStop Color="#FFFFA64D" Offset="0.12"/>
+                        <GradientStop Color="#FFFFFF4D" Offset="0.24"/>
+                        <GradientStop Color="#FF63FF73" Offset="0.36"/>
+                        <GradientStop Color="#FF4DD9FF" Offset="0.48"/>
+                        <GradientStop Color="#FF4D6BFF" Offset="0.60"/>
+                        <GradientStop Color="#FFB84DFF" Offset="0.72"/>
+                        <GradientStop Color="#FFFF4DA6" Offset="0.84"/>
+                        <GradientStop Color="#FFFF4D4D" Offset="0.96"/>
+                    </LinearGradientBrush>
+                </TextBlock.Foreground>
+                <TextBlock.Triggers>
+                    <EventTrigger RoutedEvent="TextBlock.Loaded">
+                        <BeginStoryboard>
+                            <Storyboard RepeatBehavior="Forever">
+                                <DoubleAnimation Storyboard.TargetName="RainbowFlowTransform"
+                                                 Storyboard.TargetProperty="X"
+                                                 From="-1"
+                                                 To="1"
+                                                 Duration="0:0:3"/>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </EventTrigger>
+                </TextBlock.Triggers>
+            </TextBlock>
+        </Label>
+        <Image x:Name="NormalLine" HorizontalAlignment="Left" Height="10" Margin="10,160,0,0" VerticalAlignment="Top" Width="626" Source="pack://siteoforigin:,,,/Picture/NormalLine.png"/>
+        <Label Content="秘钥" HorizontalAlignment="Left" Margin="18,182,0,0" VerticalAlignment="Top" FontSize="20" Foreground="#FFFFEED4" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Bold"/>
+        <TextBox x:Name="GreytestTokenBox" HorizontalAlignment="Left" Margin="87,189,0,0" TextWrapping="Wrap" Text="{Binding GreytestToken, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Top" Width="539" Height="25" FontSize="16" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Medium"/>
+        <Image x:Name="GreytestButtonHover" Panel.ZIndex="5" IsHitTestVisible="False" Opacity="0" HorizontalAlignment="Left" Height="34" Margin="548,219,0,0" VerticalAlignment="Top" Width="80" Source="pack://siteoforigin:,,,/Picture/SettingButtonHover.png"/>
+        <Button HorizontalAlignment="Left" Margin="551,222,0,0" VerticalAlignment="Top" Height="28" Width="74" Style="{DynamicResource NoHover}" Background="#FFFFEED4" Command="{Binding StartGreytestCommand}">
             <Button.Clip>
                 <RectangleGeometry Rect="0,0,74,28" RadiusX="3" RadiusY="3"/>
             </Button.Clip>
@@ -37,9 +70,9 @@
                 </EventTrigger>
             </Button.Triggers>
         </Button>
-        <Label Content="校验" HorizontalAlignment="Left" IsHitTestVisible="False" Margin="568,199,0,0" VerticalAlignment="Top" Height="38" Width="52" FontSize="16" Foreground="Black" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Heavy"/>
-        <Image x:Name="GreytestInfoButtonHover" Panel.ZIndex="5" IsHitTestVisible="False" Opacity="0" HorizontalAlignment="Left" Height="34" Margin="447,199,0,0" VerticalAlignment="Top" Width="80" Source="pack://siteoforigin:,,,/Picture/SettingButtonHover.png"/>
-        <Button HorizontalAlignment="Left" Margin="450,202,0,0" VerticalAlignment="Top" Height="28" Width="74" Style="{DynamicResource NoHover}" Background="#FFFFEED4" Command="{Binding ShowGreytestInfoCommand}">
+        <Label Content="校验" HorizontalAlignment="Left" IsHitTestVisible="False" Margin="568,219,0,0" VerticalAlignment="Top" Height="38" Width="52" FontSize="16" Foreground="Black" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Heavy"/>
+        <Image x:Name="GreytestInfoButtonHover" Panel.ZIndex="5" IsHitTestVisible="False" Opacity="0" HorizontalAlignment="Left" Height="34" Margin="447,219,0,0" VerticalAlignment="Top" Width="80" Source="pack://siteoforigin:,,,/Picture/SettingButtonHover.png"/>
+        <Button HorizontalAlignment="Left" Margin="450,222,0,0" VerticalAlignment="Top" Height="28" Width="74" Style="{DynamicResource NoHover}" Background="#FFFFEED4" Command="{Binding ShowGreytestInfoCommand}">
             <Button.Clip>
                 <RectangleGeometry Rect="0,0,74,28" RadiusX="3" RadiusY="3"/>
             </Button.Clip>
@@ -60,6 +93,6 @@
                 </EventTrigger>
             </Button.Triggers>
         </Button>
-        <Label Content="了解更多" HorizontalAlignment="Left" IsHitTestVisible="False" Margin="450,199,0,0" VerticalAlignment="Top" Height="38" Width="74" FontSize="16" Foreground="Black" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Heavy"/>
+        <Label Content="了解更多" HorizontalAlignment="Left" IsHitTestVisible="False" Margin="450,219,0,0" VerticalAlignment="Top" Height="38" Width="74" FontSize="16" Foreground="Black" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Heavy"/>
     </Grid>
 </UserControl>

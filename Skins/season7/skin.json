@@ -7,7 +7,7 @@
   "images": {
     "Background": "/Picture/Season7/Background.png",
     "MinimizeHover": "/Picture/Season7/MinimizeHover.png",
-    "CloseHover": "/Picture/Season7/Close.png",
+    "CloseHover": "/Picture/Season7/MinimizeHover.png",
     "AutoInstallHover": "/Picture/Season7/ControlBoardHover.png",
     "FontReplaceHover": "/Picture/Season7/ControlBoardHover.png",
     "SkinHover": "/Picture/Season7/ControlBoardHover.png",
