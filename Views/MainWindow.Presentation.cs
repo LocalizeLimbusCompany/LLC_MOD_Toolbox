@@ -190,11 +190,17 @@ namespace LLC_MOD_Toolbox
         #region 彩蛋
         private async void WhiteBlackClickDouble(object sender, MouseButtonEventArgs e)
         {
+            if (e.ClickCount < 2)
+            {
+                return;
+            }
+
             if (!eeOpening && !eeEntered && !isInAnno && !IsAnnouncementPageActive)
             {
                 Log.logger.Info("不要点了>_<");
                 eeOpening = true;
                 eeEntered = false;
+                e.Handled = true;
                 await ChangeEEVB(true);
             }
         }

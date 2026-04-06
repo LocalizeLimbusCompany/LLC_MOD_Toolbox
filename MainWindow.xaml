@@ -141,8 +141,8 @@
         <pageControls:GachaPageControl x:Name="GachaPage" Panel.ZIndex="5" Margin="62,55,54,32" Grid.Column="2" Grid.Row="1"/>
         <pageControls:AnnouncementPageControl x:Name="AnnouncementPage" Panel.ZIndex="5" Margin="62,55,54,32" Grid.Column="2" Grid.Row="1"/>
         <pageControls:SkinPageControl x:Name="SkinPage" Panel.ZIndex="5" Margin="62,55,54,32" Grid.Column="2" Grid.Row="1"/>
-        <Button Grid.Column="1" HorizontalAlignment="Center" Margin="0,350,0,0" Grid.Row="1" VerticalAlignment="Top" Height="41" Width="155" Style="{StaticResource BlackWhite}" Background="Transparent" BorderBrush="Transparent" BorderThickness="0" MouseDoubleClick="WhiteBlackClickDouble" />
-        <Button Grid.Column="1" HorizontalAlignment="Center" Margin="0,400,0,0" Grid.Row="1" VerticalAlignment="Top" Height="41" Width="155" Style="{StaticResource BlackWhite}" Background="Transparent" BorderBrush="Transparent" BorderThickness="0" MouseDoubleClick="WhiteBlackClickDouble"/>
+        <Button Grid.Column="1" HorizontalAlignment="Center" Margin="0,350,0,0" Grid.Row="1" VerticalAlignment="Top" Height="41" Width="155" Style="{StaticResource BlackWhite}" Background="Transparent" BorderBrush="Transparent" BorderThickness="0" PreviewMouseLeftButtonDown="WhiteBlackClickDouble" />
+        <Button Grid.Column="1" HorizontalAlignment="Center" Margin="0,400,0,0" Grid.Row="1" VerticalAlignment="Top" Height="41" Width="155" Style="{StaticResource BlackWhite}" Background="Transparent" BorderBrush="Transparent" BorderThickness="0" PreviewMouseLeftButtonDown="WhiteBlackClickDouble"/>
         <Grid Panel.ZIndex="100000" x:Name="OverlayGrid" Visibility="{Binding IsOverlayVisible, Converter={StaticResource BooleanToVisibilityConverter}}" Background="Transparent" Grid.ColumnSpan="3" Margin="0,-2,-1,2" Grid.RowSpan="2">
             <Label Content="正在加载……" HorizontalAlignment="Left" IsHitTestVisible="False" VerticalAlignment="Top" Height="68" Width="264" FontSize="40" Foreground="#FFFFEED4" FontFamily="/Fonts/subset/#Source Han Sans CN" FontWeight="Heavy" Margin="502,21,0,0"/>
         </Grid>
