@@ -125,7 +125,7 @@
                                    Stroke="Black"
                                    StrokeThickness="2"
                                    FontSize="14"
-                                   FontFamily="/Fonts/#Source Han Sans CN"
+                                   FontFamily="/Fonts/subset/#Source Han Sans CN"
                                    FontWeight="Heavy"
                                    TextAlignment="Left"
                                    Panel.ZIndex="5"
@@ -141,7 +141,7 @@
                                    Stroke="Black"
                                    StrokeThickness="2"
                                    FontSize="14"
-                                   FontFamily="/Fonts/#Source Han Sans CN"
+                                   FontFamily="/Fonts/subset/#Source Han Sans CN"
                                    FontWeight="Heavy"
                                    TextAlignment="Right"
                                    Panel.ZIndex="5"
@@ -157,7 +157,7 @@
                                    Stroke="Black"
                                    StrokeThickness="2"
                                    FontSize="18"
-                                   FontFamily="/Fonts/#Source Han Sans CN"
+                                   FontFamily="/Fonts/subset/#Source Han Sans CN"
                                    FontWeight="Heavy"
                                    TextAlignment="Center"
                                    Panel.ZIndex="5"
@@ -169,3 +169,4 @@
                                    VerticalAlignment="Top"/>
     </Grid>
 </UserControl>
+

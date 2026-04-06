@@ -16,7 +16,7 @@
                Width="644"
                FontSize="15"
                Foreground="#FFFFEED4"
-               FontFamily="/Fonts/#Source Han Sans CN"
+               FontFamily="/Fonts/subset/#Source Han Sans CN"
                FontWeight="Medium">
             <TextBlock Text="都市零协会工具箱 (LLC_MOD_Toolbox) 是服务于都市零协会汉化模组 (LocalizeLimbusCompany) 的自动化安装工具。本软件使用库的许可证请于零协会官网 (https://www.zeroasso.top) 查看。&#10;- LLCMT工具箱&#10;  - 代码实现：曾小皮、明（ProjektMing）、10291029&#10;  - 美术设计：记得保存、玉佩（抽卡模拟器）、小迪（部分美术资源）&#10;- LLC翻译模组&#10;  - 翻译文本：零协会翻译组全体译者&#10;  - 汉化模组代码：奈芙Nephthys&#10;  - 汉化模组字体：茜、北岚&#10;- 特别鸣谢&#10;  - 服务器运维 &amp; 开发：曾小皮 &#10;  - 零协会广播局全体创作者&#10;  - 翻译工具：Paratranz&#10;  - 服务器赞助：简幻欢&#10;人无语言则茫然无依。"
                        TextWrapping="Wrap"
@@ -24,3 +24,4 @@
         </Label>
     </Grid>
 </UserControl>
+

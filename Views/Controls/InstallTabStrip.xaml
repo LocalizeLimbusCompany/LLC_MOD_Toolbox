@@ -17,7 +17,7 @@
         <Image x:Name="FontReplaceHover" IsHitTestVisible="False" Panel.ZIndex="5" Opacity="0" HorizontalAlignment="Left" Height="46" Margin="252,4,0,0" VerticalAlignment="Top" Width="134" Source="pack://siteoforigin:,,,/Picture/ControlBoardHover.png"/>
         <Image x:Name="SkinHover" IsHitTestVisible="False" Panel.ZIndex="5" Opacity="0" HorizontalAlignment="Left" Height="46" Margin="400,4,0,0" VerticalAlignment="Top" Width="134" Source="pack://siteoforigin:,,,/Picture/ControlBoardHover.png"/>
         <Image x:Name="GachaSimHover" IsHitTestVisible="False" Panel.ZIndex="5" Opacity="0" HorizontalAlignment="Left" Height="46" Margin="548,4,0,0" VerticalAlignment="Top" Width="134" Source="pack://siteoforigin:,,,/Picture/ControlBoardHover.png"/>
-        <Button x:Name="AutoInstallButton" Visibility="{Binding IsInstallTabsVisible, Converter={StaticResource BooleanToVisibilityConverter}}" Content="自动安装" HorizontalAlignment="Left" Margin="122,4,0,0" VerticalAlignment="Top" Height="40" Width="101" Background="Transparent" BorderBrush="Transparent" BorderThickness="0" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Bold" Foreground="#FFFFEED4" FontSize="18" Style="{DynamicResource NoHover}" Command="{Binding ShowAutoInstallCommand}">
+        <Button x:Name="AutoInstallButton" Visibility="{Binding IsInstallTabsVisible, Converter={StaticResource BooleanToVisibilityConverter}}" Content="自动安装" HorizontalAlignment="Left" Margin="122,4,0,0" VerticalAlignment="Top" Height="40" Width="101" Background="Transparent" BorderBrush="Transparent" BorderThickness="0" FontFamily="/Fonts/subset/#Source Han Sans CN" FontWeight="Bold" Foreground="#FFFFEED4" FontSize="18" Style="{DynamicResource NoHover}" Command="{Binding ShowAutoInstallCommand}">
             <Button.Triggers>
                 <EventTrigger RoutedEvent="Button.MouseEnter">
                     <BeginStoryboard>
@@ -35,7 +35,7 @@
                 </EventTrigger>
             </Button.Triggers>
         </Button>
-        <Button x:Name="FontReplaceButton" Visibility="{Binding IsInstallTabsVisible, Converter={StaticResource BooleanToVisibilityConverter}}" Content="字体替换" HorizontalAlignment="Left" Margin="271,4,0,0" VerticalAlignment="Top" Height="40" Width="101" Background="Transparent" BorderBrush="Transparent" BorderThickness="0" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Bold" Foreground="#FFFFEED4" FontSize="18" Style="{DynamicResource NoHover}" Command="{Binding ShowFontReplaceCommand}">
+        <Button x:Name="FontReplaceButton" Visibility="{Binding IsInstallTabsVisible, Converter={StaticResource BooleanToVisibilityConverter}}" Content="字体替换" HorizontalAlignment="Left" Margin="271,4,0,0" VerticalAlignment="Top" Height="40" Width="101" Background="Transparent" BorderBrush="Transparent" BorderThickness="0" FontFamily="/Fonts/subset/#Source Han Sans CN" FontWeight="Bold" Foreground="#FFFFEED4" FontSize="18" Style="{DynamicResource NoHover}" Command="{Binding ShowFontReplaceCommand}">
             <Button.Triggers>
                 <EventTrigger RoutedEvent="Button.MouseEnter">
                     <BeginStoryboard>
@@ -53,7 +53,7 @@
                 </EventTrigger>
             </Button.Triggers>
         </Button>
-        <Button x:Name="SkinButton" Visibility="{Binding IsInstallTabsVisible, Converter={StaticResource BooleanToVisibilityConverter}}" Content="皮肤管理" HorizontalAlignment="Left" Margin="419,4,0,0" VerticalAlignment="Top" Height="40" Width="101" Background="Transparent" BorderBrush="Transparent" BorderThickness="0" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Bold" Foreground="#FFFFEED4" FontSize="18" Style="{DynamicResource NoHover}" Command="{Binding ShowSkinCommand}">
+        <Button x:Name="SkinButton" Visibility="{Binding IsInstallTabsVisible, Converter={StaticResource BooleanToVisibilityConverter}}" Content="皮肤管理" HorizontalAlignment="Left" Margin="419,4,0,0" VerticalAlignment="Top" Height="40" Width="101" Background="Transparent" BorderBrush="Transparent" BorderThickness="0" FontFamily="/Fonts/subset/#Source Han Sans CN" FontWeight="Bold" Foreground="#FFFFEED4" FontSize="18" Style="{DynamicResource NoHover}" Command="{Binding ShowSkinCommand}">
             <Button.Triggers>
                 <EventTrigger RoutedEvent="Button.MouseEnter">
                     <BeginStoryboard>
@@ -71,7 +71,7 @@
                 </EventTrigger>
             </Button.Triggers>
         </Button>
-        <Button x:Name="GachaSimInstallButton" Visibility="{Binding IsInstallTabsVisible, Converter={StaticResource BooleanToVisibilityConverter}}" Content="抽卡模拟器" HorizontalAlignment="Left" Margin="564,4,0,0" VerticalAlignment="Top" Height="40" Width="102" Background="Transparent" BorderBrush="Transparent" BorderThickness="0" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Bold" Foreground="#FFFFEED4" FontSize="18" Style="{DynamicResource NoHover}" Command="{Binding ShowGachaCommand}">
+        <Button x:Name="GachaSimInstallButton" Visibility="{Binding IsInstallTabsVisible, Converter={StaticResource BooleanToVisibilityConverter}}" Content="抽卡模拟器" HorizontalAlignment="Left" Margin="564,4,0,0" VerticalAlignment="Top" Height="40" Width="102" Background="Transparent" BorderBrush="Transparent" BorderThickness="0" FontFamily="/Fonts/subset/#Source Han Sans CN" FontWeight="Bold" Foreground="#FFFFEED4" FontSize="18" Style="{DynamicResource NoHover}" Command="{Binding ShowGachaCommand}">
             <Button.Triggers>
                 <EventTrigger RoutedEvent="Button.MouseEnter">
                     <BeginStoryboard>
@@ -91,3 +91,4 @@
         </Button>
     </Grid>
 </UserControl>
+

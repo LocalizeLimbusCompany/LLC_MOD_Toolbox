@@ -29,6 +29,8 @@
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseLLCMT|AnyCPU'">
     <Optimize>True</Optimize>
+    <DebugSymbols>false</DebugSymbols>
+    <DebugType>none</DebugType>
   </PropertyGroup>
 
   <ItemGroup>
@@ -41,6 +43,9 @@
     <None Remove="Fonts\SourceHanSansCN-Bold.ttf" />
     <None Remove="Fonts\SourceHanSansCN-Heavy.ttf" />
     <None Remove="Fonts\SourceHanSansCN-Medium.ttf" />
+    <None Remove="Fonts\subset\SourceHanSansCN-Bold.subset.ttf" />
+    <None Remove="Fonts\subset\SourceHanSansCN-Heavy.subset.ttf" />
+    <None Remove="Fonts\subset\SourceHanSansCN-Medium.subset.ttf" />
     <None Remove="Fonts\TitleFont.ttf" />
     <None Remove="Minimize.png" />
     <None Remove="MinimizeHover.png" />
@@ -74,9 +79,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Resource Include="Fonts\SourceHanSansCN-Bold.ttf" />
-    <Resource Include="Fonts\SourceHanSansCN-Heavy.ttf" />
-    <Resource Include="Fonts\SourceHanSansCN-Medium.ttf" />
+    <Resource Include="Fonts\subset\SourceHanSansCN-Bold.subset.ttf" />
+    <Resource Include="Fonts\subset\SourceHanSansCN-Heavy.subset.ttf" />
+    <Resource Include="Fonts\subset\SourceHanSansCN-Medium.subset.ttf" />
     <Resource Include="Fonts\TitleFont.ttf" />
   </ItemGroup>
 
@@ -242,5 +247,17 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
+
+  <Target Name="CleanReleaseLLCMTArtifacts" AfterTargets="Build;Publish" Condition="'$(Configuration)'=='ReleaseLLCMT'">
+    <ItemGroup>
+      <_ReleaseLLCMTPdbFiles Include="$(ProjectDir)bin\$(Configuration)\**\*.pdb" />
+      <_ReleaseLLCMTLogFiles Include="$(ProjectDir)bin\$(Configuration)\**\Logs\**\*" />
+      <_ReleaseLLCMTLogDirectories Include="$(ProjectDir)bin\$(Configuration)\**\Logs" />
+    </ItemGroup>
+
+    <Delete Files="@(_ReleaseLLCMTPdbFiles)" TreatErrorsAsWarnings="true" />
+    <Delete Files="@(_ReleaseLLCMTLogFiles)" TreatErrorsAsWarnings="true" />
+    <RemoveDir Directories="@(_ReleaseLLCMTLogDirectories)" />
+  </Target>
 
 </Project>

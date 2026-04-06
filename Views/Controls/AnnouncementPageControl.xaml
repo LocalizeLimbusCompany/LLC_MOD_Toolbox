@@ -16,7 +16,7 @@
                Width="644"
                FontSize="35"
                Foreground="#FFFFEED4"
-               FontFamily="/Fonts/#Source Han Sans CN"
+               FontFamily="/Fonts/subset/#Source Han Sans CN"
                FontWeight="Bold">
             <TextBlock Text="存在未读的新公告！" Height="45"/>
         </Label>
@@ -27,7 +27,7 @@
                Width="644"
                FontSize="15"
                Foreground="#FFFFEED4"
-               FontFamily="/Fonts/#Source Han Sans CN"
+               FontFamily="/Fonts/subset/#Source Han Sans CN"
                FontWeight="Medium">
             <TextBlock Text="{Binding AnnouncementText}" TextWrapping="Wrap" Height="262" Width="634"/>
         </Label>
@@ -87,7 +87,7 @@
                Width="52"
                FontSize="16"
                Foreground="Black"
-               FontFamily="/Fonts/#Source Han Sans CN"
+               FontFamily="/Fonts/subset/#Source Han Sans CN"
                FontWeight="Heavy"/>
         <Label HorizontalAlignment="Left"
                Margin="377,341,0,0"
@@ -96,7 +96,7 @@
                Width="264"
                FontSize="12"
                Foreground="#FFFFEED4"
-               FontFamily="/Fonts/#Source Han Sans CN"
+               FontFamily="/Fonts/subset/#Source Han Sans CN"
                FontWeight="Medium">
             <TextBlock Text="{Binding AnnouncementTip}"
                        Visibility="{Binding IsAnnouncementTipVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
@@ -106,3 +106,4 @@
         </Label>
     </Grid>
 </UserControl>
+
