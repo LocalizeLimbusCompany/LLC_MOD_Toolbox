@@ -2,12 +2,15 @@ using Newtonsoft.Json.Linq;
 using System.IO;
 using System.Net;
 using System.Net.Http;
+using System.Text.RegularExpressions;
 using System.Windows;
 
 namespace LLC_MOD_Toolbox
 {
     public partial class MainWindow : Window
     {
+        private static readonly Regex MirrorChyanKeyPattern = new("^[0-9a-z]{24}$", RegexOptions.Compiled);
+
         #region 卸载功能
         private async Task HandleUninstallAsync()
         {
@@ -106,6 +109,13 @@ namespace LLC_MOD_Toolbox
                 {
                     Log.logger.Info("Token为空。");
                     UniversalDialog.ShowMessage("请输入有效的Token。", "提示", null, this);
+                    await EnableGlobalOperations();
+                    return;
+                }
+                if (MirrorChyanKeyPattern.IsMatch(token))
+                {
+                    Log.logger.Info("检测到疑似 Mirror 酱秘钥格式。");
+                    UniversalDialog.ShowMessage("我说不要输入你的Mirror酱秘钥，尼尔多隆吗？", "提示", null, this);
                     await EnableGlobalOperations();
                     return;
                 }
