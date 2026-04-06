@@ -199,7 +199,6 @@ del /f /q ""{batPath}""
         public void FixLCBPath()
         {
             configuation.Settings.general.LCBPath = string.Empty;
-            configuation.Settings.general.skipLCBPathCheck = false;
             var fileDialog = new Microsoft.Win32.OpenFileDialog
             {
                 Title = "请选择你的边狱公司游戏文件，不要选择快捷方式！！！",

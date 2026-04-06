@@ -268,9 +268,19 @@ namespace LLC_MOD_Toolbox
                     DialogTitle = title,
                     MessageText = message,
                     InputType = InputType.None,
-                    Buttons = buttons,
-                    Owner = owner
+                    Buttons = buttons
                 };
+
+                if (owner != null)
+                {
+                    dialog.Owner = owner;
+                    dialog.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+                }
+                else
+                {
+                    dialog.WindowStartupLocation = WindowStartupLocation.CenterScreen;
+                    dialog.Topmost = true;
+                }
 
                 var dialogResult = dialog.ShowDialog();
                 return new DialogResult(dialog.ClickedButton, dialog.InputResult);

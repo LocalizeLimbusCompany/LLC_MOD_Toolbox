@@ -1,6 +1,6 @@
 ﻿{
   "general": {
-    "_skipLCBPathCheck": "跳过路径检查逻辑，直接使用配置路径",
+    "_skipLCBPathCheck": "跳过启动时的路径确认弹窗，但仍会检查游戏路径是否有效",
     "skipLCBPathCheck": false,
     "_LCBPath": "边狱公司游戏路径",
     "LCBPath": null,

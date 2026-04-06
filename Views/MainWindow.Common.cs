@@ -38,81 +38,105 @@ namespace LLC_MOD_Toolbox
 
         private static void CheckLimbusCompanyPath()
         {
-            if (configuation.Settings.general.skipLCBPathCheck && !string.IsNullOrEmpty(configuation.Settings.general.LCBPath))
+            bool checkLCBPathResult = false;
+            string? configPath = configuation.Settings.general.LCBPath;
+
+            if (!string.IsNullOrWhiteSpace(configPath))
             {
-                limbusCompanyDir = configuation.Settings.general.LCBPath;
-                Log.logger.Info("跳过检查路径。");
+                limbusCompanyDir = configPath;
+            }
+
+            limbusCompanyGameDir = Path.Combine(limbusCompanyDir, "LimbusCompany.exe");
+            bool hasValidConfiguredPath = !string.IsNullOrWhiteSpace(limbusCompanyDir) && File.Exists(limbusCompanyGameDir);
+
+            if (!hasValidConfiguredPath)
+            {
+                if (!string.IsNullOrWhiteSpace(limbusCompanyDir))
+                {
+                    Log.logger.Warn($"当前边狱公司路径无效，未找到游戏文件：{limbusCompanyGameDir}");
+                }
+
+                limbusCompanyDir = string.Empty;
+                limbusCompanyGameDir = string.Empty;
+
+                try
+                {
+                    limbusCompanyDir = SteamLocator.FindLimbusCompanyPath(
+                        appId: "1973530",
+                        executableName: "LimbusCompany.exe"
+                    );
+                    limbusCompanyGameDir = Path.Combine(limbusCompanyDir, "LimbusCompany.exe");
+                    Log.logger.Info($"重新定位到 Limbus Company 安装路径：{limbusCompanyDir}");
+                }
+                catch (Exception ex)
+                {
+                    Log.logger.Info($"自动定位失败：{ex.Message}");
+                }
+
+                if (!string.IsNullOrWhiteSpace(limbusCompanyDir) && File.Exists(limbusCompanyGameDir))
+                {
+                    checkLCBPathResult = UniversalDialog.ShowConfirm($"重新定位到以下边狱公司地址，是否正确？\n{limbusCompanyDir}", "检查路径");
+                }
+            }
+            else if (configuation.Settings.general.skipLCBPathCheck)
+            {
+                Log.logger.Info("已跳过启动时的路径确认弹窗，但仍完成路径有效性检查。");
+                checkLCBPathResult = true;
             }
             else
             {
-                bool CheckLCBPathResult = false;
-                if (string.IsNullOrEmpty(limbusCompanyDir))
-                {
-                    try
-                    {
-                        limbusCompanyDir = SteamLocator.FindLimbusCompanyPath(
-                            appId: "1973530",
-                            executableName: "LimbusCompany.exe"
-                        );
+                checkLCBPathResult = UniversalDialog.ShowConfirm($"这是您的边狱公司地址吗？\n{limbusCompanyDir}", "检查路径");
+            }
 
-                        Log.logger.Info($"找到 Limbus Company 安装路径：{limbusCompanyDir}");
-                    }
-                    catch (Exception ex)
-                    {
-                        Log.logger.Info($"未找到：{ex.Message}");
-                    }
-                }
-                if (!string.IsNullOrEmpty(limbusCompanyDir))
+            if (checkLCBPathResult)
+            {
+                Log.logger.Info("用户确认路径。");
+                configuation.Settings.general.LCBPath = limbusCompanyDir;
+                configuation.Settings.general.skipLCBPathCheck = true;
+                configuation.SaveConfig();
+            }
+
+            if (string.IsNullOrWhiteSpace(limbusCompanyDir) || !checkLCBPathResult)
+            {
+                if (string.IsNullOrWhiteSpace(limbusCompanyDir))
                 {
-                    CheckLCBPathResult = UniversalDialog.ShowConfirm($"这是您的边狱公司地址吗？\n{limbusCompanyDir}", "检查路径");
+                    Log.logger.Warn("未能找到 Limbus Company 目录，手动选择模式。");
+                    UniversalDialog.ShowMessage("未能找到有效的 Limbus Company 目录。请手动选择。", "提示", null, null);
                 }
-                if (CheckLCBPathResult)
+                else
                 {
-                    Log.logger.Info("用户确认路径。");
+                    Log.logger.Warn("用户否认 Limbus Company 目录正确性。");
+                }
+
+                var fileDialog = new OpenFileDialog
+                {
+                    Title = "请选择你的边狱公司游戏文件",
+                    Multiselect = false,
+                    InitialDirectory = limbusCompanyDir,
+                    Filter = "LimbusCompany.exe|LimbusCompany.exe",
+                    FileName = "LimbusCompany.exe"
+                };
+                if (fileDialog.ShowDialog() == true)
+                {
+                    limbusCompanyDir = Path.GetDirectoryName(fileDialog.FileName) ?? limbusCompanyDir;
+                    limbusCompanyGameDir = Path.GetFullPath(fileDialog.FileName);
+                }
+
+                if (!File.Exists(limbusCompanyGameDir))
+                {
+                    Log.logger.Error("选择了错误目录，关闭。");
+                    UniversalDialog.ShowMessage("选择目录有误，没有在当前目录找到游戏。", "错误", null, null);
+                    Application.Current.Shutdown();
+                }
+                else
+                {
+                    Log.logger.Info("找到了正确目录。");
                     configuation.Settings.general.LCBPath = limbusCompanyDir;
                     configuation.Settings.general.skipLCBPathCheck = true;
                     configuation.SaveConfig();
                 }
-                if (string.IsNullOrEmpty(limbusCompanyDir) || !CheckLCBPathResult)
-                {
-                    if (string.IsNullOrEmpty(limbusCompanyDir))
-                    {
-                        Log.logger.Warn("未能找到 Limbus Company 目录，手动选择模式。");
-                        UniversalDialog.ShowMessage("未能找到 Limbus Company 目录。请手动选择。", "提示", null, null);
-                    }
-                    else
-                    {
-                        Log.logger.Warn("用户否认 Limbus Company 目录正确性。");
-                    }
-                    var fileDialog = new OpenFileDialog
-                    {
-                        Title = "请选择你的边狱公司游戏文件",
-                        Multiselect = false,
-                        InitialDirectory = limbusCompanyDir,
-                        Filter = "LimbusCompany.exe|LimbusCompany.exe",
-                        FileName = "LimbusCompany.exe"
-                    };
-                    if (fileDialog.ShowDialog() == true)
-                    {
-                        limbusCompanyDir = Path.GetDirectoryName(fileDialog.FileName) ?? limbusCompanyDir;
-                        limbusCompanyGameDir = Path.GetFullPath(fileDialog.FileName);
-                    }
-
-                    if (!File.Exists(limbusCompanyGameDir))
-                    {
-                        Log.logger.Error("选择了错误目录，关闭。");
-                        UniversalDialog.ShowMessage("选择目录有误，没有在当前目录找到游戏。", "错误", null, null);
-                        Application.Current.Shutdown();
-                    }
-                    else
-                    {
-                        Log.logger.Info("找到了正确目录。");
-                        configuation.Settings.general.LCBPath = limbusCompanyDir;
-                        configuation.Settings.general.skipLCBPathCheck = true;
-                        configuation.SaveConfig();
-                    }
-                }
             }
+
             limbusCompanyGameDir = Path.Combine(limbusCompanyDir, "LimbusCompany.exe");
             Log.logger.Info("边狱公司路径：" + limbusCompanyDir);
         }
