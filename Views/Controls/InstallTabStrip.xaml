@@ -1,0 +1,93 @@
+<UserControl x:Class="LLC_MOD_Toolbox.Views.Controls.InstallTabStrip"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             IsHitTestVisible="{Binding ArePrimaryActionsEnabled}">
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+    </UserControl.Resources>
+    <Grid>
+        <Image x:Name="GachaSimDisabled" Opacity="1" HorizontalAlignment="Left" Height="17" Margin="569,18,0,0" VerticalAlignment="Top" Width="91" Source="pack://siteoforigin:,,,/Picture/DisableButton.png" Visibility="{Binding IsInstallTabsDisabledOverlayVisible, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+        <Image x:Name="AutoInstallDisabled" HorizontalAlignment="Left" Height="17" Margin="128,18,0,0" VerticalAlignment="Top" Width="91" Source="pack://siteoforigin:,,,/Picture/DisableButton.png" Visibility="{Binding IsInstallTabsDisabledOverlayVisible, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+        <Image x:Name="FontReplaceDisabled" HorizontalAlignment="Left" Height="17" Margin="275,18,0,0" VerticalAlignment="Top" Width="91" Source="pack://siteoforigin:,,,/Picture/DisableButton.png" Visibility="{Binding IsInstallTabsDisabledOverlayVisible, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+        <Image x:Name="SkinDisabled" HorizontalAlignment="Left" Height="17" Margin="424,18,0,0" VerticalAlignment="Top" Width="90" Source="pack://siteoforigin:,,,/Picture/DisableButton.png" Visibility="{Binding IsInstallTabsDisabledOverlayVisible, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+        <Image x:Name="AutoInstallHover" IsHitTestVisible="False" Panel.ZIndex="5" Opacity="0" HorizontalAlignment="Left" Height="46" Margin="105,4,0,0" VerticalAlignment="Top" Width="134" Source="pack://siteoforigin:,,,/Picture/ControlBoardHover.png"/>
+        <Image x:Name="FontReplaceHover" IsHitTestVisible="False" Panel.ZIndex="5" Opacity="0" HorizontalAlignment="Left" Height="46" Margin="252,4,0,0" VerticalAlignment="Top" Width="134" Source="pack://siteoforigin:,,,/Picture/ControlBoardHover.png"/>
+        <Image x:Name="SkinHover" IsHitTestVisible="False" Panel.ZIndex="5" Opacity="0" HorizontalAlignment="Left" Height="46" Margin="400,4,0,0" VerticalAlignment="Top" Width="134" Source="pack://siteoforigin:,,,/Picture/ControlBoardHover.png"/>
+        <Image x:Name="GachaSimHover" IsHitTestVisible="False" Panel.ZIndex="5" Opacity="0" HorizontalAlignment="Left" Height="46" Margin="548,4,0,0" VerticalAlignment="Top" Width="134" Source="pack://siteoforigin:,,,/Picture/ControlBoardHover.png"/>
+        <Button x:Name="AutoInstallButton" Visibility="{Binding IsInstallTabsVisible, Converter={StaticResource BooleanToVisibilityConverter}}" Content="自动安装" HorizontalAlignment="Left" Margin="122,4,0,0" VerticalAlignment="Top" Height="40" Width="101" Background="Transparent" BorderBrush="Transparent" BorderThickness="0" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Bold" Foreground="#FFFFEED4" FontSize="18" Style="{DynamicResource NoHover}" Command="{Binding ShowAutoInstallCommand}">
+            <Button.Triggers>
+                <EventTrigger RoutedEvent="Button.MouseEnter">
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation Storyboard.TargetName="AutoInstallHover" Storyboard.TargetProperty="Opacity" From="0" To="1" Duration="0:0:0.3"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger>
+                <EventTrigger RoutedEvent="Button.MouseLeave">
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation Storyboard.TargetName="AutoInstallHover" Storyboard.TargetProperty="Opacity" From="1" To="0" Duration="0:0:0.3"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger>
+            </Button.Triggers>
+        </Button>
+        <Button x:Name="FontReplaceButton" Visibility="{Binding IsInstallTabsVisible, Converter={StaticResource BooleanToVisibilityConverter}}" Content="字体替换" HorizontalAlignment="Left" Margin="271,4,0,0" VerticalAlignment="Top" Height="40" Width="101" Background="Transparent" BorderBrush="Transparent" BorderThickness="0" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Bold" Foreground="#FFFFEED4" FontSize="18" Style="{DynamicResource NoHover}" Command="{Binding ShowFontReplaceCommand}">
+            <Button.Triggers>
+                <EventTrigger RoutedEvent="Button.MouseEnter">
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation Storyboard.TargetName="FontReplaceHover" Storyboard.TargetProperty="Opacity" From="0" To="1" Duration="0:0:0.3"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger>
+                <EventTrigger RoutedEvent="Button.MouseLeave">
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation Storyboard.TargetName="FontReplaceHover" Storyboard.TargetProperty="Opacity" From="1" To="0" Duration="0:0:0.3"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger>
+            </Button.Triggers>
+        </Button>
+        <Button x:Name="SkinButton" Visibility="{Binding IsInstallTabsVisible, Converter={StaticResource BooleanToVisibilityConverter}}" Content="皮肤管理" HorizontalAlignment="Left" Margin="419,4,0,0" VerticalAlignment="Top" Height="40" Width="101" Background="Transparent" BorderBrush="Transparent" BorderThickness="0" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Bold" Foreground="#FFFFEED4" FontSize="18" Style="{DynamicResource NoHover}" Command="{Binding ShowSkinCommand}">
+            <Button.Triggers>
+                <EventTrigger RoutedEvent="Button.MouseEnter">
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation Storyboard.TargetName="SkinHover" Storyboard.TargetProperty="Opacity" From="0" To="1" Duration="0:0:0.3"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger>
+                <EventTrigger RoutedEvent="Button.MouseLeave">
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation Storyboard.TargetName="SkinHover" Storyboard.TargetProperty="Opacity" From="1" To="0" Duration="0:0:0.3"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger>
+            </Button.Triggers>
+        </Button>
+        <Button x:Name="GachaSimInstallButton" Visibility="{Binding IsInstallTabsVisible, Converter={StaticResource BooleanToVisibilityConverter}}" Content="抽卡模拟器" HorizontalAlignment="Left" Margin="564,4,0,0" VerticalAlignment="Top" Height="40" Width="102" Background="Transparent" BorderBrush="Transparent" BorderThickness="0" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Bold" Foreground="#FFFFEED4" FontSize="18" Style="{DynamicResource NoHover}" Command="{Binding ShowGachaCommand}">
+            <Button.Triggers>
+                <EventTrigger RoutedEvent="Button.MouseEnter">
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation Storyboard.TargetName="GachaSimHover" Storyboard.TargetProperty="Opacity" From="0" To="1" Duration="0:0:0.3"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger>
+                <EventTrigger RoutedEvent="Button.MouseLeave">
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation Storyboard.TargetName="GachaSimHover" Storyboard.TargetProperty="Opacity" From="1" To="0" Duration="0:0:0.3"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger>
+            </Button.Triggers>
+        </Button>
+    </Grid>
+</UserControl>

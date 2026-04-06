@@ -1,0 +1,133 @@
+<UserControl x:Class="LLC_MOD_Toolbox.Views.Controls.FontReplacePageControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d">
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+    </UserControl.Resources>
+    <Grid x:Name="FontReplacePage"
+          Visibility="{Binding IsFontPageVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
+        <Label Content="对汉化的字体进行替换。" HorizontalAlignment="Center" Margin="0,15,0,0" VerticalAlignment="Top" Height="36" Width="644" FontSize="20" Foreground="#FFFFEED4" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Medium" />
+        <Label Content="字体路径" HorizontalAlignment="Center" Margin="0,51,0,0" VerticalAlignment="Top" Height="36" Width="644" FontSize="16" Foreground="#FFFFEED4" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Medium" />
+        <TextBox x:Name="FontReplaceTextBox" HorizontalAlignment="Left" Margin="91,56,0,0" TextWrapping="Wrap" Text="{Binding FontReplacePath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Top" Width="446" Height="26" FontSize="16" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Medium"/>
+        <Label Content="字体大小" HorizontalAlignment="Center" Margin="0,85,0,0" VerticalAlignment="Top" Height="36" Width="644" FontSize="16" Foreground="#FFFFEED4" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Medium" />
+        <TextBox x:Name="FontSizeTextBox" HorizontalAlignment="Left" Margin="91,90,0,0" TextWrapping="Wrap" Text="{Binding FontSizeText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Top" Width="446" Height="26" FontSize="16" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Medium"/>
+        <Button HorizontalAlignment="Left" Margin="554,54,0,0" VerticalAlignment="Top" Height="28" Width="74" Style="{DynamicResource NoHover}" Background="#FFFFEED4" Command="{Binding ExploreFontCommand}">
+            <Button.Clip>
+                <RectangleGeometry Rect="0,0,74,28" RadiusX="3" RadiusY="3"/>
+            </Button.Clip>
+            <Button.Triggers>
+                <EventTrigger RoutedEvent="Button.MouseEnter">
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation Storyboard.TargetName="ExploreFontHover" Storyboard.TargetProperty="Opacity" From="0" To="1" Duration="0:0:0.3"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger>
+                <EventTrigger RoutedEvent="Button.MouseLeave">
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation Storyboard.TargetName="ExploreFontHover" Storyboard.TargetProperty="Opacity" From="1" To="0" Duration="0:0:0.3"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger>
+            </Button.Triggers>
+        </Button>
+        <Label Content="浏览" HorizontalAlignment="Left" IsHitTestVisible="False" Margin="572,51,0,0" VerticalAlignment="Top" Height="38" Width="56" FontSize="16" Foreground="Black" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Heavy"/>
+        <Label Content="迫不得已的翻译" Panel.ZIndex="5" HorizontalAlignment="Left" IsHitTestVisible="False" Margin="133,172,0,0" VerticalAlignment="Top" Height="38" Width="138" FontSize="{DynamicResource GlobalPreviewFontSize}" Foreground="#ebcaa2" FontFamily="{DynamicResource GlobalPreviewFont}" Effect="{DynamicResource ShadowForPreview}"/>
+        <Label Content="[无差别攻击]" Panel.ZIndex="5" HorizontalAlignment="Left" IsHitTestVisible="False" Margin="57,209,0,0" VerticalAlignment="Top" Height="38" Width="138" FontSize="{DynamicResource GlobalPreviewSmallFontSize}" Foreground="#fb0300" FontFamily="{DynamicResource GlobalPreviewFont}"/>
+        <Label Content="攻击容量■■■■■■■" Panel.ZIndex="5" HorizontalAlignment="Left" IsHitTestVisible="False" Margin="150,209,0,0" VerticalAlignment="Top" Height="38" Width="166" FontSize="{DynamicResource GlobalPreviewSmallFontSize}" Foreground="#FCB618" FontFamily="{DynamicResource GlobalPreviewFont}"/>
+        <Label Content="[广域乱射]" Panel.ZIndex="5" HorizontalAlignment="Left" IsHitTestVisible="False" Margin="80,227,0,0" VerticalAlignment="Top" Height="38" Width="166" FontSize="{DynamicResource GlobalPreviewSmallFontSize}" Foreground="#a16a3b" FontFamily="{DynamicResource GlobalPreviewFont}"/>
+        <Label Content="[翻译时]" Panel.ZIndex="5" HorizontalAlignment="Left" IsHitTestVisible="False" Margin="57,244,0,0" VerticalAlignment="Top" Height="38" Width="166" FontSize="{DynamicResource GlobalPreviewSmallFontSize}" Foreground="#3dc2fa" FontFamily="{DynamicResource GlobalPreviewFont}"/>
+        <Label Content="人正因心怀狂气，才有前进的动力。" Panel.ZIndex="5" HorizontalAlignment="Left" IsHitTestVisible="False" Margin="106,244.5,0,0" VerticalAlignment="Top" Height="25" Width="231" FontSize="{DynamicResource GlobalPreviewSmallFontSize}" Foreground="#ebcaa2" FontFamily="{DynamicResource GlobalPreviewFont}"/>
+        <Label Content="人は狂気を抱いてこそ進むことができる。" Panel.ZIndex="5" HorizontalAlignment="Left" IsHitTestVisible="False" Margin="57,260,0,0" VerticalAlignment="Top" Height="25" Width="275" FontSize="{DynamicResource GlobalPreviewSmallFontSize}" Foreground="#ebcaa2" FontFamily="{DynamicResource GlobalPreviewFont}"/>
+        <Label Content="사람은 광기를 머금고 나서야 나아갈 수 있다." Panel.ZIndex="5" HorizontalAlignment="Left" IsHitTestVisible="False" Margin="57,277,0,0" VerticalAlignment="Top" Height="25" Width="249" FontSize="{DynamicResource GlobalPreviewSmallFontSize}" Foreground="#ebcaa2" FontFamily="{DynamicResource GlobalPreviewFont}"/>
+        <Label Content="[翻译后]" Panel.ZIndex="5" HorizontalAlignment="Left" IsHitTestVisible="False" Margin="57,293,0,0" VerticalAlignment="Top" Height="38" Width="166" FontSize="{DynamicResource GlobalPreviewSmallFontSize}" Foreground="#64ac1a" FontFamily="{DynamicResource GlobalPreviewFont}"/>
+        <Label Content="人无语言则茫然无依" Panel.ZIndex="5" HorizontalAlignment="Left" IsHitTestVisible="False" Margin="106,293.5,0,0" VerticalAlignment="Top" Height="25" Width="231" FontSize="{DynamicResource GlobalPreviewSmallFontSize}" Foreground="#ebcaa2" FontFamily="{DynamicResource GlobalPreviewFont}"/>
+        <Label Content="黑白不分的视频" Panel.ZIndex="5" HorizontalAlignment="Left" IsHitTestVisible="False" Margin="398,172,0,0" VerticalAlignment="Top" Height="38" Width="138" FontSize="{DynamicResource GlobalPreviewFontSize}" Foreground="#ebcaa2" FontFamily="{DynamicResource GlobalPreviewFont}" Effect="{DynamicResource ShadowForPreview}"/>
+        <Label Content="[锟斤拷]" Panel.ZIndex="5" HorizontalAlignment="Left" IsHitTestVisible="False" Margin="321,209,0,0" VerticalAlignment="Top" Height="38" Width="166" FontSize="{DynamicResource GlobalPreviewSmallFontSize}" Foreground="#cefec4" FontFamily="{DynamicResource GlobalPreviewFont}"/>
+        <Label Content="﨨﨧﨤﨣﨡蘒﨟﨔﨓﨑﨏﨎嗀﨓﨔" Panel.ZIndex="5" HorizontalAlignment="Left" IsHitTestVisible="False" Margin="369,209.5,0,0" VerticalAlignment="Top" Height="26" Width="231" FontSize="{DynamicResource GlobalPreviewSmallFontSize}" Foreground="#ebcaa2" FontFamily="{DynamicResource GlobalPreviewFont}"/>
+        <Label Content="﨟蘒﨡﨣﨤﨧﨨﨩﨩裏隣兀嗀﨎﨏﨑黹黽" Panel.ZIndex="5" HorizontalAlignment="Left" IsHitTestVisible="False" Margin="321,225,0,0" VerticalAlignment="Top" Height="25" Width="231" FontSize="{DynamicResource GlobalPreviewSmallFontSize}" Foreground="#ebcaa2" FontFamily="{DynamicResource GlobalPreviewFont}"/>
+        <Label Content="БДЁЖЗЙЛЦЪЭЮЯдёжзйклчъэюя" Panel.ZIndex="5" HorizontalAlignment="Left" IsHitTestVisible="False" Margin="321,240,0,0" VerticalAlignment="Top" Height="26" Width="231" FontSize="{DynamicResource GlobalPreviewSmallFontSize}" Foreground="#ebcaa2" FontFamily="{DynamicResource GlobalPreviewFont}"/>
+        <Label Content="ΓΔΘΙΛΞΠΣΦΨΩαβγδεζνξπηθικλμτω" Panel.ZIndex="5" HorizontalAlignment="Left" IsHitTestVisible="False" Margin="321,254,0,0" VerticalAlignment="Top" Height="25" Width="231" FontSize="{DynamicResource GlobalPreviewSmallFontSize}" Foreground="#ebcaa2" FontFamily="{DynamicResource GlobalPreviewFont}"/>
+        <Label Content="!#$%'()*+,-./:;=?@[\]^_`{|}~～，。、；" Panel.ZIndex="5" HorizontalAlignment="Left" IsHitTestVisible="False" Margin="321,267,0,0" VerticalAlignment="Top" Height="26" Width="231" FontSize="{DynamicResource GlobalPreviewSmallFontSize}" Foreground="#ebcaa2" FontFamily="{DynamicResource GlobalPreviewFont}"/>
+        <Label Content="‘’【】、《》？！：“”·——…﹢﹣×÷±+-" Panel.ZIndex="5" HorizontalAlignment="Left" IsHitTestVisible="False" Margin="314,283,0,0" VerticalAlignment="Top" Height="25" Width="231" FontSize="{DynamicResource GlobalPreviewSmallFontSize}" Foreground="#ebcaa2" FontFamily="{DynamicResource GlobalPreviewFont}"/>
+        <Image x:Name="ExploreFontHover" Panel.ZIndex="5" IsHitTestVisible="False" Opacity="0" HorizontalAlignment="Left" Height="34" Margin="551,52,0,0" VerticalAlignment="Top" Width="80" Source="pack://siteoforigin:,,,/Picture/SettingButtonHover.png"/>
+        <Image x:Name="FontPreviewBase" Opacity="1" HorizontalAlignment="Left" Height="209" Margin="20,120,0,0" VerticalAlignment="Top" Width="621" Source="pack://siteoforigin:,,,/Picture/FontPreviewBase.png"/>
+        <Label x:Name="PreviewText" HorizontalAlignment="Center" Margin="0,117,0,0" VerticalAlignment="Top" Height="208" Width="644" Foreground="#FFFFEED4" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Medium">
+            <TextBlock FontSize="13.5" Text="" TextWrapping="Wrap" Height="234"/>
+        </Label>
+        <Button HorizontalAlignment="Left" Margin="20,334,0,0" VerticalAlignment="Top" Height="28" Width="74" Style="{DynamicResource NoHover}" Background="#FFFFEED4" Command="{Binding PreviewFontCommand}">
+            <Button.Clip>
+                <RectangleGeometry Rect="0,0,74,28" RadiusX="3" RadiusY="3"/>
+            </Button.Clip>
+            <Button.Triggers>
+                <EventTrigger RoutedEvent="Button.MouseEnter">
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation Storyboard.TargetName="PreviewFontHover" Storyboard.TargetProperty="Opacity" From="0" To="1" Duration="0:0:0.3"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger>
+                <EventTrigger RoutedEvent="Button.MouseLeave">
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation Storyboard.TargetName="PreviewFontHover" Storyboard.TargetProperty="Opacity" From="1" To="0" Duration="0:0:0.3"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger>
+            </Button.Triggers>
+        </Button>
+        <Label Content="预览字体" HorizontalAlignment="Left" IsHitTestVisible="False" Margin="20,330,0,0" VerticalAlignment="Top" Height="38" Width="74" FontSize="16" Foreground="Black" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Heavy"/>
+        <Image x:Name="PreviewFontHover" Panel.ZIndex="5" IsHitTestVisible="False" Opacity="0" HorizontalAlignment="Left" Height="34" Margin="17,331,0,0" VerticalAlignment="Top" Width="80" Source="pack://siteoforigin:,,,/Picture/SettingButtonHover.png"/>
+        <Button HorizontalAlignment="Left" Margin="129,334,0,0" VerticalAlignment="Top" Height="28" Width="74" Style="{DynamicResource NoHover}" Background="#FFFFEED4" Command="{Binding ApplyFontCommand}">
+            <Button.Clip>
+                <RectangleGeometry Rect="0,0,74,28" RadiusX="3" RadiusY="3"/>
+            </Button.Clip>
+            <Button.Triggers>
+                <EventTrigger RoutedEvent="Button.MouseEnter">
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation Storyboard.TargetName="ChangeFontHover" Storyboard.TargetProperty="Opacity" From="0" To="1" Duration="0:0:0.3"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger>
+                <EventTrigger RoutedEvent="Button.MouseLeave">
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation Storyboard.TargetName="ChangeFontHover" Storyboard.TargetProperty="Opacity" From="1" To="0" Duration="0:0:0.3"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger>
+            </Button.Triggers>
+        </Button>
+        <Label Content="切换字体" HorizontalAlignment="Left" IsHitTestVisible="False" Margin="129,330,0,0" VerticalAlignment="Top" Height="38" Width="74" FontSize="16" Foreground="Black" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Heavy"/>
+        <Image x:Name="ChangeFontHover" Panel.ZIndex="5" IsHitTestVisible="False" Opacity="0" HorizontalAlignment="Left" Height="34" Margin="126,331,0,0" VerticalAlignment="Top" Width="80" Source="pack://siteoforigin:,,,/Picture/SettingButtonHover.png"/>
+        <Button HorizontalAlignment="Left" Margin="240,334,0,0" VerticalAlignment="Top" Height="28" Width="74" Style="{DynamicResource NoHover}" Background="#FFFFEED4" Command="{Binding RestoreFontCommand}">
+            <Button.Clip>
+                <RectangleGeometry Rect="0,0,74,28" RadiusX="3" RadiusY="3"/>
+            </Button.Clip>
+            <Button.Triggers>
+                <EventTrigger RoutedEvent="Button.MouseEnter">
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation Storyboard.TargetName="RestoreFontHover" Storyboard.TargetProperty="Opacity" From="0" To="1" Duration="0:0:0.3"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger>
+                <EventTrigger RoutedEvent="Button.MouseLeave">
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation Storyboard.TargetName="RestoreFontHover" Storyboard.TargetProperty="Opacity" From="1" To="0" Duration="0:0:0.3"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger>
+            </Button.Triggers>
+        </Button>
+        <Label Content="还原字体" HorizontalAlignment="Left" IsHitTestVisible="False" Margin="240,330,0,0" VerticalAlignment="Top" Height="38" Width="74" FontSize="16" Foreground="Black" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Heavy"/>
+        <Image x:Name="RestoreFontHover" Panel.ZIndex="5" IsHitTestVisible="False" Opacity="0" HorizontalAlignment="Left" Height="34" Margin="236,331,0,0" VerticalAlignment="Top" Width="80" Source="pack://siteoforigin:,,,/Picture/SettingButtonHover.png"/>
+        <Image HorizontalAlignment="Left" Height="100" Margin="57,170,0,0" VerticalAlignment="Top" Width="100"/>
+    </Grid>
+</UserControl>

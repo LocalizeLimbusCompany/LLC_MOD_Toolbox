@@ -1,0 +1,263 @@
+<UserControl x:Class="LLC_MOD_Toolbox.Views.Controls.LinkPageControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d">
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+    </UserControl.Resources>
+    <Grid x:Name="LinkPage"
+          Visibility="{Binding IsLinkPageVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
+        <Button HorizontalAlignment="Left" Margin="37,40,0,0" VerticalAlignment="Top" Height="40" Width="262" Opacity="1" Background="Transparent" BorderBrush="Transparent" BorderThickness="0" Style="{DynamicResource NoHover}" Command="{Binding OpenLinkCommand}" CommandParameter="https://www.zeroasso.top">
+            <Button.Content>
+                <Image x:Name="LinkButton1IMG" Height="40" Width="262" Source="pack://siteoforigin:,,,/Picture/LinkBT.png"/>
+            </Button.Content>
+            <Button.Triggers>
+                <EventTrigger RoutedEvent="Button.MouseEnter">
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation Storyboard.TargetName="LinkButtonHover1" Storyboard.TargetProperty="Opacity" From="0" To="1" Duration="0:0:0.3"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger>
+                <EventTrigger RoutedEvent="Button.MouseLeave">
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation Storyboard.TargetName="LinkButtonHover1" Storyboard.TargetProperty="Opacity" From="1" To="0" Duration="0:0:0.3"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger>
+            </Button.Triggers>
+        </Button>
+        <Button HorizontalAlignment="Left" Margin="37,85,0,0" VerticalAlignment="Top" Height="40" Width="262" Opacity="1" Background="Transparent" BorderBrush="Transparent" BorderThickness="0" Style="{DynamicResource NoHover}" Command="{Binding OpenLinkCommand}" CommandParameter="https://github.com/LocalizeLimbusCompany">
+            <Button.Content>
+                <Image x:Name="LinkButton3IMG" Height="40" Width="262" Source="pack://siteoforigin:,,,/Picture/LinkBT.png"/>
+            </Button.Content>
+            <Button.Triggers>
+                <EventTrigger RoutedEvent="Button.MouseEnter">
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation Storyboard.TargetName="LinkButtonHover3" Storyboard.TargetProperty="Opacity" From="0" To="1" Duration="0:0:0.3"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger>
+                <EventTrigger RoutedEvent="Button.MouseLeave">
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation Storyboard.TargetName="LinkButtonHover3" Storyboard.TargetProperty="Opacity" From="1" To="0" Duration="0:0:0.3"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger>
+            </Button.Triggers>
+        </Button>
+        <Button HorizontalAlignment="Left" Margin="37,130,0,0" VerticalAlignment="Top" Height="40" Width="262" Opacity="1" Background="Transparent" BorderBrush="Transparent" BorderThickness="0" Style="{DynamicResource NoHover}" Command="{Binding OpenLinkCommand}" CommandParameter="https://paratranz.cn/projects/6860/leaderboard">
+            <Button.Content>
+                <Image x:Name="LinkButton5IMG" Height="40" Width="262" Source="pack://siteoforigin:,,,/Picture/LinkBT.png"/>
+            </Button.Content>
+            <Button.Triggers>
+                <EventTrigger RoutedEvent="Button.MouseEnter">
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation Storyboard.TargetName="LinkButtonHover5" Storyboard.TargetProperty="Opacity" From="0" To="1" Duration="0:0:0.3"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger>
+                <EventTrigger RoutedEvent="Button.MouseLeave">
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation Storyboard.TargetName="LinkButtonHover5" Storyboard.TargetProperty="Opacity" From="1" To="0" Duration="0:0:0.3"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger>
+            </Button.Triggers>
+        </Button>
+        <Button HorizontalAlignment="Left" Margin="37,175,0,0" VerticalAlignment="Top" Height="40" Width="262" Opacity="1" Background="Transparent" BorderBrush="Transparent" BorderThickness="0" Style="{DynamicResource NoHover}" Command="{Binding OpenLinkCommand}" CommandParameter="https://weidian.com/?userid=1655827241">
+            <Button.Content>
+                <Image x:Name="LinkButton7IMG" Height="40" Width="262" Source="pack://siteoforigin:,,,/Picture/LinkBT.png"/>
+            </Button.Content>
+            <Button.Triggers>
+                <EventTrigger RoutedEvent="Button.MouseEnter">
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation Storyboard.TargetName="LinkButtonHover7" Storyboard.TargetProperty="Opacity" From="0" To="1" Duration="0:0:0.3"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger>
+                <EventTrigger RoutedEvent="Button.MouseLeave">
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation Storyboard.TargetName="LinkButtonHover7" Storyboard.TargetProperty="Opacity" From="1" To="0" Duration="0:0:0.3"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger>
+            </Button.Triggers>
+        </Button>
+        <Button HorizontalAlignment="Left" Margin="37,220,0,0" VerticalAlignment="Top" Height="40" Width="262" Opacity="1" Background="Transparent" BorderBrush="Transparent" BorderThickness="0" Style="{DynamicResource NoHover}" Command="{Binding OpenLinkCommand}" CommandParameter="https://simpfun.cn">
+            <Button.Content>
+                <Image x:Name="LinkButton9IMG" Height="40" Width="262" Source="pack://siteoforigin:,,,/Picture/LinkBT.png"/>
+            </Button.Content>
+            <Button.Triggers>
+                <EventTrigger RoutedEvent="Button.MouseEnter">
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation Storyboard.TargetName="LinkButtonHover9" Storyboard.TargetProperty="Opacity" From="0" To="1" Duration="0:0:0.3"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger>
+                <EventTrigger RoutedEvent="Button.MouseLeave">
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation Storyboard.TargetName="LinkButtonHover9" Storyboard.TargetProperty="Opacity" From="1" To="0" Duration="0:0:0.3"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger>
+            </Button.Triggers>
+        </Button>
+        <Button Grid.Column="2" HorizontalAlignment="Left" Margin="37,265,0,0" VerticalAlignment="Top" Height="40" Width="262" Opacity="1" Background="Transparent" BorderBrush="Transparent" BorderThickness="0" Style="{DynamicResource BlackWhite}">
+            <Button.Content>
+                <Image x:Name="LinkButton11IMG" Height="40" Width="262" Source="pack://siteoforigin:,,,/Picture/LinkBT.png"/>
+            </Button.Content>
+        </Button>
+        <Button Grid.Column="2" HorizontalAlignment="Left" Margin="37,310,0,0" VerticalAlignment="Top" Height="40" Width="262" Opacity="1" Background="Transparent" BorderBrush="Transparent" BorderThickness="0" Style="{DynamicResource BlackWhite}">
+            <Button.Content>
+                <Image x:Name="LinkButton13IMG" Height="40" Width="262" Source="pack://siteoforigin:,,,/Picture/LinkBT.png"/>
+            </Button.Content>
+        </Button>
+        <Button HorizontalAlignment="Left" Margin="352,40,0,0" VerticalAlignment="Top" Height="40" Width="262" Opacity="1" Background="Transparent" BorderBrush="Transparent" BorderThickness="0" Style="{DynamicResource NoHover}" Command="{Binding OpenLinkCommand}" CommandParameter="https://space.bilibili.com/1247764479">
+            <Button.Content>
+                <Image x:Name="LinkButton14IMG" Height="40" Width="262" Source="pack://siteoforigin:,,,/Picture/LinkBT.png"/>
+            </Button.Content>
+            <Button.Triggers>
+                <EventTrigger RoutedEvent="Button.MouseEnter">
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation Storyboard.TargetName="LinkButtonHover2" Storyboard.TargetProperty="Opacity" From="0" To="1" Duration="0:0:0.3"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger>
+                <EventTrigger RoutedEvent="Button.MouseLeave">
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation Storyboard.TargetName="LinkButtonHover2" Storyboard.TargetProperty="Opacity" From="1" To="0" Duration="0:0:0.3"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger>
+            </Button.Triggers>
+        </Button>
+        <Button HorizontalAlignment="Left" Margin="352,85,0,0" VerticalAlignment="Top" Height="40" Width="262" Opacity="1" Background="Transparent" BorderBrush="Transparent" BorderThickness="0" Style="{DynamicResource NoHover}" Command="{Binding OpenLinkCommand}" CommandParameter="https://afdian.com/a/Limbus_zero">
+            <Button.Content>
+                <Image x:Name="LinkButton2IMG" Height="40" Width="262" Source="pack://siteoforigin:,,,/Picture/LinkBT.png"/>
+            </Button.Content>
+            <Button.Triggers>
+                <EventTrigger RoutedEvent="Button.MouseEnter">
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation Storyboard.TargetName="LinkButtonHover4" Storyboard.TargetProperty="Opacity" From="0" To="1" Duration="0:0:0.3"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger>
+                <EventTrigger RoutedEvent="Button.MouseLeave">
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation Storyboard.TargetName="LinkButtonHover4" Storyboard.TargetProperty="Opacity" From="1" To="0" Duration="0:0:0.3"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger>
+            </Button.Triggers>
+        </Button>
+        <Button HorizontalAlignment="Left" Margin="352,130,0,0" VerticalAlignment="Top" Height="40" Width="262" Opacity="1" Background="Transparent" BorderBrush="Transparent" BorderThickness="0" Style="{DynamicResource NoHover}" Command="{Binding OpenLinkCommand}" CommandParameter="https://paratranz.cn">
+            <Button.Content>
+                <Image x:Name="LinkButton4IMG" Height="40" Width="262" Source="pack://siteoforigin:,,,/Picture/LinkBT.png"/>
+            </Button.Content>
+            <Button.Triggers>
+                <EventTrigger RoutedEvent="Button.MouseEnter">
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation Storyboard.TargetName="LinkButtonHover6" Storyboard.TargetProperty="Opacity" From="0" To="1" Duration="0:0:0.3"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger>
+                <EventTrigger RoutedEvent="Button.MouseLeave">
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation Storyboard.TargetName="LinkButtonHover6" Storyboard.TargetProperty="Opacity" From="1" To="0" Duration="0:0:0.3"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger>
+            </Button.Triggers>
+        </Button>
+        <Button HorizontalAlignment="Left" Margin="352,175,0,0" VerticalAlignment="Top" Height="40" Width="262" Opacity="1" Background="Transparent" BorderBrush="Transparent" BorderThickness="0" Style="{DynamicResource NoHover}" Command="{Binding OpenLinkCommand}" CommandParameter="https://limbuscompany.huijiwiki.com">
+            <Button.Content>
+                <Image x:Name="LinkButton6IMG" Height="40" Width="262" Source="pack://siteoforigin:,,,/Picture/LinkBT.png"/>
+            </Button.Content>
+            <Button.Triggers>
+                <EventTrigger RoutedEvent="Button.MouseEnter">
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation Storyboard.TargetName="LinkButtonHover8" Storyboard.TargetProperty="Opacity" From="0" To="1" Duration="0:0:0.3"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger>
+                <EventTrigger RoutedEvent="Button.MouseLeave">
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation Storyboard.TargetName="LinkButtonHover8" Storyboard.TargetProperty="Opacity" From="1" To="0" Duration="0:0:0.3"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger>
+            </Button.Triggers>
+        </Button>
+        <Button HorizontalAlignment="Left" Margin="352,220,0,0" VerticalAlignment="Top" Height="40" Width="262" Opacity="1" Background="Transparent" BorderBrush="Transparent" BorderThickness="0" Style="{DynamicResource NoHover}" Command="{Binding OpenLinkCommand}" CommandParameter="https://mirrorchyan.com/">
+            <Button.Content>
+                <Image x:Name="LinkButton8IMG" Height="40" Width="262" Source="pack://siteoforigin:,,,/Picture/LinkBT.png"/>
+            </Button.Content>
+            <Button.Triggers>
+                <EventTrigger RoutedEvent="Button.MouseEnter">
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation Storyboard.TargetName="LinkButtonHover10" Storyboard.TargetProperty="Opacity" From="0" To="1" Duration="0:0:0.3"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger>
+                <EventTrigger RoutedEvent="Button.MouseLeave">
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation Storyboard.TargetName="LinkButtonHover10" Storyboard.TargetProperty="Opacity" From="1" To="0" Duration="0:0:0.3"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger>
+            </Button.Triggers>
+        </Button>
+        <Button Grid.Column="2" HorizontalAlignment="Left" Margin="352,265,0,0" VerticalAlignment="Top" Height="40" Width="262" Opacity="1" Background="Transparent" BorderBrush="Transparent" BorderThickness="0" Style="{DynamicResource BlackWhite}">
+            <Button.Content>
+                <Image x:Name="LinkButton10IMG" Height="40" Width="262" Source="pack://siteoforigin:,,,/Picture/LinkBT.png"/>
+            </Button.Content>
+        </Button>
+        <Button Grid.Column="2" HorizontalAlignment="Left" Margin="352,310,0,0" VerticalAlignment="Top" Height="40" Width="262" Opacity="1" Background="Transparent" BorderBrush="Transparent" BorderThickness="0" Style="{DynamicResource BlackWhite}">
+            <Button.Content>
+                <Image x:Name="LinkButton12IMG" Height="40" Width="262" Source="pack://siteoforigin:,,,/Picture/LinkBT.png"/>
+            </Button.Content>
+        </Button>
+        <Image x:Name="LinkButtonHover1" IsHitTestVisible="False" Opacity="0" HorizontalAlignment="Left" Height="46" Margin="34,38,0,0" VerticalAlignment="Top" Width="268" Source="pack://siteoforigin:,,,/Picture/LinkBTHover.png"/>
+        <Image x:Name="LinkButtonHover2" IsHitTestVisible="False" Opacity="0" HorizontalAlignment="Left" Height="46" Margin="349,37,0,0" VerticalAlignment="Top" Width="268" Source="pack://siteoforigin:,,,/Picture/LinkBTHover.png"/>
+        <Image x:Name="LinkButtonHover3" IsHitTestVisible="False" Opacity="0" HorizontalAlignment="Left" Height="46" Margin="34,82,0,0" VerticalAlignment="Top" Width="268" Source="pack://siteoforigin:,,,/Picture/LinkBTHover.png"/>
+        <Image x:Name="LinkButtonHover4" IsHitTestVisible="False" Opacity="0" HorizontalAlignment="Left" Height="46" Margin="349,82,0,0" VerticalAlignment="Top" Width="268" Source="pack://siteoforigin:,,,/Picture/LinkBTHover.png"/>
+        <Image x:Name="LinkButtonHover5" IsHitTestVisible="False" Opacity="0" HorizontalAlignment="Left" Height="46" Margin="34,127,0,0" VerticalAlignment="Top" Width="268" Source="pack://siteoforigin:,,,/Picture/LinkBTHover.png"/>
+        <Image x:Name="LinkButtonHover6" IsHitTestVisible="False" Opacity="0" HorizontalAlignment="Left" Height="46" Margin="349,127,0,0" VerticalAlignment="Top" Width="268" Source="pack://siteoforigin:,,,/Picture/LinkBTHover.png"/>
+        <Image x:Name="LinkButtonHover7" IsHitTestVisible="False" Opacity="0" HorizontalAlignment="Left" Height="46" Margin="34,172,0,0" VerticalAlignment="Top" Width="268" Source="pack://siteoforigin:,,,/Picture/LinkBTHover.png"/>
+        <Image x:Name="LinkButtonHover8" IsHitTestVisible="False" Opacity="0" HorizontalAlignment="Left" Height="46" Margin="349,172,0,0" VerticalAlignment="Top" Width="268" Source="pack://siteoforigin:,,,/Picture/LinkBTHover.png"/>
+        <Image x:Name="LinkButtonHover9" IsHitTestVisible="False" Opacity="0" HorizontalAlignment="Left" Height="46" Margin="34,217,0,0" VerticalAlignment="Top" Width="268" Source="pack://siteoforigin:,,,/Picture/LinkBTHover.png"/>
+        <Image x:Name="LinkButtonHover10" IsHitTestVisible="False" Opacity="0" HorizontalAlignment="Left" Height="46" Margin="349,217,0,0" VerticalAlignment="Top" Width="268" Source="pack://siteoforigin:,,,/Picture/LinkBTHover.png"/>
+        <Label Content="都市零协会文档站" IsHitTestVisible="False" HorizontalAlignment="Left" Margin="37,40,0,0" VerticalAlignment="Top" FontSize="20" Foreground="#FFFFEED4" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Bold" Height="37" Width="262" HorizontalContentAlignment="Center"/>
+        <Label Content="LLC on GitHub" IsHitTestVisible="False" HorizontalAlignment="Left" Margin="37,85,0,0" VerticalAlignment="Top" FontSize="20" Foreground="#FFFFEED4" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Bold" Height="37" Width="262" HorizontalContentAlignment="Center"/>
+        <Label Content="翻译项目译者" IsHitTestVisible="False" HorizontalAlignment="Left" Margin="37,130,0,0" VerticalAlignment="Top" FontSize="20" Foreground="#FFFFEED4" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Bold" Height="37" Width="262" HorizontalContentAlignment="Center"/>
+        <Label Content="零协会周边微店(柔造)" IsHitTestVisible="False" HorizontalAlignment="Left" Margin="37,175,0,0" VerticalAlignment="Top" FontSize="20" Foreground="#FFFFEED4" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Bold" Height="37" Width="262" HorizontalContentAlignment="Center"/>
+        <Label Content="都市零协会 BiliBili" IsHitTestVisible="False" HorizontalAlignment="Left" Margin="352,40,0,0" VerticalAlignment="Top" FontSize="20" Foreground="#FFFFEED4" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Bold" Height="37" Width="262" HorizontalContentAlignment="Center"/>
+        <Label Content="爱发电主页" IsHitTestVisible="False" HorizontalAlignment="Left" Margin="352,85,0,0" VerticalAlignment="Top" FontSize="20" Foreground="#FFFFEED4" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Bold" Height="37" Width="262" HorizontalContentAlignment="Center"/>
+        <Label Content="翻译平台Paratranz" IsHitTestVisible="False" HorizontalAlignment="Left" Margin="352,130,0,0" VerticalAlignment="Top" FontSize="20" Foreground="#FFFFEED4" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Bold" Height="37" Width="262" HorizontalContentAlignment="Center"/>
+        <Label Content="边狱公司灰机Wiki" IsHitTestVisible="False" HorizontalAlignment="Left" Margin="352,175,0,0" VerticalAlignment="Top" FontSize="20" Foreground="#FFFFEED4" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Bold" Height="37" Width="262" HorizontalContentAlignment="Center"/>
+        <Label Content="免费开服平台-简幻欢" IsHitTestVisible="False" HorizontalAlignment="Left" Margin="37,221,0,0" VerticalAlignment="Top" FontSize="20" Foreground="#FFFFEED4" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Bold" Height="37" Width="262" HorizontalContentAlignment="Center"/>
+        <Label Content="Mirror酱" IsHitTestVisible="False" HorizontalAlignment="Left" Margin="352,222,0,0" VerticalAlignment="Top" FontSize="20" Foreground="#FFFFEED4" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Bold" Height="36" Width="262" HorizontalContentAlignment="Center"/>
+    </Grid>
+</UserControl>

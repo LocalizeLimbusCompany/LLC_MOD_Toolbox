@@ -1,0 +1,139 @@
+<UserControl x:Class="LLC_MOD_Toolbox.Views.Controls.SettingsPageControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d">
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+    </UserControl.Resources>
+    <Grid x:Name="SettingsPage"
+          Visibility="{Binding IsSettingsPageVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
+        <Label Content="切换节点" HorizontalAlignment="Left" Margin="100,28,0,0" VerticalAlignment="Top" Height="41" Width="494" FontSize="22" Foreground="#FFFFEED4" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Medium"/>
+        <ComboBox x:Name="NodeCombobox" Margin="304,35,70,330" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Medium" Foreground="Black" FontSize="16" ItemsSource="{Binding NodeOptions}" SelectedItem="{Binding SelectedNodeOption, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+            <ComboBox.Clip>
+                <RectangleGeometry Rect="0,0,290,31" RadiusX="3" RadiusY="3"/>
+            </ComboBox.Clip>
+        </ComboBox>
+        <Label Content="切换API节点" HorizontalAlignment="Left" Margin="100,80,0,0" VerticalAlignment="Top" Height="41" Width="494" FontSize="22" Foreground="#FFFFEED4" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Medium"/>
+        <ComboBox x:Name="APICombobox" Panel.ZIndex="5" Margin="304,87,70,278" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Medium" Foreground="Black" FontSize="16" ItemsSource="{Binding ApiOptions}" SelectedItem="{Binding SelectedApiOption, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+            <ComboBox.Clip>
+                <RectangleGeometry Rect="0,0,290,31" RadiusX="3" RadiusY="3"/>
+            </ComboBox.Clip>
+        </ComboBox>
+        <Label Content="卸载模组" HorizontalAlignment="Left" Margin="100,128,0,0" VerticalAlignment="Top" Height="41" Width="494" FontSize="22" Foreground="#FFFFEED4" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Medium"/>
+        <Image x:Name="SettingsLine" HorizontalAlignment="Center" Height="249" VerticalAlignment="Center" Width="524" Source="pack://siteoforigin:,,,/Picture/SettingsLine.png"/>
+        <Image x:Name="UninstallHover" Panel.ZIndex="5" IsHitTestVisible="False" Opacity="0" HorizontalAlignment="Left" Height="34" Margin="511,131,0,0" VerticalAlignment="Top" Width="80" Source="pack://siteoforigin:,,,/Picture/SettingButtonHover.png"/>
+        <Button HorizontalAlignment="Left" Margin="514,134,0,0" VerticalAlignment="Top" Height="28" Width="74" Style="{DynamicResource NoHover}" Background="#FFFFEED4" Command="{Binding UninstallCommand}">
+            <Button.Clip>
+                <RectangleGeometry Rect="0,0,74,28" RadiusX="3" RadiusY="3"/>
+            </Button.Clip>
+            <Button.Triggers>
+                <EventTrigger RoutedEvent="Button.MouseEnter">
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation Storyboard.TargetName="UninstallHover" Storyboard.TargetProperty="Opacity" From="0" To="1" Duration="0:0:0.3"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger>
+                <EventTrigger RoutedEvent="Button.MouseLeave">
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation Storyboard.TargetName="UninstallHover" Storyboard.TargetProperty="Opacity" From="1" To="0" Duration="0:0:0.3"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger>
+            </Button.Triggers>
+        </Button>
+        <Label Content="发送启动器到桌面" HorizontalAlignment="Left" Margin="100,276,0,0" VerticalAlignment="Top" Height="41" Width="494" FontSize="22" Foreground="#FFFFEED4" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Medium"/>
+        <Image x:Name="SendMainHover" Panel.ZIndex="5" IsHitTestVisible="False" Opacity="0" HorizontalAlignment="Left" Height="34" Margin="511,281,0,0" VerticalAlignment="Top" Width="80" Source="pack://siteoforigin:,,,/Picture/SettingButtonHover.png"/>
+        <Image x:Name="SendHelpHover" Panel.ZIndex="5" IsHitTestVisible="False" Opacity="0" HorizontalAlignment="Left" Height="34" Margin="430,282,0,0" VerticalAlignment="Top" Width="80" Source="pack://siteoforigin:,,,/Picture/SettingButtonHover.png"/>
+        <Button HorizontalAlignment="Left" Margin="514,284,0,0" VerticalAlignment="Top" Height="28" Width="74" Style="{DynamicResource NoHover}" Background="#FFFFEED4" Command="{Binding CreateLauncherShortcutCommand}">
+            <Button.Clip>
+                <RectangleGeometry Rect="0,0,74,28" RadiusX="3" RadiusY="3"/>
+            </Button.Clip>
+            <Button.Triggers>
+                <EventTrigger RoutedEvent="Button.MouseEnter">
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation Storyboard.TargetName="SendMainHover" Storyboard.TargetProperty="Opacity" From="0" To="1" Duration="0:0:0.3"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger>
+                <EventTrigger RoutedEvent="Button.MouseLeave">
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation Storyboard.TargetName="SendMainHover" Storyboard.TargetProperty="Opacity" From="1" To="0" Duration="0:0:0.3"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger>
+            </Button.Triggers>
+        </Button>
+        <Button HorizontalAlignment="Left" Margin="432,284,0,0" VerticalAlignment="Top" Height="28" Width="74" Style="{DynamicResource NoHover}" Background="#FFFFEED4" Command="{Binding ShowLauncherHelpCommand}">
+            <Button.Clip>
+                <RectangleGeometry Rect="0,0,74,28" RadiusX="3" RadiusY="3"/>
+            </Button.Clip>
+            <Button.Triggers>
+                <EventTrigger RoutedEvent="Button.MouseEnter">
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation Storyboard.TargetName="SendHelpHover" Storyboard.TargetProperty="Opacity" From="0" To="1" Duration="0:0:0.3"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger>
+                <EventTrigger RoutedEvent="Button.MouseLeave">
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation Storyboard.TargetName="SendHelpHover" Storyboard.TargetProperty="Opacity" From="1" To="0" Duration="0:0:0.3"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger>
+            </Button.Triggers>
+        </Button>
+        <Button HorizontalAlignment="Left" Margin="271,37,0,0" VerticalAlignment="Top" Height="28" Width="28" Style="{DynamicResource NoHover}" Background="#FFFFEED4" Command="{Binding ShowNodeHelpCommand}">
+            <Button.Clip>
+                <RectangleGeometry Rect="0,0,28,28" RadiusX="14" RadiusY="14"/>
+            </Button.Clip>
+        </Button>
+        <Button HorizontalAlignment="Left" Margin="271,88,0,0" VerticalAlignment="Top" Height="28" Width="28" Style="{DynamicResource NoHover}" Background="#FFFFEED4" Command="{Binding ShowNodeHelpCommand}">
+            <Button.Clip>
+                <RectangleGeometry Rect="0,0,28,28" RadiusX="14" RadiusY="14"/>
+            </Button.Clip>
+        </Button>
+        <Label Content="卸载" HorizontalAlignment="Left" IsHitTestVisible="False" Margin="531,130,0,0" VerticalAlignment="Top" Height="38" Width="52" FontSize="16" Foreground="Black" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Heavy"/>
+        <Label Content="官网说明" HorizontalAlignment="Left" IsHitTestVisible="False" Margin="432,281,0,0" VerticalAlignment="Top" Height="38" Width="74" FontSize="16" Foreground="Black" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Heavy"/>
+        <Label Content="发送" HorizontalAlignment="Left" IsHitTestVisible="False" Margin="531,281,0,0" VerticalAlignment="Top" Height="38" Width="52" FontSize="16" Foreground="Black" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Heavy"/>
+        <Label Content="?" HorizontalAlignment="Left" IsHitTestVisible="False" Margin="276,34,0,0" VerticalAlignment="Top" Height="38" Width="52" FontSize="16" Foreground="Black" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Heavy"/>
+        <Label Content="?" HorizontalAlignment="Left" IsHitTestVisible="False" Margin="276,85,0,0" VerticalAlignment="Top" Height="38" Width="52" FontSize="16" Foreground="Black" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Heavy"/>
+        <Label Content="?" Panel.ZIndex="10" HorizontalAlignment="Left" IsHitTestVisible="False" Margin="398,281,0,0" VerticalAlignment="Top" Height="38" Width="52" FontSize="16" Foreground="Black" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Heavy"/>
+        <Button HorizontalAlignment="Left" Margin="394,284,0,0" VerticalAlignment="Top" Height="28" Width="28" Style="{DynamicResource NoHover}" Background="#FFFFEED4" Command="{Binding ShowHotUpdateHelpCommand}">
+            <Button.Clip>
+                <RectangleGeometry Rect="0,0,28,28" RadiusX="14" RadiusY="14"/>
+            </Button.Clip>
+        </Button>
+        <Label Content="配置Mirror酱" HorizontalAlignment="Left" Margin="100,229,0,0" VerticalAlignment="Top" Height="41" Width="494" FontSize="22" Foreground="#FFFFEED4" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Medium"/>
+        <Button HorizontalAlignment="Left" Margin="514,236,0,0" VerticalAlignment="Top" Height="28" Width="74" Style="{DynamicResource NoHover}" Background="#FFFFEED4" Command="{Binding ConfigureMirrorChyanCommand}">
+            <Button.Clip>
+                <RectangleGeometry Rect="0,0,74,28" RadiusX="3" RadiusY="3"/>
+            </Button.Clip>
+            <Button.Triggers>
+                <EventTrigger RoutedEvent="Button.MouseEnter">
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation Storyboard.TargetName="MirrorChyanConfigButtonHover" Storyboard.TargetProperty="Opacity" From="0" To="1" Duration="0:0:0.3"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger>
+                <EventTrigger RoutedEvent="Button.MouseLeave">
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation Storyboard.TargetName="MirrorChyanConfigButtonHover" Storyboard.TargetProperty="Opacity" From="1" To="0" Duration="0:0:0.3"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger>
+            </Button.Triggers>
+        </Button>
+        <Label x:Name="MirrorChyanConfigButtonLabel" Content="{Binding MirrorChyanButtonText}" HorizontalContentAlignment="Center" HorizontalAlignment="Left" IsHitTestVisible="False" Margin="514,233,0,0" VerticalAlignment="Top" Height="38" Width="74" FontSize="16" Foreground="Black" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Heavy"/>
+        <Image x:Name="MirrorChyanConfigButtonHover" Panel.ZIndex="5" IsHitTestVisible="False" Opacity="0" HorizontalAlignment="Left" Height="34" Margin="511,234,0,0" VerticalAlignment="Top" Width="80" Source="pack://siteoforigin:,,,/Picture/SettingButtonHover.png"/>
+    </Grid>
+</UserControl>

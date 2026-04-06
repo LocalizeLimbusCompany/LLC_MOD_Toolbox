@@ -1,0 +1,108 @@
+<UserControl x:Class="LLC_MOD_Toolbox.Views.Controls.AnnouncementPageControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d">
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+    </UserControl.Resources>
+    <Grid x:Name="AnnouncementPage"
+          Visibility="{Binding IsAnnouncementPageVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
+        <Label HorizontalAlignment="Center"
+               Margin="0,10,0,0"
+               VerticalAlignment="Top"
+               Height="55"
+               Width="644"
+               FontSize="35"
+               Foreground="#FFFFEED4"
+               FontFamily="/Fonts/#Source Han Sans CN"
+               FontWeight="Bold">
+            <TextBlock Text="存在未读的新公告！" Height="45"/>
+        </Label>
+        <Label HorizontalAlignment="Center"
+               Margin="0,70,0,0"
+               VerticalAlignment="Top"
+               Height="269"
+               Width="644"
+               FontSize="15"
+               Foreground="#FFFFEED4"
+               FontFamily="/Fonts/#Source Han Sans CN"
+               FontWeight="Medium">
+            <TextBlock Text="{Binding AnnouncementText}" TextWrapping="Wrap" Height="262" Width="634"/>
+        </Label>
+        <Image x:Name="AnnouncementButtonHover"
+               Panel.ZIndex="5"
+               IsHitTestVisible="False"
+               Opacity="0"
+               HorizontalAlignment="Center"
+               Height="34"
+               Margin="0,340,0,0"
+               VerticalAlignment="Top"
+               Width="80"
+               Source="Picture/SettingButtonHover.png"/>
+        <Button IsHitTestVisible="{Binding IsAnnouncementButtonEnabled}"
+                HorizontalAlignment="Center"
+                Margin="0,343,0,0"
+                VerticalAlignment="Top"
+                Height="28"
+                Width="74"
+                Style="{DynamicResource NoHover}"
+                Background="#FFFFEED4"
+                Command="{Binding AcknowledgeAnnouncementCommand}">
+            <Button.Clip>
+                <RectangleGeometry Rect="0,0,74,28" RadiusX="3" RadiusY="3"/>
+            </Button.Clip>
+            <Button.Triggers>
+                <EventTrigger RoutedEvent="Button.MouseEnter">
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation Storyboard.TargetName="AnnouncementButtonHover"
+                                             Storyboard.TargetProperty="Opacity"
+                                             From="0"
+                                             To="1"
+                                             Duration="0:0:0.3"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger>
+                <EventTrigger RoutedEvent="Button.MouseLeave">
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation Storyboard.TargetName="AnnouncementButtonHover"
+                                             Storyboard.TargetProperty="Opacity"
+                                             From="1"
+                                             To="0"
+                                             Duration="0:0:0.3"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger>
+            </Button.Triggers>
+        </Button>
+        <Label Content="已阅"
+               HorizontalAlignment="Left"
+               IsHitTestVisible="False"
+               Margin="311,340,0,0"
+               VerticalAlignment="Top"
+               Height="38"
+               Width="52"
+               FontSize="16"
+               Foreground="Black"
+               FontFamily="/Fonts/#Source Han Sans CN"
+               FontWeight="Heavy"/>
+        <Label HorizontalAlignment="Left"
+               Margin="377,341,0,0"
+               VerticalAlignment="Top"
+               Height="33"
+               Width="264"
+               FontSize="12"
+               Foreground="#FFFFEED4"
+               FontFamily="/Fonts/#Source Han Sans CN"
+               FontWeight="Medium">
+            <TextBlock Text="{Binding AnnouncementTip}"
+                       Visibility="{Binding IsAnnouncementTipVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
+                       TextWrapping="Wrap"
+                       Height="23"
+                       Width="254"/>
+        </Label>
+    </Grid>
+</UserControl>

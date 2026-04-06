@@ -1,0 +1,53 @@
+<UserControl x:Class="LLC_MOD_Toolbox.Views.Controls.GachaPageControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d">
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+    </UserControl.Resources>
+    <Grid x:Name="GachaPage"
+          Visibility="{Binding IsGachaPageVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
+        <Image x:Name="GachaBackground" HorizontalAlignment="Left" Height="330" Margin="12,27,0,0" VerticalAlignment="Top" Width="630" Source="pack://siteoforigin:,,,/Picture/GachaBackground.png"/>
+        <Image x:Name="Lunacy" Panel.ZIndex="5" IsHitTestVisible="False" HorizontalAlignment="Left" Height="30" Margin="43,325,0,0" VerticalAlignment="Top" Width="30" Source="pack://siteoforigin:,,,/Picture/Lunacy.png"/>
+        <Image x:Name="GachaButtonHover" Panel.ZIndex="5" IsHitTestVisible="False" Opacity="0" HorizontalAlignment="Left" Height="53" Margin="25,312,0,0" VerticalAlignment="Top" Width="125" Source="pack://siteoforigin:,,,/Picture/SettingButtonHover.png"/>
+        <Button x:Name="InGachaButton" HorizontalAlignment="Left" Margin="31,318,0,0" VerticalAlignment="Top" Height="42" Width="113" Style="{DynamicResource NoHover}" Background="#FFFFEED4" Command="{Binding StartGachaRollCommand}">
+            <Button.Clip>
+                <RectangleGeometry Rect="0,0,113,42" RadiusX="3" RadiusY="3"/>
+            </Button.Clip>
+            <Button.Triggers>
+                <EventTrigger RoutedEvent="Button.MouseEnter">
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation Storyboard.TargetName="GachaButtonHover"
+                                             Storyboard.TargetProperty="Opacity"
+                                             From="0" To="1" Duration="0:0:0.3"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger>
+                <EventTrigger RoutedEvent="Button.MouseLeave">
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation Storyboard.TargetName="GachaButtonHover"
+                                             Storyboard.TargetProperty="Opacity"
+                                             From="1" To="0" Duration="0:0:0.3"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger>
+            </Button.Triggers>
+        </Button>
+        <Label Content="x1300" HorizontalAlignment="Left" IsHitTestVisible="False" Margin="78,319,0,0" VerticalAlignment="Top" Height="38" Width="62" FontSize="16" Foreground="Black" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Heavy"/>
+        <Label Content="十连" HorizontalAlignment="Left" IsHitTestVisible="False" Margin="94,337,0,0" VerticalAlignment="Top" Height="21" Width="26" FontSize="8" Foreground="Black" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Heavy"/>
+        <Label x:Name="GachaText1" Visibility="Collapsed" HorizontalAlignment="Left" IsHitTestVisible="False" Margin="124,80,0,0" VerticalAlignment="Top" Height="28" Width="357" HorizontalContentAlignment="Center"><Label.Content><TextBlock Text="[★]边狱公司EGO::罪人 希斯克利夫" FontSize="14" Foreground="#B88345" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Bold"/></Label.Content></Label>
+        <Label x:Name="GachaText2" Visibility="Collapsed" HorizontalAlignment="Left" IsHitTestVisible="False" Margin="124,97,0,0" VerticalAlignment="Top" Height="28" Width="357" HorizontalContentAlignment="Center"><Label.Content><TextBlock Text="[★★]边狱公司EGO::罪人 希斯克利夫" FontSize="14" Foreground="#CA1400" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Bold"/></Label.Content></Label>
+        <Label x:Name="GachaText3" Visibility="Collapsed" HorizontalAlignment="Left" IsHitTestVisible="False" Margin="124,114,0,0" VerticalAlignment="Top" Height="28" Width="357" HorizontalContentAlignment="Center"><Label.Content><TextBlock Text="[★★]边狱公司EGO::罪人 希斯克利夫" FontSize="14" Foreground="#FCC404" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Bold"/></Label.Content></Label>
+        <Label x:Name="GachaText4" Visibility="Collapsed" HorizontalAlignment="Left" IsHitTestVisible="False" Margin="124,131,0,0" VerticalAlignment="Top" Height="28" Width="357" HorizontalContentAlignment="Center"><Label.Content><TextBlock Text="[★★]边狱公司EGO::罪人 希斯克利夫" FontSize="14" Foreground="#B88345" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Bold"/></Label.Content></Label>
+        <Label x:Name="GachaText5" Visibility="Collapsed" HorizontalAlignment="Left" IsHitTestVisible="False" Margin="124,148,0,0" VerticalAlignment="Top" Height="28" Width="357" HorizontalContentAlignment="Center"><Label.Content><TextBlock Text="[★★]边狱公司EGO::罪人 希斯克利夫" FontSize="14" Foreground="#B88345" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Bold"/></Label.Content></Label>
+        <Label x:Name="GachaText6" Visibility="Collapsed" HorizontalAlignment="Left" IsHitTestVisible="False" Margin="124,165,0,0" VerticalAlignment="Top" Height="28" Width="357" HorizontalContentAlignment="Center"><Label.Content><TextBlock Text="[★★]边狱公司EGO::罪人 希斯克利夫" FontSize="14" Foreground="#B88345" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Bold"/></Label.Content></Label>
+        <Label x:Name="GachaText7" Visibility="Collapsed" HorizontalAlignment="Left" IsHitTestVisible="False" Margin="124,182,0,0" VerticalAlignment="Top" Height="28" Width="357" HorizontalContentAlignment="Center"><Label.Content><TextBlock Text="[★★]边狱公司EGO::罪人 希斯克利夫" FontSize="14" Foreground="#B88345" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Bold"/></Label.Content></Label>
+        <Label x:Name="GachaText8" Visibility="Collapsed" HorizontalAlignment="Left" IsHitTestVisible="False" Margin="124,199,0,0" VerticalAlignment="Top" Height="28" Width="357" HorizontalContentAlignment="Center"><Label.Content><TextBlock Text="[★★]边狱公司EGO::罪人 希斯克利夫" FontSize="14" Foreground="#B88345" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Bold"/></Label.Content></Label>
+        <Label x:Name="GachaText9" Visibility="Collapsed" HorizontalAlignment="Left" IsHitTestVisible="False" Margin="124,216,0,0" VerticalAlignment="Top" Height="28" Width="357" HorizontalContentAlignment="Center"><Label.Content><TextBlock Text="[★★]边狱公司EGO::罪人 希斯克利夫" FontSize="14" Foreground="#B88345" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Bold"/></Label.Content></Label>
+        <Label x:Name="GachaText10" Visibility="Collapsed" HorizontalAlignment="Left" IsHitTestVisible="False" Margin="124,232,0,0" VerticalAlignment="Top" Height="28" Width="357" HorizontalContentAlignment="Center"><Label.Content><TextBlock Text="[★★]边狱公司EGO::罪人 希斯克利夫" FontSize="14" Foreground="#B88345" FontFamily="/Fonts/#Source Han Sans CN" FontWeight="Bold"/></Label.Content></Label>
+    </Grid>
+</UserControl>

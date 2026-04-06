@@ -1,0 +1,171 @@
+<UserControl x:Class="LLC_MOD_Toolbox.Views.Controls.AutoInstallPageControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:local="clr-namespace:LLC_MOD_Toolbox"
+             mc:Ignorable="d">
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+    </UserControl.Resources>
+    <Grid x:Name="AutoInstallPage"
+          Visibility="{Binding IsInstallPageVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
+        <Button x:Name="AutoInstallStartButton"
+                Visibility="{Binding IsAutoInstallStartVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
+                IsHitTestVisible="{Binding IsAutoInstallStartVisible}"
+                HorizontalAlignment="Center"
+                Margin="0,151,0,0"
+                VerticalAlignment="Top"
+                Panel.ZIndex="3"
+                Width="196"
+                Height="70"
+                Background="Transparent"
+                BorderBrush="Transparent"
+                BorderThickness="0"
+                Style="{DynamicResource NoHover}"
+                Command="{Binding StartInstallCommand}">
+            <Button.Content>
+                <Image x:Name="AutoInstallStartButtonIMG"
+                       Height="70"
+                       Width="195"
+                       Source="pack://siteoforigin:,,,/Picture/Install.png" />
+            </Button.Content>
+            <Button.Triggers>
+                <EventTrigger RoutedEvent="Button.MouseEnter">
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation Storyboard.TargetName="AutoInstallBTHover"
+                                             Storyboard.TargetProperty="Opacity"
+                                             From="0" To="1" Duration="0:0:0.3"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger>
+                <EventTrigger RoutedEvent="Button.MouseLeave">
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation Storyboard.TargetName="AutoInstallBTHover"
+                                             Storyboard.TargetProperty="Opacity"
+                                             From="1" To="0" Duration="0:0:0.3"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger>
+            </Button.Triggers>
+        </Button>
+        <Image x:Name="AutoInstallBTHover"
+               HorizontalAlignment="Center"
+               Panel.ZIndex="5"
+               IsHitTestVisible="False"
+               Opacity="0"
+               Height="70"
+               Margin="0,151,0,0"
+               VerticalAlignment="Top"
+               Width="196"
+               Source="pack://siteoforigin:,,,/Picture/InstallHover.png"/>
+        <Image x:Name="AutoInstallBTIng"
+               Visibility="{Binding IsAutoInstallBusyVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
+               HorizontalAlignment="Center"
+               Panel.ZIndex="10"
+               IsHitTestVisible="False"
+               Opacity="1"
+               Height="70"
+               Margin="0,151,0,0"
+               VerticalAlignment="Top"
+               Width="196"
+               Source="pack://siteoforigin:,,,/Picture/Installing.png"/>
+        <Image x:Name="StartInstallBackground"
+               HorizontalAlignment="Center"
+               IsHitTestVisible="False"
+               Height="123"
+               VerticalAlignment="Top"
+               Width="482"
+               Source="pack://siteoforigin:,,,/Picture/StartInstallBackground.png"
+               Margin="0,127,0,0"/>
+        <Canvas Margin="-10,294,10,22">
+            <Image x:Name="FullProgress"
+                   Height="50"
+                   Canvas.Left="26"
+                   Canvas.Top="12"
+                   Width="624"
+                   Source="pack://siteoforigin:,,,/Picture/FullProgress.png"
+                   Panel.ZIndex="5"
+                   HorizontalAlignment="Left"
+                   VerticalAlignment="Center">
+                <Image.Clip>
+                    <RectangleGeometry Rect="0,0,0,50" />
+                </Image.Clip>
+            </Image>
+            <Image x:Name="EmptyProgress"
+                   Height="50"
+                   Canvas.Left="26"
+                   Canvas.Top="12"
+                   Width="624"
+                   Source="pack://siteoforigin:,,,/Picture/EmptyProgress.png"
+                   Panel.ZIndex="3"
+                   HorizontalAlignment="Left"
+                   VerticalAlignment="Center"/>
+        </Canvas>
+        <Image x:Name="AutoInstallXiaoHei"
+               HorizontalAlignment="Left"
+               Height="218"
+               Margin="18,98,0,0"
+               VerticalAlignment="Top"
+               Width="290"
+               Source="pack://siteoforigin:,,,/Picture/B.png"/>
+        <Image x:Name="AutoInstallXiaobai"
+               HorizontalAlignment="Left"
+               Panel.ZIndex="4"
+               Height="212"
+               Margin="503,104,0,0"
+               VerticalAlignment="Top"
+               Width="258"
+               Source="pack://siteoforigin:,,,/Picture/W.png"/>
+        <local:OutlinedTextControl x:Name="NowVersionText"
+                                   Text="{Binding CurrentVersionText}"
+                                   Fill="#a16a3b"
+                                   Stroke="Black"
+                                   StrokeThickness="2"
+                                   FontSize="14"
+                                   FontFamily="/Fonts/#Source Han Sans CN"
+                                   FontWeight="Heavy"
+                                   TextAlignment="Left"
+                                   Panel.ZIndex="5"
+                                   IsHitTestVisible="False"
+                                   Margin="0,22,0,0"
+                                   Height="27"
+                                   Width="618"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Top"/>
+        <local:OutlinedTextControl x:Name="LatestVersionText"
+                                   Text="{Binding LatestVersionText}"
+                                   Fill="#a16a3b"
+                                   Stroke="Black"
+                                   StrokeThickness="2"
+                                   FontSize="14"
+                                   FontFamily="/Fonts/#Source Han Sans CN"
+                                   FontWeight="Heavy"
+                                   TextAlignment="Right"
+                                   Panel.ZIndex="5"
+                                   IsHitTestVisible="False"
+                                   Margin="0,22,0,0"
+                                   Height="27"
+                                   Width="618"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Top"/>
+        <local:OutlinedTextControl x:Name="LoadingText"
+                                   Text="{Binding LoadingText}"
+                                   Fill="#a16a3b"
+                                   Stroke="Black"
+                                   StrokeThickness="2"
+                                   FontSize="18"
+                                   FontFamily="/Fonts/#Source Han Sans CN"
+                                   FontWeight="Heavy"
+                                   TextAlignment="Center"
+                                   Panel.ZIndex="5"
+                                   IsHitTestVisible="False"
+                                   Margin="0,347,0,0"
+                                   Height="27"
+                                   Width="618"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Top"/>
+    </Grid>
+</UserControl>
