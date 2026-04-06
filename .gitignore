@@ -367,3 +367,6 @@ makeInstaller.bat
 # Vibe Coding
 CLAUDE.md
 .claude/
+/AGENT.md
+/.dotnet/.dotnet
+/.dotnet
