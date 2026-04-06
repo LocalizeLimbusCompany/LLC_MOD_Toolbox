@@ -124,7 +124,7 @@
                 <Image x:Name="LinkButton13IMG" Height="40" Width="262" Source="pack://siteoforigin:,,,/Picture/LinkBT.png"/>
             </Button.Content>
         </Button>
-        <Button HorizontalAlignment="Left" Margin="352,40,0,0" VerticalAlignment="Top" Height="40" Width="262" Opacity="1" Background="Transparent" BorderBrush="Transparent" BorderThickness="0" Style="{DynamicResource NoHover}" Command="{Binding OpenLinkCommand}" CommandParameter="https://space.bilibili.com/1247764479">
+        <Button HorizontalAlignment="Left" Margin="352,40,0,0" VerticalAlignment="Top" Height="40" Width="262" Opacity="1" Background="Transparent" BorderBrush="Transparent" BorderThickness="0" Style="{DynamicResource NoHover}" Command="{Binding OpenLinkCommand}" CommandParameter="https://space.bilibili.com/3632319835409017">
             <Button.Content>
                 <Image x:Name="LinkButton14IMG" Height="40" Width="262" Source="pack://siteoforigin:,,,/Picture/LinkBT.png"/>
             </Button.Content>
@@ -145,7 +145,7 @@
                 </EventTrigger>
             </Button.Triggers>
         </Button>
-        <Button HorizontalAlignment="Left" Margin="352,85,0,0" VerticalAlignment="Top" Height="40" Width="262" Opacity="1" Background="Transparent" BorderBrush="Transparent" BorderThickness="0" Style="{DynamicResource NoHover}" Command="{Binding OpenLinkCommand}" CommandParameter="https://afdian.com/a/Limbus_zero">
+        <Button HorizontalAlignment="Left" Margin="352,85,0,0" VerticalAlignment="Top" Height="40" Width="262" Opacity="1" Background="Transparent" BorderBrush="Transparent" BorderThickness="0" Style="{DynamicResource NoHover}" Command="{Binding OpenLinkCommand}" CommandParameter="https://ifdian.net/a/Limbus_zero">
             <Button.Content>
                 <Image x:Name="LinkButton2IMG" Height="40" Width="262" Source="pack://siteoforigin:,,,/Picture/LinkBT.png"/>
             </Button.Content>
