@@ -1,5 +1,6 @@
 using System.Windows.Input;
 using LLC_MOD_Toolbox.Infrastructure;
+using LLC_MOD_Toolbox.Models;
 using System.Collections.ObjectModel;
 
 namespace LLC_MOD_Toolbox.ViewModels
@@ -45,7 +46,7 @@ namespace LLC_MOD_Toolbox.ViewModels
         private string _greytestToken = "请输入秘钥";
         private string? _selectedNodeOption;
         private string? _selectedApiOption;
-        private string? _selectedSkinOption;
+        private SkinCatalogItem? _selectedSkinOption;
         private bool _suppressNodeSelectionNotification;
         private bool _suppressApiSelectionNotification;
         private bool _suppressSkinSelectionNotification;
@@ -97,7 +98,7 @@ namespace LLC_MOD_Toolbox.ViewModels
         public event Action? MirrorChyanConfigRequested;
         public event Action<string?>? NodeSelectionChanged;
         public event Action<string?>? ApiSelectionChanged;
-        public event Action<string?>? SkinSelectionChanged;
+        public event Action<SkinCatalogItem?>? SkinSelectionChanged;
         public event Action? ExploreFontRequested;
         public event Func<Task>? PreviewFontRequested;
         public event Action? ApplyFontRequested;
@@ -136,7 +137,7 @@ namespace LLC_MOD_Toolbox.ViewModels
 
         public ObservableCollection<string> NodeOptions { get; } = [];
         public ObservableCollection<string> ApiOptions { get; } = [];
-        public ObservableCollection<string> SkinOptions { get; } = [];
+        public ObservableCollection<SkinCatalogItem> SkinOptions { get; } = [];
 
         public MainPage CurrentPage
         {
@@ -315,7 +316,7 @@ namespace LLC_MOD_Toolbox.ViewModels
             }
         }
 
-        public string? SelectedSkinOption
+        public SkinCatalogItem? SelectedSkinOption
         {
             get => _selectedSkinOption;
             set
@@ -399,7 +400,7 @@ namespace LLC_MOD_Toolbox.ViewModels
             ReplaceCollection(ApiOptions, options);
         }
 
-        public void SetSkinOptions(IEnumerable<string> options)
+        public void SetSkinOptions(IEnumerable<SkinCatalogItem> options)
         {
             ReplaceCollection(SkinOptions, options);
         }
@@ -414,7 +415,7 @@ namespace LLC_MOD_Toolbox.ViewModels
             SetSelection(ref _suppressApiSelectionNotification, () => SelectedApiOption = option);
         }
 
-        public void UpdateSelectedSkinOption(string? option)
+        public void UpdateSelectedSkinOption(SkinCatalogItem? option)
         {
             SetSelection(ref _suppressSkinSelectionNotification, () => SelectedSkinOption = option);
         }
@@ -523,7 +524,7 @@ namespace LLC_MOD_Toolbox.ViewModels
             }
         }
 
-        private static void ReplaceCollection(ObservableCollection<string> target, IEnumerable<string> values)
+        private static void ReplaceCollection<T>(ObservableCollection<T> target, IEnumerable<T> values)
         {
             target.Clear();
             foreach (var value in values)

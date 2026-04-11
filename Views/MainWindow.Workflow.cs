@@ -74,7 +74,7 @@ namespace LLC_MOD_Toolbox
             CheckMirrorChyan();
             await CheckLoadingText();
             InitNode();
-            InitializeSkinComboBox();
+            await InitializeSkinComboBoxAsync();
             if (isMirrorChyanMode)
             {
                 await this.Dispatcher.BeginInvoke(() =>

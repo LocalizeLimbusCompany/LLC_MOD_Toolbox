@@ -15,7 +15,7 @@
         <Label HorizontalAlignment="Center" Margin="0,49,0,0" VerticalAlignment="Top" Height="55" Width="644" FontSize="20" Foreground="#FFFFEED4" FontFamily="/Fonts/subset/#Source Han Sans CN" FontWeight="Bold">
             <TextBlock Text="皮肤选择" Height="45"/>
         </Label>
-        <ComboBox x:Name="SkinBox" Margin="108,54,266,311" FontFamily="/Fonts/subset/#Source Han Sans CN" FontWeight="Medium" Foreground="Black" FontSize="16" ItemsSource="{Binding SkinOptions}" SelectedItem="{Binding SelectedSkinOption, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+        <ComboBox x:Name="SkinBox" Margin="108,54,266,311" FontFamily="/Fonts/subset/#Source Han Sans CN" FontWeight="Medium" Foreground="Black" FontSize="16" ItemsSource="{Binding SkinOptions}" SelectedItem="{Binding SelectedSkinOption, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" DisplayMemberPath="DisplayText">
             <ComboBox.Clip>
                 <RectangleGeometry Rect="0,0,290,31" RadiusX="3" RadiusY="3"/>
             </ComboBox.Clip>

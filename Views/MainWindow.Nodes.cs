@@ -177,32 +177,52 @@ namespace LLC_MOD_Toolbox
             configuation.SaveConfig();
         }
 
-        private void InitializeSkinComboBox()
+        private async Task InitializeSkinComboBoxAsync(string? preferredSkinName = null)
         {
             try
             {
                 Log.logger.Info("初始化皮肤选择框。");
-                var availableSkins = SkinManager.Instance.GetAvailableSkins();
-                List<string> skinOptions = [];
-
-                foreach (var skinName in availableSkins)
+                List<SkinDefinition> remoteSkins = [];
+                try
                 {
-                    var skinInfo = SkinManager.Instance.GetSkinInfo(skinName);
-                    if (skinInfo != null)
+                    remoteSkins = await GetRemoteSkinDefinitionsAsync();
+                }
+                catch (Exception ex)
+                {
+                    Log.logger.Warn($"获取远端皮肤列表失败，将仅显示本地皮肤: {ex.Message}");
+                }
+
+                var skinOptions = BuildSkinCatalog(remoteSkins);
+                await this.Dispatcher.BeginInvoke(() =>
+                {
+                    ViewModel.SetSkinOptions(skinOptions);
+
+                    SkinCatalogItem? selectedOption = null;
+                    if (!string.IsNullOrWhiteSpace(preferredSkinName))
                     {
-                        skinOptions.Add(skinInfo.displayName);
+                        selectedOption = skinOptions.FirstOrDefault(skin => skin.name == preferredSkinName);
                     }
-                }
-                ViewModel.SetSkinOptions(skinOptions);
 
-                var currentSkin = SkinManager.Instance.CurrentSkinInfo;
-                if (currentSkin != null)
-                {
-                    ViewModel.UpdateSelectedSkinOption(currentSkin.displayName);
-                    UpdateSkinDescription(currentSkin);
-                }
+                    if (selectedOption == null)
+                    {
+                        var currentSkin = SkinManager.Instance.CurrentSkinInfo;
+                        if (currentSkin != null)
+                        {
+                            selectedOption = skinOptions.FirstOrDefault(skin => skin.name == currentSkin.name);
+                            if (selectedOption != null)
+                            {
+                                UpdateSkinDescription(currentSkin);
+                            }
+                        }
+                    }
 
-                Log.logger.Info($"皮肤选择框初始化完成，共 {availableSkins.Count} 个皮肤。");
+                    if (selectedOption != null)
+                    {
+                        ViewModel.UpdateSelectedSkinOption(selectedOption);
+                    }
+                });
+
+                Log.logger.Info($"皮肤选择框初始化完成，本地 {SkinManager.Instance.GetAvailableSkins().Count} 个，远端 {remoteSkins.Count} 个。");
             }
             catch (Exception ex)
             {
@@ -210,48 +230,117 @@ namespace LLC_MOD_Toolbox
             }
         }
 
-        private void HandleSkinSelectionChanged(string? selectedDisplayName)
+        private async void HandleSkinSelectionChanged(SkinCatalogItem? selectedSkin)
         {
             try
             {
-                if (string.IsNullOrEmpty(selectedDisplayName)) return;
-                Log.logger.Info($"选择皮肤: {selectedDisplayName}");
+                if (selectedSkin == null || string.IsNullOrWhiteSpace(selectedSkin.name)) return;
+                Log.logger.Info($"选择皮肤: {selectedSkin.DisplayText}");
 
-                var availableSkins = SkinManager.Instance.GetAvailableSkins();
-                string selectedSkinName = null;
-
-                foreach (var skinName in availableSkins)
+                if (!selectedSkin.isInstalled)
                 {
-                    var skinInfo = SkinManager.Instance.GetSkinInfo(skinName);
-                    if (skinInfo != null && skinInfo.displayName == selectedDisplayName)
+                    string skinName = selectedSkin.name;
+                    Log.logger.Info($"皮肤未安装，开始下载: {selectedSkin.name}");
+                    bool installed = await InstallSkinFromServerAsync(skinName);
+                    if (!installed)
                     {
-                        selectedSkinName = skinName;
-                        break;
+                        Log.logger.Warn($"皮肤安装失败: {skinName}");
+                        return;
+                    }
+
+                    await InitializeSkinComboBoxAsync(skinName);
+                    selectedSkin = ViewModel.SkinOptions.FirstOrDefault(skin => skin.name == skinName);
+                    if (selectedSkin == null)
+                    {
+                        Log.logger.Warn($"皮肤安装后未能在列表中找到: {skinName}");
+                        return;
                     }
                 }
 
-                if (selectedSkinName != null)
+                bool success = SkinManager.Instance.LoadSkin(selectedSkin.name);
+                if (success)
                 {
-                    bool success = SkinManager.Instance.LoadSkin(selectedSkinName);
-                    if (success)
-                    {
-                        SkinManager.Instance.ApplySkinToWindow(this);
-                        var skinInfo = SkinManager.Instance.GetSkinInfo(selectedSkinName);
-                        UpdateSkinDescription(skinInfo);
-                        configuation.Settings.skin.currentSkin = selectedSkinName;
-                        configuation.SaveConfig();
-                        Log.logger.Info($"皮肤 {selectedDisplayName} 应用成功。");
-                    }
-                    else
-                    {
-                        Log.logger.Error($"皮肤 {selectedDisplayName} 应用失败。");
-                    }
+                    SkinManager.Instance.ApplySkinToWindow(this);
+                    var skinInfo = SkinManager.Instance.CurrentSkinInfo ?? SkinManager.Instance.GetSkinInfo(selectedSkin.name);
+                    UpdateSkinDescription(skinInfo);
+                    configuation.Settings.skin.currentSkin = selectedSkin.name;
+                    configuation.SaveConfig();
+                    Log.logger.Info($"皮肤 {selectedSkin.DisplayText} 应用成功。");
+                }
+                else
+                {
+                    Log.logger.Error($"皮肤 {selectedSkin.DisplayText} 应用失败。");
                 }
             }
             catch (Exception ex)
             {
                 Log.logger.Error($"切换皮肤时出错: {ex.Message}");
             }
+        }
+
+        private async Task<List<SkinDefinition>> GetRemoteSkinDefinitionsAsync()
+        {
+            string raw = await GetURLText("https://api.zeroasso.top/v2/skin/get_skin_info", reportError: false);
+            if (string.IsNullOrWhiteSpace(raw))
+            {
+                return [];
+            }
+
+            var remoteSkins = JsonConvert.DeserializeObject<List<SkinDefinition>>(raw);
+            return remoteSkins ?? [];
+        }
+
+        private List<SkinCatalogItem> BuildSkinCatalog(IEnumerable<SkinDefinition> remoteSkins)
+        {
+            var items = new List<SkinCatalogItem>();
+            var installedSkinNames = new HashSet<string>(SkinManager.Instance.GetAvailableSkins());
+            var addedNames = new HashSet<string>();
+
+            foreach (var skinName in SkinManager.Instance.GetAvailableSkins())
+            {
+                var skinInfo = SkinManager.Instance.GetSkinInfo(skinName);
+                if (skinInfo != null)
+                {
+                    items.Add(CreateSkinCatalogItem(skinInfo, true));
+                    addedNames.Add(skinInfo.name);
+                }
+                else
+                {
+                    items.Add(new SkinCatalogItem
+                    {
+                        name = skinName,
+                        displayName = skinName,
+                        isInstalled = true
+                    });
+                    addedNames.Add(skinName);
+                }
+            }
+
+            foreach (var skinInfo in remoteSkins.Where(skin => skin != null && !string.IsNullOrWhiteSpace(skin.name)))
+            {
+                if (addedNames.Contains(skinInfo.name))
+                {
+                    continue;
+                }
+
+                items.Add(CreateSkinCatalogItem(skinInfo, installedSkinNames.Contains(skinInfo.name)));
+                addedNames.Add(skinInfo.name);
+            }
+
+            return items;
+        }
+
+        private static SkinCatalogItem CreateSkinCatalogItem(SkinDefinition skinInfo, bool isInstalled)
+        {
+            return new SkinCatalogItem
+            {
+                name = skinInfo.name ?? string.Empty,
+                displayName = skinInfo.displayName ?? skinInfo.name ?? string.Empty,
+                desc = skinInfo.desc ?? string.Empty,
+                author = skinInfo.author ?? string.Empty,
+                version = skinInfo.version ?? "1.0.0",
+                isInstalled = isInstalled
+            };
         }
 
         private void UpdateSkinDescription(SkinDefinition skinInfo)

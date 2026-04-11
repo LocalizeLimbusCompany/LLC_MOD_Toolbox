@@ -11,4 +11,16 @@ namespace LLC_MOD_Toolbox.Models
         public Dictionary<string, bool> visibility { get; set; } = new Dictionary<string, bool>();
         public Dictionary<string, string> margins { get; set; } = new Dictionary<string, string>();
     }
+
+    public class SkinCatalogItem
+    {
+        public string name { get; set; } = "";
+        public string displayName { get; set; } = "";
+        public string desc { get; set; } = "";
+        public string author { get; set; } = "";
+        public string version { get; set; } = "1.0.0";
+        public bool isInstalled { get; set; }
+
+        public string DisplayText => isInstalled ? displayName : $"{displayName} [可安装]";
+    }
 }

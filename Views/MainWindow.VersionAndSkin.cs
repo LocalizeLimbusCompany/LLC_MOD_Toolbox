@@ -183,6 +183,60 @@ namespace LLC_MOD_Toolbox
             }
         }
 
+        internal async Task<bool> InstallSkinFromServerAsync(string skinName)
+        {
+            if (string.IsNullOrWhiteSpace(skinName))
+            {
+                return false;
+            }
+
+            string archivePath = Path.Combine(currentDir, $"{skinName}.7z");
+            string downloadUrl = $"https://api.zeroasso.top/v2/skin/get_skin/{Uri.EscapeDataString(skinName)}";
+
+            try
+            {
+                Log.logger.Info($"开始下载皮肤: {skinName}");
+                await DownloadFileAsyncWithoutProgress(downloadUrl, archivePath);
+
+                Log.logger.Info($"开始解压皮肤: {skinName}");
+                Unarchive(archivePath, currentDir);
+
+                string installedSkinPath = Path.Combine(currentDir, "Skins", skinName, "skin.json");
+                bool installed = File.Exists(installedSkinPath);
+                Log.logger.Info(installed
+                    ? $"皮肤安装完成: {skinName}"
+                    : $"皮肤已解压但未找到预期配置: {installedSkinPath}");
+                if (installed)
+                {
+                    UniversalDialog.ShowMessage("皮肤安装完成。");
+                }
+                else
+                {
+                    UniversalDialog.ShowMessage("皮肤安装失败。");
+                }
+                return installed;
+            }
+            catch (Exception ex)
+            {
+                Log.logger.Error($"安装皮肤失败: {skinName}", ex);
+                return false;
+            }
+            finally
+            {
+                try
+                {
+                    if (File.Exists(archivePath))
+                    {
+                        File.Delete(archivePath);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Log.logger.Warn($"清理皮肤安装包失败: {archivePath}, {ex.Message}");
+                }
+            }
+        }
+
         public List<string> GetAvailableSkins()
         {
             return SkinManager.Instance.GetAvailableSkins();
