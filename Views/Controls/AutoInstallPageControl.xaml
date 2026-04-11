@@ -106,16 +106,17 @@
         </Canvas>
         <Image x:Name="AutoInstallXiaoHei"
                HorizontalAlignment="Left"
+               Panel.ZIndex="-1"
                Height="224"
-               Margin="10,90,0,0"
+               Margin="10,101,0,0"
                VerticalAlignment="Top"
                Width="290"
                Source="pack://siteoforigin:,,,/Picture/B.png"/>
         <Image x:Name="AutoInstallXiaobai"
                HorizontalAlignment="Left"
-               Panel.ZIndex="4"
+               Panel.ZIndex="-1"
                Height="212"
-               Margin="490,104,0,0"
+               Margin="490,112,0,0"
                VerticalAlignment="Top"
                Width="300"
                Source="pack://siteoforigin:,,,/Picture/W.png"/>
@@ -164,7 +165,7 @@
                                    IsHitTestVisible="False"
                                    Margin="15,347,0,0"
                                    Height="27"
-                                   Width="350"
+                                   Width="900"
                                    HorizontalAlignment="Center"
                                    VerticalAlignment="Top"/>
     </Grid>
