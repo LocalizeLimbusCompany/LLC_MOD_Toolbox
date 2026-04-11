@@ -106,8 +106,8 @@
         </Canvas>
         <Image x:Name="AutoInstallXiaoHei"
                HorizontalAlignment="Left"
-               Height="218"
-               Margin="18,98,0,0"
+               Height="224"
+               Margin="10,90,0,0"
                VerticalAlignment="Top"
                Width="290"
                Source="pack://siteoforigin:,,,/Picture/B.png"/>
@@ -115,9 +115,9 @@
                HorizontalAlignment="Left"
                Panel.ZIndex="4"
                Height="212"
-               Margin="503,104,0,0"
+               Margin="490,104,0,0"
                VerticalAlignment="Top"
-               Width="258"
+               Width="300"
                Source="pack://siteoforigin:,,,/Picture/W.png"/>
         <local:OutlinedTextControl x:Name="NowVersionText"
                                    Text="{Binding CurrentVersionText}"
@@ -156,15 +156,15 @@
                                    Fill="#a16a3b"
                                    Stroke="Black"
                                    StrokeThickness="2"
-                                   FontSize="18"
+                                   FontSize="16"
                                    FontFamily="/Fonts/subset/#Source Han Sans CN"
                                    FontWeight="Heavy"
                                    TextAlignment="Center"
                                    Panel.ZIndex="5"
                                    IsHitTestVisible="False"
-                                   Margin="0,347,0,0"
+                                   Margin="15,347,0,0"
                                    Height="27"
-                                   Width="618"
+                                   Width="350"
                                    HorizontalAlignment="Center"
                                    VerticalAlignment="Top"/>
     </Grid>
