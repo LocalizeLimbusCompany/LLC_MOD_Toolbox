@@ -115,7 +115,7 @@ namespace LLC_MOD_Toolbox
                 if (MirrorChyanKeyPattern.IsMatch(token))
                 {
                     Log.logger.Info("检测到疑似 Mirror 酱秘钥格式。");
-                    UniversalDialog.ShowMessage("我说不要输入你的Mirror酱秘钥，尼尔多隆吗？", "提示", null, this);
+                    UniversalDialog.ShowMessage("不要输入你的Mirror酱秘钥。", "提示", null, this);
                     await EnableGlobalOperations();
                     return;
                 }
