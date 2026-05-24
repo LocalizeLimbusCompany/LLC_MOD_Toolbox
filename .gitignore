@@ -362,8 +362,6 @@ MigrationBackup/
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
 
-makeInstaller.bat
-
 # Vibe Coding
 CLAUDE.md
 .claude/
@@ -372,3 +370,6 @@ CLAUDE.md
 /.dotnet
 /.dotnet-cli/.dotnet
 /.dotnet_home/.dotnet
+
+build_tools/
+scripts/build_package.ps1
