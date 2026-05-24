@@ -173,7 +173,7 @@ namespace LLC_MOD_Toolbox
             {
                 BufferBlockSize = 10240,
                 ChunkCount = 8,
-                MaxTryAgainOnFailover = 5,
+                MaxTryAgainOnFailure = 5,
             };
             var downloader = new DownloadService(downloadOpt);
             downloader.DownloadProgressChanged += NewOnDownloadProgressChanged;
@@ -188,7 +188,7 @@ namespace LLC_MOD_Toolbox
             {
                 BufferBlockSize = 10240,
                 ChunkCount = 8,
-                MaxTryAgainOnFailover = 5,
+                MaxTryAgainOnFailure = 5,
             };
             var downloader = new DownloadService(downloadOpt);
             await downloader.DownloadFileTaskAsync(Url, Path);
