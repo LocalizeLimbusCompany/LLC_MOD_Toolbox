@@ -4,7 +4,7 @@ using Newtonsoft.Json.Serialization;
 using System.IO;
 using System.Reflection;
 
-namespace LLC_MOD_Toolbox
+namespace LLC_MOD_Toolbox.Services.Configuration
 {
     public sealed class ConfigurationManager
     {
@@ -36,8 +36,9 @@ namespace LLC_MOD_Toolbox
                         ContractResolver = new IgnoreCommentsResolver(),
                         MissingMemberHandling = MissingMemberHandling.Ignore,
                         DefaultValueHandling = DefaultValueHandling.Populate,
+                        NullValueHandling = NullValueHandling.Ignore,
                     };
-                    Settings = JsonConvert.DeserializeObject<AppSettings>(json, serializerSettings);
+                    Settings = JsonConvert.DeserializeObject<AppSettings>(json, serializerSettings) ?? new AppSettings();
                 }
                 catch (FileNotFoundException)
                 {

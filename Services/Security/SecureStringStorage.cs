@@ -6,7 +6,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LLC_MOD_Toolbox
+namespace LLC_MOD_Toolbox.Services.Security
 {
     // 我决定学习MAA先进经验，他们用的也是DPAPI加密MirrorChyan的秘钥
     // 哦，如果你看到这个代码。

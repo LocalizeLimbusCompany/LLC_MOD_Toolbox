@@ -4,7 +4,7 @@ using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Media;
 
-namespace LLC_MOD_Toolbox
+namespace LLC_MOD_Toolbox.Views.Controls
 {
     public class OutlinedTextControl : FrameworkElement
     {

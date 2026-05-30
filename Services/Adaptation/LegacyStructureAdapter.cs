@@ -1,0 +1,41 @@
+using System.IO;
+
+namespace LLC_MOD_Toolbox.Services.Adaptation
+{
+    public static class LegacyStructureAdapter
+    {
+        public static void CheckAdapt(string limbusCompanyPath)
+        {
+            string fontPath = Path.Combine(limbusCompanyPath, "LimbusCompany_Data", "Lang", "LLC_zh-CN", "Font");
+            string fontFile = Path.Combine(fontPath, "ChineseFont.ttf");
+            if (!Path.Exists(fontPath)) return;
+            if (!File.Exists(fontFile)) return;
+            string contextPath = Path.Combine(fontPath, "Context");
+            string titlePath = Path.Combine(fontPath, "Title");
+            if (Path.Exists(contextPath) && Path.Exists(titlePath)) return;
+            Log.logger.Info("发现旧版本版本文件夹。");
+            bool result = UniversalDialog.ShowConfirm("警告！\n发现您可能使用了旧版本的汉化补丁结构，该结构会导致汉化失效。\n按\"确定\"尝试修复，如果您确定这不是一个问题，请按\"取消\"。", "适配警告", null);
+            if (result)
+            {
+                Log.logger.Info("用户取消适配。");
+                return;
+            }
+            else
+            {
+                Log.logger.Info("开始适配。");
+                TryFixAdaptFont(limbusCompanyPath);
+            }
+        }
+
+        private static void TryFixAdaptFont(string limbusCompanyPath)
+        {
+            string fontPath = Path.Combine(limbusCompanyPath, "LimbusCompany_Data", "Lang", "LLC_zh-CN", "Font");
+            string fontFile = Path.Combine(fontPath, "ChineseFont.ttf");
+            Directory.CreateDirectory(Path.Combine(fontPath, "Context"));
+            Directory.CreateDirectory(Path.Combine(fontPath, "Title"));
+            File.Move(fontFile, Path.Combine(fontPath, "Context", "ChineseFont.ttf"));
+            Log.logger.Info("适配成功。");
+            UniversalDialog.ShowMessage("适配成功！", "适配完成", null, null);
+        }
+    }
+}

@@ -1,7 +1,22 @@
+using System.Collections.ObjectModel;
+using System.Diagnostics;
+using System.Windows;
 using System.Windows.Input;
+using System.Windows.Threading;
 using LLC_MOD_Toolbox.Infrastructure;
 using LLC_MOD_Toolbox.Models;
-using System.Collections.ObjectModel;
+using LLC_MOD_Toolbox.Services;
+using LLC_MOD_Toolbox.Services.Configuration;
+using LLC_MOD_Toolbox.Services.Content;
+using LLC_MOD_Toolbox.Services.Font;
+using LLC_MOD_Toolbox.Services.Gacha;
+using LLC_MOD_Toolbox.Services.Greytest;
+using LLC_MOD_Toolbox.Services.Installation;
+using LLC_MOD_Toolbox.Services.Network;
+using LLC_MOD_Toolbox.Services.Skin;
+using LLC_MOD_Toolbox.Services.UI;
+using LLC_MOD_Toolbox.Services.Update;
+using LLC_MOD_Toolbox.Services.Version;
 
 namespace LLC_MOD_Toolbox.ViewModels
 {
@@ -24,8 +39,25 @@ namespace LLC_MOD_Toolbox.ViewModels
         Gacha
     }
 
-    public sealed class MainWindowViewModel : ObservableObject
+    public sealed partial class MainWindowViewModel : ObservableObject
     {
+        private readonly IInstallService _installService;
+        private readonly IUninstallService _uninstallService;
+        private readonly IGachaService _gachaService;
+        private readonly IGreytestService _greytestService;
+        private readonly INodeService _nodeService;
+        private readonly IMirrorChyanService _mirrorChyanService;
+        private readonly IToolboxUpdateService _updateService;
+        private readonly IAnnouncementService _announcementService;
+        private readonly ILoadingTextService _loadingTextService;
+        private readonly IVersionService _versionService;
+        private readonly IFontService _fontService;
+        private readonly ISkinService _skinService;
+        private readonly IDialogService _dialogService;
+        private readonly IHttpService _httpService;
+        private readonly AppState _appState;
+        private readonly ConfigurationManager _config;
+
         private MainPage _currentPage = MainPage.Install;
         private InstallSubPage _currentInstallPage = InstallSubPage.Auto;
         private bool _isInstalling;
@@ -50,9 +82,49 @@ namespace LLC_MOD_Toolbox.ViewModels
         private bool _suppressNodeSelectionNotification;
         private bool _suppressApiSelectionNotification;
         private bool _suppressSkinSelectionNotification;
+        private bool _isMirrorChyanLogoVisible;
+        private bool _isGreytestLogoVisible;
+        private float _progressPercentage;
+        private bool _hasNewAnno;
+        private bool _isInAnno;
+        private DispatcherTimer? _annoTimer;
+        private int _annoLastTime;
 
-        public MainWindowViewModel()
+        public MainWindowViewModel(
+            IInstallService installService,
+            IUninstallService uninstallService,
+            IGachaService gachaService,
+            IGreytestService greytestService,
+            INodeService nodeService,
+            IMirrorChyanService mirrorChyanService,
+            IToolboxUpdateService updateService,
+            IAnnouncementService announcementService,
+            ILoadingTextService loadingTextService,
+            IVersionService versionService,
+            IFontService fontService,
+            ISkinService skinService,
+            IDialogService dialogService,
+            IHttpService httpService,
+            AppState appState,
+            ConfigurationManager config)
         {
+            _installService = installService;
+            _uninstallService = uninstallService;
+            _gachaService = gachaService;
+            _greytestService = greytestService;
+            _nodeService = nodeService;
+            _mirrorChyanService = mirrorChyanService;
+            _updateService = updateService;
+            _announcementService = announcementService;
+            _loadingTextService = loadingTextService;
+            _versionService = versionService;
+            _fontService = fontService;
+            _skinService = skinService;
+            _dialogService = dialogService;
+            _httpService = httpService;
+            _appState = appState;
+            _config = config;
+
             MinimizeCommand = new RelayCommand(() => MinimizeRequested?.Invoke());
             CloseCommand = new RelayCommand(() => CloseRequested?.Invoke());
             OpenLinkCommand = new RelayCommand<string>(OpenLink, CanOpenLink);
@@ -65,46 +137,29 @@ namespace LLC_MOD_Toolbox.ViewModels
             ShowAutoInstallCommand = new RelayCommand(() => SelectInstallSubPage(InstallSubPage.Auto));
             ShowFontReplaceCommand = new RelayCommand(() => SelectInstallSubPage(InstallSubPage.Font));
             ShowSkinCommand = new RelayCommand(() => SelectInstallSubPage(InstallSubPage.Skin));
-            ShowGachaCommand = new AsyncRelayCommand(ShowGachaAsync);
-            StartInstallCommand = new AsyncRelayCommand(RequestAutoInstallAsync, () => IsAutoInstallStartVisible);
-            StartGachaRollCommand = new AsyncRelayCommand(RequestGachaRollAsync);
+            ShowGachaCommand = new AsyncRelayCommand(HandleGachaNavigationAsync);
+            StartInstallCommand = new AsyncRelayCommand(ExecuteAutoInstallAsync, () => IsAutoInstallStartVisible);
+            StartGachaRollCommand = new AsyncRelayCommand(ExecuteGachaRollAsync);
             AcknowledgeAnnouncementCommand = new AsyncRelayCommand(AcknowledgeAnnouncementAsync, () => IsAnnouncementButtonEnabled);
-            UninstallCommand = new AsyncRelayCommand(RequestUninstallAsync);
-            CreateLauncherShortcutCommand = new RelayCommand(() => LauncherShortcutRequested?.Invoke());
-            ShowLauncherHelpCommand = new RelayCommand(() => LauncherHelpRequested?.Invoke());
-            ShowNodeHelpCommand = new RelayCommand(() => NodeHelpRequested?.Invoke());
-            ShowHotUpdateHelpCommand = new RelayCommand(() => HotUpdateHelpRequested?.Invoke());
-            ConfigureMirrorChyanCommand = new RelayCommand(() => MirrorChyanConfigRequested?.Invoke());
-            ExploreFontCommand = new RelayCommand(() => ExploreFontRequested?.Invoke());
-            PreviewFontCommand = new AsyncRelayCommand(RequestPreviewFontAsync);
-            ApplyFontCommand = new RelayCommand(() => ApplyFontRequested?.Invoke());
-            RestoreFontCommand = new RelayCommand(() => RestoreFontRequested?.Invoke());
-            StartGreytestCommand = new AsyncRelayCommand(RequestGreytestStartAsync);
-            ShowGreytestInfoCommand = new RelayCommand(() => GreytestInfoRequested?.Invoke());
+            UninstallCommand = new AsyncRelayCommand(ExecuteUninstallAsync);
+            CreateLauncherShortcutCommand = new RelayCommand(HandleLauncherShortcut);
+            ShowLauncherHelpCommand = new RelayCommand(() => OpenUrl("https://www.zeroasso.top/docs/install/hotupdate"));
+            ShowNodeHelpCommand = new RelayCommand(() => OpenUrl("https://www.zeroasso.top/docs/configuration/nodes"));
+            ShowHotUpdateHelpCommand = new RelayCommand(HandleHotUpdateHelp);
+            ConfigureMirrorChyanCommand = new RelayCommand(HandleMirrorChyanConfig);
+            ExploreFontCommand = new RelayCommand(HandleExploreFont);
+            PreviewFontCommand = new AsyncRelayCommand(HandlePreviewFontAsync);
+            ApplyFontCommand = new RelayCommand(HandleApplyFont);
+            RestoreFontCommand = new RelayCommand(HandleRestoreFont);
+            StartGreytestCommand = new AsyncRelayCommand(HandleGreytestStartAsync);
+            ShowGreytestInfoCommand = new RelayCommand(() => OpenUrl("https://www.zeroasso.top/docs/community/llcdev"));
+
+            _mirrorChyanService.ModeDisabledByError += OnMirrorChyanModeDisabled;
         }
 
         public event Action? CloseRequested;
         public event Action? MinimizeRequested;
-        public event Action<string>? LinkRequested;
-        public event Func<Task>? GachaRequested;
-        public event Func<Task>? AutoInstallRequested;
-        public event Func<Task>? GachaRollRequested;
-        public event Func<Task>? AnnouncementAcknowledged;
-        public event Func<Task>? UninstallRequested;
-        public event Action? LauncherShortcutRequested;
-        public event Action? LauncherHelpRequested;
-        public event Action? NodeHelpRequested;
-        public event Action? HotUpdateHelpRequested;
-        public event Action? MirrorChyanConfigRequested;
-        public event Action<string?>? NodeSelectionChanged;
-        public event Action<string?>? ApiSelectionChanged;
-        public event Action<SkinCatalogItem?>? SkinSelectionChanged;
-        public event Action? ExploreFontRequested;
-        public event Func<Task>? PreviewFontRequested;
-        public event Action? ApplyFontRequested;
-        public event Action? RestoreFontRequested;
-        public event Func<Task>? GreytestStartRequested;
-        public event Action? GreytestInfoRequested;
+        public event Action? ApplySkinRequested;
 
         public ICommand MinimizeCommand { get; }
         public ICommand CloseCommand { get; }
@@ -138,412 +193,5 @@ namespace LLC_MOD_Toolbox.ViewModels
         public ObservableCollection<string> NodeOptions { get; } = [];
         public ObservableCollection<string> ApiOptions { get; } = [];
         public ObservableCollection<SkinCatalogItem> SkinOptions { get; } = [];
-
-        public MainPage CurrentPage
-        {
-            get => _currentPage;
-            private set
-            {
-                if (!SetProperty(ref _currentPage, value))
-                {
-                    return;
-                }
-
-                NotifyNavigationStateChanged();
-            }
-        }
-
-        public InstallSubPage CurrentInstallPage
-        {
-            get => _currentInstallPage;
-            private set
-            {
-                if (!SetProperty(ref _currentInstallPage, value))
-                {
-                    return;
-                }
-
-                NotifyNavigationStateChanged();
-            }
-        }
-
-        public bool IsInstalling
-        {
-            get => _isInstalling;
-            set
-            {
-                if (!SetProperty(ref _isInstalling, value))
-                {
-                    return;
-                }
-
-                OnPropertyChanged(nameof(IsAutoInstallStartVisible));
-                OnPropertyChanged(nameof(IsAutoInstallBusyVisible));
-                NotifyCommandState();
-            }
-        }
-
-        public bool IsEasterEggUnlocked
-        {
-            get => _isEasterEggUnlocked;
-            set
-            {
-                if (!SetProperty(ref _isEasterEggUnlocked, value))
-                {
-                    return;
-                }
-
-                OnPropertyChanged(nameof(IsEasterEggVisible));
-                NotifyCommandState();
-            }
-        }
-
-        public bool IsGlobalOperationsEnabled
-        {
-            get => _isGlobalOperationsEnabled;
-            set
-            {
-                if (!SetProperty(ref _isGlobalOperationsEnabled, value))
-                {
-                    return;
-                }
-
-                OnPropertyChanged(nameof(IsOverlayVisible));
-            }
-        }
-
-        public bool ArePrimaryActionsEnabled
-        {
-            get => _arePrimaryActionsEnabled;
-            set => SetProperty(ref _arePrimaryActionsEnabled, value);
-        }
-
-        public string AnnouncementText
-        {
-            get => _announcementText;
-            set => SetProperty(ref _announcementText, value);
-        }
-
-        public string AnnouncementTip
-        {
-            get => _announcementTip;
-            set => SetProperty(ref _announcementTip, value);
-        }
-
-        public bool IsAnnouncementButtonEnabled
-        {
-            get => _isAnnouncementButtonEnabled;
-            set
-            {
-                if (!SetProperty(ref _isAnnouncementButtonEnabled, value))
-                {
-                    return;
-                }
-
-                NotifyCommandState();
-            }
-        }
-
-        public bool ShowAnnouncementTip
-        {
-            get => _showAnnouncementTip;
-            set
-            {
-                if (!SetProperty(ref _showAnnouncementTip, value))
-                {
-                    return;
-                }
-
-                OnPropertyChanged(nameof(IsAnnouncementTipVisible));
-            }
-        }
-
-        public string LoadingText
-        {
-            get => _loadingText;
-            set => SetProperty(ref _loadingText, value);
-        }
-
-        public string CurrentVersionText
-        {
-            get => _currentVersionText;
-            set => SetProperty(ref _currentVersionText, value);
-        }
-
-        public string LatestVersionText
-        {
-            get => _latestVersionText;
-            set => SetProperty(ref _latestVersionText, value);
-        }
-
-        public string MirrorChyanButtonText
-        {
-            get => _mirrorChyanButtonText;
-            set => SetProperty(ref _mirrorChyanButtonText, value);
-        }
-
-        public string SkinDescription
-        {
-            get => _skinDescription;
-            set => SetProperty(ref _skinDescription, value);
-        }
-
-        public string? SelectedNodeOption
-        {
-            get => _selectedNodeOption;
-            set
-            {
-                if (!SetProperty(ref _selectedNodeOption, value) || _suppressNodeSelectionNotification)
-                {
-                    return;
-                }
-
-                NodeSelectionChanged?.Invoke(value);
-            }
-        }
-
-        public string? SelectedApiOption
-        {
-            get => _selectedApiOption;
-            set
-            {
-                if (!SetProperty(ref _selectedApiOption, value) || _suppressApiSelectionNotification)
-                {
-                    return;
-                }
-
-                ApiSelectionChanged?.Invoke(value);
-            }
-        }
-
-        public SkinCatalogItem? SelectedSkinOption
-        {
-            get => _selectedSkinOption;
-            set
-            {
-                if (!SetProperty(ref _selectedSkinOption, value) || _suppressSkinSelectionNotification)
-                {
-                    return;
-                }
-
-                SkinSelectionChanged?.Invoke(value);
-            }
-        }
-
-        public string FontReplacePath
-        {
-            get => _fontReplacePath;
-            set => SetProperty(ref _fontReplacePath, value);
-        }
-
-        public string FontSizeText
-        {
-            get => _fontSizeText;
-            set => SetProperty(ref _fontSizeText, value);
-        }
-
-        public string GreytestToken
-        {
-            get => _greytestToken;
-            set => SetProperty(ref _greytestToken, value);
-        }
-
-        public bool IsInstallPageVisible => CurrentPage == MainPage.Install && CurrentInstallPage == InstallSubPage.Auto;
-        public bool IsFontPageVisible => CurrentPage == MainPage.Install && CurrentInstallPage == InstallSubPage.Font;
-        public bool IsSkinPageVisible => CurrentPage == MainPage.Install && CurrentInstallPage == InstallSubPage.Skin;
-        public bool IsGachaPageVisible => CurrentPage == MainPage.Install && CurrentInstallPage == InstallSubPage.Gacha;
-        public bool IsLinkPageVisible => CurrentPage == MainPage.Link;
-        public bool IsGreytestPageVisible => CurrentPage == MainPage.Greytest;
-        public bool IsSettingsPageVisible => CurrentPage == MainPage.Settings;
-        public bool IsAboutPageVisible => CurrentPage == MainPage.About;
-        public bool IsAnnouncementPageVisible => CurrentPage == MainPage.Announcement;
-        public bool IsEasterEggPageVisible => CurrentPage == MainPage.EasterEgg;
-        public bool IsInstallTabSelected => CurrentPage == MainPage.Install;
-        public bool IsInstallTabsVisible => CurrentPage == MainPage.Install;
-        public bool IsInstallTabsDisabledOverlayVisible => CurrentPage != MainPage.Install;
-        public bool IsAutoInstallStartVisible => !IsInstalling;
-        public bool IsAutoInstallBusyVisible => IsInstalling;
-        public bool IsOverlayVisible => !IsGlobalOperationsEnabled;
-        public bool IsAnnouncementTipVisible => ShowAnnouncementTip;
-        public bool IsEasterEggVisible => IsEasterEggUnlocked;
-
-        public void SelectMainPage(MainPage page, InstallSubPage? installSubPage = null)
-        {
-            CurrentPage = page;
-            if (installSubPage.HasValue)
-            {
-                CurrentInstallPage = installSubPage.Value;
-            }
-        }
-
-        public void SelectInstallSubPage(InstallSubPage page)
-        {
-            CurrentPage = MainPage.Install;
-            CurrentInstallPage = page;
-        }
-
-        public void ShowAnnouncement(string text, bool buttonEnabled, bool showTip)
-        {
-            AnnouncementText = text;
-            IsAnnouncementButtonEnabled = buttonEnabled;
-            ShowAnnouncementTip = showTip;
-            CurrentPage = MainPage.Announcement;
-        }
-
-        public void SetNodeOptions(IEnumerable<string> options)
-        {
-            ReplaceCollection(NodeOptions, options);
-        }
-
-        public void SetApiOptions(IEnumerable<string> options)
-        {
-            ReplaceCollection(ApiOptions, options);
-        }
-
-        public void SetSkinOptions(IEnumerable<SkinCatalogItem> options)
-        {
-            ReplaceCollection(SkinOptions, options);
-        }
-
-        public void UpdateSelectedNodeOption(string? option)
-        {
-            SetSelection(ref _suppressNodeSelectionNotification, () => SelectedNodeOption = option);
-        }
-
-        public void UpdateSelectedApiOption(string? option)
-        {
-            SetSelection(ref _suppressApiSelectionNotification, () => SelectedApiOption = option);
-        }
-
-        public void UpdateSelectedSkinOption(SkinCatalogItem? option)
-        {
-            SetSelection(ref _suppressSkinSelectionNotification, () => SelectedSkinOption = option);
-        }
-
-        private async Task ShowGachaAsync()
-        {
-            if (GachaRequested != null)
-            {
-                await GachaRequested.Invoke();
-            }
-        }
-
-        private async Task RequestAutoInstallAsync()
-        {
-            if (AutoInstallRequested != null)
-            {
-                await AutoInstallRequested.Invoke();
-            }
-        }
-
-        private async Task RequestGachaRollAsync()
-        {
-            if (GachaRollRequested != null)
-            {
-                await GachaRollRequested.Invoke();
-            }
-        }
-
-        private async Task AcknowledgeAnnouncementAsync()
-        {
-            if (AnnouncementAcknowledged != null)
-            {
-                await AnnouncementAcknowledged.Invoke();
-            }
-        }
-
-        private async Task RequestUninstallAsync()
-        {
-            if (UninstallRequested != null)
-            {
-                await UninstallRequested.Invoke();
-            }
-        }
-
-        private async Task RequestPreviewFontAsync()
-        {
-            if (PreviewFontRequested != null)
-            {
-                await PreviewFontRequested.Invoke();
-            }
-        }
-
-        private async Task RequestGreytestStartAsync()
-        {
-            if (GreytestStartRequested != null)
-            {
-                await GreytestStartRequested.Invoke();
-            }
-        }
-
-        private void OpenLink(string? url)
-        {
-            if (!string.IsNullOrWhiteSpace(url))
-            {
-                LinkRequested?.Invoke(url);
-            }
-        }
-
-        private static bool CanOpenLink(string? url)
-        {
-            return !string.IsNullOrWhiteSpace(url);
-        }
-
-        private void NotifyNavigationStateChanged()
-        {
-            OnPropertyChanged(nameof(IsInstallPageVisible));
-            OnPropertyChanged(nameof(IsFontPageVisible));
-            OnPropertyChanged(nameof(IsSkinPageVisible));
-            OnPropertyChanged(nameof(IsGachaPageVisible));
-            OnPropertyChanged(nameof(IsLinkPageVisible));
-            OnPropertyChanged(nameof(IsGreytestPageVisible));
-            OnPropertyChanged(nameof(IsSettingsPageVisible));
-            OnPropertyChanged(nameof(IsAboutPageVisible));
-            OnPropertyChanged(nameof(IsAnnouncementPageVisible));
-            OnPropertyChanged(nameof(IsEasterEggPageVisible));
-            OnPropertyChanged(nameof(IsInstallTabSelected));
-            OnPropertyChanged(nameof(IsInstallTabsVisible));
-            OnPropertyChanged(nameof(IsInstallTabsDisabledOverlayVisible));
-        }
-
-        private void NotifyCommandState()
-        {
-            if (ShowEasterEggCommand is RelayCommand showEasterEggCommand)
-            {
-                showEasterEggCommand.NotifyCanExecuteChanged();
-            }
-
-            if (AcknowledgeAnnouncementCommand is AsyncRelayCommand acknowledgeAnnouncementCommand)
-            {
-                acknowledgeAnnouncementCommand.NotifyCanExecuteChanged();
-            }
-
-            if (StartInstallCommand is AsyncRelayCommand startInstallCommand)
-            {
-                startInstallCommand.NotifyCanExecuteChanged();
-            }
-        }
-
-        private static void ReplaceCollection<T>(ObservableCollection<T> target, IEnumerable<T> values)
-        {
-            target.Clear();
-            foreach (var value in values)
-            {
-                target.Add(value);
-            }
-        }
-
-        private static void SetSelection(ref bool suppressFlag, Action updateSelection)
-        {
-            suppressFlag = true;
-            try
-            {
-                updateSelection();
-            }
-            finally
-            {
-                suppressFlag = false;
-            }
-        }
     }
 }

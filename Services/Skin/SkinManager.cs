@@ -9,7 +9,7 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
-namespace LLC_MOD_Toolbox
+namespace LLC_MOD_Toolbox.Services.Skin
 {
     public class SkinManager
     {
@@ -26,6 +26,12 @@ namespace LLC_MOD_Toolbox
         private Dictionary<string, string> _defaultSkinMargins = new Dictionary<string, string>();
         private SkinDefinition _currentSkinDefinition;
         private SkinDefinition _defaultSkinDefinition;
+
+        private sealed class SkinTargets
+        {
+            public List<Image> Images { get; } = new List<Image>();
+            public List<FrameworkElement> NamedElements { get; } = new List<FrameworkElement>();
+        }
 
         public static SkinManager Instance
         {
@@ -171,7 +177,8 @@ namespace LLC_MOD_Toolbox
             try
             {
                 Log.logger.Info("开始应用皮肤到窗口...");
-                var images = FindAllImages(window);
+                var targets = FindSkinTargets(window);
+                var images = targets.Images;
                 Log.logger.Info($"找到 {images.Count} 个Image元素");
 
                 // 输出前几个找到的图片名称用于调试
@@ -205,10 +212,10 @@ namespace LLC_MOD_Toolbox
                 Log.logger.Info($"皮肤应用完成: 成功 {successCount} 个，失败 {failCount} 个，跳过 {skippedCount} 个");
 
                 // 应用可见性设置
-                ApplyVisibilityToWindow(window);
+                ApplyVisibilityToElements(targets.NamedElements);
 
                 // 应用边距设置
-                ApplyMarginsToWindow(window);
+                ApplyMarginsToElements(targets.NamedElements);
             }
             catch (Exception ex)
             {
@@ -303,37 +310,44 @@ namespace LLC_MOD_Toolbox
             return Path.Combine(skinPath, relativePath);
         }
 
-        private List<Image> FindAllImages(DependencyObject parent)
+        private SkinTargets FindSkinTargets(DependencyObject parent)
         {
-            var images = new List<Image>();
+            var targets = new SkinTargets();
+            CollectSkinTargets(parent, targets);
+            return targets;
+        }
 
+        private void CollectSkinTargets(DependencyObject parent, SkinTargets targets)
+        {
             int childCount = VisualTreeHelper.GetChildrenCount(parent);
             for (int i = 0; i < childCount; i++)
             {
                 var child = VisualTreeHelper.GetChild(parent, i);
 
+                if (child is FrameworkElement element && !string.IsNullOrEmpty(element.Name))
+                {
+                    targets.NamedElements.Add(element);
+                }
+
                 if (child is Image image)
                 {
-                    images.Add(image);
+                    targets.Images.Add(image);
                 }
 
                 // 特殊处理：如果是 Button，检查其 Content 是否为 Image
                 if (child is Button button && button.Content is Image contentImage)
                 {
-                    images.Add(contentImage);
+                    targets.Images.Add(contentImage);
                 }
 
-                images.AddRange(FindAllImages(child));
+                CollectSkinTargets(child, targets);
             }
-
-            return images;
         }
 
-        private void ApplyVisibilityToWindow(Window window)
+        private void ApplyVisibilityToElements(IEnumerable<FrameworkElement> elements)
         {
             try
             {
-                var elements = FindAllNamedElements(window);
                 int visibleCount = 0;
                 int hiddenCount = 0;
 
@@ -382,31 +396,10 @@ namespace LLC_MOD_Toolbox
             return null;
         }
 
-        private List<FrameworkElement> FindAllNamedElements(DependencyObject parent)
-        {
-            var elements = new List<FrameworkElement>();
-
-            int childCount = VisualTreeHelper.GetChildrenCount(parent);
-            for (int i = 0; i < childCount; i++)
-            {
-                var child = VisualTreeHelper.GetChild(parent, i);
-
-                if (child is FrameworkElement element && !string.IsNullOrEmpty(element.Name))
-                {
-                    elements.Add(element);
-                }
-
-                elements.AddRange(FindAllNamedElements(child));
-            }
-
-            return elements;
-        }
-
-        private void ApplyMarginsToWindow(Window window)
+        private void ApplyMarginsToElements(IEnumerable<FrameworkElement> elements)
         {
             try
             {
-                var elements = FindAllNamedElements(window);
                 int appliedCount = 0;
 
                 foreach (var element in elements)

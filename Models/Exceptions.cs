@@ -5,15 +5,18 @@
     }
     public class MirrorChyanException : Exception
     {
-        private int errorID;
-        public MirrorChyanException(int errorID)
+        public int ErrorCode { get; }
+        public bool IsFatal => ErrorCode is 7001 or 7002 or 7004 or 7005;
+
+        public MirrorChyanException(int errorCode)
         {
-            this.errorID = errorID;
+            ErrorCode = errorCode;
         }
+
         public override string Message
         {
             get {
-                switch (errorID)
+                switch (ErrorCode)
                 {
                     case 0:
                         return "不是哥们，这不会有问题啊，这条提示绝对不可能出现，要是出现了我穿女装";

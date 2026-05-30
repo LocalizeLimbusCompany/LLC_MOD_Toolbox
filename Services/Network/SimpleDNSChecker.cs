@@ -1,19 +1,10 @@
 ﻿using System.Net;
 using System.Net.Sockets;
-using System.Windows;
 
-namespace LLC_MOD_Toolbox
+namespace LLC_MOD_Toolbox.Services.Network
 {
     public static class SimpleDnsChecker
     {
-        public static async Task CheckDNS()
-        {
-            bool result = await CheckForSuspiciousIpAsync("www.zeroasso.top");
-            if (result)
-            {
-                UniversalDialog.ShowMessage("警告！\n检测到您的DNS解析结果存在问题。\n您大概率无法使用工具箱。\n建议您更换DNS服务器后再使用工具箱。\n如果您不知道使用什么DNS服务器，请使用阿里云DNS。", "警告", null, null);
-            }
-        }
         public static async Task<bool> CheckForSuspiciousIpAsync(string domain)
         {
             try
