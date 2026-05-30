@@ -378,8 +378,13 @@ namespace LLC_MOD_Toolbox.ViewModels
                 ShowAnnouncementTip = false;
                 return;
             }
-
-            _annoLastTime = result.Level == "special" ? 15 : 5;
+            _annoLastTime = result.Level switch
+            {
+                "normal" => 0,
+                "important" => 5,
+                "special" => 15,
+                _ => 0,
+            };
             AnnouncementTip = "由于本次公告较为重要，您需要继续阅读" + _annoLastTime + "秒。";
             _annoTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(1) };
             _annoTimer.Tick += AnnoTimerTick;
