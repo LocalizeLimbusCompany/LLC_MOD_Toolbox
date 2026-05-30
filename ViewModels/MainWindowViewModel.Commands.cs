@@ -25,6 +25,7 @@ namespace LLC_MOD_Toolbox.ViewModels
             Log.logger.Info("We have a lift off.");
             Log.logger.Info($"WPF架构工具箱 版本：{_appState.Version} 。");
 
+            LoadConfiguredSkin();
             ApplySkinRequested?.Invoke();
 
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls13;
@@ -261,6 +262,16 @@ namespace LLC_MOD_Toolbox.ViewModels
             _dialogService.ShowMessage(message, title);
 
         public event Action<string>? EasterEggImageRequested;
+
+        private void LoadConfiguredSkin()
+        {
+            string skinName = _config.Settings.skin.currentSkin;
+            if (string.IsNullOrWhiteSpace(skinName))
+                skinName = "default";
+
+            if (!_skinService.LoadSkin(skinName))
+                Log.logger.Warn($"启动时加载皮肤失败: {skinName}");
+        }
 
         private async Task HandleGreytestStartAsync()
         {
