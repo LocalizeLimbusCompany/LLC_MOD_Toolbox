@@ -1,4 +1,5 @@
 using LLC_MOD_Toolbox.Models;
+using LLC_MOD_Toolbox.Services.Configuration;
 using LLC_MOD_Toolbox.Services.Gacha;
 using LLC_MOD_Toolbox.Services.Skin;
 using LLC_MOD_Toolbox.ViewModels;
@@ -10,6 +11,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 
@@ -19,6 +21,7 @@ namespace LLC_MOD_Toolbox
     {
         public MainWindowViewModel ViewModel { get; }
         private readonly ISkinService _skinService;
+        private readonly ConfigurationManager _config;
         private DispatcherTimer? _gachaTimer;
         private int _gachaRevealIndex;
         private bool _gachaRevealing;
@@ -26,10 +29,24 @@ namespace LLC_MOD_Toolbox
         private bool _hitMillionthEgg;
         private bool _millionthEggBroken;
 
-        public MainWindow(MainWindowViewModel viewModel, ISkinService skinService)
+        private MediaPlayer? _calcitePlayer;
+        private DispatcherTimer? _calciteTimer;
+        private int _calciteTextIndex;
+        private int _calciteCharIndex;
+        private bool _calcitePlaying;
+        private bool _calciteTriggered;
+        private int _calciteSlot = -1;
+        private bool _calciteTyping;
+        private bool _calciteFading;
+        private string _calciteCurrentFullText = string.Empty;
+        // 手动打轴！
+        private static readonly (string Text, double StartTime)[] _calciteTimeline = [("虽然你已经不会再记得。", 2), ("这片宇宙曾孕育过辉煌的文明。", 5), ("在那时，知识的边界几乎等同于宇宙本身。", 10), ("人们的认知可以抵达想象的每一个角落，即使最遥远的恒星也像桌上的书籍般触手可得。", 16.5), ("可即便如此，人们依然无法回答关于自身的问题一一", 28), ("生命是否存在某种与生俱来的目的？", 33.5), ("也许这是造物主留下的最后一道帷幕。", 38), ("对意义的求索没有出口，生命注定在各自的旅途中走向孤独。", 42), ("哲人与学者最终放弃了从可观测的世界中寻求答案，选择将信念寄托于我们的本能。", 50), ("因为我们只能相信，在无解的孤独与困惑之外，爱的存在同样不可置疑。", 61), ("最深沉的绝望也无法阻止人们在茫茫星海中寻找自我存在的回声。", 70), ("在寂静降临前，人们依然会为了相隔数万光年生命的痕迹而落泪。", 77.5), ("我想，我在旅途中终于理解了这种感动。", 85), ("生命是美丽的，在宇宙的尺度下，“生命”与“希望”等意。", 90), ("我无法将过去的记忆交还给你，只能试图与你分享我的感受。", 100), ("我会相信你的本性，也希望你可以相信自己选择的意义。", 107), ("你会感到无助迷茫，因为没有人可以与你永远同行，也没有人能够理解你的孤独。", 114), ("罗德岛成为了许多人的家。", 123), ("我希望在那个时候，罗德岛也可以成为你的归宿。", 126), ("我的愿望是守护好你的愿望。", 132), ("希望在这场旅程结束时，会有人陪伴你，见证你期待的未来。", 136), ("Kal\'tsit", 145)];
+
+        public MainWindow(MainWindowViewModel viewModel, ISkinService skinService, ConfigurationManager config)
         {
             ViewModel = viewModel;
             _skinService = skinService;
+            _config = config;
             InitializeComponent();
             DataContext = ViewModel;
 
@@ -124,10 +141,26 @@ namespace LLC_MOD_Toolbox
 
             var random = new Random();
             bool vergilShown = false;
+            int calciteSlot = -1;
+
+            if (IsCalciteSkinActive())
+            {
+                double chance = _config.Settings.gacha.calciteEasterEggSeen ? 0.001 : 0.05;
+                if (random.NextDouble() < chance)
+                    calciteSlot = random.Next(0, 10);
+            }
+
             for (int i = 0; i < 10 && i < result.Personals.Count; i++)
             {
                 var personal = result.Personals[i];
                 if (GachaPage.GetResultLabel(i).Content is not TextBlock textBlock) continue;
+
+                if (i == calciteSlot)
+                {
+                    textBlock.Text =  "一块方解石";
+                    textBlock.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#2E8B57"));
+                    continue;
+                }
 
                 if (result.HasVergil && !vergilShown && random.Next(1, 10) == 1)
                 {
@@ -146,6 +179,8 @@ namespace LLC_MOD_Toolbox
                 textBlock.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString(color));
             }
 
+            _calciteTriggered = calciteSlot >= 0;
+            _calciteSlot = calciteSlot;
             _gachaRevealVergilShown = vergilShown;
             _gachaRevealIndex = 0;
             _gachaTimer ??= CreateGachaTimer();
@@ -172,6 +207,19 @@ namespace LLC_MOD_Toolbox
 
             _gachaTimer?.Stop();
             GachaPage.SetButtonHitTestVisible(true);
+
+            if (_calciteTriggered && _calciteSlot >= 0)
+            {
+                var calciteLabel = GachaPage.GetResultLabel(_calciteSlot);
+                calciteLabel.IsHitTestVisible = true;
+                if (calciteLabel.Content is TextBlock calciteTextBlock)
+                {
+                    calciteTextBlock.IsHitTestVisible = true;
+                    calciteTextBlock.Cursor = Cursors.Hand;
+                    calciteTextBlock.MouseLeftButtonDown += CalciteLabelClick;
+                }
+            }
+
             ShowGachaResultDialog(_pendingGachaResult);
             _gachaRevealing = false;
         }
@@ -179,6 +227,14 @@ namespace LLC_MOD_Toolbox
         private void ShowGachaResultDialog(GachaRollResult? result)
         {
             if (result is null) return;
+
+            if (_calciteTriggered)
+            {
+                _calciteTriggered = false;
+                ViewModel.ShowGachaMessage("一块方解石……从你的卡池里被转录了出来？\n不妨点击……", "？");
+                return;
+            }
+
             var random = new Random();
 
             if (random.Next(1, 100001) == 100000 && !_millionthEggBroken)
@@ -270,6 +326,180 @@ namespace LLC_MOD_Toolbox
                 ViewModel.IsEasterEggUnlocked = true;
                 e.Handled = true;
             }
+        }
+
+        private bool IsCalciteSkinActive()
+        {
+            return _skinService.CurrentSkinName == "kaltsit";
+        }
+
+        private void CalciteLabelClick(object sender, MouseButtonEventArgs e)
+        {
+            if (_calcitePlaying) return;
+            StartCalciteSequence();
+        }
+
+        private void StartCalciteSequence()
+        {
+            _calcitePlaying = true;
+            _calciteMediaReady = false;
+
+            var fadeOut = new DoubleAnimation(1, 0, TimeSpan.FromSeconds(1.5));
+            foreach (UIElement child in ((Grid)Content).Children)
+            {
+                if (child is FrameworkElement fe && fe.Name == "Background") continue;
+                if (child is FrameworkElement fe2 && fe2.Name == "CalciteOverlay") continue;
+                child.BeginAnimation(OpacityProperty, fadeOut);
+            }
+
+            CalciteOverlay.Visibility = Visibility.Visible;
+
+            var delayedFadeInSkip = new DoubleAnimation(0, 1, TimeSpan.FromSeconds(0.5)) { BeginTime = TimeSpan.FromSeconds(1.5) };
+            CalciteSkipButton.BeginAnimation(OpacityProperty, delayedFadeInSkip);
+
+            string audioPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Picture", "kaltsit", "kaltsit_message.mp3");
+            _calcitePlayer = new MediaPlayer();
+            _calcitePlayer.MediaOpened += (_, _) => Dispatcher.Invoke(OnCalciteMediaOpened);
+            _calcitePlayer.MediaEnded += (_, _) => Dispatcher.Invoke(EndCalciteSequence);
+            _calcitePlayer.Open(new Uri(audioPath, UriKind.Absolute));
+
+            _calciteTextIndex = -1;
+            _calciteCharIndex = 0;
+            _calciteTyping = false;
+            _calciteFading = false;
+            _calciteTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(100) };
+            _calciteTimer.Tick += CalciteTimerTick;
+
+            var delayTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(1.5) };
+            delayTimer.Tick += (_, _) =>
+            {
+                delayTimer.Stop();
+                OnCalciteFadeOutCompleted();
+            };
+            delayTimer.Start();
+        }
+
+        private bool _calciteMediaReady;
+
+        private void OnCalciteMediaOpened()
+        {
+            _calciteMediaReady = true;
+        }
+
+        private void OnCalciteFadeOutCompleted()
+        {
+            if (!_calcitePlaying) return;
+            if (_calciteMediaReady)
+            {
+                _calcitePlayer?.Play();
+            }
+            else
+            {
+                _calcitePlayer!.MediaOpened += (_, _) => Dispatcher.Invoke(() => _calcitePlayer?.Play());
+            }
+            _calciteTextIndex = -1;
+            _calciteCharIndex = 0;
+            _calciteTyping = false;
+            _calciteFading = false;
+            _calciteCurrentFullText = string.Empty;
+            CalciteTextBlock.Text = string.Empty;
+            CalciteTextBlock.Opacity = 1;
+            _calciteTimer?.Start();
+        }
+
+        private void CalciteTimerTick(object? sender, EventArgs e)
+        {
+            if (_calcitePlayer == null || !_calcitePlaying) return;
+
+            if (_calciteTyping)
+            {
+                _calciteCharIndex++;
+                if (_calciteCharIndex <= _calciteCurrentFullText.Length)
+                    CalciteTextBlock.Text = _calciteCurrentFullText[.._calciteCharIndex];
+                else
+                    _calciteTyping = false;
+                return;
+            }
+
+            if (_calciteFading) return;
+
+            double currentTime = _calcitePlayer.Position.TotalSeconds;
+
+            int targetIndex = -1;
+            for (int i = _calciteTimeline.Length - 1; i >= 0; i--)
+            {
+                if (currentTime >= _calciteTimeline[i].StartTime)
+                {
+                    targetIndex = i;
+                    break;
+                }
+            }
+
+            if (targetIndex > _calciteTextIndex)
+            {
+                if (_calciteTextIndex >= 0 && CalciteTextBlock.Text.Length > 0)
+                {
+                    _calciteFading = true;
+                    var fadeOut = new DoubleAnimation(1, 0, TimeSpan.FromSeconds(0.3));
+                    fadeOut.Completed += (_, _) =>
+                    {
+                        _calciteFading = false;
+                        BeginTypewriterSegment(targetIndex);
+                    };
+                    CalciteTextBlock.BeginAnimation(OpacityProperty, fadeOut);
+                }
+                else
+                {
+                    BeginTypewriterSegment(targetIndex);
+                }
+            }
+        }
+
+        private void BeginTypewriterSegment(int index)
+        {
+            _calciteTextIndex = index;
+            _calciteCurrentFullText = _calciteTimeline[index].Text;
+            _calciteCharIndex = 0;
+            CalciteTextBlock.Text = string.Empty;
+            CalciteTextBlock.BeginAnimation(OpacityProperty, null);
+            CalciteTextBlock.Opacity = 1;
+            _calciteTyping = true;
+        }
+
+        private void CalciteSkipClick(object sender, MouseButtonEventArgs e)
+        {
+            EndCalciteSequence();
+        }
+
+        private void EndCalciteSequence()
+        {
+            _calcitePlaying = false;
+            _calciteTimer?.Stop();
+            _calciteTimer = null;
+
+            _calcitePlayer?.Stop();
+            _calcitePlayer?.Close();
+            _calcitePlayer = null;
+
+            CalciteOverlay.Visibility = Visibility.Collapsed;
+            CalciteTextBlock.Text = string.Empty;
+            CalciteTextBlock.BeginAnimation(OpacityProperty, null);
+            CalciteSkipButton.BeginAnimation(OpacityProperty, null);
+            CalciteTextBlock.Opacity = 0;
+            CalciteSkipButton.Opacity = 0;
+
+            var fadeIn = new DoubleAnimation(0, 1, TimeSpan.FromSeconds(0.8));
+            foreach (UIElement child in ((Grid)Content).Children)
+            {
+                if (child is FrameworkElement fe && fe.Name == "Background") continue;
+                if (child is FrameworkElement fe2 && fe2.Name == "CalciteOverlay") continue;
+                child.BeginAnimation(OpacityProperty, null);
+                child.Opacity = 0;
+                child.BeginAnimation(OpacityProperty, fadeIn);
+            }
+
+            _config.Settings.gacha.calciteEasterEggSeen = true;
+            _config.SaveConfig();
         }
     }
 }

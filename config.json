@@ -34,5 +34,8 @@
   "skin": {
     "_currentSkin": "当前使用的皮肤",
     "currentSkin": "default"
+  },
+  "gacha": {
+    "calciteEasterEggSeen": false
   }
 }

@@ -234,26 +234,10 @@
                 <Image x:Name="LinkButton10IMG" Height="40" Width="262" Source="pack://siteoforigin:,,,/Picture/LinkBT.png"/>
             </Button.Content>
         </Button>
-        <Button HorizontalAlignment="Left" Margin="352,310,0,0" VerticalAlignment="Top" Height="40" Width="262" Opacity="1" Background="Transparent" BorderBrush="Transparent" BorderThickness="0" Style="{DynamicResource NoHover}" Command="{Binding OpenLinkCommand}" CommandParameter="RandomLink">
+        <Button HorizontalAlignment="Left" Margin="352,310,0,0" VerticalAlignment="Top" Height="40" Width="262" Opacity="1" Background="Transparent" BorderBrush="Transparent" BorderThickness="0" Style="{DynamicResource BlackWhite}">
             <Button.Content>
                 <Image x:Name="LinkButton12IMG" Height="40" Width="262" Source="pack://siteoforigin:,,,/Picture/LinkBT.png"/>
             </Button.Content>
-            <Button.Triggers>
-                <EventTrigger RoutedEvent="Button.MouseEnter">
-                    <BeginStoryboard>
-                        <Storyboard>
-                            <DoubleAnimation Storyboard.TargetName="LinkButtonHover12" Storyboard.TargetProperty="Opacity" From="0" To="1" Duration="0:0:0.3"/>
-                        </Storyboard>
-                    </BeginStoryboard>
-                </EventTrigger>
-                <EventTrigger RoutedEvent="Button.MouseLeave">
-                    <BeginStoryboard>
-                        <Storyboard>
-                            <DoubleAnimation Storyboard.TargetName="LinkButtonHover12" Storyboard.TargetProperty="Opacity" From="1" To="0" Duration="0:0:0.3"/>
-                        </Storyboard>
-                    </BeginStoryboard>
-                </EventTrigger>
-            </Button.Triggers>
         </Button>
         <Image x:Name="LinkButtonHover1" IsHitTestVisible="False" Opacity="0" HorizontalAlignment="Left" Height="46" Margin="34,38,0,0" VerticalAlignment="Top" Width="268" Source="pack://siteoforigin:,,,/Picture/LinkBTHover.png"/>
         <Image x:Name="LinkButtonHover2" IsHitTestVisible="False" Opacity="0" HorizontalAlignment="Left" Height="46" Margin="349,37,0,0" VerticalAlignment="Top" Width="268" Source="pack://siteoforigin:,,,/Picture/LinkBTHover.png"/>

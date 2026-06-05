@@ -17,6 +17,8 @@ namespace LLC_MOD_Toolbox.Services.Gacha
 
     public sealed class GachaService : IGachaService
     {
+        private const string PersonalityDataUrl = "https://download.zeroasso.top/wiki/personality.json";
+
         private readonly IHttpService _httpService;
         private List<PersonalInfo> _personalInfos1star = [];
         private List<PersonalInfo> _personalInfos2star = [];
@@ -35,7 +37,9 @@ namespace LLC_MOD_Toolbox.Services.Gacha
 
         public async Task InitializeAsync()
         {
-            string gachaText = await _httpService.GetTextAsync("https://download.zeroasso.top/wiki/wiki_personal.json");
+            InitializationFailed = false;
+
+            string gachaText = await _httpService.GetTextAsync(PersonalityDataUrl);
             if (string.IsNullOrEmpty(gachaText))
             {
                 Log.logger.Error("初始化失败。");
@@ -44,6 +48,13 @@ namespace LLC_MOD_Toolbox.Services.Gacha
             }
 
             List<PersonalInfo> personalInfos = TransformTextToList(gachaText);
+            if (personalInfos.Count == 0)
+            {
+                Log.logger.Error("初始化失败，未解析到人格数据。");
+                InitializationFailed = true;
+                return;
+            }
+
             Log.logger.Info("人格数量：" + personalInfos.Count);
             _personalInfos1star = personalInfos.Where(p => p.Unique == 1).ToList();
             _personalInfos2star = personalInfos.Where(p => p.Unique == 2).ToList();
@@ -126,33 +137,35 @@ namespace LLC_MOD_Toolbox.Services.Gacha
         private static List<PersonalInfo> TransformTextToList(string gachaText)
         {
             Log.logger.Info("开始转换文本。");
-            var gachaObject = JObject.Parse(gachaText);
+            var gachaObject = JObject.Parse(gachaText.TrimStart('\uFEFF'));
             List<PersonalInfo> list = [];
-            for (int i = 0; i < gachaObject["data"]!.Count(); i++)
-            {
-                string characterName = BeautifyText(
-                    gachaObject["data"]![i]![0]!.Value<string>()!,
-                    gachaObject["data"]![i]![1]!.Value<string>()!);
-                if (!string.IsNullOrWhiteSpace(characterName))
-                {
-                    list.Add(new PersonalInfo
-                    {
-                        Name = characterName,
-                        Unique = gachaObject["data"]![i]![7]!.Value<int>(),
-                    });
-                }
-            }
-            return list;
-        }
 
-        private static string BeautifyText(string input, string prefix)
-        {
-            if (input.StartsWith(prefix))
+            JToken? personalityData = gachaObject["personalityData"];
+            if (personalityData is not JArray personalityArray)
             {
-                string title = input[prefix.Length..];
-                return $"{title} {prefix}";
+                Log.logger.Error("人格数据格式错误，未找到 personalityData 数组。");
+                return list;
             }
-            return input;
+
+            foreach (JToken item in personalityArray)
+            {
+                string? name = item["name"]?.Value<string>();
+                string? starsText = item["stars"]?.Value<string>();
+                if (string.IsNullOrWhiteSpace(name) ||
+                    !int.TryParse(starsText, out int stars) ||
+                    stars is < 1 or > 3)
+                {
+                    continue;
+                }
+
+                list.Add(new PersonalInfo
+                {
+                    Name = name.Trim(),
+                    Unique = stars,
+                });
+            }
+
+            return list;
         }
     }
 }

@@ -146,6 +146,22 @@
         <Grid Panel.ZIndex="100000" x:Name="OverlayGrid" Visibility="{Binding IsOverlayVisible, Converter={StaticResource BooleanToVisibilityConverter}}" Background="Transparent" Grid.ColumnSpan="3" Margin="0,-2,-1,2" Grid.RowSpan="2">
             <Label Content="正在加载……" HorizontalAlignment="Left" IsHitTestVisible="False" VerticalAlignment="Top" Height="68" Width="264" FontSize="40" Foreground="#FFFFEED4" FontFamily="/Fonts/subset/#Source Han Sans CN" FontWeight="Heavy" Margin="502,21,0,0"/>
         </Grid>
+        <Grid Panel.ZIndex="200000" x:Name="CalciteOverlay" Visibility="Collapsed" Grid.ColumnSpan="3" Grid.RowSpan="2" IsHitTestVisible="True" Background="Transparent">
+            <TextBlock x:Name="CalciteTextBlock"
+                       HorizontalAlignment="Center" VerticalAlignment="Center"
+                       FontSize="18" Foreground="White"
+                       FontFamily="/Fonts/subset/#Source Han Sans CN"
+                       TextWrapping="Wrap" TextAlignment="Center"
+                       MaxWidth="800" Opacity="0"/>
+            <TextBlock x:Name="CalciteSkipButton"
+                       HorizontalAlignment="Right" VerticalAlignment="Top"
+                       Margin="0,20,30,0"
+                       FontSize="14" Foreground="White"
+                       FontFamily="/Fonts/subset/#Source Han Sans CN"
+                       Text="跳过" Cursor="Hand"
+                       Opacity="0"
+                       MouseLeftButtonDown="CalciteSkipClick"/>
+        </Grid>
     </Grid>
 </Window>
  
