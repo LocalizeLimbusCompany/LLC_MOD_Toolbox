@@ -1,9 +1,6 @@
 using LLC_MOD_Toolbox.Infrastructure;
 using LLC_MOD_Toolbox.Models;
 using System.Diagnostics;
-using System.IO;
-using System.Windows;
-using System.Windows.Threading;
 
 namespace LLC_MOD_Toolbox.ViewModels
 {
@@ -263,15 +260,27 @@ namespace LLC_MOD_Toolbox.ViewModels
             foreach (var v in values) target.Add(v);
         }
 
+        // 1. https://www.bilibili.com/video/BV1c49DBjEzq 《明日方舟》EP - Innocence
+        // 2. https://www.bilibili.com/video/BV1GJ411x7h7 【官方 MV】Never Gonna Give You Up - Rick Astley
+        private static readonly string[] randomLinks = ["https://www.bilibili.com/video/BV1c49DBjEzq", "https://www.bilibili.com/video/BV1GJ411x7h7"];
+
         private static void OpenUrl(string url)
         {
-            Log.logger.Info("打开了网址：" + url);
-            Process.Start(new ProcessStartInfo(url) { UseShellExecute = true });
+            string finalUrl = url;
+            if (url == "RandomLink")
+            {
+                Random random = new();
+                finalUrl = randomLinks[random.Next(randomLinks.Length)];
+            }
+            Log.logger.Info("打开了网址：" + finalUrl);
+            Process.Start(new ProcessStartInfo(finalUrl) { UseShellExecute = true });
         }
 
         private void OpenLink(string? url)
         {
-            if (!string.IsNullOrWhiteSpace(url)) OpenUrl(url);
+            if (!string.IsNullOrWhiteSpace(url)) { 
+                OpenUrl(url); 
+            }
         }
 
         private static bool CanOpenLink(string? url) => !string.IsNullOrWhiteSpace(url);
