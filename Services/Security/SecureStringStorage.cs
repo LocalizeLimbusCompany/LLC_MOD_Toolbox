@@ -8,10 +8,6 @@ using System.Threading.Tasks;
 
 namespace LLC_MOD_Toolbox.Services.Security
 {
-    // 我决定学习MAA先进经验，他们用的也是DPAPI加密MirrorChyan的秘钥
-    // 哦，如果你看到这个代码。
-    // 我好孤独。
-    // 凯尔希，没有同类，对吗。
     public static class SecureStringStorage
     {
         private static readonly string StoragePath = Path.Combine(
