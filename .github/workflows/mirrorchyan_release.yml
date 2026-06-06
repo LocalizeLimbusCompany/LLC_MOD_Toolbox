@@ -9,6 +9,7 @@ on:
 
 jobs:
   mirrorchyan:
+    if: ${{ github.repository_owner == 'LocalizeLimbusCompany' }}
     runs-on: macos-latest
 
     steps:
@@ -18,9 +19,6 @@ jobs:
           filename: "LLC_MOD_Toolbox_Installer.exe"
           mirrorchyan_rid: LLC_MOD_Toolbox
           tag: ${{ inputs.tag }}
-
-          os: win
-          arch: x64
 
           owner: LocalizeLimbusCompany
           repo: LLC_MOD_Toolbox
@@ -34,9 +32,6 @@ jobs:
           mirrorchyan_rid: LLC_MOD_Toolbox_Increment
           tag: ${{ inputs.tag }}
           p7zip: true
-
-          os: win
-          arch: x64
 
           owner: LocalizeLimbusCompany
           repo: LLC_MOD_Toolbox
