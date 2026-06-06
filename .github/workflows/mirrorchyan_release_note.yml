@@ -11,6 +11,7 @@ on:
 
 jobs:
   mirrorchyan:
+    if: ${{ github.repository_owner == 'LocalizeLimbusCompany' }}
     runs-on: macos-latest
 
     steps:
