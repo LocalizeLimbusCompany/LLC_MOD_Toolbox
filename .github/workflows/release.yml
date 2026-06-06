@@ -118,3 +118,11 @@ jobs:
             LLC_MOD_Toolbox_Installer.exe
           token: ${{ secrets.GITHUB_TOKEN }}
           generate_release_notes: true
+
+      - name: Trigger MirrorChyanUploading
+        shell: bash
+        run: |
+          gh workflow run --repo $GITHUB_REPOSITORY mirrorchyan_release.yml -f tag=${{ github.ref_name }}
+          gh workflow run --repo $GITHUB_REPOSITORY mirrorchyan_release_note.yml -f tag=${{ github.ref_name }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
