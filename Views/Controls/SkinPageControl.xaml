@@ -23,6 +23,29 @@
         <Label x:Name="SkinDesc" HorizontalAlignment="Center" Margin="0,85,0,0" VerticalAlignment="Top" Height="300" Width="644" HorizontalContentAlignment="Stretch" FontSize="15" Foreground="#FFFFEED4" FontFamily="/Fonts/subset/#Source Han Sans CN" FontWeight="Medium">
             <TextBlock Text="{Binding SkinDescription}" TextWrapping="Wrap"/>
         </Label>
+        <Label x:Name="SkinMusicText" Content="{Binding SkinMusicButtonText}" Visibility="{Binding IsSkinMusicAvailable, Converter={StaticResource BooleanToVisibilityConverter}}" HorizontalAlignment="Left" IsHitTestVisible="False" Panel.ZIndex="10" Margin="518,53,0,0" VerticalAlignment="Top" Height="31" Width="71" FontSize="14" Foreground="Black" FontFamily="/Fonts/subset/#Source Han Sans CN" FontWeight="Heavy"/>
+        <Image x:Name="SkinMusicHover" Visibility="{Binding IsSkinMusicAvailable, Converter={StaticResource BooleanToVisibilityConverter}}" Panel.ZIndex="5" IsHitTestVisible="False" Opacity="0" HorizontalAlignment="Left" Height="34" Margin="511,52,0,0" VerticalAlignment="Top" Width="80" Source="pack://siteoforigin:,,,/Picture/SettingButtonHover.png"/>
+        <Button x:Name="SkinMusicButton" Visibility="{Binding IsSkinMusicAvailable, Converter={StaticResource BooleanToVisibilityConverter}}" Command="{Binding ToggleSkinMusicCommand}" HorizontalAlignment="Left" Margin="514,54,0,0" VerticalAlignment="Top" Height="28" Width="74" Style="{DynamicResource NoHover}" Background="#FFFFEED4">
+            <Button.Clip>
+                <RectangleGeometry Rect="0,0,74,28" RadiusX="3" RadiusY="3"/>
+            </Button.Clip>
+            <Button.Triggers>
+                <EventTrigger RoutedEvent="Button.MouseEnter">
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation Storyboard.TargetName="SkinMusicHover" Storyboard.TargetProperty="Opacity" From="0" To="1" Duration="0:0:0.3"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger>
+                <EventTrigger RoutedEvent="Button.MouseLeave">
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation Storyboard.TargetName="SkinMusicHover" Storyboard.TargetProperty="Opacity" From="1" To="0" Duration="0:0:0.3"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger>
+            </Button.Triggers>
+        </Button>
     </Grid>
 </UserControl>
 

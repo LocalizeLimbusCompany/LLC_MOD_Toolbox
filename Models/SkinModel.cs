@@ -10,6 +10,13 @@ namespace LLC_MOD_Toolbox.Models
         public Dictionary<string, string> images { get; set; } = new Dictionary<string, string>();
         public Dictionary<string, bool> visibility { get; set; } = new Dictionary<string, bool>();
         public Dictionary<string, string> margins { get; set; } = new Dictionary<string, string>();
+        public SkinMusicConfig? music { get; set; }
+    }
+
+    public class SkinMusicConfig
+    {
+        public bool enableMusic { get; set; }
+        public string musicPath { get; set; } = "";
     }
 
     public class SkinCatalogItem

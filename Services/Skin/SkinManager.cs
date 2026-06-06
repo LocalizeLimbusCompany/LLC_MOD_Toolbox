@@ -291,6 +291,11 @@ namespace LLC_MOD_Toolbox.Services.Skin
 
         private string GetFullImagePath(string skinName, string relativePath)
         {
+            return GetFullSkinAssetPath(skinName, relativePath);
+        }
+
+        private string GetFullSkinAssetPath(string skinName, string relativePath)
+        {
             if (string.IsNullOrEmpty(relativePath))
                 return null;
 
@@ -308,6 +313,45 @@ namespace LLC_MOD_Toolbox.Services.Skin
             // 否则，构建相对于皮肤目录的路径
             string skinPath = Path.Combine(_skinsDirectory, skinName);
             return Path.Combine(skinPath, relativePath);
+        }
+
+        public string? GetCurrentSkinMusicPath()
+        {
+            string? musicPath = _currentSkinDefinition?.music?.musicPath;
+            if (string.IsNullOrWhiteSpace(musicPath))
+                return null;
+
+            string fullPath = GetFullSkinAssetPath(CurrentSkinName, musicPath);
+            return File.Exists(fullPath) ? fullPath : null;
+        }
+
+        public bool SaveCurrentSkinMusicEnabled(bool enabled)
+        {
+            if (_currentSkinDefinition?.music == null || string.IsNullOrWhiteSpace(CurrentSkinName))
+                return false;
+
+            try
+            {
+                _currentSkinDefinition.music.enableMusic = enabled;
+                string configPath = Path.Combine(_skinsDirectory, CurrentSkinName, "skin.json");
+                if (!File.Exists(configPath))
+                    return false;
+
+                string json = File.ReadAllText(configPath);
+                var skin = JsonConvert.DeserializeObject<SkinDefinition>(json);
+                if (skin?.music == null)
+                    return false;
+
+                skin.music.enableMusic = enabled;
+                File.WriteAllText(configPath, JsonConvert.SerializeObject(skin, Formatting.Indented));
+                Log.logger.Info($"皮肤音乐状态已保存: {CurrentSkinName}, enableMusic={enabled}");
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Log.logger.Error($"保存皮肤音乐状态失败: {CurrentSkinName}, 错误: {ex.Message}");
+                return false;
+            }
         }
 
         private SkinTargets FindSkinTargets(DependencyObject parent)

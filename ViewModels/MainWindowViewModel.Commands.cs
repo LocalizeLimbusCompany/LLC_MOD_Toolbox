@@ -27,6 +27,7 @@ namespace LLC_MOD_Toolbox.ViewModels
 
             LoadConfiguredSkin();
             ApplySkinRequested?.Invoke();
+            RefreshSkinMusicState();
 
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls13;
             _mirrorChyanService.Initialize();
@@ -102,7 +103,8 @@ namespace LLC_MOD_Toolbox.ViewModels
             if (_appState.IsLauncherMode && !_hasNewAnno && !needUpdate)
             {
                 try { OpenUrl("steam://rungameid/1973530"); } catch { }
-                Environment.Exit(0);
+                Application.Current.Shutdown();
+                return;
             }
 
             if ((_config.Settings.install.installWhenLaunch || _appState.IsLauncherMode) && !_hasNewAnno && needUpdate)
@@ -349,6 +351,7 @@ namespace LLC_MOD_Toolbox.ViewModels
                     var skinInfo = _skinService.CurrentSkinInfo ?? _skinService.GetSkinInfo(selectedSkin.name);
                     if (skinInfo != null)
                         SkinDescription = (skinInfo.desc ?? "暂无描述。").Replace("\\n", "\n");
+                    RefreshSkinMusicState();
                     _config.Settings.skin.currentSkin = selectedSkin.name;
                     _config.SaveConfig();
                 }
@@ -578,6 +581,66 @@ namespace LLC_MOD_Toolbox.ViewModels
             {
                 Log.logger.Error($"初始化皮肤选择框失败: {ex.Message}");
             }
+        }
+
+        private void RefreshSkinMusicState()
+        {
+            var musicPath = _skinService.GetCurrentSkinMusicPath();
+            var music = _skinService.CurrentSkinInfo?.music;
+            bool isAvailable = music != null && !string.IsNullOrWhiteSpace(musicPath);
+
+            IsSkinMusicAvailable = isAvailable;
+            IsSkinMusicEnabled = isAvailable ? music!.enableMusic : false;
+
+            if (!isAvailable)
+            {
+                _skinMusicService.FadeOutAndStop();
+                return;
+            }
+
+            if (IsSkinMusicEnabled)
+                _skinMusicService.PlayWithFadeIn(musicPath!);
+            else
+                _skinMusicService.FadeOutAndStop();
+        }
+
+        private void ToggleSkinMusic()
+        {
+            if (!IsSkinMusicAvailable)
+                return;
+
+            var musicPath = _skinService.GetCurrentSkinMusicPath();
+            if (string.IsNullOrWhiteSpace(musicPath))
+            {
+                IsSkinMusicAvailable = false;
+                IsSkinMusicEnabled = false;
+                _skinMusicService.FadeOutAndStop();
+                return;
+            }
+
+            bool enabled = !IsSkinMusicEnabled;
+            IsSkinMusicEnabled = enabled;
+            bool saved = _skinService.SaveCurrentSkinMusicEnabled(enabled);
+
+            if (enabled)
+                _skinMusicService.PlayWithFadeIn(musicPath);
+            else
+                _skinMusicService.FadeOutAndStop();
+
+            string message = enabled ? "已开启皮肤音乐。" : "已关闭皮肤音乐。";
+            if (!saved)
+                message += "\n但音乐开关状态保存失败。";
+            _dialogService.ShowMessage(message, "提示");
+        }
+
+        public Task FadeOutSkinMusicAsync()
+        {
+            return _skinMusicService.FadeOutAndStopAsync();
+        }
+
+        public void SetSkinMusicVolumeMultiplier(double multiplier)
+        {
+            _skinMusicService.SetVolumeMultiplier(multiplier);
         }
 
         private async Task CheckModInstalled()

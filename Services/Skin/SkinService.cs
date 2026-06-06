@@ -16,6 +16,8 @@ namespace LLC_MOD_Toolbox.Services.Skin
         Task<List<SkinDefinition>> GetRemoteSkinDefinitionsAsync();
         Task<bool> InstallSkinFromServerAsync(string skinName);
         List<SkinCatalogItem> BuildSkinCatalog(IEnumerable<SkinDefinition> remoteSkins, IEnumerable<string> localSkinNames);
+        string? GetCurrentSkinMusicPath();
+        bool SaveCurrentSkinMusicEnabled(bool enabled);
         string? CurrentSkinName { get; }
         SkinDefinition? CurrentSkinInfo { get; }
     }
@@ -37,6 +39,8 @@ namespace LLC_MOD_Toolbox.Services.Skin
         public SkinDefinition? GetSkinInfo(string skinName) => SkinManager.Instance.GetSkinInfo(skinName);
         public bool LoadSkin(string skinName) => SkinManager.Instance.LoadSkin(skinName);
         public void ApplySkinToWindow(Window window) => SkinManager.Instance.ApplySkinToWindow(window);
+        public string? GetCurrentSkinMusicPath() => SkinManager.Instance.GetCurrentSkinMusicPath();
+        public bool SaveCurrentSkinMusicEnabled(bool enabled) => SkinManager.Instance.SaveCurrentSkinMusicEnabled(enabled);
         public string? CurrentSkinName => SkinManager.Instance.CurrentSkinName;
         public SkinDefinition? CurrentSkinInfo => SkinManager.Instance.CurrentSkinInfo;
 

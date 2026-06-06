@@ -68,6 +68,7 @@ namespace LLC_MOD_Toolbox
             services.AddSingleton<IGreytestService, GreytestService>();
             services.AddSingleton<IFontService, FontService>();
             services.AddSingleton<ISkinService, SkinService>();
+            services.AddSingleton<ISkinMusicService, SkinMusicService>();
 
             services.AddSingleton<MainWindowViewModel>();
             services.AddSingleton<MainWindow>();

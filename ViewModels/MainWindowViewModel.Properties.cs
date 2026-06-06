@@ -107,6 +107,24 @@ namespace LLC_MOD_Toolbox.ViewModels
             set => SetProperty(ref _skinDescription, value);
         }
 
+        public bool IsSkinMusicAvailable
+        {
+            get => _isSkinMusicAvailable;
+            set => SetProperty(ref _isSkinMusicAvailable, value);
+        }
+
+        public bool IsSkinMusicEnabled
+        {
+            get => _isSkinMusicEnabled;
+            set => SetProperty(ref _isSkinMusicEnabled, value);
+        }
+
+        public string SkinMusicButtonText
+        {
+            get => _skinMusicButtonText;
+            set => SetProperty(ref _skinMusicButtonText, value);
+        }
+
         public string? SelectedNodeOption
         {
             get => _selectedNodeOption;

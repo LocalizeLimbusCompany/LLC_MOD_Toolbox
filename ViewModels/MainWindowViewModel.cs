@@ -53,6 +53,7 @@ namespace LLC_MOD_Toolbox.ViewModels
         private readonly IVersionService _versionService;
         private readonly IFontService _fontService;
         private readonly ISkinService _skinService;
+        private readonly ISkinMusicService _skinMusicService;
         private readonly IDialogService _dialogService;
         private readonly IHttpService _httpService;
         private readonly AppState _appState;
@@ -82,6 +83,9 @@ namespace LLC_MOD_Toolbox.ViewModels
         private bool _suppressNodeSelectionNotification;
         private bool _suppressApiSelectionNotification;
         private bool _suppressSkinSelectionNotification;
+        private bool _isSkinMusicAvailable;
+        private bool _isSkinMusicEnabled;
+        private string _skinMusicButtonText = "音乐开关";
         private bool _isMirrorChyanLogoVisible;
         private bool _isGreytestLogoVisible;
         private float _progressPercentage;
@@ -103,6 +107,7 @@ namespace LLC_MOD_Toolbox.ViewModels
             IVersionService versionService,
             IFontService fontService,
             ISkinService skinService,
+            ISkinMusicService skinMusicService,
             IDialogService dialogService,
             IHttpService httpService,
             AppState appState,
@@ -120,6 +125,7 @@ namespace LLC_MOD_Toolbox.ViewModels
             _versionService = versionService;
             _fontService = fontService;
             _skinService = skinService;
+            _skinMusicService = skinMusicService;
             _dialogService = dialogService;
             _httpService = httpService;
             _appState = appState;
@@ -153,6 +159,7 @@ namespace LLC_MOD_Toolbox.ViewModels
             RestoreFontCommand = new RelayCommand(HandleRestoreFont);
             StartGreytestCommand = new AsyncRelayCommand(HandleGreytestStartAsync);
             ShowGreytestInfoCommand = new RelayCommand(() => OpenUrl("https://www.zeroasso.top/docs/community/llcdev"));
+            ToggleSkinMusicCommand = new RelayCommand(ToggleSkinMusic);
 
             _mirrorChyanService.ModeDisabledByError += OnMirrorChyanModeDisabled;
         }
@@ -189,6 +196,7 @@ namespace LLC_MOD_Toolbox.ViewModels
         public ICommand RestoreFontCommand { get; }
         public ICommand StartGreytestCommand { get; }
         public ICommand ShowGreytestInfoCommand { get; }
+        public ICommand ToggleSkinMusicCommand { get; }
 
         public ObservableCollection<string> NodeOptions { get; } = [];
         public ObservableCollection<string> ApiOptions { get; } = [];
