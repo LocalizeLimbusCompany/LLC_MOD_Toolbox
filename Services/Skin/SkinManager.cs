@@ -13,7 +13,7 @@ namespace LLC_MOD_Toolbox.Services.Skin
 {
     public class SkinManager
     {
-        private static SkinManager _instance;
+        private static SkinManager? _instance;
         private static readonly object _lock = new object();
 
         private readonly string _skinsDirectory;
@@ -24,8 +24,8 @@ namespace LLC_MOD_Toolbox.Services.Skin
         private Dictionary<string, bool> _defaultSkinVisibility = new Dictionary<string, bool>();
         private Dictionary<string, string> _currentSkinMargins = new Dictionary<string, string>();
         private Dictionary<string, string> _defaultSkinMargins = new Dictionary<string, string>();
-        private SkinDefinition _currentSkinDefinition;
-        private SkinDefinition _defaultSkinDefinition;
+        private SkinDefinition? _currentSkinDefinition;
+        private SkinDefinition? _defaultSkinDefinition;
 
         private sealed class SkinTargets
         {
@@ -233,14 +233,14 @@ namespace LLC_MOD_Toolbox.Services.Skin
             try
             {
                 string imageName = image.Name;
-                string imagePath = null;
+                string? imagePath = null;
                 bool hasConfig = false;
 
                 // 尝试从当前皮肤获取图片路径
                 if (_currentSkinImages.ContainsKey(imageName))
                 {
                     hasConfig = true;
-                    imagePath = GetFullImagePath(_currentSkinDefinition.name, _currentSkinImages[imageName]);
+                    imagePath = GetFullImagePath(CurrentSkinName, _currentSkinImages[imageName]);
                     Log.logger.Debug($"从当前皮肤获取图片: {imageName} -> {imagePath}");
                 }
 
@@ -289,12 +289,12 @@ namespace LLC_MOD_Toolbox.Services.Skin
             return false;
         }
 
-        private string GetFullImagePath(string skinName, string relativePath)
+        private string? GetFullImagePath(string skinName, string relativePath)
         {
             return GetFullSkinAssetPath(skinName, relativePath);
         }
 
-        private string GetFullSkinAssetPath(string skinName, string relativePath)
+        private string? GetFullSkinAssetPath(string skinName, string relativePath)
         {
             if (string.IsNullOrEmpty(relativePath))
                 return null;
@@ -321,7 +321,7 @@ namespace LLC_MOD_Toolbox.Services.Skin
             if (string.IsNullOrWhiteSpace(musicPath))
                 return null;
 
-            string fullPath = GetFullSkinAssetPath(CurrentSkinName, musicPath);
+            string? fullPath = GetFullSkinAssetPath(CurrentSkinName, musicPath);
             return File.Exists(fullPath) ? fullPath : null;
         }
 
@@ -451,7 +451,7 @@ namespace LLC_MOD_Toolbox.Services.Skin
                     if (string.IsNullOrEmpty(element.Name))
                         continue;
 
-                    string marginValue = GetElementMargin(element.Name);
+                    string? marginValue = GetElementMargin(element.Name);
                     if (!string.IsNullOrEmpty(marginValue))
                     {
                         if (TryParseMargin(marginValue, out Thickness margin))
@@ -477,7 +477,7 @@ namespace LLC_MOD_Toolbox.Services.Skin
             }
         }
 
-        private string GetElementMargin(string elementName)
+        private string? GetElementMargin(string elementName)
         {
             // 优先使用当前皮肤的边距设置
             if (_currentSkinMargins.ContainsKey(elementName))
@@ -549,6 +549,8 @@ namespace LLC_MOD_Toolbox.Services.Skin
 
                 return Directory.GetDirectories(_skinsDirectory)
                     .Select(Path.GetFileName)
+                    .Where(name => !string.IsNullOrEmpty(name))
+                    .Select(name => name!)
                     .Where(name => File.Exists(Path.Combine(_skinsDirectory, name, "skin.json")))
                     .ToList();
             }
@@ -559,7 +561,7 @@ namespace LLC_MOD_Toolbox.Services.Skin
             }
         }
 
-        public SkinDefinition GetSkinInfo(string skinName)
+        public SkinDefinition? GetSkinInfo(string skinName)
         {
             try
             {
@@ -578,6 +580,6 @@ namespace LLC_MOD_Toolbox.Services.Skin
         }
 
         public string CurrentSkinName => _currentSkinDefinition?.name ?? _defaultSkinName;
-        public SkinDefinition CurrentSkinInfo => _currentSkinDefinition;
+        public SkinDefinition? CurrentSkinInfo => _currentSkinDefinition;
     }
 }

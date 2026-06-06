@@ -125,7 +125,6 @@ namespace LLC_MOD_Toolbox.Services.Network
                     ChunkCount = 8,
                     MaxTryAgainOnFailure = 5,
                     BlockTimeout = 30000,
-                    ReserveStorageSpaceBeforeStartingDownload = true,
                 };
                 using var downloader = new DownloadService(downloadOpt);
                 if (progress != null)

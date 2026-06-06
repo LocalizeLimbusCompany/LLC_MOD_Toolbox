@@ -90,7 +90,6 @@ namespace LLC_MOD_Toolbox.ViewModels
         private bool _isGreytestLogoVisible;
         private float _progressPercentage;
         private bool _hasNewAnno;
-        private bool _isInAnno;
         private DispatcherTimer? _annoTimer;
         private int _annoLastTime;
 

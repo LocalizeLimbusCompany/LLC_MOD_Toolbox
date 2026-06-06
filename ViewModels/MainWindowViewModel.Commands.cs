@@ -369,7 +369,6 @@ namespace LLC_MOD_Toolbox.ViewModels
             ArePrimaryActionsEnabled = false;
             AnnouncementText = result.Content;
             _announcementService.MarkAsRead(result.Version);
-            _isInAnno = true;
             _hasNewAnno = true;
             IsAnnouncementButtonEnabled = false;
             ShowAnnouncementTip = true;
@@ -403,7 +402,6 @@ namespace LLC_MOD_Toolbox.ViewModels
             }
             else
             {
-                _isInAnno = false;
                 IsAnnouncementButtonEnabled = true;
                 ShowAnnouncementTip = false;
                 _annoTimer?.Stop();

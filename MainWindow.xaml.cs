@@ -31,6 +31,7 @@ namespace LLC_MOD_Toolbox
 
         private MediaPlayer? _calcitePlayer;
         private DispatcherTimer? _calciteTimer;
+        private DispatcherTimer? _calciteEndDelayTimer;
         private int _calciteTextIndex;
         private int _calciteCharIndex;
         private bool _calcitePlaying;
@@ -75,7 +76,7 @@ namespace LLC_MOD_Toolbox
             {
                 Rect = new Rect(0, 0, 6.24 * value, 50)
             };
-            Dispatcher.BeginInvoke(() => AutoInstallPage.ProgressClip = rectGeometry);
+            _ = Dispatcher.BeginInvoke(() => AutoInstallPage.ProgressClip = rectGeometry);
         }
 
         private async void LoadEasterEggImage(string url)
@@ -91,7 +92,7 @@ namespace LLC_MOD_Toolbox
                 bitmap.StreamSource = stream;
                 bitmap.EndInit();
                 bitmap.Freeze();
-                Dispatcher.BeginInvoke(() => EEPage.PageImageSource = bitmap);
+                _ = Dispatcher.BeginInvoke(() => EEPage.PageImageSource = bitmap);
             }
             catch (Exception ex)
             {
@@ -114,12 +115,21 @@ namespace LLC_MOD_Toolbox
                 return;
 
             _isCloseFadeInProgress = true;
+            Hide();
             _ = CloseAfterMusicFadeAsync();
         }
 
         private async Task CloseAfterMusicFadeAsync()
         {
-            await ViewModel.FadeOutSkinMusicAsync();
+            try
+            {
+                await ViewModel.FadeOutSkinMusicAsync();
+            }
+            catch (Exception ex)
+            {
+                Log.logger.Error("关闭工具箱时渐出皮肤音乐失败：" + ex.Message);
+            }
+
             _isClosingAfterMusicFade = true;
             await Dispatcher.InvokeAsync(Close, DispatcherPriority.Background);
         }
@@ -145,7 +155,7 @@ namespace LLC_MOD_Toolbox
             var fontUri = new System.Uri(fontPath);
             string familyName = new Services.Font.FontService().GetFontFamilyName(fontPath);
             var customFont = new FontFamily(fontUri.AbsoluteUri + "#" + familyName);
-            Dispatcher.BeginInvoke(() =>
+            _ = Dispatcher.BeginInvoke(() =>
             {
                 Resources["GlobalPreviewFont"] = customFont;
                 Resources["GlobalPreviewFontSize"] = fontSize;
@@ -384,7 +394,7 @@ namespace LLC_MOD_Toolbox
             string audioPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Picture", "kaltsit", "kaltsit_message.mp3");
             _calcitePlayer = new MediaPlayer();
             _calcitePlayer.MediaOpened += (_, _) => Dispatcher.Invoke(OnCalciteMediaOpened);
-            _calcitePlayer.MediaEnded += (_, _) => Dispatcher.Invoke(EndCalciteSequence);
+            _calcitePlayer.MediaEnded += (_, _) => Dispatcher.Invoke(StartCalciteEndDelay);
             _calcitePlayer.Open(new Uri(audioPath, UriKind.Absolute));
 
             _calciteTextIndex = -1;
@@ -495,10 +505,29 @@ namespace LLC_MOD_Toolbox
             EndCalciteSequence();
         }
 
+        private void StartCalciteEndDelay()
+        {
+            if (!_calcitePlaying) return;
+
+            _calciteEndDelayTimer?.Stop();
+            var endDelayTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(5) };
+            endDelayTimer.Tick += (_, _) =>
+            {
+                endDelayTimer.Stop();
+                if (_calciteEndDelayTimer == endDelayTimer)
+                    _calciteEndDelayTimer = null;
+                EndCalciteSequence();
+            };
+            _calciteEndDelayTimer = endDelayTimer;
+            _calciteEndDelayTimer.Start();
+        }
+
         private void EndCalciteSequence()
         {
             _calcitePlaying = false;
             ViewModel.SetSkinMusicVolumeMultiplier(1);
+            _calciteEndDelayTimer?.Stop();
+            _calciteEndDelayTimer = null;
             _calciteTimer?.Stop();
             _calciteTimer = null;
 

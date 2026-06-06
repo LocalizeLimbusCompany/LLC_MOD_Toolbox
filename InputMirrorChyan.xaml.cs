@@ -18,9 +18,9 @@ namespace LLC_MOD_Toolbox
 {
     public partial class InputMirrorChyan : Window, INotifyPropertyChanged
     {
-        private string _promptText;
-        private string _inputText;
-        private string _inputLabel;
+        private string _promptText = string.Empty;
+        private string _inputText = string.Empty;
+        private string _inputLabel = string.Empty;
         private bool _isPasswordMode;
 
         public InputMirrorChyan()
@@ -70,7 +70,7 @@ namespace LLC_MOD_Toolbox
             }
         }
 
-        public string Result { get; private set; }
+        public string? Result { get; private set; }
 
         private void OkButton_Click(object sender, RoutedEventArgs e)
         {
@@ -126,19 +126,19 @@ namespace LLC_MOD_Toolbox
                 InputTextBox.Focus();
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
         protected virtual void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
-        public static string ShowDialog(string prompt, string title = "等下，你有Mirror酱秘钥吗？",
-            string inputLabel = null, bool isPassword = false, Window owner = null)
+        public static string? ShowDialog(string prompt, string title = "等下，你有Mirror酱秘钥吗？",
+            string? inputLabel = null, bool isPassword = false, Window? owner = null)
         {
             var dialog = new InputMirrorChyan
             {
                 Title = title,
                 PromptText = prompt,
-                InputLabel = inputLabel,
+                InputLabel = inputLabel ?? string.Empty,
                 IsPasswordMode = isPassword,
                 Owner = owner
             };

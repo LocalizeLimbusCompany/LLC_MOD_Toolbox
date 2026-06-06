@@ -11,7 +11,7 @@ namespace LLC_MOD_Toolbox.Services.Configuration
         private readonly object _lock = new();
         private readonly string _configFilePath;
 
-        public AppSettings Settings { get; private set; }
+        public AppSettings Settings { get; private set; } = new();
 
         public ConfigurationManager(string configFile)
         {
@@ -70,7 +70,7 @@ namespace LLC_MOD_Toolbox.Services.Configuration
             MemberSerialization memberSerialization)
         {
             var property = base.CreateProperty(member, memberSerialization);
-            property.ShouldSerialize = _ => !property.PropertyName.StartsWith("_");
+            property.ShouldSerialize = _ => property.PropertyName?.StartsWith("_") != true;
             return property;
         }
     }
