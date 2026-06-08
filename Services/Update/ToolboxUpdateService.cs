@@ -36,7 +36,7 @@ namespace LLC_MOD_Toolbox.Services.Update
 
         public async Task<ToolboxUpdateCheckResult> CheckForUpdateAsync()
         {
-            bool isDebug = true;
+            bool isDebug = false;
             if (isDebug)
             {
                 if (_appState.IsMirrorChyanMode)
