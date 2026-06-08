@@ -382,8 +382,23 @@ namespace LLC_MOD_Toolbox
             foreach (UIElement child in ((Grid)Content).Children)
             {
                 if (child is FrameworkElement fe && fe.Name == "Background") continue;
-                if (child is FrameworkElement fe2 && fe2.Name == "CalciteOverlay") continue;
+                if (child is FrameworkElement fe2 && fe2.Name == "CalciteBackground") continue;
+                if (child is FrameworkElement fe3 && fe3.Name == "CalciteOverlay") continue;
                 child.BeginAnimation(OpacityProperty, fadeOut);
+            }
+
+            string bgPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Picture", "kaltsit", "kaltsit_background.png");
+            if (File.Exists(bgPath))
+            {
+                var bitmap = new BitmapImage();
+                bitmap.BeginInit();
+                bitmap.CacheOption = BitmapCacheOption.OnLoad;
+                bitmap.UriSource = new Uri(bgPath, UriKind.Absolute);
+                bitmap.EndInit();
+                bitmap.Freeze();
+                CalciteBackground.Source = bitmap;
+                CalciteBackground.Visibility = Visibility.Visible;
+                CalciteBackground.BeginAnimation(OpacityProperty, new DoubleAnimation(0, 1, TimeSpan.FromSeconds(1.5)));
             }
 
             CalciteOverlay.Visibility = Visibility.Visible;
@@ -546,11 +561,20 @@ namespace LLC_MOD_Toolbox
             foreach (UIElement child in ((Grid)Content).Children)
             {
                 if (child is FrameworkElement fe && fe.Name == "Background") continue;
-                if (child is FrameworkElement fe2 && fe2.Name == "CalciteOverlay") continue;
+                if (child is FrameworkElement fe2 && fe2.Name == "CalciteBackground") continue;
+                if (child is FrameworkElement fe3 && fe3.Name == "CalciteOverlay") continue;
                 child.BeginAnimation(OpacityProperty, null);
                 child.Opacity = 0;
                 child.BeginAnimation(OpacityProperty, fadeIn);
             }
+
+            var bgFadeOut = new DoubleAnimation(1, 0, TimeSpan.FromSeconds(0.8));
+            bgFadeOut.Completed += (_, _) =>
+            {
+                CalciteBackground.Visibility = Visibility.Collapsed;
+                CalciteBackground.Source = null;
+            };
+            CalciteBackground.BeginAnimation(OpacityProperty, bgFadeOut);
 
             _config.Settings.gacha.calciteEasterEggSeen = true;
             _config.SaveConfig();

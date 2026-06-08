@@ -72,6 +72,11 @@
                 <RectangleGeometry Rect="0,0,960,600" RadiusX="20" RadiusY="20"/>
             </Image.Clip>
         </Image>
+        <Image x:Name="CalciteBackground" HorizontalAlignment="Left" Height="600" VerticalAlignment="Top" Width="960" Grid.RowSpan="2" Grid.ColumnSpan="3" Opacity="0" Visibility="Collapsed">
+            <Image.Clip>
+                <RectangleGeometry Rect="0,0,960,600" RadiusX="20" RadiusY="20"/>
+            </Image.Clip>
+        </Image>
         <Image x:Name="ButtonBackground" HorizontalAlignment="Left" Height="480" Margin="18,116,0,0" VerticalAlignment="Top" Width="162" Source="Picture/ButtonBackground.png" Grid.RowSpan="2" Grid.ColumnSpan="2"/>
         <Image x:Name="TitleBar" HorizontalAlignment="Left" Height="87" VerticalAlignment="Top" Width="960" Grid.ColumnSpan="3" Margin="0,13,0,0" Source="Picture/TitleBar.png"/>
         <Image x:Name="MinimizeHover" HorizontalAlignment="Left" VerticalAlignment="Top" Opacity="0" IsHitTestVisible="False" Margin="573,16,0,0" Height="80" Width="81" Panel.ZIndex="5" Source="Picture/MinimizeHover.png" Grid.Column="2" />

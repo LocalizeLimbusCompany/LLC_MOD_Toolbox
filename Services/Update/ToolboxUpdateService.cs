@@ -1,3 +1,4 @@
+using LLC_MOD_Toolbox.Services.IO;
 using LLC_MOD_Toolbox.Services.Network;
 using LLC_MOD_Toolbox.Services.UI;
 using Newtonsoft.Json.Linq;
@@ -16,33 +17,44 @@ namespace LLC_MOD_Toolbox.Services.Update
         private readonly IHttpService _httpService;
         private readonly INodeService _nodeService;
         private readonly IMirrorChyanService _mirrorChyanService;
+        private readonly IFileService _fileService;
 
         public ToolboxUpdateService(
             AppState appState,
             IHttpService httpService,
             INodeService nodeService,
             IMirrorChyanService mirrorChyanService,
+            IFileService fileService,
             IDialogService dialogService)
         {
             _appState = appState;
             _httpService = httpService;
             _nodeService = nodeService;
             _mirrorChyanService = mirrorChyanService;
+            _fileService = fileService;
         }
 
         public async Task<ToolboxUpdateCheckResult> CheckForUpdateAsync()
         {
-            bool isDebug = false;
+            bool isDebug = true;
             if (isDebug)
             {
-                string raw = await _httpService.GetTextAsync(
-                        _nodeService.ResolveApiUrl("v2/get_api/get/repos/LocalizeLimbusCompany/LLC_Mod_Toolbox/releases/latest"),
-                        reportError: false);
-                var jsonObject = JObject.Parse(raw);
-                string latestReleaseTag = jsonObject["tag_name"]!.Value<string>()!.TrimStart('v', 'V');
-                Log.logger.Info("最新工具箱tag：" + latestReleaseTag);
-                bool hasUpdate = new System.Version(latestReleaseTag) > Assembly.GetExecutingAssembly().GetName().Version;
-                return new ToolboxUpdateCheckResult { HasUpdate = true, IsMirrorChyan = false, LatestVersion = latestReleaseTag };
+                if (_appState.IsMirrorChyanMode)
+                {
+                    var (hasUpdate, latestVersion) = await _mirrorChyanService.CheckToolboxUpdateAsync();
+                    return new ToolboxUpdateCheckResult { HasUpdate = true, IsMirrorChyan = true, LatestVersion = latestVersion };
+                }
+                else
+                {
+                    string raw = await _httpService.GetTextAsync(
+                            _nodeService.ResolveApiUrl("v2/get_api/get/repos/LocalizeLimbusCompany/LLC_Mod_Toolbox/releases/latest"),
+                            reportError: false);
+                    var jsonObject = JObject.Parse(raw);
+                    string latestReleaseTag = jsonObject["tag_name"]!.Value<string>()!.TrimStart('v', 'V');
+                    Log.logger.Info("最新工具箱tag：" + latestReleaseTag);
+                    bool hasUpdate = new System.Version(latestReleaseTag) > Assembly.GetExecutingAssembly().GetName().Version;
+                    return new ToolboxUpdateCheckResult { HasUpdate = true, IsMirrorChyan = false, LatestVersion = latestReleaseTag };
+                }
             }
             try
             {
@@ -116,13 +128,20 @@ namespace LLC_MOD_Toolbox.Services.Update
 
             try
             {
-                string downloadUrl = await ResolveToolboxPackageUrlAsync(result);
+                var (downloadUrl, sha256) = await ResolveToolboxPackageUrlAsync(result);
                 if (string.IsNullOrWhiteSpace(downloadUrl))
                     throw new InvalidOperationException("工具箱更新包下载地址为空。");
 
                 await _httpService.DownloadFileAsync(downloadUrl, archivePath, progress);
                 if (!File.Exists(archivePath) || new FileInfo(archivePath).Length == 0)
                     throw new FileNotFoundException("工具箱更新包下载完成后未找到有效文件。", archivePath);
+
+                if (!string.IsNullOrWhiteSpace(sha256) &&
+                    !string.Equals(sha256, _fileService.CalculateSHA256(archivePath), StringComparison.OrdinalIgnoreCase))
+                {
+                    Log.logger.Error("工具箱更新包校验Hash失败。");
+                    throw new InvalidOperationException("工具箱更新包校验失败，请稍后重试或更换节点。");
+                }
 
                 string sevenZipExePath = CopyUpdaterFileToTemp("7z.exe", updateDir);
                 CopyUpdaterFileToTemp("7z.dll", updateDir);
@@ -141,11 +160,11 @@ namespace LLC_MOD_Toolbox.Services.Update
             }
         }
 
-        private async Task<string> ResolveToolboxPackageUrlAsync(ToolboxUpdateCheckResult result)
+        private async Task<(string url, string sha256)> ResolveToolboxPackageUrlAsync(ToolboxUpdateCheckResult result)
         {
             return result.IsMirrorChyan
                 ? await _mirrorChyanService.GetToolboxDownloadUrlAsync()
-                : OfficialToolboxPackageUrl;
+                : (OfficialToolboxPackageUrl, string.Empty);
         }
 
         private string CopyUpdaterFileToTemp(string fileName, string updateDir)

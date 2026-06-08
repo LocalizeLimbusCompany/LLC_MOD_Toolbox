@@ -15,6 +15,6 @@ namespace LLC_MOD_Toolbox.Services.Network
         Task<int> GetLatestModVersionAsync();
         Task<(int version, string url, string sha256)> GetLatestModInfoAsync();
         Task<(bool hasUpdate, string latestVersion)> CheckToolboxUpdateAsync();
-        Task<string> GetToolboxDownloadUrlAsync();
+        Task<(string url, string sha256)> GetToolboxDownloadUrlAsync();
     }
 }

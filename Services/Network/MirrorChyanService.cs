@@ -233,7 +233,7 @@ namespace LLC_MOD_Toolbox.Services.Network
             try
             {
                 string raw = await _httpService.GetTextAsync(
-                    "https://mirrorchyan.com/api/resources/LLC_MOD_Toolbox/latest?user_agent=LLC_MOD_Toolbox&current_version=&cdk=",
+                    "https://mirrorchyan.com/api/resources/LLC_MOD_Toolbox_Increment/latest?user_agent=LLC_MOD_Toolbox&current_version=&cdk=",
                     reportError: false);
                 var json = ParseResponse(raw);
                 string latestReleaseTag = json["data"]!["version_name"]!.Value<string>()!.TrimStart('v', 'V');
@@ -254,31 +254,33 @@ namespace LLC_MOD_Toolbox.Services.Network
             }
         }
 
-        public async Task<string> GetToolboxDownloadUrlAsync()
+        public async Task<(string url, string sha256)> GetToolboxDownloadUrlAsync()
         {
             return await GetToolboxDownloadUrlCoreAsync(allowRetry: true);
         }
 
-        private async Task<string> GetToolboxDownloadUrlCoreAsync(bool allowRetry)
+        private async Task<(string url, string sha256)> GetToolboxDownloadUrlCoreAsync(bool allowRetry)
         {
             try
             {
                 string raw = await _httpService.GetTextAsync(
-                    $"https://mirrorchyan.com/api/resources/LLC_MOD_Toolbox/latest?user_agent=LLC_MOD_Toolbox&current_version=&cdk={_appState.MirrorChyanToken}",
+                    $"https://mirrorchyan.com/api/resources/LLC_MOD_Toolbox_Increment/latest?user_agent=LLC_MOD_Toolbox&current_version=&cdk={_appState.MirrorChyanToken}",
                     parseErrorJson: true);
                 var json = ParseResponse(raw);
-                return json["data"]!["url"]!.Value<string>()!;
+                string url = json["data"]!["url"]!.Value<string>()!;
+                string sha256 = json["data"]!["sha256"]!.Value<string>()!;
+                return (url, sha256);
             }
             catch (MirrorChyanException ex)
             {
                 if (allowRetry && HandleCdkError(ex))
                     return await GetToolboxDownloadUrlCoreAsync(allowRetry: false);
-                return string.Empty;
+                return (string.Empty, string.Empty);
             }
             catch (Exception ex)
             {
                 Log.logger.Error("获取下载链接失败。", ex);
-                return string.Empty;
+                return (string.Empty, string.Empty);
             }
         }
     }
