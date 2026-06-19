@@ -41,6 +41,8 @@ namespace LLC_MOD_Toolbox
             ConfigureServices(services);
             Services = services.BuildServiceProvider();
 
+            ShutdownMode previousShutdownMode = ShutdownMode;
+            ShutdownMode = ShutdownMode.OnExplicitShutdown;
             if (!EnsureAgreementAccepted())
             {
                 Current.Shutdown();
@@ -48,7 +50,9 @@ namespace LLC_MOD_Toolbox
             }
 
             var mainWindow = Services.GetRequiredService<MainWindow>();
+            MainWindow = mainWindow;
             mainWindow.Show();
+            ShutdownMode = previousShutdownMode;
 
             base.OnStartup(e);
             this.DispatcherUnhandledException += App_DispatcherUnhandledException;
