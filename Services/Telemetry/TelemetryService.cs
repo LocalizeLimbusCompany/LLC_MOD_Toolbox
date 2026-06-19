@@ -1,6 +1,7 @@
 using LLC_MOD_Toolbox.Services.Configuration;
 using LLC_MOD_Toolbox.Services.Network;
 using Newtonsoft.Json;
+using System.IO;
 using System.Net.Http;
 using System.Reflection;
 using System.Text;
@@ -10,6 +11,10 @@ namespace LLC_MOD_Toolbox.Services.Telemetry
     public sealed class TelemetryService : ITelemetryService
     {
         private static readonly HttpClient HttpClient = CreateHttpClient();
+        private static readonly string ClientGuidPath = Path.Combine(
+            Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+            "LLC_MOD_Toolbox",
+            "TelemetryGuid.txt");
         private readonly ConfigurationManager _config;
         private readonly INodeService _nodeService;
 
@@ -19,9 +24,9 @@ namespace LLC_MOD_Toolbox.Services.Telemetry
             _nodeService = nodeService;
         }
 
-        public async Task SubmitOnceAsync()
+        public async Task SubmitDailyAsync()
         {
-            if (_config.Settings.telemetry.telemeteringSubmitted)
+            if (_config.Settings.telemetry.lastSubmittedDate == DateTime.Today.ToString("yyyy-MM-dd"))
                 return;
 
             EnsureClientGuid();
@@ -47,6 +52,7 @@ namespace LLC_MOD_Toolbox.Services.Telemetry
                 }
 
                 _config.Settings.telemetry.telemeteringSubmitted = true;
+                _config.Settings.telemetry.lastSubmittedDate = DateTime.Today.ToString("yyyy-MM-dd");
                 _config.SaveConfig();
             }
             catch (Exception ex)
@@ -58,10 +64,54 @@ namespace LLC_MOD_Toolbox.Services.Telemetry
         private void EnsureClientGuid()
         {
             if (!string.IsNullOrWhiteSpace(_config.Settings.telemetry.clientGuid))
+            {
+                SaveClientGuid(_config.Settings.telemetry.clientGuid);
                 return;
+            }
+
+            string savedGuid = LoadClientGuid();
+            if (!string.IsNullOrWhiteSpace(savedGuid))
+            {
+                _config.Settings.telemetry.clientGuid = savedGuid;
+                _config.SaveConfig();
+                return;
+            }
 
             _config.Settings.telemetry.clientGuid = Guid.NewGuid().ToString();
+            SaveClientGuid(_config.Settings.telemetry.clientGuid);
             _config.SaveConfig();
+        }
+
+        private static string LoadClientGuid()
+        {
+            try
+            {
+                if (!File.Exists(ClientGuidPath))
+                    return string.Empty;
+
+                string value = File.ReadAllText(ClientGuidPath, Encoding.UTF8).Trim();
+                return Guid.TryParse(value, out _) ? value : string.Empty;
+            }
+            catch
+            {
+                return string.Empty;
+            }
+        }
+
+        private static void SaveClientGuid(string? guid)
+        {
+            if (!Guid.TryParse(guid, out _))
+                return;
+
+            try
+            {
+                Directory.CreateDirectory(Path.GetDirectoryName(ClientGuidPath)!);
+                File.WriteAllText(ClientGuidPath, guid, Encoding.UTF8);
+            }
+            catch (Exception ex)
+            {
+                Log.logger.Warn("保存遥测 GUID 失败。", ex);
+            }
         }
 
         private static string GetAppVersion()

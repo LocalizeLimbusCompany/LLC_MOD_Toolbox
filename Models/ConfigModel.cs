@@ -39,6 +39,7 @@
         public bool acceptedAgreement { get; set; } = false;
         public string? clientGuid { get; set; } = null;
         public bool telemeteringSubmitted { get; set; } = false;
+        public string? lastSubmittedDate { get; set; } = null;
     }
     public class AppSettings
     {

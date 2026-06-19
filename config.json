@@ -44,6 +44,8 @@
     "_clientGuid": "遥测唯一ID，请勿更改",
     "clientGuid": null,
     "_telemeteringSubmitted": "是否已经完成首次遥测提交",
-    "telemeteringSubmitted": false
+    "telemeteringSubmitted": false,
+    "_lastSubmittedDate": "最近一次遥测提交日期",
+    "lastSubmittedDate": null
   }
 }

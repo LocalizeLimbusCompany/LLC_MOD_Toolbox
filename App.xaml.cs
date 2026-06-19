@@ -76,6 +76,10 @@ namespace LLC_MOD_Toolbox
                 config.SaveConfig();
                 _submitTelemetryAfterStartup = true;
             }
+            else
+            {
+                _submitTelemetryAfterStartup = true;
+            }
 
             return true;
         }
@@ -87,7 +91,7 @@ namespace LLC_MOD_Toolbox
             {
                 try
                 {
-                    await telemetryService.SubmitOnceAsync().ConfigureAwait(false);
+                    await telemetryService.SubmitDailyAsync().ConfigureAwait(false);
                 }
                 catch (Exception ex)
                 {

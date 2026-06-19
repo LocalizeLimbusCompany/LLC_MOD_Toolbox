@@ -2,6 +2,6 @@ namespace LLC_MOD_Toolbox.Services.Telemetry
 {
     public interface ITelemetryService
     {
-        Task SubmitOnceAsync();
+        Task SubmitDailyAsync();
     }
 }
