@@ -11,11 +11,17 @@ namespace LLC_MOD_Toolbox.Views
         public AgreementDialog()
         {
             InitializeComponent();
+            UpdateAgreeButtonState();
         }
 
         public bool IsAccepted { get; private set; }
 
         private void AgreementCheckChanged(object sender, RoutedEventArgs e)
+        {
+            UpdateAgreeButtonState();
+        }
+
+        private void UpdateAgreeButtonState()
         {
             AgreeButton.IsEnabled = UserAgreementCheckBox.IsChecked == true &&
                                     PrivacyAgreementCheckBox.IsChecked == true;
