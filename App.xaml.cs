@@ -8,9 +8,11 @@ using LLC_MOD_Toolbox.Services.Installation;
 using LLC_MOD_Toolbox.Services.IO;
 using LLC_MOD_Toolbox.Services.Network;
 using LLC_MOD_Toolbox.Services.Skin;
+using LLC_MOD_Toolbox.Services.Telemetry;
 using LLC_MOD_Toolbox.Services.UI;
 using LLC_MOD_Toolbox.Services.Update;
 using LLC_MOD_Toolbox.Services.Version;
+using LLC_MOD_Toolbox.Views;
 using LLC_MOD_Toolbox.ViewModels;
 using Microsoft.Extensions.DependencyInjection;
 using System.IO;
@@ -39,11 +41,35 @@ namespace LLC_MOD_Toolbox
             ConfigureServices(services);
             Services = services.BuildServiceProvider();
 
+            if (!EnsureAgreementAccepted())
+            {
+                Current.Shutdown();
+                return;
+            }
+
             var mainWindow = Services.GetRequiredService<MainWindow>();
             mainWindow.Show();
 
             base.OnStartup(e);
             this.DispatcherUnhandledException += App_DispatcherUnhandledException;
+        }
+
+        private bool EnsureAgreementAccepted()
+        {
+            var config = Services.GetRequiredService<ConfigurationManager>();
+            if (!config.Settings.telemetry.acceptedAgreement)
+            {
+                var dialog = new AgreementDialog();
+                bool accepted = dialog.ShowDialog() == true && dialog.IsAccepted;
+                if (!accepted)
+                    return false;
+
+                config.Settings.telemetry.acceptedAgreement = true;
+                config.SaveConfig();
+                Services.GetRequiredService<ITelemetryService>().SubmitOnceAsync().GetAwaiter().GetResult();
+            }
+
+            return true;
         }
 
         private static void ConfigureServices(IServiceCollection services)
@@ -69,6 +95,7 @@ namespace LLC_MOD_Toolbox
             services.AddSingleton<IFontService, FontService>();
             services.AddSingleton<ISkinService, SkinService>();
             services.AddSingleton<ISkinMusicService, SkinMusicService>();
+            services.AddSingleton<ITelemetryService, TelemetryService>();
 
             services.AddSingleton<MainWindowViewModel>();
             services.AddSingleton<MainWindow>();

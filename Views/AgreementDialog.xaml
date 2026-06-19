@@ -1,0 +1,67 @@
+<Window x:Class="LLC_MOD_Toolbox.Views.AgreementDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="用户协议与隐私协议"
+        Width="520"
+        SizeToContent="Height"
+        WindowStartupLocation="CenterScreen"
+        ResizeMode="NoResize"
+        ShowInTaskbar="False">
+    <Grid Margin="24">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0" Margin="0,0,0,18">
+            <TextBlock Text="使用 LLC MOD Toolbox 前，请先阅读并同意以下协议。"
+                       FontSize="18"
+                       FontWeight="SemiBold"
+                       TextWrapping="Wrap"/>
+            <TextBlock Text="若不同意或关闭此窗口，工具箱将退出。"
+                       Margin="0,8,0,0"
+                       Foreground="#666666"
+                       TextWrapping="Wrap"/>
+        </StackPanel>
+
+        <StackPanel Grid.Row="1" Margin="0,0,0,18">
+            <Button Content="打开用户协议"
+                    HorizontalAlignment="Left"
+                    Margin="0,0,0,8"
+                    Click="OpenUserAgreementClick"/>
+            <Button Content="打开隐私协议"
+                    HorizontalAlignment="Left"
+                    Click="OpenPrivacyAgreementClick"/>
+        </StackPanel>
+
+        <StackPanel Grid.Row="2" Margin="0,0,0,22">
+            <CheckBox x:Name="UserAgreementCheckBox"
+                      Content="我已阅读并同意用户协议"
+                      Margin="0,0,0,10"
+                      Checked="AgreementCheckChanged"
+                      Unchecked="AgreementCheckChanged"/>
+            <CheckBox x:Name="PrivacyAgreementCheckBox"
+                      Content="我已阅读并同意隐私协议"
+                      Checked="AgreementCheckChanged"
+                      Unchecked="AgreementCheckChanged"/>
+        </StackPanel>
+
+        <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button Content="退出"
+                    Width="86"
+                    Height="30"
+                    Margin="0,0,10,0"
+                    IsCancel="True"
+                    Click="RejectClick"/>
+            <Button x:Name="AgreeButton"
+                    Content="同意并继续"
+                    Width="110"
+                    Height="30"
+                    IsDefault="True"
+                    IsEnabled="False"
+                    Click="AgreeClick"/>
+        </StackPanel>
+    </Grid>
+</Window>

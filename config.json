@@ -37,5 +37,13 @@
   },
   "gacha": {
     "calciteEasterEggSeen": false
+  },
+  "telemetry": {
+    "_acceptedAgreement": "是否已经同意用户协议和隐私协议",
+    "acceptedAgreement": false,
+    "_clientGuid": "遥测唯一ID，请勿更改",
+    "clientGuid": null,
+    "_telemeteringSubmitted": "是否已经完成首次遥测提交",
+    "telemeteringSubmitted": false
   }
 }

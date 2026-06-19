@@ -34,6 +34,12 @@
     {
         public bool calciteEasterEggSeen { get; set; } = false;
     }
+    public class TelemetryConfig
+    {
+        public bool acceptedAgreement { get; set; } = false;
+        public string? clientGuid { get; set; } = null;
+        public bool telemeteringSubmitted { get; set; } = false;
+    }
     public class AppSettings
     {
         public GeneralConfig general { get; set; } = new GeneralConfig();
@@ -43,6 +49,7 @@
         public NodeConfig nodeSelect { get; set; } = new NodeConfig();
         public SkinConfig skin { get; set; } = new SkinConfig();
         public GachaConfig gacha { get; set; } = new GachaConfig();
+        public TelemetryConfig telemetry { get; set; } = new TelemetryConfig();
     }
 
 }
