@@ -25,6 +25,7 @@ namespace LLC_MOD_Toolbox
     {
         public IServiceProvider Services { get; private set; } = null!;
         private static Mutex? _mutex;
+        private bool _submitTelemetryAfterStartup;
 
         protected override void OnStartup(StartupEventArgs e)
         {
@@ -56,6 +57,9 @@ namespace LLC_MOD_Toolbox
 
             base.OnStartup(e);
             this.DispatcherUnhandledException += App_DispatcherUnhandledException;
+
+            if (_submitTelemetryAfterStartup)
+                QueueTelemetrySubmission();
         }
 
         private bool EnsureAgreementAccepted()
@@ -70,10 +74,26 @@ namespace LLC_MOD_Toolbox
 
                 config.Settings.telemetry.acceptedAgreement = true;
                 config.SaveConfig();
-                Services.GetRequiredService<ITelemetryService>().SubmitOnceAsync().GetAwaiter().GetResult();
+                _submitTelemetryAfterStartup = true;
             }
 
             return true;
+        }
+
+        private void QueueTelemetrySubmission()
+        {
+            var telemetryService = Services.GetRequiredService<ITelemetryService>();
+            _ = Task.Run(async () =>
+            {
+                try
+                {
+                    await telemetryService.SubmitOnceAsync().ConfigureAwait(false);
+                }
+                catch (Exception ex)
+                {
+                    Log.logger.Warn("遥测后台提交失败。", ex);
+                }
+            });
         }
 
         private static void ConfigureServices(IServiceCollection services)
