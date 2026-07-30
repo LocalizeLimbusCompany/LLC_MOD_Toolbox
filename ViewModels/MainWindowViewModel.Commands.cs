@@ -245,8 +245,8 @@ namespace LLC_MOD_Toolbox.ViewModels
         private void ResetInstallState()
         {
             _installProgressSession++;
-            IsInstalling = false;
             ProgressPercentage = 0;
+            IsInstalling = false;
         }
 
         private async Task ExecuteUninstallAsync()
@@ -383,6 +383,7 @@ namespace LLC_MOD_Toolbox.ViewModels
                 if (selectedSkin == null || string.IsNullOrWhiteSpace(selectedSkin.name)) return;
                 Log.logger.Info($"选择皮肤: {selectedSkin.DisplayText}");
 
+                bool installedFromServer = false;
                 if (!selectedSkin.isInstalled)
                 {
                     bool installed = await _skinService.InstallSkinFromServerAsync(selectedSkin.name);
@@ -391,9 +392,7 @@ namespace LLC_MOD_Toolbox.ViewModels
                         _dialogService.ShowMessage("皮肤安装失败。");
                         return;
                     }
-                    _dialogService.ShowMessage("皮肤安装完成。");
-                    await InitializeSkinComboBoxAsync(selectedSkin.name);
-                    return;
+                    installedFromServer = true;
                 }
 
                 SkinApplyResult loadResult = _skinService.LoadSkin(selectedSkin.name);
@@ -419,6 +418,12 @@ namespace LLC_MOD_Toolbox.ViewModels
                 RefreshSkinHotReloadStatus();
                 _config.Settings.skin.currentSkin = selectedSkin.name;
                 _config.SaveConfig();
+
+                if (installedFromServer)
+                {
+                    await InitializeSkinComboBoxAsync(selectedSkin.name);
+                    _dialogService.ShowMessage("皮肤安装并应用完成。");
+                }
             }
             catch (Exception ex)
             {
