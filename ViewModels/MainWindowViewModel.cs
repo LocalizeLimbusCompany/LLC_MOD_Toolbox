@@ -144,7 +144,7 @@ namespace LLC_MOD_Toolbox.ViewModels
             ShowGreytestCommand = new RelayCommand(() => SelectMainPage(MainPage.Greytest));
             ShowSettingsCommand = new RelayCommand(() => SelectMainPage(MainPage.Settings));
             ShowAboutCommand = new RelayCommand(() => SelectMainPage(MainPage.About));
-            ShowEasterEggCommand = new RelayCommand(() => SelectMainPage(MainPage.EasterEgg), () => IsEasterEggUnlocked);
+            ShowEasterEggCommand = new RelayCommand(() => SelectMainPage(MainPage.EasterEgg), () => IsEasterEggVisible);
             ShowAutoInstallCommand = new RelayCommand(() => SelectInstallSubPage(InstallSubPage.Auto));
             ShowFontReplaceCommand = new RelayCommand(() => SelectInstallSubPage(InstallSubPage.Font));
             ShowSkinCommand = new RelayCommand(() => SelectInstallSubPage(InstallSubPage.Skin));

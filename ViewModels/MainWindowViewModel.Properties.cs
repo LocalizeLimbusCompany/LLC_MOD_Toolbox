@@ -254,7 +254,7 @@ namespace LLC_MOD_Toolbox.ViewModels
         public bool IsAutoInstallBusyVisible => IsInstalling && !IsKaltsitSkin;
         public bool IsOverlayVisible => !IsGlobalOperationsEnabled;
         public bool IsAnnouncementTipVisible => ShowAnnouncementTip;
-        public bool IsEasterEggVisible => IsEasterEggUnlocked;
+        public bool IsEasterEggVisible => IsEasterEggUnlocked && !IsKaltsitSkin;
 
         private bool IsKaltsitSkin => string.Equals(
             _skinService.CurrentSkinName,
@@ -322,6 +322,13 @@ namespace LLC_MOD_Toolbox.ViewModels
             OnPropertyChanged(nameof(IsKaltsitInstallProgressVisible));
             OnPropertyChanged(nameof(IsStandardInstallProgressVisible));
             OnPropertyChanged(nameof(IsAutoInstallBusyVisible));
+        }
+
+        private void NotifySkinDependentStateChanged()
+        {
+            NotifyAutoInstallSkinStateChanged();
+            OnPropertyChanged(nameof(IsEasterEggVisible));
+            NotifyCommandState();
         }
 
         private void NotifyCommandState()

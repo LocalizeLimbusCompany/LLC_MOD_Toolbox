@@ -134,7 +134,7 @@
       "stretch": "Fill"
     },
     "Minimize": {
-      "margin": [ 574, 23, 0, 0 ]
+      "margin": [ 574, 21, 0, 0 ]
     },
     "MinimizeButton": {
       "width": 42,
@@ -145,7 +145,7 @@
       "width": 46,
       "height": 10,
       "stretch": "Fill",
-      "margin": [ 591, 57, 0, 0 ]
+      "margin": [ 591, 55, 0, 0 ]
     },
     "CloseButton": {
       "width": 31,
@@ -153,13 +153,13 @@
       "stretch": "Fill"
     },
     "Close": {
-      "margin": [ 654, 23, 0, 0 ]
+      "margin": [ 654, 21, 0, 0 ]
     },
     "CloseHover": {
       "width": 41,
       "height": 40,
       "stretch": "Fill",
-      "margin": [ 674, 42, 0, 0 ]
+      "margin": [ 674, 40, 0, 0 ]
     },
     "ControlBoard": {
       "margin": [ 72, 98, 0, 0 ],

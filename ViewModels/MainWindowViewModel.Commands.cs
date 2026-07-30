@@ -31,7 +31,7 @@ namespace LLC_MOD_Toolbox.ViewModels
             if (!startupSkinResult.Success)
                 _dialogService.ShowMessage(startupSkinResult.GetDisplayMessage(), "皮肤加载失败");
             else
-                NotifyAutoInstallSkinStateChanged();
+                NotifySkinDependentStateChanged();
             RefreshSkinMusicState();
 
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls13;
@@ -414,7 +414,7 @@ namespace LLC_MOD_Toolbox.ViewModels
                 var skinInfo = _skinService.CurrentSkinInfo ?? _skinService.GetSkinInfo(selectedSkin.name);
                 if (skinInfo != null)
                     SkinDescription = (skinInfo.desc ?? "暂无描述。").Replace("\\n", "\n");
-                NotifyAutoInstallSkinStateChanged();
+                NotifySkinDependentStateChanged();
                 RefreshSkinMusicState();
                 RefreshSkinHotReloadStatus();
                 _config.Settings.skin.currentSkin = selectedSkin.name;
@@ -704,7 +704,7 @@ namespace LLC_MOD_Toolbox.ViewModels
             if (e.Result.Success)
             {
                 _lastSkinReloadFailureSignature = null;
-                NotifyAutoInstallSkinStateChanged();
+                NotifySkinDependentStateChanged();
                 RefreshSkinMusicState();
             }
             else
