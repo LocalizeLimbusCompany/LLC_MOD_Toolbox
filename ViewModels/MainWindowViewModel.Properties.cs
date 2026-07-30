@@ -25,7 +25,7 @@ namespace LLC_MOD_Toolbox.ViewModels
             {
                 if (!SetProperty(ref _isInstalling, value)) return;
                 OnPropertyChanged(nameof(IsAutoInstallStartVisible));
-                OnPropertyChanged(nameof(IsAutoInstallBusyVisible));
+                NotifyAutoInstallSkinStateChanged();
                 NotifyCommandState();
             }
         }
@@ -125,6 +125,45 @@ namespace LLC_MOD_Toolbox.ViewModels
             set => SetProperty(ref _skinMusicButtonText, value);
         }
 
+        public bool IsSkinDebugToolsVisible
+        {
+            get
+            {
+#if DEBUG
+                return true;
+#else
+                return false;
+#endif
+            }
+        }
+
+        public string SkinHotReloadStatus
+        {
+            get => _skinHotReloadStatus;
+            set => SetProperty(ref _skinHotReloadStatus, value);
+        }
+
+        public bool HasSkinReloadFailureLogs
+        {
+            get => _hasSkinReloadFailureLogs;
+            set => SetProperty(ref _hasSkinReloadFailureLogs, value);
+        }
+
+        public bool AreNavigationDebugBoundsVisible
+        {
+            get => _areNavigationDebugBoundsVisible;
+            set
+            {
+                if (!SetProperty(ref _areNavigationDebugBoundsVisible, value))
+                    return;
+                OnPropertyChanged(nameof(NavigationDebugBoundsButtonText));
+            }
+        }
+
+        public string NavigationDebugBoundsButtonText => AreNavigationDebugBoundsVisible
+            ? "关闭判定框"
+            : "导航判定框";
+
         public string? SelectedNodeOption
         {
             get => _selectedNodeOption;
@@ -188,7 +227,11 @@ namespace LLC_MOD_Toolbox.ViewModels
         public float ProgressPercentage
         {
             get => _progressPercentage;
-            set => SetProperty(ref _progressPercentage, value);
+            set
+            {
+                float clampedValue = float.IsFinite(value) ? Math.Clamp(value, 0, 100) : 0;
+                SetProperty(ref _progressPercentage, clampedValue);
+            }
         }
 
         public bool IsInstallPageVisible => CurrentPage == MainPage.Install && CurrentInstallPage == InstallSubPage.Auto;
@@ -205,10 +248,18 @@ namespace LLC_MOD_Toolbox.ViewModels
         public bool IsInstallTabsVisible => CurrentPage == MainPage.Install;
         public bool IsInstallTabsDisabledOverlayVisible => CurrentPage != MainPage.Install;
         public bool IsAutoInstallStartVisible => !IsInstalling;
-        public bool IsAutoInstallBusyVisible => IsInstalling;
+        public bool IsAutoInstallChromeVisible => !IsKaltsitInstallProgressVisible;
+        public bool IsKaltsitInstallProgressVisible => IsInstalling && IsKaltsitSkin;
+        public bool IsStandardInstallProgressVisible => !IsKaltsitSkin;
+        public bool IsAutoInstallBusyVisible => IsInstalling && !IsKaltsitSkin;
         public bool IsOverlayVisible => !IsGlobalOperationsEnabled;
         public bool IsAnnouncementTipVisible => ShowAnnouncementTip;
         public bool IsEasterEggVisible => IsEasterEggUnlocked;
+
+        private bool IsKaltsitSkin => string.Equals(
+            _skinService.CurrentSkinName,
+            "kaltsit",
+            StringComparison.OrdinalIgnoreCase);
 
         public void SelectMainPage(MainPage page, InstallSubPage? installSubPage = null)
         {
@@ -263,6 +314,14 @@ namespace LLC_MOD_Toolbox.ViewModels
             OnPropertyChanged(nameof(IsInstallTabSelected));
             OnPropertyChanged(nameof(IsInstallTabsVisible));
             OnPropertyChanged(nameof(IsInstallTabsDisabledOverlayVisible));
+        }
+
+        private void NotifyAutoInstallSkinStateChanged()
+        {
+            OnPropertyChanged(nameof(IsAutoInstallChromeVisible));
+            OnPropertyChanged(nameof(IsKaltsitInstallProgressVisible));
+            OnPropertyChanged(nameof(IsStandardInstallProgressVisible));
+            OnPropertyChanged(nameof(IsAutoInstallBusyVisible));
         }
 
         private void NotifyCommandState()

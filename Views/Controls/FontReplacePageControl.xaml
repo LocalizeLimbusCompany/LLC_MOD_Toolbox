@@ -3,18 +3,19 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:skin="clr-namespace:LLC_MOD_Toolbox.Services.Skin"
              mc:Ignorable="d">
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
     </UserControl.Resources>
-    <Grid x:Name="FontReplacePage"
+    <Grid x:Name="FontReplacePage" skin:SkinHost.Name="fontReplace"
           Visibility="{Binding IsFontPageVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
-        <Label Content="对汉化的字体进行替换。" HorizontalAlignment="Center" Margin="0,15,0,0" VerticalAlignment="Top" Height="36" Width="644" FontSize="20" Foreground="#FFFFEED4" FontFamily="/Fonts/subset/#Source Han Sans CN" FontWeight="Medium" />
-        <Label Content="字体路径" HorizontalAlignment="Center" Margin="0,51,0,0" VerticalAlignment="Top" Height="36" Width="644" FontSize="16" Foreground="#FFFFEED4" FontFamily="/Fonts/subset/#Source Han Sans CN" FontWeight="Medium" />
+        <Label x:Name="FontReplaceDescriptionText" Content="对汉化的字体进行替换。" HorizontalAlignment="Center" Margin="0,15,0,0" VerticalAlignment="Top" Height="36" Width="644" FontSize="20" Foreground="#FFFFEED4" FontFamily="/Fonts/subset/#Source Han Sans CN" FontWeight="Medium" />
+        <Label x:Name="FontPathLabel" Content="字体路径" HorizontalAlignment="Center" Margin="0,51,0,0" VerticalAlignment="Top" Height="36" Width="644" FontSize="16" Foreground="#FFFFEED4" FontFamily="/Fonts/subset/#Source Han Sans CN" FontWeight="Medium" />
         <TextBox x:Name="FontReplaceTextBox" HorizontalAlignment="Left" Margin="91,56,0,0" TextWrapping="Wrap" Text="{Binding FontReplacePath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Top" Width="446" Height="26" FontSize="16" FontFamily="/Fonts/subset/#Source Han Sans CN" FontWeight="Medium"/>
-        <Label Content="字体大小" HorizontalAlignment="Center" Margin="0,85,0,0" VerticalAlignment="Top" Height="36" Width="644" FontSize="16" Foreground="#FFFFEED4" FontFamily="/Fonts/subset/#Source Han Sans CN" FontWeight="Medium" />
+        <Label x:Name="FontSizeLabel" Content="字体大小" HorizontalAlignment="Center" Margin="0,85,0,0" VerticalAlignment="Top" Height="36" Width="644" FontSize="16" Foreground="#FFFFEED4" FontFamily="/Fonts/subset/#Source Han Sans CN" FontWeight="Medium" />
         <TextBox x:Name="FontSizeTextBox" HorizontalAlignment="Left" Margin="91,90,0,0" TextWrapping="Wrap" Text="{Binding FontSizeText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Top" Width="446" Height="26" FontSize="16" FontFamily="/Fonts/subset/#Source Han Sans CN" FontWeight="Medium"/>
-        <Button HorizontalAlignment="Left" Margin="554,54,0,0" VerticalAlignment="Top" Height="28" Width="74" Style="{DynamicResource NoHover}" Background="#FFFFEED4" Command="{Binding ExploreFontCommand}">
+        <Button x:Name="ExploreFontButton" HorizontalAlignment="Left" Margin="554,54,0,0" VerticalAlignment="Top" Height="28" Width="74" Style="{DynamicResource NoHover}" Background="#FFFFEED4" Command="{Binding ExploreFontCommand}">
             <Button.Clip>
                 <RectangleGeometry Rect="0,0,74,28" RadiusX="3" RadiusY="3"/>
             </Button.Clip>
@@ -59,7 +60,7 @@
         <Label x:Name="PreviewText" HorizontalAlignment="Center" Margin="0,117,0,0" VerticalAlignment="Top" Height="208" Width="644" Foreground="#FFFFEED4" FontFamily="/Fonts/subset/#Source Han Sans CN" FontWeight="Medium">
             <TextBlock FontSize="13.5" Text="" TextWrapping="Wrap" Height="234"/>
         </Label>
-        <Button HorizontalAlignment="Left" Margin="20,334,0,0" VerticalAlignment="Top" Height="28" Width="74" Style="{DynamicResource NoHover}" Background="#FFFFEED4" Command="{Binding PreviewFontCommand}">
+        <Button x:Name="PreviewFontButton" HorizontalAlignment="Left" Margin="20,334,0,0" VerticalAlignment="Top" Height="28" Width="74" Style="{DynamicResource NoHover}" Background="#FFFFEED4" Command="{Binding PreviewFontCommand}">
             <Button.Clip>
                 <RectangleGeometry Rect="0,0,74,28" RadiusX="3" RadiusY="3"/>
             </Button.Clip>
@@ -82,7 +83,7 @@
         </Button>
         <Label Content="预览字体" HorizontalAlignment="Left" IsHitTestVisible="False" Margin="20,330,0,0" VerticalAlignment="Top" Height="38" Width="74" FontSize="16" Foreground="Black" FontFamily="/Fonts/subset/#Source Han Sans CN" FontWeight="Heavy"/>
         <Image x:Name="PreviewFontHover" Panel.ZIndex="5" IsHitTestVisible="False" Opacity="0" HorizontalAlignment="Left" Height="34" Margin="17,331,0,0" VerticalAlignment="Top" Width="80" Source="pack://siteoforigin:,,,/Picture/SettingButtonHover.png"/>
-        <Button HorizontalAlignment="Left" Margin="129,334,0,0" VerticalAlignment="Top" Height="28" Width="74" Style="{DynamicResource NoHover}" Background="#FFFFEED4" Command="{Binding ApplyFontCommand}">
+        <Button x:Name="ApplyFontButton" HorizontalAlignment="Left" Margin="129,334,0,0" VerticalAlignment="Top" Height="28" Width="74" Style="{DynamicResource NoHover}" Background="#FFFFEED4" Command="{Binding ApplyFontCommand}">
             <Button.Clip>
                 <RectangleGeometry Rect="0,0,74,28" RadiusX="3" RadiusY="3"/>
             </Button.Clip>
@@ -105,7 +106,7 @@
         </Button>
         <Label Content="切换字体" HorizontalAlignment="Left" IsHitTestVisible="False" Margin="129,330,0,0" VerticalAlignment="Top" Height="38" Width="74" FontSize="16" Foreground="Black" FontFamily="/Fonts/subset/#Source Han Sans CN" FontWeight="Heavy"/>
         <Image x:Name="ChangeFontHover" Panel.ZIndex="5" IsHitTestVisible="False" Opacity="0" HorizontalAlignment="Left" Height="34" Margin="126,331,0,0" VerticalAlignment="Top" Width="80" Source="pack://siteoforigin:,,,/Picture/SettingButtonHover.png"/>
-        <Button HorizontalAlignment="Left" Margin="240,334,0,0" VerticalAlignment="Top" Height="28" Width="74" Style="{DynamicResource NoHover}" Background="#FFFFEED4" Command="{Binding RestoreFontCommand}">
+        <Button x:Name="RestoreFontButton" HorizontalAlignment="Left" Margin="240,334,0,0" VerticalAlignment="Top" Height="28" Width="74" Style="{DynamicResource NoHover}" Background="#FFFFEED4" Command="{Binding RestoreFontCommand}">
             <Button.Clip>
                 <RectangleGeometry Rect="0,0,74,28" RadiusX="3" RadiusY="3"/>
             </Button.Clip>

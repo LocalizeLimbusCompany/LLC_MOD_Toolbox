@@ -3,13 +3,14 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:skin="clr-namespace:LLC_MOD_Toolbox.Services.Skin"
              mc:Ignorable="d">
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
     </UserControl.Resources>
-    <Grid x:Name="AnnouncementPage"
+    <Grid x:Name="AnnouncementPage" skin:SkinHost.Name="announcement"
           Visibility="{Binding IsAnnouncementPageVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
-        <Label HorizontalAlignment="Center"
+        <Label x:Name="AnnouncementTitleText" HorizontalAlignment="Center"
                Margin="0,10,0,0"
                VerticalAlignment="Top"
                Height="55"
@@ -20,7 +21,7 @@
                FontWeight="Bold">
             <TextBlock Text="存在未读的新公告！" Height="45"/>
         </Label>
-        <Label HorizontalAlignment="Center"
+        <Label x:Name="AnnouncementBodyText" HorizontalAlignment="Center"
                Margin="0,70,0,0"
                VerticalAlignment="Top"
                Height="269"
@@ -41,7 +42,7 @@
                VerticalAlignment="Top"
                Width="80"
                Source="Picture/SettingButtonHover.png"/>
-        <Button IsHitTestVisible="{Binding IsAnnouncementButtonEnabled}"
+        <Button x:Name="AnnouncementAcknowledgeButton" IsHitTestVisible="{Binding IsAnnouncementButtonEnabled}"
                 HorizontalAlignment="Center"
                 Margin="0,343,0,0"
                 VerticalAlignment="Top"
@@ -89,7 +90,7 @@
                Foreground="Black"
                FontFamily="/Fonts/subset/#Source Han Sans CN"
                FontWeight="Heavy"/>
-        <Label HorizontalAlignment="Left"
+        <Label x:Name="AnnouncementTipText" HorizontalAlignment="Left"
                Margin="377,341,0,0"
                VerticalAlignment="Top"
                Height="33"

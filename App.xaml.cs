@@ -26,6 +26,7 @@ namespace LLC_MOD_Toolbox
         public IServiceProvider Services { get; private set; } = null!;
         private static Mutex? _mutex;
         private bool _submitTelemetryAfterStartup;
+        private CancellationTokenSource? _telemetryCancellation;
 
         protected override void OnStartup(StartupEventArgs e)
         {
@@ -52,14 +53,14 @@ namespace LLC_MOD_Toolbox
 
             var mainWindow = Services.GetRequiredService<MainWindow>();
             MainWindow = mainWindow;
+            if (_submitTelemetryAfterStartup)
+                mainWindow.Loaded += (_, _) => StartTelemetry();
             mainWindow.Show();
             ShutdownMode = previousShutdownMode;
 
             base.OnStartup(e);
             this.DispatcherUnhandledException += App_DispatcherUnhandledException;
 
-            if (_submitTelemetryAfterStartup)
-                QueueTelemetrySubmission();
         }
 
         private bool EnsureAgreementAccepted()
@@ -84,20 +85,39 @@ namespace LLC_MOD_Toolbox
             return true;
         }
 
-        private void QueueTelemetrySubmission()
+        private void StartTelemetry()
         {
+            if (_telemetryCancellation is not null)
+                return;
+
+            var cancellation = new CancellationTokenSource();
+            _telemetryCancellation = cancellation;
             var telemetryService = Services.GetRequiredService<ITelemetryService>();
             _ = Task.Run(async () =>
             {
                 try
                 {
-                    await telemetryService.SubmitDailyAsync().ConfigureAwait(false);
+                    await telemetryService.RunAsync(cancellation.Token).ConfigureAwait(false);
+                }
+                catch (OperationCanceledException) when (cancellation.IsCancellationRequested)
+                {
                 }
                 catch (Exception ex)
                 {
-                    Log.logger.Warn("遥测后台提交失败。", ex);
+                    Log.logger.Warn("遥测后台任务失败。", ex);
+                }
+                finally
+                {
+                    cancellation.Dispose();
                 }
             });
+        }
+
+        protected override void OnExit(ExitEventArgs e)
+        {
+            _telemetryCancellation?.Cancel();
+            _telemetryCancellation = null;
+            base.OnExit(e);
         }
 
         private static void ConfigureServices(IServiceCollection services)

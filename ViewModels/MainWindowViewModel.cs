@@ -86,9 +86,15 @@ namespace LLC_MOD_Toolbox.ViewModels
         private bool _isSkinMusicAvailable;
         private bool _isSkinMusicEnabled;
         private string _skinMusicButtonText = "音乐开关";
+        private string _skinHotReloadStatus = "皮肤热重载未启动";
+        private readonly Queue<string> _skinReloadFailureLogs = new();
+        private string? _lastSkinReloadFailureSignature;
+        private bool _hasSkinReloadFailureLogs;
+        private bool _areNavigationDebugBoundsVisible;
         private bool _isMirrorChyanLogoVisible;
         private bool _isGreytestLogoVisible;
         private float _progressPercentage;
+        private long _installProgressSession;
         private bool _hasNewAnno;
         private DispatcherTimer? _annoTimer;
         private int _annoLastTime;
@@ -159,13 +165,28 @@ namespace LLC_MOD_Toolbox.ViewModels
             StartGreytestCommand = new AsyncRelayCommand(HandleGreytestStartAsync);
             ShowGreytestInfoCommand = new RelayCommand(() => OpenUrl("https://www.zeroasso.top/docs/community/llcdev"));
             ToggleSkinMusicCommand = new RelayCommand(ToggleSkinMusic);
+            ReloadSkinCommand = new RelayCommand(() => _skinService.ReloadCurrentSkin());
+            ShowSkinFailureLogsCommand = new RelayCommand(ShowSkinFailureLogs);
+            ToggleNavigationDebugBoundsCommand = new RelayCommand(ToggleNavigationDebugBounds);
 
             _mirrorChyanService.ModeDisabledByError += OnMirrorChyanModeDisabled;
+            _skinService.SkinReloaded += OnSkinReloaded;
+            _skinService.HotReloadStatusChanged += OnHotReloadStatusChanged;
+            RefreshSkinHotReloadStatus();
         }
 
         public event Action? CloseRequested;
         public event Action? MinimizeRequested;
-        public event Action? ApplySkinRequested;
+        public event Func<SkinApplyResult>? ApplySkinRequested;
+#if DEBUG
+        public event Action<bool>? NavigationDebugBoundsRequested;
+#else
+        public event Action<bool>? NavigationDebugBoundsRequested
+        {
+            add { }
+            remove { }
+        }
+#endif
 
         public ICommand MinimizeCommand { get; }
         public ICommand CloseCommand { get; }
@@ -196,6 +217,9 @@ namespace LLC_MOD_Toolbox.ViewModels
         public ICommand StartGreytestCommand { get; }
         public ICommand ShowGreytestInfoCommand { get; }
         public ICommand ToggleSkinMusicCommand { get; }
+        public ICommand ReloadSkinCommand { get; }
+        public ICommand ShowSkinFailureLogsCommand { get; }
+        public ICommand ToggleNavigationDebugBoundsCommand { get; }
 
         public ObservableCollection<string> NodeOptions { get; } = [];
         public ObservableCollection<string> ApiOptions { get; } = [];

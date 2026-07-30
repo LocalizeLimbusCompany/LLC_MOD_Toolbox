@@ -1,14 +1,16 @@
-<UserControl x:Class="LLC_MOD_Toolbox.Views.Controls.NavigationMenu"
+<UserControl
+    x:Name="Navigation" x:Class="LLC_MOD_Toolbox.Views.Controls.NavigationMenu"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:skin="clr-namespace:LLC_MOD_Toolbox.Services.Skin"
              mc:Ignorable="d"
              IsHitTestVisible="{Binding ArePrimaryActionsEnabled}">
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
     </UserControl.Resources>
-    <Grid>
+    <Grid x:Name="NavigationRoot" skin:SkinHost.Name="navigation">
         <Button x:Name="InstallOption" Content="安   装" HorizontalAlignment="Left" Margin="10,55,0,0" VerticalAlignment="Top" Height="33" Width="127" Background="Transparent" BorderBrush="Transparent" BorderThickness="0" FontFamily="/Fonts/#lianmengqiyilushuaizhengruiheiti" FontWeight="Regular" FontSize="20" Foreground="#FFFFEED4" Style="{DynamicResource NoHover}" Command="{Binding ShowInstallCommand}">
             <Button.Triggers>
                 <EventTrigger RoutedEvent="Button.MouseEnter">
@@ -123,5 +125,9 @@
         <Image x:Name="SettingHover" HorizontalAlignment="Left" IsHitTestVisible="False" Opacity="0" Height="48" Margin="-7,199,0,0" VerticalAlignment="Top" Width="168" Source="pack://siteoforigin:,,,/Picture/ButtonHover.png"/>
         <Image x:Name="AboutHover" HorizontalAlignment="Left" IsHitTestVisible="False" Opacity="0" Height="49" Margin="-9,247,0,0" VerticalAlignment="Top" Width="168" Source="pack://siteoforigin:,,,/Picture/ButtonHover.png"/>
         <Image x:Name="EEHover" HorizontalAlignment="Left" IsHitTestVisible="False" Opacity="0" Height="49" Margin="-9,296,0,0" VerticalAlignment="Top" Width="168" Source="pack://siteoforigin:,,,/Picture/ButtonHover.png"/>
+        <Canvas x:Name="DebugBoundsCanvas"
+                Panel.ZIndex="2147483647"
+                IsHitTestVisible="False"
+                Visibility="Collapsed"/>
     </Grid>
 </UserControl>

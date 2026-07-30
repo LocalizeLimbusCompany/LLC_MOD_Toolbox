@@ -17,9 +17,9 @@ namespace LLC_MOD_Toolbox.Views.Controls
             ];
         }
 
-        public void SetButtonHitTestVisible(bool isEnabled)
+        public void SetButtonEnabled(bool isEnabled)
         {
-            InGachaButton.IsHitTestVisible = isEnabled;
+            InGachaButton.IsEnabled = isEnabled;
         }
 
         public Label GetResultLabel(int index)

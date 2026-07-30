@@ -11,13 +11,19 @@ namespace LLC_MOD_Toolbox.Services.Skin
     {
         List<string> GetAvailableSkins();
         SkinDefinition? GetSkinInfo(string skinName);
-        bool LoadSkin(string skinName);
-        void ApplySkinToWindow(Window window);
+        SkinApplyResult LoadSkin(string skinName);
+        SkinApplyResult ApplySkinToWindow(Window window);
+        SkinApplyResult ReloadCurrentSkin();
+        void StartHotReload();
+        void StopHotReload();
         Task<List<SkinDefinition>> GetRemoteSkinDefinitionsAsync();
         Task<bool> InstallSkinFromServerAsync(string skinName);
         List<SkinCatalogItem> BuildSkinCatalog(IEnumerable<SkinDefinition> remoteSkins, IEnumerable<string> localSkinNames);
         string? GetCurrentSkinMusicPath();
         bool SaveCurrentSkinMusicEnabled(bool enabled);
+        bool IsHotReloadWatching { get; }
+        event EventHandler<SkinReloadedEventArgs>? SkinReloaded;
+        event EventHandler? HotReloadStatusChanged;
         string? CurrentSkinName { get; }
         SkinDefinition? CurrentSkinInfo { get; }
     }
@@ -27,6 +33,15 @@ namespace LLC_MOD_Toolbox.Services.Skin
         private readonly AppState _appState;
         private readonly IHttpService _httpService;
         private readonly IFileService _fileService;
+#if DEBUG
+        private readonly object _watcherLock = new();
+        private readonly List<FileSystemWatcher> _watchers = [];
+        private HashSet<string> _watchedFiles = new(StringComparer.OrdinalIgnoreCase);
+        private System.Threading.Timer? _reloadTimer;
+        private Window? _window;
+        private DateTime _suppressWatcherUntilUtc;
+#endif
+        private string? _lastReportedError;
 
         public SkinService(AppState appState, IHttpService httpService, IFileService fileService)
         {
@@ -37,12 +52,210 @@ namespace LLC_MOD_Toolbox.Services.Skin
 
         public List<string> GetAvailableSkins() => SkinManager.Instance.GetAvailableSkins();
         public SkinDefinition? GetSkinInfo(string skinName) => SkinManager.Instance.GetSkinInfo(skinName);
-        public bool LoadSkin(string skinName) => SkinManager.Instance.LoadSkin(skinName);
-        public void ApplySkinToWindow(Window window) => SkinManager.Instance.ApplySkinToWindow(window);
+        public SkinApplyResult LoadSkin(string skinName) => SkinManager.Instance.LoadSkin(skinName);
+
+        public SkinApplyResult ApplySkinToWindow(Window window)
+        {
+#if DEBUG
+            _window = window;
+#endif
+            SkinApplyResult result = SkinManager.Instance.ApplySkinToWindow(window);
+#if DEBUG
+            if (result.Success)
+                StartHotReload();
+#endif
+            return result;
+        }
+
+        public SkinApplyResult ReloadCurrentSkin()
+        {
+            SkinApplyResult result = SkinManager.Instance.ReloadCurrentSkin();
+            if (result.Success)
+                RefreshWatchers();
+            PublishReloadResult(result, userInitiated: true);
+            return result;
+        }
+
+        public event EventHandler<SkinReloadedEventArgs>? SkinReloaded;
+#if DEBUG
+        public event EventHandler? HotReloadStatusChanged;
+#else
+        public event EventHandler? HotReloadStatusChanged
+        {
+            add { }
+            remove { }
+        }
+#endif
+
+        public bool IsHotReloadWatching
+        {
+            get
+            {
+#if DEBUG
+                lock (_watcherLock)
+                    return _watchers.Count > 0;
+#else
+                return false;
+#endif
+            }
+        }
+
+        public void StartHotReload()
+        {
+#if DEBUG
+            RefreshWatchers();
+#endif
+        }
+
+        public void StopHotReload()
+        {
+#if DEBUG
+            bool changed;
+            lock (_watcherLock)
+            {
+                changed = _watchers.Count > 0;
+                foreach (FileSystemWatcher watcher in _watchers)
+                    watcher.Dispose();
+                _watchers.Clear();
+                _watchedFiles.Clear();
+                _reloadTimer?.Dispose();
+                _reloadTimer = null;
+                _window = null;
+            }
+            if (changed)
+                HotReloadStatusChanged?.Invoke(this, EventArgs.Empty);
+#endif
+        }
         public string? GetCurrentSkinMusicPath() => SkinManager.Instance.GetCurrentSkinMusicPath();
-        public bool SaveCurrentSkinMusicEnabled(bool enabled) => SkinManager.Instance.SaveCurrentSkinMusicEnabled(enabled);
+        public bool SaveCurrentSkinMusicEnabled(bool enabled)
+        {
+#if DEBUG
+            _suppressWatcherUntilUtc = DateTime.UtcNow.AddSeconds(1);
+#endif
+            return SkinManager.Instance.SaveCurrentSkinMusicEnabled(enabled);
+        }
         public string? CurrentSkinName => SkinManager.Instance.CurrentSkinName;
         public SkinDefinition? CurrentSkinInfo => SkinManager.Instance.CurrentSkinInfo;
+
+#if DEBUG
+        private void RefreshWatchers()
+        {
+            if (_window == null)
+                return;
+
+            var files = new HashSet<string>(SkinManager.Instance.CurrentAssetPaths, StringComparer.OrdinalIgnoreCase)
+            {
+                SkinManager.Instance.CurrentConfigPath
+            };
+            var directories = files
+                .Select(Path.GetDirectoryName)
+                .Where(directory => !string.IsNullOrWhiteSpace(directory) && Directory.Exists(directory))
+                .Select(directory => directory!)
+                .Distinct(StringComparer.OrdinalIgnoreCase)
+                .ToArray();
+
+            lock (_watcherLock)
+            {
+                foreach (FileSystemWatcher watcher in _watchers)
+                    watcher.Dispose();
+                _watchers.Clear();
+                _watchedFiles = files;
+
+                foreach (string directory in directories)
+                {
+                    var watcher = new FileSystemWatcher(directory)
+                    {
+                        Filter = "*.*",
+                        IncludeSubdirectories = false,
+                        NotifyFilter = NotifyFilters.FileName | NotifyFilters.LastWrite | NotifyFilters.Size | NotifyFilters.CreationTime
+                    };
+                    watcher.Changed += OnWatchedFileChanged;
+                    watcher.Created += OnWatchedFileChanged;
+                    watcher.Deleted += OnWatchedFileChanged;
+                    watcher.Renamed += OnWatchedFileRenamed;
+                    watcher.EnableRaisingEvents = true;
+                    _watchers.Add(watcher);
+                }
+            }
+
+            HotReloadStatusChanged?.Invoke(this, EventArgs.Empty);
+        }
+
+        private void OnWatchedFileChanged(object sender, FileSystemEventArgs e)
+        {
+            ScheduleReloadIfWatched(e.FullPath);
+        }
+
+        private void OnWatchedFileRenamed(object sender, RenamedEventArgs e)
+        {
+            if (IsWatchedPath(e.FullPath) || IsWatchedPath(e.OldFullPath))
+                ScheduleReload();
+        }
+
+        private void ScheduleReloadIfWatched(string path)
+        {
+            if (IsWatchedPath(path))
+                ScheduleReload();
+        }
+
+        private bool IsWatchedPath(string path)
+        {
+            string fullPath;
+            try { fullPath = Path.GetFullPath(path); }
+            catch { return false; }
+
+            lock (_watcherLock)
+                return _watchedFiles.Contains(fullPath);
+        }
+
+        private void ScheduleReload()
+        {
+            if (DateTime.UtcNow <= _suppressWatcherUntilUtc)
+                return;
+
+            lock (_watcherLock)
+            {
+                _reloadTimer ??= new System.Threading.Timer(_ => ReloadFromWatcher(), null, Timeout.Infinite, Timeout.Infinite);
+                _reloadTimer.Change(400, Timeout.Infinite);
+            }
+        }
+
+        private void ReloadFromWatcher()
+        {
+            Window? window = _window;
+            if (window == null || window.Dispatcher.HasShutdownStarted)
+                return;
+
+            _ = window.Dispatcher.BeginInvoke(() =>
+            {
+                SkinApplyResult result = SkinManager.Instance.ReloadCurrentSkin();
+                if (result.Success)
+                    RefreshWatchers();
+                PublishReloadResult(result, userInitiated: false);
+            });
+        }
+#else
+        private void RefreshWatchers()
+        {
+        }
+#endif
+
+        private void PublishReloadResult(SkinApplyResult result, bool userInitiated)
+        {
+            bool shouldNotify = false;
+            if (result.Success)
+            {
+                _lastReportedError = null;
+            }
+            else
+            {
+                string signature = $"{result.ErrorPath}|{result.ErrorMessage}";
+                shouldNotify = userInitiated || !string.Equals(signature, _lastReportedError, StringComparison.Ordinal);
+                _lastReportedError = signature;
+            }
+
+            SkinReloaded?.Invoke(this, new SkinReloadedEventArgs(result, shouldNotify));
+        }
 
         public async Task<List<SkinDefinition>> GetRemoteSkinDefinitionsAsync()
         {

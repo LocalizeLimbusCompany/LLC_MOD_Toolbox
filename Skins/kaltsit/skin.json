@@ -1,26 +1,27 @@
 {
+  "schemaVersion": 2,
   "name": "kaltsit",
   "displayName": "指令：重构",
   "author": "Bedrock&ZengXiaoPi",
   "version": "1.0.0",
-  "desc": "Powered by Bedrock! | Lead by ZengXiaoPi!\nDesign Style & Music & Voice from Arknights by HYPERGRYPH!\n1K STARS SPECIAL SKIN!\n\n不知不觉，我好像已经习惯了有人在我身边来帮助我、引导我。\n直到现在，我终于可以确定自己要做的事情。\n无论怎样，这条路我会继续走下去。\n我不会放弃希望。\n\n\n\n投票成功。\n……您已通过ZOOT系统自动为“凯尔希”投票。",
+  "desc": "Powered by Bedrock! | Lead by ZengXiaoPi!\nDesign Style & Music & Voice from Arknights by HYPERGRYPH!\n1K STARS SPECIAL SKIN!\n\n不知不觉，我好像已经习惯了有人在我身边来帮助我、引导我。\n直到现在，我终于可以确定自己要做的事情。\n无论怎样，这条路我会继续走下去。\n我不会放弃希望。",
   "images": {
-    "Background": "/Picture/Season7/Background.png",
-    "MinimizeHover": "/Picture/Season7/MinimizeHover.png",
-    "CloseHover": "/Picture/Season7/MinimizeHover.png",
-    "AutoInstallHover": "/Picture/Season7/ControlBoardHover.png",
-    "FontReplaceHover": "/Picture/Season7/ControlBoardHover.png",
-    "SkinHover": "/Picture/Season7/ControlBoardHover.png",
-    "GachaSimHover": "/Picture/Season7/ControlBoardHover.png",
-    "InstallHover": "/Picture/Season7/ButtonHover.png",
-    "LinkHover": "/Picture/Season7/ButtonHover.png",
-    "GreytestHover": "/Picture/Season7/ButtonHover.png",
-    "SettingHover": "/Picture/Season7/ButtonHover.png",
-    "AboutHover": "/Picture/Season7/ButtonHover.png",
-    "EEHover": "/Picture/Season7/ButtonHover.png",
-    "AutoInstallStartButtonIMG": "/Picture/Season7/Install.png",
-    "AutoInstallBTHover": "/Picture/Season7/InstallHover.png",
-    "AutoInstallBTIng": "/Picture/Season7/Installing.png",
+    "Background": "/Picture/kaltsit/Background.png",
+    "MinimizeHover": "/Picture/kaltsit/MinimizeHover.png",
+    "CloseHover": "/Picture/kaltsit/CloseHover.png",
+    "AutoInstallHover": "/Picture/kaltsit/ControlBoardHover.png",
+    "FontReplaceHover": "/Picture/kaltsit/ControlBoardHover.png",
+    "SkinHover": "/Picture/kaltsit/ControlBoardHover.png",
+    "GachaSimHover": "/Picture/kaltsit/ControlBoardHover.png",
+    "InstallHover": "/Picture/kaltsit/ButtonHover.png",
+    "LinkHover": "/Picture/kaltsit/ButtonHover.png",
+    "GreytestHover": "/Picture/kaltsit/ButtonHover.png",
+    "SettingHover": "/Picture/kaltsit/ButtonHover.png",
+    "AboutHover": "/Picture/kaltsit/ButtonHover.png",
+    "EEHover": "/Picture/kaltsit/ButtonHover.png",
+    "AutoInstallStartButtonIMG": "/Picture/kaltsit/Install.png",
+    "AutoInstallBTHover": "/Picture/kaltsit/InstallHover.png",
+    "AutoInstallBTIng": "/Picture/Installing.png",
     "ExploreFontHover": "/Picture/SettingButtonHover.png",
     "PreviewFontHover": "/Picture/SettingButtonHover.png",
     "ChangeFontHover": "/Picture/SettingButtonHover.png",
@@ -33,36 +34,36 @@
     "MirrorChyanConfigButtonHover": "/Picture/SettingButtonHover.png",
     "GachaButtonHover": "/Picture/SettingButtonHover.png",
     "AnnouncementButtonHover": "/Picture/SettingButtonHover.png",
-    "ButtonBackground": "/Picture/Season7/ButtonBackground.png",
-    "TitleBar": "/Picture/Season7/TitleBar.png",
-    "MinimizeButton": "/Picture/Season7/Minimize.png",
-    "CloseButton": "/Picture/Season7/Close.png",
-    "ControlBoard": "/Picture/Season7/ControlBoard.png",
-    "StartInstallBackground": "/Picture/Season7/StartInstallBackground.png",
-    "LinkButton1IMG": "/Picture/LinkBT.png",
-    "LinkButton2IMG": "/Picture/LinkBT.png",
-    "LinkButton3IMG": "/Picture/LinkBT.png",
-    "LinkButton4IMG": "/Picture/LinkBT.png",
-    "LinkButton5IMG": "/Picture/LinkBT.png",
-    "LinkButton6IMG": "/Picture/LinkBT.png",
-    "LinkButton7IMG": "/Picture/LinkBT.png",
-    "LinkButton8IMG": "/Picture/LinkBT.png",
-    "LinkButton9IMG": "/Picture/LinkBT.png",
-    "LinkButton10IMG": "/Picture/LinkBT.png",
-    "LinkButton11IMG": "/Picture/LinkBT.png",
-    "LinkButton12IMG": "/Picture/LinkBT.png",
-    "LinkButton13IMG": "/Picture/LinkBT.png",
-    "LinkButton14IMG": "/Picture/LinkBT.png",
-    "LinkButtonHover1": "/Picture/LinkBTHover.png",
-    "LinkButtonHover2": "/Picture/LinkBTHover.png",
-    "LinkButtonHover3": "/Picture/LinkBTHover.png",
-    "LinkButtonHover4": "/Picture/LinkBTHover.png",
-    "LinkButtonHover5": "/Picture/LinkBTHover.png",
-    "LinkButtonHover6": "/Picture/LinkBTHover.png",
-    "LinkButtonHover7": "/Picture/LinkBTHover.png",
-    "LinkButtonHover8": "/Picture/LinkBTHover.png",
-    "LinkButtonHover9": "/Picture/LinkBTHover.png",
-    "LinkButtonHover10": "/Picture/LinkBTHover.png",
+    "ButtonBackground": "/Picture/kaltsit/ButtonBackground.png",
+    "TitleBar": "/Picture/kaltsit/Titlebar.png",
+    "MinimizeButton": "/Picture/kaltsit/Minimize.png",
+    "CloseButton": "/Picture/kaltsit/Close.png",
+    "ControlBoard": "/Picture/kaltsit/ControlBoard.png",
+    "StartInstallBackground": "/Picture/kaltsit/StartInstallBackground.png",
+    "LinkButton1IMG": "/Picture/kaltsit/LinkBT.png",
+    "LinkButton2IMG": "/Picture/kaltsit/LinkBT.png",
+    "LinkButton3IMG": "/Picture/kaltsit/LinkBT.png",
+    "LinkButton4IMG": "/Picture/kaltsit/LinkBT.png",
+    "LinkButton5IMG": "/Picture/kaltsit/LinkBT.png",
+    "LinkButton6IMG": "/Picture/kaltsit/LinkBT.png",
+    "LinkButton7IMG": "/Picture/kaltsit/LinkBT.png",
+    "LinkButton8IMG": "/Picture/kaltsit/LinkBT.png",
+    "LinkButton9IMG": "/Picture/kaltsit/LinkBT.png",
+    "LinkButton10IMG": "/Picture/kaltsit/LinkBT.png",
+    "LinkButton11IMG": "/Picture/kaltsit/LinkBT.png",
+    "LinkButton12IMG": "/Picture/kaltsit/LinkBT.png",
+    "LinkButton13IMG": "/Picture/kaltsit/LinkBT.png",
+    "LinkButton14IMG": "/Picture/kaltsit/LinkBT.png",
+    "LinkButtonHover1": "/Picture/kaltsit/LinkBTHover.png",
+    "LinkButtonHover2": "/Picture/kaltsit/LinkBTHover.png",
+    "LinkButtonHover3": "/Picture/kaltsit/LinkBTHover.png",
+    "LinkButtonHover4": "/Picture/kaltsit/LinkBTHover.png",
+    "LinkButtonHover5": "/Picture/kaltsit/LinkBTHover.png",
+    "LinkButtonHover6": "/Picture/kaltsit/LinkBTHover.png",
+    "LinkButtonHover7": "/Picture/kaltsit/LinkBTHover.png",
+    "LinkButtonHover8": "/Picture/kaltsit/LinkBTHover.png",
+    "LinkButtonHover9": "/Picture/kaltsit/LinkBTHover.png",
+    "LinkButtonHover10": "/Picture/kaltsit/LinkBTHover.png",
     "FullProgress": "/Picture/FullProgress.png",
     "EmptyProgress": "/Picture/EmptyProgress.png",
     "AutoInstallXiaoHei": "/Picture/B.png",
@@ -80,17 +81,412 @@
     "Lunacy": "/Picture/Lunacy.png"
   },
   "visibility": {
+    "AutoInstallXiaoHei": false,
+    "AutoInstallXiaobai": false,
+    "EmptyProgress": false,
+    "FullProgress": false,
+    "AutoInstallDisabled": false,
+    "FontReplaceDisabled": false,
+    "SkinDisabled": false,
+    "GachaSimDisabled": false
   },
   "margins": {
-    "AutoInstallBTHover": "0,160,0,0",
-    "AutoInstallBTIng": "0,160,0,0",
-    "AutoInstallButton": "120,6,0,0",
-    "FontReplaceButton": "270,6,0,0",
-    "SkinButton": "417,6,0,0",
-    "GachaSimInstallButton": "566,6,0,0"
+    "AutoInstallBTHover": "0,151,0,0",
+    "AutoInstallBTIng": "0,151,0,0",
+    "AutoInstallButton": "122,4,0,0",
+    "FontReplaceButton": "271,4,0,0",
+    "SkinButton": "419,4,0,0",
+    "GachaSimInstallButton": "564,4,0,0"
   },
+  "elements": {
+    "autoInstall/LoadingText": {
+      "fill": "#8f8f8f",
+      "stroke": "#1c1c1c",
+      "strokeThickness": 1.5,
+      "fontSize": 18,
+      "fontWeight": "Heavy",
+      "width": 700,
+      "height": 32,
+      "margin": [ 5, 340, 0, 0 ]
+    },
+    "NowVersionText": {
+      "fill": "#8f8f8f",
+      "stroke": "#1c1c1c",
+      "margin": [ -80, 22, 0, 0 ]
+    },
+    "LatestVersionText": {
+      "fill": "#8f8f8f",
+      "stroke": "#1c1c1c",
+      "margin": [ 48, 22, 0, 0 ]
+    },
+    "window/TitleBar": {
+      "source": "/Picture/kaltsit/Titlebar.png",
+      "margin": [ 2, -0.9, 0, 0 ],
+      "width": 957,
+      "height": 124.9,
+      "stretch": "Fill"
+    },
+    "window/ButtonBackground": {
+      "zIndex": 20,
+      "margin": [ 3, 87, 0, 0 ],
+      "width": 196,
+      "height": 505,
+      "stretch": "Fill"
+    },
+    "Minimize": {
+      "margin": [ 574, 23, 0, 0 ]
+    },
+    "MinimizeButton": {
+      "width": 42,
+      "height": 6,
+      "stretch": "Fill"
+    },
+    "MinimizeHover": {
+      "width": 46,
+      "height": 10,
+      "stretch": "Fill",
+      "margin": [ 591, 57, 0, 0 ]
+    },
+    "CloseButton": {
+      "width": 31,
+      "height": 30,
+      "stretch": "Fill"
+    },
+    "Close": {
+      "margin": [ 654, 23, 0, 0 ]
+    },
+    "CloseHover": {
+      "width": 41,
+      "height": 40,
+      "stretch": "Fill",
+      "margin": [ 674, 42, 0, 0 ]
+    },
+    "ControlBoard": {
+      "margin": [ 72, 98, 0, 0 ],
+      "width": 836.5,
+      "height": 470,
+      "stretch": "Fill"
+    },
+    "AutoInstallButton": {
+      "margin": [ 130, 6, 0, 0 ],
+      "Foreground": "#FFFFFF",
+      "content": "自动安装"
+    },
+    "AutoInstallHover": {
+      "margin": [ 128.5, 0, 0, 0 ]
+    },
+    "FontReplaceButton": {
+      "margin": [ 275, 6, 0, 0 ],
+      "Foreground": "#FFFFFF",
+      "content": "字体替换"
+    },
+    "FontReplaceHover": {
+      "margin": [ 271.5, 0, 0, 0 ]
+    },
+    "SkinButton": {
+      "margin": [ 418, 6, 0, 0 ],
+      "Foreground": "#FFFFFF",
+      "content": "皮肤管理"
+    },
+    "SkinHover": {
+      "margin": [ 415, 0, 0, 0 ]
+    },
+    "GachaSimInstallButton": {
+      "margin": [ 564, 6, 0, 0 ],
+      "Foreground": "#FFFFFF",
+      "content": "抽卡模拟"
+    },
+    "GachaSimHover": {
+      "margin": [ 561, 0, 0, 0 ]
+    },
+    "AutoInstallBTHover": {
+      "margin": [ 11, 115, 0, 0 ],
+      "width": 330,
+      "height": 138,
+      "stretch": "Fill"
+    },
+    "window/Navigation": {
+      "zIndex": 21
+    },
+    "InstallOption": {
+      "content": "",
+      "Foreground": "#FFFFFF",
+      "zIndex": 30,
+      "margin": [ -4, 62, 0, 0 ],
+      "width": 160,
+      "height": 48
+    },
+    "navigation/InstallHover": {
+      "zIndex": 31,
+      "margin": [ -9, 58, 0, 0 ],
+      "width": 169.5,
+      "height": 58,
+      "stretch": "Fill"
+    },
+    "LinkOption": {
+      "content": "",
+      "Foreground": "#FFFFFF",
+      "zIndex": 30,
+      "margin": [ -4, 111, 0, 0 ],
+      "width": 160,
+      "height": 48
+    },
+    "navigation/LinkHover": {
+      "zIndex": 31,
+      "margin": [ -9, 108, 0, 0 ],
+      "width": 169.5,
+      "height": 58,
+      "stretch": "Fill"
+    },
+    "GreytestOption": {
+      "content": "",
+      "Foreground": "#FFFFFF",
+      "zIndex": 30,
+      "margin": [ -4, 161, 0, 0 ],
+      "width": 160,
+      "height": 48
+    },
+    "navigation/GreytestHover": {
+      "zIndex": 31,
+      "margin": [ -9, 156.5, 0, 0 ],
+      "width": 169.5,
+      "height": 58,
+      "stretch": "Fill"
+    },
+    "SettingOption": {
+      "content": "",
+      "Foreground": "#FFFFFF",
+      "zIndex": 30,
+      "margin": [ -4, 212, 0, 0 ],
+      "width": 160,
+      "height": 48
+    },
+    "navigation/SettingHover": {
+      "zIndex": 31,
+      "margin": [ -9, 208, 0, 0 ],
+      "width": 169.5,
+      "height": 58,
+      "stretch": "Fill"
+    },
+    "AboutOption": {
+      "content": "",
+      "Foreground": "#FFFFFF",
+      "zIndex": 30,
+      "margin": [ -4, 262, 0, 0 ],
+      "width": 160,
+      "height": 48
+    },
+    "navigation/AboutHover": {
+      "zIndex": 31,
+      "margin": [ -9, 257, 0, 0 ],
+      "width": 169.5,
+      "height": 58,
+      "stretch": "Fill"
+    },
+    "AboutDescriptionText": {
+      "Foreground": "#FFFFFF"
+    },
+    "AnnouncementAcknowledgeButton": {
+      "Background": "#FFFFFF"
+    },
+    "AnnouncementBodyText": {
+      "Foreground": "#FFFFFF"
+    },
+    "AnnouncementTipText": {
+      "Foreground": "#FFFFFF"
+    },
+    "AnnouncementTitleText": {
+      "Foreground": "#FFFFFF"
+    },
+    "ApiNodeHelpButton": {
+      "Background": "#FFFFFF"
+    },
+    "ApiNodeSelectionLabel": {
+      "Foreground": "#FFFFFF"
+    },
+    "ApplyFontButton": {
+      "Background": "#FFFFFF"
+    },
+    "BilibiliLinkText": {
+      "Foreground": "#FFFFFF"
+    },
+    "CreateLauncherShortcutButton": {
+      "Background": "#FFFFFF"
+    },
+    "CreateLauncherShortcutLabel": {
+      "Foreground": "#FFFFFF"
+    },
+    "DocumentationLinkText": {
+      "Foreground": "#FFFFFF"
+    },
+    "EEOption": {
+      "Foreground": "#FFFFFF"
+    },
+    "ExploreFontButton": {
+      "Background": "#FFFFFF"
+    },
+    "FontPathLabel": {
+      "Foreground": "#FFFFFF"
+    },
+    "FontReplaceDescriptionText": {
+      "Foreground": "#FFFFFF"
+    },
+    "FontSizeLabel": {
+      "Foreground": "#FFFFFF"
+    },
+    "GitHubLinkText": {
+      "Foreground": "#FFFFFF"
+    },
+    "GreytestDescriptionText": {
+      "Foreground": "#FFFFFF"
+    },
+    "GreytestInfoButton": {
+      "Background": "#FFFFFF"
+    },
+    "GreytestStartButton": {
+      "Background": "#FFFFFF"
+    },
+    "GreytestTokenLabel": {
+      "Foreground": "#FFFFFF"
+    },
+    "GreytestWarningText": {
+      "Foreground": "#FFFFFF"
+    },
+    "HotUpdateHelpButton": {
+      "Background": "#FFFFFF"
+    },
+    "InGachaButton": {
+      "Background": "#FFFFFF"
+    },
+    "JianhuanhuanLinkText": {
+      "Foreground": "#FFFFFF"
+    },
+    "LauncherHelpButton": {
+      "Background": "#FFFFFF"
+    },
+    "LoadingOverlayText": {
+      "Foreground": "#FFFFFF"
+    },
+    "MirrorChyanConfigButton": {
+      "Background": "#FFFFFF"
+    },
+    "MirrorChyanConfigLabel": {
+      "Foreground": "#FFFFFF"
+    },
+    "MirrorChyanLinkText": {
+      "Foreground": "#FFFFFF"
+    },
+    "NavigationDebugBoundsButton": {
+      "Background": "#FFFFFF"
+    },
+    "NodeHelpButton": {
+      "Background": "#FFFFFF"
+    },
+    "NodeSelectionLabel": {
+      "Foreground": "#FFFFFF"
+    },
+    "ParatranzLinkText": {
+      "Foreground": "#FFFFFF"
+    },
+    "PreviewFontButton": {
+      "Background": "#FFFFFF"
+    },
+    "PreviewText": {
+      "Foreground": "#FFFFFF"
+    },
+    "ReloadSkinButton": {
+      "Background": "#FFFFFF"
+    },
+    "RestoreFontButton": {
+      "Background": "#FFFFFF"
+    },
+    "SkinDesc": {
+      "Foreground": "#FFFFFF"
+    },
+    "SkinFailureLogsButton": {
+      "Background": "#FFFFFF"
+    },
+    "SkinHotReloadStatusText": {
+      "Foreground": "#FFFFFF"
+    },
+    "SkinMusicButton": {
+      "Background": "#FFFFFF"
+    },
+    "SkinSelectionDescriptionText": {
+      "Foreground": "#FFFFFF"
+    },
+    "SkinSelectionTitleText": {
+      "Foreground": "#FFFFFF"
+    },
+    "TranslatorLinkText": {
+      "Foreground": "#FFFFFF"
+    },
+    "UninstallButton": {
+      "Background": "#FFFFFF"
+    },
+    "UninstallModLabel": {
+      "Foreground": "#FFFFFF"
+    },
+    "WeidianLinkText": {
+      "Foreground": "#FFFFFF"
+    },
+    "WikiLinkText": {
+      "Foreground": "#FFFFFF"
+    }
+  },
+  "dynamicImages": [
+    {
+      "name": "KaltsitInstallingImage",
+      "host": "kaltsitInstallProgress",
+      "source": "/Picture/kaltsit/Installing.png",
+      "properties": {
+        "width": 126.75,
+        "height": 222,
+        "stretch": "Uniform",
+        "margin": [ 0, 0, 16, 0 ],
+        "horizontalAlignment": "Center",
+        "verticalAlignment": "Center",
+        "zIndex": 0
+      }
+    },
+    {
+      "name": "Line1",
+      "host": "window",
+      "source": "/Picture/kaltsit/Line1.png",
+      "properties": {
+        "width": 65,
+        "height": 100,
+        "margin": [ 850, 85, 0, 0 ],
+        "horizontalAlignment": "Left",
+        "verticalAlignment": "Top",
+        "gridRow": 0,
+        "gridColumn": 0,
+        "gridRowSpan": 2,
+        "gridColumnSpan": 3,
+        "zIndex": 21
+      }
+    },
+    {
+      "name": "Line2",
+      "host": "window",
+      "source": "/Picture/kaltsit/Line2.png",
+      "properties": {
+        "stretch": "Fill",
+        "width": 162,
+        "height": 96.6,
+        "margin": [ 132, 87, 0, 0 ],
+        "horizontalAlignment": "Left",
+        "verticalAlignment": "Top",
+        "gridRow": 0,
+        "gridColumn": 0,
+        "gridRowSpan": 2,
+        "gridColumnSpan": 3,
+        "zIndex": 21
+      }
+    }
+  ],
   "music": {
-    "enableMusic": true,
+    "enableMusic": false,
     "musicPath": "/Picture/kaltsit/through_long_time.mp3"
   }
 }

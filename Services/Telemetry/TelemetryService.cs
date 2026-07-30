@@ -10,6 +10,7 @@ namespace LLC_MOD_Toolbox.Services.Telemetry
 {
     public sealed class TelemetryService : ITelemetryService
     {
+        private static readonly TimeSpan HeartbeatInterval = TimeSpan.FromMinutes(2);
         private static readonly HttpClient HttpClient = CreateHttpClient();
         private static readonly string ClientGuidPath = Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
@@ -24,14 +25,25 @@ namespace LLC_MOD_Toolbox.Services.Telemetry
             _nodeService = nodeService;
         }
 
-        public async Task SubmitDailyAsync()
+        public async Task RunAsync(CancellationToken cancellationToken)
+        {
+            EnsureClientGuid();
+
+            while (!cancellationToken.IsCancellationRequested)
+            {
+                if (_config.Settings.telemetry.lastSubmittedDate == DateTime.Today.ToString("yyyy-MM-dd"))
+                    await SubmitHeartbeatAsync(cancellationToken).ConfigureAwait(false);
+                else
+                    await SubmitDailyAsync(cancellationToken).ConfigureAwait(false);
+
+                await Task.Delay(HeartbeatInterval, cancellationToken).ConfigureAwait(false);
+            }
+        }
+
+        private async Task SubmitDailyAsync(CancellationToken cancellationToken)
         {
             if (_config.Settings.telemetry.lastSubmittedDate == DateTime.Today.ToString("yyyy-MM-dd"))
                 return;
-
-            EnsureClientGuid();
-            _nodeService.Initialize();
-            _nodeService.ReadConfigNode();
 
             var payload = new
             {
@@ -44,7 +56,10 @@ namespace LLC_MOD_Toolbox.Services.Telemetry
             {
                 string json = JsonConvert.SerializeObject(payload);
                 using var content = new StringContent(json, Encoding.UTF8, "application/json");
-                using var response = await HttpClient.PostAsync(_nodeService.ResolveApiUrl("v2/telemetering"), content);
+                using var response = await HttpClient.PostAsync(
+                    _nodeService.ResolveApiUrl("v2/telemetering"),
+                    content,
+                    cancellationToken).ConfigureAwait(false);
                 if (!response.IsSuccessStatusCode)
                 {
                     Log.logger.Warn($"遥测提交失败：HTTP {(int)response.StatusCode}");
@@ -55,9 +70,38 @@ namespace LLC_MOD_Toolbox.Services.Telemetry
                 _config.Settings.telemetry.lastSubmittedDate = DateTime.Today.ToString("yyyy-MM-dd");
                 _config.SaveConfig();
             }
+            catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+            {
+                throw;
+            }
             catch (Exception ex)
             {
                 Log.logger.Warn("遥测提交失败。", ex);
+            }
+        }
+
+        private async Task SubmitHeartbeatAsync(CancellationToken cancellationToken)
+        {
+            var payload = new { guid = _config.Settings.telemetry.clientGuid };
+
+            try
+            {
+                string json = JsonConvert.SerializeObject(payload);
+                using var content = new StringContent(json, Encoding.UTF8, "application/json");
+                using var response = await HttpClient.PostAsync(
+                    _nodeService.ResolveApiUrl("v2/telemetering/heartbeat"),
+                    content,
+                    cancellationToken).ConfigureAwait(false);
+                if (!response.IsSuccessStatusCode)
+                    Log.logger.Warn($"遥测心跳提交失败：HTTP {(int)response.StatusCode}");
+            }
+            catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+            {
+                throw;
+            }
+            catch (Exception ex)
+            {
+                Log.logger.Warn("遥测心跳提交失败。", ex);
             }
         }
 

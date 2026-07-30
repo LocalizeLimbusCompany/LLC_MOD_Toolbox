@@ -3,12 +3,13 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:skin="clr-namespace:LLC_MOD_Toolbox.Services.Skin"
              mc:Ignorable="d"
              IsHitTestVisible="{Binding ArePrimaryActionsEnabled}">
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
     </UserControl.Resources>
-    <Grid>
+    <Grid skin:SkinHost.Name="installTabs">
         <Image x:Name="GachaSimDisabled" Opacity="1" HorizontalAlignment="Left" Height="17" Margin="569,18,0,0" VerticalAlignment="Top" Width="91" Source="pack://siteoforigin:,,,/Picture/DisableButton.png" Visibility="{Binding IsInstallTabsDisabledOverlayVisible, Converter={StaticResource BooleanToVisibilityConverter}}"/>
         <Image x:Name="AutoInstallDisabled" HorizontalAlignment="Left" Height="17" Margin="128,18,0,0" VerticalAlignment="Top" Width="91" Source="pack://siteoforigin:,,,/Picture/DisableButton.png" Visibility="{Binding IsInstallTabsDisabledOverlayVisible, Converter={StaticResource BooleanToVisibilityConverter}}"/>
         <Image x:Name="FontReplaceDisabled" HorizontalAlignment="Left" Height="17" Margin="275,18,0,0" VerticalAlignment="Top" Width="91" Source="pack://siteoforigin:,,,/Picture/DisableButton.png" Visibility="{Binding IsInstallTabsDisabledOverlayVisible, Converter={StaticResource BooleanToVisibilityConverter}}"/>

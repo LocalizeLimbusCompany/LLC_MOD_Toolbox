@@ -6,6 +6,7 @@
         xmlns:local="clr-namespace:LLC_MOD_Toolbox" xmlns:sys="clr-namespace:System;assembly=netstandard"
         xmlns:controls="clr-namespace:LLC_MOD_Toolbox.Views.Controls"
         xmlns:pageControls="clr-namespace:LLC_MOD_Toolbox.Views.Controls"
+        xmlns:skin="clr-namespace:LLC_MOD_Toolbox.Services.Skin"
         mc:Ignorable="d"
         WindowStyle="None"
         Title="都市零协会工具箱" Height="600" Width="960"
@@ -57,7 +58,7 @@
                       BlurRadius="2"
                       ShadowDepth="3"/>
     </Window.Resources>
-    <Grid>
+    <Grid skin:SkinHost.Name="window">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="2*"/>
             <ColumnDefinition Width="13*"/>
@@ -77,10 +78,10 @@
                 <RectangleGeometry Rect="0,0,960,600" RadiusX="20" RadiusY="20"/>
             </Image.Clip>
         </Image>
-        <Image x:Name="ButtonBackground" HorizontalAlignment="Left" Height="480" Margin="18,116,0,0" VerticalAlignment="Top" Width="162" Source="Picture/ButtonBackground.png" Grid.RowSpan="2" Grid.ColumnSpan="2"/>
+        <Image x:Name="ButtonBackground" IsHitTestVisible="False" HorizontalAlignment="Left" Height="480" Margin="18,116,0,0" VerticalAlignment="Top" Width="162" Source="Picture/ButtonBackground.png" Grid.RowSpan="2" Grid.ColumnSpan="2"/>
         <Image x:Name="TitleBar" HorizontalAlignment="Left" Height="87" VerticalAlignment="Top" Width="960" Grid.ColumnSpan="3" Margin="0,13,0,0" Source="Picture/TitleBar.png"/>
         <Image x:Name="MinimizeHover" HorizontalAlignment="Left" VerticalAlignment="Top" Opacity="0" IsHitTestVisible="False" Margin="573,16,0,0" Height="80" Width="81" Panel.ZIndex="5" Source="Picture/MinimizeHover.png" Grid.Column="2" />
-        <Button Grid.Column="2" HorizontalAlignment="Left" Margin="574,17,0,0" VerticalAlignment="Top" Height="78" Width="80" Opacity="1" Background="Transparent" BorderBrush="Transparent" BorderThickness="0" Style="{StaticResource NoHover}" Command="{Binding MinimizeCommand}">
+        <Button x:Name="Minimize" Grid.Column="2" HorizontalAlignment="Left" Margin="574,17,0,0" VerticalAlignment="Top" Height="78" Width="80" Opacity="1" Background="Transparent" BorderBrush="Transparent" BorderThickness="0" Style="{StaticResource NoHover}" Command="{Binding MinimizeCommand}">
             <Button.Content>
                 <Image x:Name="MinimizeButton" Height="78" Width="80" Source="Picture/Minimize.png" />
             </Button.Content>
@@ -106,7 +107,7 @@
             </Button.Triggers>
         </Button>
         <Image x:Name="CloseHover" HorizontalAlignment="Left" VerticalAlignment="Top" Opacity="0" IsHitTestVisible="False" Margin="661,16,0,0" Height="80" Width="81" Panel.ZIndex="5" Source="Picture/MinimizeHover.png" Grid.Column="2" />
-        <Button Grid.Column="2" HorizontalAlignment="Left" Margin="662,17,0,0" VerticalAlignment="Top" Height="78" Width="80" Opacity="1" Background="Transparent" BorderBrush="Transparent" BorderThickness="0" Command="{Binding CloseCommand}" Style="{StaticResource NoHover}">
+        <Button x:Name="Close" Grid.Column="2" HorizontalAlignment="Left" Margin="662,17,0,0" VerticalAlignment="Top" Height="78" Width="80" Opacity="1" Background="Transparent" BorderBrush="Transparent" BorderThickness="0" Command="{Binding CloseCommand}" Style="{StaticResource NoHover}">
             <Button.Content>
                 <Image x:Name="CloseButton" Height="78" Width="80" Source="Picture/Close.png" />
             </Button.Content>
@@ -136,7 +137,7 @@
         <Image x:Name="MirrorChyanLogo" Visibility="Collapsed" IsHitTestVisible="False" Height="48" VerticalAlignment="Top" Source="Picture/MirrorChyan.png" Margin="67,52,30,0" Grid.Column="1"/>
         <controls:InstallTabStrip Grid.Column="2" Grid.Row="1" Margin="0,0,0,0"/>
         <controls:NavigationMenu Grid.Column="1" Grid.Row="1"/>
-        <pageControls:AutoInstallPageControl x:Name="AutoInstallPage" Panel.ZIndex="5" Margin="62,55,54,32" Grid.Column="2" Grid.Row="1"/>
+        <pageControls:AutoInstallPageControl x:Name="AutoInstallPage" ProgressPercentage="{Binding ProgressPercentage}" Panel.ZIndex="5" Margin="62,55,54,32" Grid.Column="2" Grid.Row="1"/>
         <pageControls:FontReplacePageControl x:Name="FontReplacePage" Panel.ZIndex="5" Margin="62,55,54,32" Grid.Column="2" Grid.Row="1"/>
         <pageControls:LinkPageControl x:Name="LinkPage" Panel.ZIndex="5" Margin="62,55,54,32" Grid.Column="2" Grid.Row="1"/>
         <pageControls:GreytestPageControl x:Name="GreytestPage" Panel.ZIndex="5" Margin="62,55,54,32" Grid.Column="2" Grid.Row="1"/>
@@ -149,7 +150,7 @@
         <Button Grid.Column="1" HorizontalAlignment="Center" Margin="0,350,0,0" Grid.Row="1" VerticalAlignment="Top" Height="41" Width="155" Style="{StaticResource BlackWhite}" Background="Transparent" BorderBrush="Transparent" BorderThickness="0" PreviewMouseLeftButtonDown="WhiteBlackClickDouble" />
         <Button Grid.Column="1" HorizontalAlignment="Center" Margin="0,400,0,0" Grid.Row="1" VerticalAlignment="Top" Height="41" Width="155" Style="{StaticResource BlackWhite}" Background="Transparent" BorderBrush="Transparent" BorderThickness="0" PreviewMouseLeftButtonDown="WhiteBlackClickDouble"/>
         <Grid Panel.ZIndex="100000" x:Name="OverlayGrid" Visibility="{Binding IsOverlayVisible, Converter={StaticResource BooleanToVisibilityConverter}}" Background="Transparent" Grid.ColumnSpan="3" Margin="0,-2,-1,2" Grid.RowSpan="2">
-            <Label Content="正在加载……" HorizontalAlignment="Left" IsHitTestVisible="False" VerticalAlignment="Top" Height="68" Width="264" FontSize="40" Foreground="#FFFFEED4" FontFamily="/Fonts/subset/#Source Han Sans CN" FontWeight="Heavy" Margin="502,21,0,0"/>
+            <Label x:Name="LoadingOverlayText" Content="正在加载……" HorizontalAlignment="Left" IsHitTestVisible="False" VerticalAlignment="Top" Height="68" Width="264" FontSize="40" Foreground="#FFFFEED4" FontFamily="/Fonts/subset/#Source Han Sans CN" FontWeight="Heavy" Margin="502,21,0,0"/>
         </Grid>
         <Grid Panel.ZIndex="200000" x:Name="CalciteOverlay" Visibility="Collapsed" Grid.ColumnSpan="3" Grid.RowSpan="2" IsHitTestVisible="True" Background="Transparent">
             <TextBlock x:Name="CalciteTextBlock"

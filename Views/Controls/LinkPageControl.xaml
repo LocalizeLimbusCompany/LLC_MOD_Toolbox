@@ -3,11 +3,12 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:skin="clr-namespace:LLC_MOD_Toolbox.Services.Skin"
              mc:Ignorable="d">
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
     </UserControl.Resources>
-    <Grid x:Name="LinkPage"
+    <Grid x:Name="LinkPage" skin:SkinHost.Name="link"
           Visibility="{Binding IsLinkPageVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
         <Button HorizontalAlignment="Left" Margin="37,40,0,0" VerticalAlignment="Top" Height="40" Width="262" Opacity="1" Background="Transparent" BorderBrush="Transparent" BorderThickness="0" Style="{DynamicResource NoHover}" Command="{Binding OpenLinkCommand}" CommandParameter="https://www.zeroasso.top">
             <Button.Content>
@@ -145,7 +146,7 @@
                 </EventTrigger>
             </Button.Triggers>
         </Button>
-        <Button HorizontalAlignment="Left" Margin="352,85,0,0" VerticalAlignment="Top" Height="40" Width="262" Opacity="1" Background="Transparent" BorderBrush="Transparent" BorderThickness="0" Style="{DynamicResource NoHover}" Command="{Binding OpenLinkCommand}" CommandParameter="https://ifdian.net/a/Limbus_zero">
+        <Button HorizontalAlignment="Left" Margin="352,85,0,0" VerticalAlignment="Top" Height="40" Width="262" Opacity="1" Background="Transparent" BorderBrush="Transparent" BorderThickness="0" Style="{DynamicResource NoHover}" Command="{Binding OpenLinkCommand}" CommandParameter="https://mirrorchyan.com/">
             <Button.Content>
                 <Image x:Name="LinkButton2IMG" Height="40" Width="262" Source="pack://siteoforigin:,,,/Picture/LinkBT.png"/>
             </Button.Content>
@@ -208,26 +209,10 @@
                 </EventTrigger>
             </Button.Triggers>
         </Button>
-        <Button HorizontalAlignment="Left" Margin="352,220,0,0" VerticalAlignment="Top" Height="40" Width="262" Opacity="1" Background="Transparent" BorderBrush="Transparent" BorderThickness="0" Style="{DynamicResource NoHover}" Command="{Binding OpenLinkCommand}" CommandParameter="https://mirrorchyan.com/">
+        <Button HorizontalAlignment="Left" Margin="352,220,0,0" VerticalAlignment="Top" Height="40" Width="262" Opacity="1" Background="Transparent" BorderBrush="Transparent" BorderThickness="0" Style="{DynamicResource BlackWhite}">
             <Button.Content>
                 <Image x:Name="LinkButton8IMG" Height="40" Width="262" Source="pack://siteoforigin:,,,/Picture/LinkBT.png"/>
             </Button.Content>
-            <Button.Triggers>
-                <EventTrigger RoutedEvent="Button.MouseEnter">
-                    <BeginStoryboard>
-                        <Storyboard>
-                            <DoubleAnimation Storyboard.TargetName="LinkButtonHover10" Storyboard.TargetProperty="Opacity" From="0" To="1" Duration="0:0:0.3"/>
-                        </Storyboard>
-                    </BeginStoryboard>
-                </EventTrigger>
-                <EventTrigger RoutedEvent="Button.MouseLeave">
-                    <BeginStoryboard>
-                        <Storyboard>
-                            <DoubleAnimation Storyboard.TargetName="LinkButtonHover10" Storyboard.TargetProperty="Opacity" From="1" To="0" Duration="0:0:0.3"/>
-                        </Storyboard>
-                    </BeginStoryboard>
-                </EventTrigger>
-            </Button.Triggers>
         </Button>
         <Button Grid.Column="2" HorizontalAlignment="Left" Margin="352,265,0,0" VerticalAlignment="Top" Height="40" Width="262" Opacity="1" Background="Transparent" BorderBrush="Transparent" BorderThickness="0" Style="{DynamicResource BlackWhite}">
             <Button.Content>
@@ -250,16 +235,15 @@
         <Image x:Name="LinkButtonHover9" IsHitTestVisible="False" Opacity="0" HorizontalAlignment="Left" Height="46" Margin="34,217,0,0" VerticalAlignment="Top" Width="268" Source="pack://siteoforigin:,,,/Picture/LinkBTHover.png"/>
         <Image x:Name="LinkButtonHover10" IsHitTestVisible="False" Opacity="0" HorizontalAlignment="Left" Height="46" Margin="349,217,0,0" VerticalAlignment="Top" Width="268" Source="pack://siteoforigin:,,,/Picture/LinkBTHover.png"/>
         <Image x:Name="LinkButtonHover12" IsHitTestVisible="False" Opacity="0" HorizontalAlignment="Left" Height="46" Margin="349,307,0,0" VerticalAlignment="Top" Width="268" Source="pack://siteoforigin:,,,/Picture/LinkBTHover.png"/>
-        <Label Content="都市零协会文档站" IsHitTestVisible="False" HorizontalAlignment="Left" Margin="37,40,0,0" VerticalAlignment="Top" FontSize="20" Foreground="#FFFFEED4" FontFamily="/Fonts/subset/#Source Han Sans CN" FontWeight="Bold" Height="37" Width="262" HorizontalContentAlignment="Center"/>
-        <Label Content="LLC on GitHub" IsHitTestVisible="False" HorizontalAlignment="Left" Margin="37,85,0,0" VerticalAlignment="Top" FontSize="20" Foreground="#FFFFEED4" FontFamily="/Fonts/subset/#Source Han Sans CN" FontWeight="Bold" Height="37" Width="262" HorizontalContentAlignment="Center"/>
-        <Label Content="翻译项目译者" IsHitTestVisible="False" HorizontalAlignment="Left" Margin="37,130,0,0" VerticalAlignment="Top" FontSize="20" Foreground="#FFFFEED4" FontFamily="/Fonts/subset/#Source Han Sans CN" FontWeight="Bold" Height="37" Width="262" HorizontalContentAlignment="Center"/>
-        <Label Content="零协会周边微店(柔造)" IsHitTestVisible="False" HorizontalAlignment="Left" Margin="37,175,0,0" VerticalAlignment="Top" FontSize="20" Foreground="#FFFFEED4" FontFamily="/Fonts/subset/#Source Han Sans CN" FontWeight="Bold" Height="37" Width="262" HorizontalContentAlignment="Center"/>
-        <Label Content="都市零协会 BiliBili" IsHitTestVisible="False" HorizontalAlignment="Left" Margin="352,40,0,0" VerticalAlignment="Top" FontSize="20" Foreground="#FFFFEED4" FontFamily="/Fonts/subset/#Source Han Sans CN" FontWeight="Bold" Height="37" Width="262" HorizontalContentAlignment="Center"/>
-        <Label Content="爱发电主页" IsHitTestVisible="False" HorizontalAlignment="Left" Margin="352,85,0,0" VerticalAlignment="Top" FontSize="20" Foreground="#FFFFEED4" FontFamily="/Fonts/subset/#Source Han Sans CN" FontWeight="Bold" Height="37" Width="262" HorizontalContentAlignment="Center"/>
-        <Label Content="翻译平台Paratranz" IsHitTestVisible="False" HorizontalAlignment="Left" Margin="352,130,0,0" VerticalAlignment="Top" FontSize="20" Foreground="#FFFFEED4" FontFamily="/Fonts/subset/#Source Han Sans CN" FontWeight="Bold" Height="37" Width="262" HorizontalContentAlignment="Center"/>
-        <Label Content="边狱公司灰机Wiki" IsHitTestVisible="False" HorizontalAlignment="Left" Margin="352,175,0,0" VerticalAlignment="Top" FontSize="20" Foreground="#FFFFEED4" FontFamily="/Fonts/subset/#Source Han Sans CN" FontWeight="Bold" Height="37" Width="262" HorizontalContentAlignment="Center"/>
-        <Label Content="免费开服平台-简幻欢" IsHitTestVisible="False" HorizontalAlignment="Left" Margin="37,221,0,0" VerticalAlignment="Top" FontSize="20" Foreground="#FFFFEED4" FontFamily="/Fonts/subset/#Source Han Sans CN" FontWeight="Bold" Height="37" Width="262" HorizontalContentAlignment="Center"/>
-        <Label Content="Mirror酱" IsHitTestVisible="False" HorizontalAlignment="Left" Margin="352,222,0,0" VerticalAlignment="Top" FontSize="20" Foreground="#FFFFEED4" FontFamily="/Fonts/subset/#Source Han Sans CN" FontWeight="Bold" Height="36" Width="262" HorizontalContentAlignment="Center"/>
+        <Label x:Name="DocumentationLinkText" Content="都市零协会文档站" IsHitTestVisible="False" HorizontalAlignment="Left" Margin="37,40,0,0" VerticalAlignment="Top" FontSize="20" Foreground="#FFFFEED4" FontFamily="/Fonts/subset/#Source Han Sans CN" FontWeight="Bold" Height="37" Width="262" HorizontalContentAlignment="Center"/>
+        <Label x:Name="GitHubLinkText" Content="LLC on GitHub" IsHitTestVisible="False" HorizontalAlignment="Left" Margin="37,85,0,0" VerticalAlignment="Top" FontSize="20" Foreground="#FFFFEED4" FontFamily="/Fonts/subset/#Source Han Sans CN" FontWeight="Bold" Height="37" Width="262" HorizontalContentAlignment="Center"/>
+        <Label x:Name="TranslatorLinkText" Content="翻译项目译者" IsHitTestVisible="False" HorizontalAlignment="Left" Margin="37,130,0,0" VerticalAlignment="Top" FontSize="20" Foreground="#FFFFEED4" FontFamily="/Fonts/subset/#Source Han Sans CN" FontWeight="Bold" Height="37" Width="262" HorizontalContentAlignment="Center"/>
+        <Label x:Name="WeidianLinkText" Content="零协会周边微店(柔造)" IsHitTestVisible="False" HorizontalAlignment="Left" Margin="37,175,0,0" VerticalAlignment="Top" FontSize="20" Foreground="#FFFFEED4" FontFamily="/Fonts/subset/#Source Han Sans CN" FontWeight="Bold" Height="37" Width="262" HorizontalContentAlignment="Center"/>
+        <Label x:Name="BilibiliLinkText" Content="都市零协会 BiliBili" IsHitTestVisible="False" HorizontalAlignment="Left" Margin="352,40,0,0" VerticalAlignment="Top" FontSize="20" Foreground="#FFFFEED4" FontFamily="/Fonts/subset/#Source Han Sans CN" FontWeight="Bold" Height="37" Width="262" HorizontalContentAlignment="Center"/>
+        <Label x:Name="MirrorChyanLinkText" Content="Mirror酱" IsHitTestVisible="False" HorizontalAlignment="Left" Margin="352,85,0,0" VerticalAlignment="Top" FontSize="20" Foreground="#FFFFEED4" FontFamily="/Fonts/subset/#Source Han Sans CN" FontWeight="Bold" Height="37" Width="262" HorizontalContentAlignment="Center"/>
+        <Label x:Name="ParatranzLinkText" Content="翻译平台Paratranz" IsHitTestVisible="False" HorizontalAlignment="Left" Margin="352,130,0,0" VerticalAlignment="Top" FontSize="20" Foreground="#FFFFEED4" FontFamily="/Fonts/subset/#Source Han Sans CN" FontWeight="Bold" Height="37" Width="262" HorizontalContentAlignment="Center"/>
+        <Label x:Name="WikiLinkText" Content="边狱公司灰机Wiki" IsHitTestVisible="False" HorizontalAlignment="Left" Margin="352,175,0,0" VerticalAlignment="Top" FontSize="20" Foreground="#FFFFEED4" FontFamily="/Fonts/subset/#Source Han Sans CN" FontWeight="Bold" Height="37" Width="262" HorizontalContentAlignment="Center"/>
+        <Label x:Name="JianhuanhuanLinkText" Content="免费开服平台-简幻欢" IsHitTestVisible="False" HorizontalAlignment="Left" Margin="37,221,0,0" VerticalAlignment="Top" FontSize="20" Foreground="#FFFFEED4" FontFamily="/Fonts/subset/#Source Han Sans CN" FontWeight="Bold" Height="37" Width="262" HorizontalContentAlignment="Center"/>
     </Grid>
 </UserControl>
 

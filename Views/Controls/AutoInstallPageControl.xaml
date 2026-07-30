@@ -4,11 +4,12 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:local="clr-namespace:LLC_MOD_Toolbox.Views.Controls"
+             xmlns:skin="clr-namespace:LLC_MOD_Toolbox.Services.Skin"
              mc:Ignorable="d">
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
     </UserControl.Resources>
-    <Grid x:Name="AutoInstallPage"
+    <Grid x:Name="AutoInstallPage" skin:SkinHost.Name="autoInstall"
           Visibility="{Binding IsInstallPageVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
         <Button x:Name="AutoInstallStartButton"
                 Visibility="{Binding IsAutoInstallStartVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
@@ -52,6 +53,7 @@
             </Button.Triggers>
         </Button>
         <Image x:Name="AutoInstallBTHover"
+               Visibility="{Binding IsAutoInstallChromeVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
                HorizontalAlignment="Center"
                Panel.ZIndex="5"
                IsHitTestVisible="False"
@@ -73,6 +75,7 @@
                Width="196"
                Source="pack://siteoforigin:,,,/Picture/Installing.png"/>
         <Image x:Name="StartInstallBackground"
+               Visibility="{Binding IsAutoInstallChromeVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
                HorizontalAlignment="Center"
                IsHitTestVisible="False"
                Height="123"
@@ -80,7 +83,39 @@
                Width="482"
                Source="pack://siteoforigin:,,,/Picture/StartInstallBackground.png"
                Margin="0,127,0,0"/>
-        <Canvas Margin="-10,294,10,22">
+        <Grid x:Name="KaltsitInstallProgressHost"
+              skin:SkinHost.Name="kaltsitInstallProgress"
+              Visibility="{Binding IsKaltsitInstallProgressVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
+              IsHitTestVisible="False"
+              Panel.ZIndex="20">
+            <Canvas x:Name="KaltsitProgressCanvas" Panel.ZIndex="10">
+                <Rectangle x:Name="KaltsitLeftProgressLine"
+                           Height="2"
+                           Fill="#9CFF35"/>
+                <Rectangle x:Name="KaltsitRightProgressLine"
+                           Height="2"
+                           Fill="#9CFF35"/>
+                <TextBlock x:Name="KaltsitLeftProgressText"
+                           Foreground="#9CFF35"
+                           FontSize="16"
+                           FontFamily="/Picture/kaltsit/#Futura"
+                           FontWeight="Bold"/>
+                <TextBlock x:Name="KaltsitRightProgressText"
+                           Foreground="#9CFF35"
+                           FontSize="16"
+                           FontFamily="/Picture/kaltsit/#Futura"
+                           FontWeight="Bold"/>
+                <TextBlock x:Name="KaltsitCenterProgressText"
+                           Foreground="#9CFF35"
+                           FontSize="16"
+                           FontFamily="/Picture/kaltsit/#Futura"
+                           FontWeight="Bold"
+                           Visibility="Collapsed"/>
+            </Canvas>
+        </Grid>
+        <Canvas x:Name="StandardInstallProgress"
+                Margin="-10,294,10,22"
+                Visibility="{Binding IsStandardInstallProgressVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
             <Image x:Name="FullProgress"
                    Height="50"
                    Canvas.Left="26"
@@ -121,6 +156,7 @@
                Width="300"
                Source="pack://siteoforigin:,,,/Picture/W.png"/>
         <local:OutlinedTextControl x:Name="NowVersionText"
+                                   Visibility="{Binding IsAutoInstallChromeVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
                                    Text="{Binding CurrentVersionText}"
                                    Fill="#a16a3b"
                                    Stroke="Black"
@@ -137,6 +173,7 @@
                                    HorizontalAlignment="Center"
                                    VerticalAlignment="Top"/>
         <local:OutlinedTextControl x:Name="LatestVersionText"
+                                   Visibility="{Binding IsAutoInstallChromeVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
                                    Text="{Binding LatestVersionText}"
                                    Fill="#a16a3b"
                                    Stroke="Black"
@@ -153,6 +190,7 @@
                                    HorizontalAlignment="Center"
                                    VerticalAlignment="Top"/>
         <local:OutlinedTextControl x:Name="LoadingText"
+                                   Visibility="{Binding IsAutoInstallChromeVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
                                    Text="{Binding LoadingText}"
                                    Fill="#a16a3b"
                                    Stroke="Black"

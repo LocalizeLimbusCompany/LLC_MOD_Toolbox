@@ -26,7 +26,12 @@ namespace LLC_MOD_Toolbox.ViewModels
             Log.logger.Info($"WPF架构工具箱 版本：{_appState.Version} 。");
 
             LoadConfiguredSkin();
-            ApplySkinRequested?.Invoke();
+            SkinApplyResult startupSkinResult = ApplySkinRequested?.Invoke()
+                ?? SkinApplyResult.Failed("$", "皮肤应用入口尚未初始化");
+            if (!startupSkinResult.Success)
+                _dialogService.ShowMessage(startupSkinResult.GetDisplayMessage(), "皮肤加载失败");
+            else
+                NotifyAutoInstallSkinStateChanged();
             RefreshSkinMusicState();
 
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls13;
@@ -117,53 +122,40 @@ namespace LLC_MOD_Toolbox.ViewModels
 
         private async Task ExecuteAutoInstallAsync()
         {
+            long installProgressSession = ++_installProgressSession;
+            ProgressPercentage = 0;
             IsInstalling = true;
             Log.logger.Info("开始安装。");
 
-            if (File.Exists(Path.Combine(_appState.LimbusCompanyDir, "version.dll")))
-            {
-                if (!_dialogService.ShowConfirm("检测到MelonLoader框架！\nMelonLoader框架已过时，且其可能导致您的账号遭到封禁，导致您无法进行游戏！\n建议您进行一次卸载后继续安装模组。\n若您**及其确定这是个误判**，请点击是，否则请点击否返回。", "警告"))
-                {
-                    await StopInstall();
-                    return;
-                }
-            }
-            if (File.Exists(Path.Combine(_appState.LimbusCompanyDir, "winhttp.dll")))
-            {
-                if (!_dialogService.ShowConfirm("检测到BepInEx框架（旧版本模组）！\n使用旧版本汉化模组可能遭到月亮计划的封禁！\n建议您进行一次卸载后继续安装模组。\n若您**及其确定这是个误判**，请点击\"是\"。", "警告"))
-                {
-                    await StopInstall();
-                    return;
-                }
-            }
-
-            Process[] limbusProcess = Process.GetProcessesByName("LimbusCompany");
-            if (limbusProcess.Length > 0)
-            {
-                if (!_dialogService.ShowConfirm("检测到 Limbus Company 仍然处于开启状态！\n建议您关闭游戏后继续安装模组。\n若您已经关闭了 Limbus Company，请点击是。", "警告"))
-                {
-                    await StopInstall();
-                    return;
-                }
-            }
-
             try
             {
+                if (!await ConfirmAutoInstallPreconditionsAsync())
+                    return;
+
                 var progress = new Progress<InstallProgress>(p =>
                 {
-                    ProgressPercentage = (p.Phase - 1) * 50 + p.Percentage * 0.5f;
+                    if (IsInstalling &&
+                        installProgressSession == _installProgressSession &&
+                        p.Percentage >= ProgressPercentage)
+                        ProgressPercentage = p.Percentage;
                 });
-                await _installService.InstallAsync(progress);
+                InstallResult result = await _installService.InstallAsync(progress);
+                if (result != InstallResult.Succeeded)
+                {
+                    Log.logger.Warn("安装已中止。");
+                    ResetInstallState();
+                    return;
+                }
             }
             catch (Exception ex)
             {
                 Log.logger.Error("安装出错。", ex);
+                await StopInstall();
                 _dialogService.ShowMessage($"安装出错。\n您可以尝试在设置中切换节点。\n错误：{Services.Network.HttpService.GetExceptionText(ex)}", "错误");
-                ProgressPercentage = 0;
-                IsInstalling = false;
                 return;
             }
 
+            ProgressPercentage = 100;
             Log.logger.Info("安装完成。");
 
             try
@@ -179,25 +171,80 @@ namespace LLC_MOD_Toolbox.ViewModels
 
             if (_config.Settings.install.afterInstallClose || _appState.IsLauncherMode)
             {
-                OpenUrl("steam://rungameid/1973530");
-                Application.Current.Shutdown();
+                try
+                {
+                    OpenUrl("steam://rungameid/1973530");
+                    Application.Current.Shutdown();
+                }
+                catch (Exception ex)
+                {
+                    Log.logger.Error("安装完成后启动游戏失败。", ex);
+                    ResetInstallState();
+                    _dialogService.ShowMessage("出现了问题。\n" + ex, "提示");
+                }
                 return;
             }
 
-            bool runResult = _dialogService.ShowConfirm("安装已完成！\n点击\"是\"立刻运行边狱公司。\n点击\"否\"关闭弹窗。", "提示");
+            bool runResult;
+            try
+            {
+                runResult = _dialogService.ShowConfirm("安装已完成！\n点击\"是\"立刻运行边狱公司。\n点击\"否\"关闭弹窗。", "提示");
+            }
+            finally
+            {
+                ResetInstallState();
+            }
+
             if (runResult)
             {
                 try { OpenUrl("steam://rungameid/1973530"); }
                 catch (Exception ex) { _dialogService.ShowMessage("出现了问题。\n" + ex.ToString(), "提示"); }
             }
+        }
 
-            IsInstalling = false;
-            ProgressPercentage = 0;
+        private async Task<bool> ConfirmAutoInstallPreconditionsAsync()
+        {
+            if (File.Exists(Path.Combine(_appState.LimbusCompanyDir, "version.dll")) &&
+                !_dialogService.ShowConfirm("检测到MelonLoader框架！\nMelonLoader框架已过时，且其可能导致您的账号遭到封禁，导致您无法进行游戏！\n建议您进行一次卸载后继续安装模组。\n若您**及其确定这是个误判**，请点击是，否则请点击否返回。", "警告"))
+            {
+                await StopInstall();
+                return false;
+            }
+
+            if (File.Exists(Path.Combine(_appState.LimbusCompanyDir, "winhttp.dll")) &&
+                !_dialogService.ShowConfirm("检测到BepInEx框架（旧版本模组）！\n使用旧版本汉化模组可能遭到月亮计划的封禁！\n建议您进行一次卸载后继续安装模组。\n若您**及其确定这是个误判**，请点击\"是\"。", "警告"))
+            {
+                await StopInstall();
+                return false;
+            }
+
+            Process[] limbusProcess = Process.GetProcessesByName("LimbusCompany");
+            if (limbusProcess.Length > 0 &&
+                !_dialogService.ShowConfirm("检测到 Limbus Company 仍然处于开启状态！\n建议您关闭游戏后继续安装模组。\n若您已经关闭了 Limbus Company，请点击是。", "警告"))
+            {
+                await StopInstall();
+                return false;
+            }
+
+            return true;
         }
 
         private async Task StopInstall()
         {
-            await _installService.StopInstallAsync();
+            ResetInstallState();
+            try
+            {
+                await _installService.StopInstallAsync();
+            }
+            catch (Exception ex)
+            {
+                Log.logger.Error("清理安装临时文件失败。", ex);
+            }
+        }
+
+        private void ResetInstallState()
+        {
+            _installProgressSession++;
             IsInstalling = false;
             ProgressPercentage = 0;
         }
@@ -271,8 +318,13 @@ namespace LLC_MOD_Toolbox.ViewModels
             if (string.IsNullOrWhiteSpace(skinName))
                 skinName = "default";
 
-            if (!_skinService.LoadSkin(skinName))
-                Log.logger.Warn($"启动时加载皮肤失败: {skinName}");
+            SkinApplyResult result = _skinService.LoadSkin(skinName);
+            if (result.Success)
+                return;
+
+            Log.logger.Warn($"启动时加载皮肤失败: {skinName}, {result.ErrorPath}, {result.ErrorMessage}");
+            _dialogService.ShowMessage(result.GetDisplayMessage(), "皮肤加载失败");
+            _skinService.LoadSkin("default");
         }
 
         private async Task HandleGreytestStartAsync()
@@ -344,17 +396,29 @@ namespace LLC_MOD_Toolbox.ViewModels
                     return;
                 }
 
-                bool success = _skinService.LoadSkin(selectedSkin.name);
-                if (success)
+                SkinApplyResult loadResult = _skinService.LoadSkin(selectedSkin.name);
+                if (!loadResult.Success)
                 {
-                    ApplySkinRequested?.Invoke();
-                    var skinInfo = _skinService.CurrentSkinInfo ?? _skinService.GetSkinInfo(selectedSkin.name);
-                    if (skinInfo != null)
-                        SkinDescription = (skinInfo.desc ?? "暂无描述。").Replace("\\n", "\n");
-                    RefreshSkinMusicState();
-                    _config.Settings.skin.currentSkin = selectedSkin.name;
-                    _config.SaveConfig();
+                    _dialogService.ShowMessage(loadResult.GetDisplayMessage(), "皮肤加载失败");
+                    return;
                 }
+
+                SkinApplyResult applyResult = ApplySkinRequested?.Invoke()
+                    ?? SkinApplyResult.Failed("$", "皮肤应用入口尚未初始化");
+                if (!applyResult.Success)
+                {
+                    _dialogService.ShowMessage(applyResult.GetDisplayMessage(), "皮肤加载失败");
+                    return;
+                }
+
+                var skinInfo = _skinService.CurrentSkinInfo ?? _skinService.GetSkinInfo(selectedSkin.name);
+                if (skinInfo != null)
+                    SkinDescription = (skinInfo.desc ?? "暂无描述。").Replace("\\n", "\n");
+                NotifyAutoInstallSkinStateChanged();
+                RefreshSkinMusicState();
+                RefreshSkinHotReloadStatus();
+                _config.Settings.skin.currentSkin = selectedSkin.name;
+                _config.SaveConfig();
             }
             catch (Exception ex)
             {
@@ -629,6 +693,78 @@ namespace LLC_MOD_Toolbox.ViewModels
             if (!saved)
                 message += "\n但音乐开关状态保存失败。";
             _dialogService.ShowMessage(message, "提示");
+        }
+
+        private void OnSkinReloaded(object? sender, SkinReloadedEventArgs e)
+        {
+            SkinHotReloadStatus = e.Result.Success
+                ? $"监听中 · 最近重载 {DateTime.Now:HH:mm:ss}"
+                : "监听中 · 最近重载失败";
+
+            if (e.Result.Success)
+            {
+                _lastSkinReloadFailureSignature = null;
+                NotifyAutoInstallSkinStateChanged();
+                RefreshSkinMusicState();
+            }
+            else
+            {
+                RecordSkinReloadFailure(e.Result);
+            }
+        }
+
+        private void RecordSkinReloadFailure(SkinApplyResult result)
+        {
+            string signature = $"{result.ErrorPath}|{result.ErrorMessage}";
+            if (string.Equals(signature, _lastSkinReloadFailureSignature, StringComparison.Ordinal))
+                return;
+
+            _lastSkinReloadFailureSignature = signature;
+            string path = string.IsNullOrWhiteSpace(result.ErrorPath) ? "$" : result.ErrorPath;
+            _skinReloadFailureLogs.Enqueue(
+                $"[{DateTime.Now:yyyy-MM-dd HH:mm:ss}]\n位置：{path}\n原因：{result.ErrorMessage}");
+
+            while (_skinReloadFailureLogs.Count > 10)
+                _skinReloadFailureLogs.Dequeue();
+            HasSkinReloadFailureLogs = true;
+        }
+
+        private void ShowSkinFailureLogs()
+        {
+            if (_skinReloadFailureLogs.Count == 0)
+            {
+                _dialogService.ShowMessage("暂无皮肤重载失败记录。", "皮肤失败日志");
+                return;
+            }
+
+            string content = string.Join(
+                "\n\n————————————\n\n",
+                _skinReloadFailureLogs.Reverse());
+            _dialogService.ShowMessage(content, "最近皮肤失败日志");
+        }
+
+        private void ToggleNavigationDebugBounds()
+        {
+#if DEBUG
+            AreNavigationDebugBoundsVisible = !AreNavigationDebugBoundsVisible;
+            NavigationDebugBoundsRequested?.Invoke(AreNavigationDebugBoundsVisible);
+#endif
+        }
+
+        private void OnHotReloadStatusChanged(object? sender, EventArgs e)
+        {
+            RefreshSkinHotReloadStatus();
+        }
+
+        public void RefreshSkinHotReloadStatus()
+        {
+#if DEBUG
+            SkinHotReloadStatus = _skinService.IsHotReloadWatching
+                ? "监听中 · Ctrl+Shift+R 手动重载"
+                : "皮肤热重载未启动";
+#else
+            SkinHotReloadStatus = string.Empty;
+#endif
         }
 
         public Task FadeOutSkinMusicAsync()

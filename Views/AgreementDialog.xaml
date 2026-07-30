@@ -206,7 +206,7 @@
             </Border>
 
             <TextBlock Grid.Row="3"
-                       Text="同意后将继续启动工具箱。首次启动遥测仅包含 GUID、软件版本、系统版本。"
+                       Text="同意后将继续启动工具箱。每日遥测包含匿名 GUID、软件版本、系统版本；运行期间每 2 分钟仅发送同一 GUID 心跳，用于估算当前在线人数。"
                        Margin="0,0,0,18"
                        Foreground="{StaticResource SecondaryTextBrush}"
                        LineHeight="20"/>

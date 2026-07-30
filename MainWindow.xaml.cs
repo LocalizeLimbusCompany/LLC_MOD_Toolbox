@@ -3,6 +3,7 @@ using LLC_MOD_Toolbox.Services.Configuration;
 using LLC_MOD_Toolbox.Services.Gacha;
 using LLC_MOD_Toolbox.Services.Skin;
 using LLC_MOD_Toolbox.ViewModels;
+using LLC_MOD_Toolbox.Views.Controls;
 using Microsoft.Extensions.DependencyInjection;
 using System.ComponentModel;
 using System.IO;
@@ -23,6 +24,7 @@ namespace LLC_MOD_Toolbox
         private readonly ISkinService _skinService;
         private readonly ConfigurationManager _config;
         private DispatcherTimer? _gachaTimer;
+        private DispatcherTimer? _calciteGachaCooldownTimer;
         private int _gachaRevealIndex;
         private bool _gachaRevealing;
         private GachaRollResult? _pendingGachaResult;
@@ -53,31 +55,68 @@ namespace LLC_MOD_Toolbox
             InitializeComponent();
             DataContext = ViewModel;
 
-            ViewModel.CloseRequested += Close;
+            ViewModel.CloseRequested += () => ((Window)this).Close();
             ViewModel.MinimizeRequested += () => WindowState = WindowState.Minimized;
-            ViewModel.ApplySkinRequested += () => _skinService.ApplySkinToWindow(this);
+            ViewModel.ApplySkinRequested += ApplyCurrentSkin;
             ViewModel.FontPreviewRequested += ApplyFontPreview;
             ViewModel.GachaRollExecuted += HandleGachaRollResult;
             ViewModel.EasterEggImageRequested += LoadEasterEggImage;
-            ViewModel.PropertyChanged += OnViewModelPropertyChanged;
             Closing += WindowClosing;
+#if DEBUG
+            PreviewKeyDown += MainWindowPreviewKeyDown;
+            ViewModel.NavigationDebugBoundsRequested += SetNavigationDebugBoundsVisible;
+            _skinService.SkinReloaded += OnSkinReloadedForDebugBounds;
+#endif
         }
 
-        private void OnViewModelPropertyChanged(object? sender, PropertyChangedEventArgs e)
+        private SkinApplyResult ApplyCurrentSkin()
         {
-            if (e.PropertyName == nameof(MainWindowViewModel.ProgressPercentage))
-                UpdateProgressClip(ViewModel.ProgressPercentage);
+            SkinApplyResult result = _skinService.ApplySkinToWindow(this);
+            ViewModel.RefreshSkinHotReloadStatus();
+            return result;
         }
 
-        private void UpdateProgressClip(float value)
+#if DEBUG
+        private void SetNavigationDebugBoundsVisible(bool visible)
         {
-            value = (float)Math.Round(value, 1);
-            var rectGeometry = new RectangleGeometry
+            FindVisualChild<NavigationMenu>(this)?.SetDebugBoundsVisible(visible);
+        }
+
+        private void OnSkinReloadedForDebugBounds(object? sender, SkinReloadedEventArgs e)
+        {
+            if (!e.Result.Success || !ViewModel.AreNavigationDebugBoundsVisible)
+                return;
+
+            _ = Dispatcher.BeginInvoke(
+                () => FindVisualChild<NavigationMenu>(this)?.RefreshDebugBounds(),
+                DispatcherPriority.Loaded);
+        }
+
+        private static T? FindVisualChild<T>(DependencyObject parent) where T : DependencyObject
+        {
+            int childCount = VisualTreeHelper.GetChildrenCount(parent);
+            for (int i = 0; i < childCount; i++)
             {
-                Rect = new Rect(0, 0, 6.24 * value, 50)
-            };
-            _ = Dispatcher.BeginInvoke(() => AutoInstallPage.ProgressClip = rectGeometry);
+                DependencyObject child = VisualTreeHelper.GetChild(parent, i);
+                if (child is T match)
+                    return match;
+                T? nested = FindVisualChild<T>(child);
+                if (nested != null)
+                    return nested;
+            }
+            return null;
         }
+
+        private void MainWindowPreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key != Key.R || Keyboard.Modifiers != (ModifierKeys.Control | ModifierKeys.Shift))
+                return;
+
+            if (ViewModel.ReloadSkinCommand.CanExecute(null))
+                ViewModel.ReloadSkinCommand.Execute(null);
+            e.Handled = true;
+        }
+#endif
 
         private async void LoadEasterEggImage(string url)
         {
@@ -107,6 +146,7 @@ namespace LLC_MOD_Toolbox
 
         private void WindowClosing(object? sender, CancelEventArgs e)
         {
+            _skinService.StopHotReload();
             if (_isClosingAfterMusicFade)
                 return;
 
@@ -131,7 +171,7 @@ namespace LLC_MOD_Toolbox
             }
 
             _isClosingAfterMusicFade = true;
-            await Dispatcher.InvokeAsync(Close, DispatcherPriority.Background);
+            await Dispatcher.InvokeAsync(() => ((Window)this).Close(), DispatcherPriority.Background);
         }
 
         private void WindowDragMove(object sender, MouseButtonEventArgs e)
@@ -170,7 +210,7 @@ namespace LLC_MOD_Toolbox
             _pendingGachaResult = result;
 
             GachaPage.CollapseAllResults();
-            GachaPage.SetButtonHitTestVisible(false);
+            GachaPage.SetButtonEnabled(false);
 
             var random = new Random();
             bool vergilShown = false;
@@ -239,9 +279,13 @@ namespace LLC_MOD_Toolbox
             }
 
             _gachaTimer?.Stop();
-            GachaPage.SetButtonHitTestVisible(true);
+            bool calciteRolled = _calciteTriggered;
+            if (calciteRolled)
+                StartCalciteGachaCooldown();
+            else
+                GachaPage.SetButtonEnabled(true);
 
-            if (_calciteTriggered && _calciteSlot >= 0)
+            if (calciteRolled && _calciteSlot >= 0)
             {
                 var calciteLabel = GachaPage.GetResultLabel(_calciteSlot);
                 calciteLabel.IsHitTestVisible = true;
@@ -255,6 +299,25 @@ namespace LLC_MOD_Toolbox
 
             ShowGachaResultDialog(_pendingGachaResult);
             _gachaRevealing = false;
+        }
+
+        private void StartCalciteGachaCooldown()
+        {
+            GachaPage.SetButtonEnabled(false);
+            _calciteGachaCooldownTimer ??= CreateCalciteGachaCooldownTimer();
+            _calciteGachaCooldownTimer.Stop();
+            _calciteGachaCooldownTimer.Start();
+        }
+
+        private DispatcherTimer CreateCalciteGachaCooldownTimer()
+        {
+            var timer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(3) };
+            timer.Tick += (_, _) =>
+            {
+                timer.Stop();
+                GachaPage.SetButtonEnabled(true);
+            };
+            return timer;
         }
 
         private void ShowGachaResultDialog(GachaRollResult? result)

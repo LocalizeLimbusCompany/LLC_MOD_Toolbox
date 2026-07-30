@@ -3,11 +3,12 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:skin="clr-namespace:LLC_MOD_Toolbox.Services.Skin"
              mc:Ignorable="d">
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
     </UserControl.Resources>
-    <Grid x:Name="EEPage"
+    <Grid x:Name="EEPage" skin:SkinHost.Name="easterEgg"
           Visibility="{Binding IsEasterEggPageVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
         <Image x:Name="EEPageImage" HorizontalAlignment="Left" Height="330" Margin="12,27,0,0" VerticalAlignment="Top" Width="630"/>
     </Grid>
