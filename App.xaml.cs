@@ -7,6 +7,7 @@ using LLC_MOD_Toolbox.Services.Greytest;
 using LLC_MOD_Toolbox.Services.Installation;
 using LLC_MOD_Toolbox.Services.IO;
 using LLC_MOD_Toolbox.Services.Network;
+using LLC_MOD_Toolbox.Services.Compatibility;
 using LLC_MOD_Toolbox.Services.Skin;
 using LLC_MOD_Toolbox.Services.Telemetry;
 using LLC_MOD_Toolbox.Services.UI;
@@ -17,6 +18,8 @@ using LLC_MOD_Toolbox.ViewModels;
 using Microsoft.Extensions.DependencyInjection;
 using System.IO;
 using System.Windows;
+using System.Windows.Interop;
+using System.Windows.Media;
 
 [assembly: log4net.Config.XmlConfigurator(ConfigFile = "App.config", ConfigFileExtension = "config", Watch = true)]
 namespace LLC_MOD_Toolbox
@@ -30,6 +33,8 @@ namespace LLC_MOD_Toolbox
 
         protected override void OnStartup(StartupEventArgs e)
         {
+            ApplyWpfCompatibilityWorkaround();
+
             bool createdNew;
             _mutex = new Mutex(true, "LLC_MOD_TOOLBOX", out createdNew);
             if (!createdNew)
@@ -61,6 +66,15 @@ namespace LLC_MOD_Toolbox
             base.OnStartup(e);
             this.DispatcherUnhandledException += App_DispatcherUnhandledException;
 
+        }
+
+        private static void ApplyWpfCompatibilityWorkaround()
+        {
+            if (!WineDetector.IsWine)
+                return;
+
+            RenderOptions.ProcessRenderMode = RenderMode.SoftwareOnly;
+            Log.logger.Warn($"检测到 Wine/CrossOver 环境，已启用 WPF 软件渲染。{WineDetector.Description}");
         }
 
         private bool EnsureAgreementAccepted()
