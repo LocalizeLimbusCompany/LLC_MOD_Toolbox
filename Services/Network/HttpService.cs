@@ -125,6 +125,8 @@ namespace LLC_MOD_Toolbox.Services.Network
                     ChunkCount = 8,
                     MaxTryAgainOnFailure = 5,
                     BlockTimeout = 30000,
+                    // Downloader 在 Proxy 为 null 时会直接禁用代理，这里显式跟随系统代理
+                    RequestConfiguration = { Proxy = HttpClient.DefaultProxy },
                 };
                 using var downloader = new DownloadService(downloadOpt);
                 if (progress != null)
