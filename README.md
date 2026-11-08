@@ -24,8 +24,8 @@
 
 ## 💻 系统要求与依赖
 
-*   **操作系统**：Windows 7 (SP1) / 8 / 10 / 11 (x64)
-*   **运行环境**：[.NET 8.0 Desktop Runtime (x64)](https://dotnet.microsoft.com/download/dotnet/8.0) 或更高版本
+*   **操作系统**：Windows 10 / 11 (x64)。当前使用的 .NET 8 不支持 Windows 7 / 8。
+*   **运行环境**：[.NET 8.0 Desktop Runtime (x64)](https://dotnet.microsoft.com/download/dotnet/8.0) 的最新 8.0.x 补丁版本。仅安装普通 .NET Runtime、x86 运行时或 .NET 9/10，不能满足此要求。
 *   **游戏平台**：Steam 官方版《边狱公司》(Limbus Company)
 *   **额外依赖**：工具箱自带 `7z.dll` 用于高效解压，请勿随意删除。
 
@@ -49,8 +49,6 @@
 ---
 
 ## 🛠️ 项目结构
-
-模块职责、依赖关系与命名约定见 [架构与命名](docs/architecture.md)。启动流程、性能瓶颈与验证方法见 [性能与架构排查](docs/performance-review.md)。
 
 ```txt
 LLC_MOD_Toolbox/
@@ -77,7 +75,6 @@ LLC_MOD_Toolbox/
 │   ├── Version/            # 模组版本检查（ModVersionService）
 │   └── ...                 # 字体、抽卡、灰度、文件、遥测等服务
 ├── tests/StartupChecks/    # 跨平台的服务行为回归检查
-├── docs/                   # 架构与验证说明
 ├── Skins/                  # 皮肤配置
 ├── Fonts/                  # 字体资源及子集
 └── Picture/                # UI 贴图与背景素材

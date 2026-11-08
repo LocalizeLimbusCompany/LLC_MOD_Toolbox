@@ -70,10 +70,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="favicon.ico" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="Downloader" Version="5.1.0" />
     <PackageReference Include="log4net" Version="3.3.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.1" />
@@ -97,6 +93,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <!-- WPF loads the embedded Resource above. Keep a loose copy for the installer;
+         declaring this as Content would take precedence over the embedded icon. -->
+    <None Update="favicon.ico">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </None>
     <None Update="7z.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

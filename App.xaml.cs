@@ -19,11 +19,24 @@ namespace LLC_MOD_Toolbox
         private bool _submitTelemetryAfterStartup;
         private CancellationTokenSource? _telemetryCancellation;
         private Task? _telemetryTask;
+        private bool _isHandlingFatalError;
 
         protected override void OnStartup(StartupEventArgs e)
         {
             StartupDiagnostics.Start();
             this.DispatcherUnhandledException += App_DispatcherUnhandledException;
+            try
+            {
+                StartApplication(e);
+            }
+            catch (Exception ex)
+            {
+                HandleFatalError(ex);
+            }
+        }
+
+        private void StartApplication(StartupEventArgs e)
+        {
             ApplyWpfCompatibilityWorkaround();
 
             bool createdNew;
@@ -138,11 +151,31 @@ namespace LLC_MOD_Toolbox
 
         private void App_DispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
         {
-            Exception ex = e.Exception;
-            Log.logger.Error("出现了问题：\n", ex);
-            UniversalDialog.ShowMessage($"运行中出现了未经处理的严重问题，且在这个错误发生后，工具箱将关闭。\n若要反馈，请带上链接或日志。\n反馈请勿！请勿截图此页面！\n错误分析原因：\n{ex.Message}", "错误", null, null);
             e.Handled = true;
-            Current.Shutdown();
+            HandleFatalError(e.Exception);
+        }
+
+        private void HandleFatalError(Exception exception)
+        {
+            if (_isHandlingFatalError)
+                return;
+            _isHandlingFatalError = true;
+
+            string? reportPath = StartupDiagnostics.WriteFailureReport(exception);
+            string reportMessage = reportPath is null
+                ? "无法写入错误日志。可按 Ctrl+C 复制此对话框的内容。"
+                : $"详细错误日志：\n{reportPath}\n反馈时请附上该日志。";
+            try
+            {
+                // A native message box remains usable when custom XAML or DI cannot load.
+                MessageBox.Show(
+                    $"工具箱遇到错误，无法继续运行。\n\n{exception.GetBaseException().Message}\n\n{reportMessage}",
+                    "工具箱运行错误", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            finally
+            {
+                Shutdown(-1);
+            }
         }
     }
 }

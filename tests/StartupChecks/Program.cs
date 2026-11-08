@@ -143,7 +143,7 @@ var checks = new (string Name, Func<Task> Run)[]
 };
 
 int failures = 0;
-var allChecks = checks.Concat(ConfigurationChecks.All).ToArray();
+var allChecks = checks.Concat(ConfigurationChecks.All).Concat(DiagnosticChecks.All).ToArray();
 foreach (var (name, run) in allChecks)
 {
     try

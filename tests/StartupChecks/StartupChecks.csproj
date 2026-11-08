@@ -14,6 +14,7 @@
     <Compile Include="../../Services/Configuration/ConfigurationService.cs" Link="Services/ConfigurationService.cs" />
     <Compile Include="../../Models/ApplicationState.cs" Link="Models/ApplicationState.cs" />
     <Compile Include="../../Infrastructure/ObservableObject.cs" Link="Infrastructure/ObservableObject.cs" />
+    <Compile Include="../../Infrastructure/StartupDiagnostics.cs" Link="Infrastructure/StartupDiagnostics.cs" />
     <Compile Include="../../Models/Configuration/*.cs" Link="Models/Configuration/%(Filename)%(Extension)" />
     <Compile Include="../../Models/Exceptions.cs" Link="Models/Exceptions.cs" />
     <Compile Include="../../Services/Configuration/IConfigurationService.cs" Link="Services/IConfigurationService.cs" />

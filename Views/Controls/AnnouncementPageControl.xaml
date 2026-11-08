@@ -41,7 +41,7 @@
                Margin="0,340,0,0"
                VerticalAlignment="Top"
                Width="80"
-               Source="Picture/SettingButtonHover.png"/>
+               Source="pack://siteoforigin:,,,/Picture/SettingButtonHover.png"/>
         <Button x:Name="AnnouncementAcknowledgeButton" IsHitTestVisible="{Binding Announcement.CanAcknowledge}"
                 HorizontalAlignment="Center"
                 Margin="0,343,0,0"
