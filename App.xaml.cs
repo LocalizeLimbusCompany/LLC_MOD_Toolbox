@@ -1,22 +1,10 @@
-using LLC_MOD_Toolbox.Services;
+using LLC_MOD_Toolbox.Infrastructure;
+using LLC_MOD_Toolbox.Infrastructure.DependencyInjection;
 using LLC_MOD_Toolbox.Services.Configuration;
-using LLC_MOD_Toolbox.Services.Content;
-using LLC_MOD_Toolbox.Services.Font;
-using LLC_MOD_Toolbox.Services.Gacha;
-using LLC_MOD_Toolbox.Services.Greytest;
-using LLC_MOD_Toolbox.Services.Installation;
-using LLC_MOD_Toolbox.Services.IO;
-using LLC_MOD_Toolbox.Services.Network;
 using LLC_MOD_Toolbox.Services.Compatibility;
-using LLC_MOD_Toolbox.Services.Skin;
 using LLC_MOD_Toolbox.Services.Telemetry;
-using LLC_MOD_Toolbox.Services.UI;
-using LLC_MOD_Toolbox.Services.Update;
-using LLC_MOD_Toolbox.Services.Version;
-using LLC_MOD_Toolbox.Views;
-using LLC_MOD_Toolbox.ViewModels;
+using LLC_MOD_Toolbox.Views.Dialogs;
 using Microsoft.Extensions.DependencyInjection;
-using System.IO;
 using System.Windows;
 using System.Windows.Interop;
 using System.Windows.Media;
@@ -30,9 +18,12 @@ namespace LLC_MOD_Toolbox
         private static Mutex? _mutex;
         private bool _submitTelemetryAfterStartup;
         private CancellationTokenSource? _telemetryCancellation;
+        private Task? _telemetryTask;
 
         protected override void OnStartup(StartupEventArgs e)
         {
+            StartupDiagnostics.Start();
+            this.DispatcherUnhandledException += App_DispatcherUnhandledException;
             ApplyWpfCompatibilityWorkaround();
 
             bool createdNew;
@@ -45,8 +36,13 @@ namespace LLC_MOD_Toolbox
             }
 
             var services = new ServiceCollection();
-            ConfigureServices(services);
-            Services = services.BuildServiceProvider();
+            services.AddToolboxServices(AppContext.BaseDirectory);
+            Services = services.BuildServiceProvider(new ServiceProviderOptions
+            {
+                ValidateOnBuild = true,
+                ValidateScopes = true
+            });
+            StartupDiagnostics.Mark("Services configured");
 
             ShutdownMode previousShutdownMode = ShutdownMode;
             ShutdownMode = ShutdownMode.OnExplicitShutdown;
@@ -55,16 +51,17 @@ namespace LLC_MOD_Toolbox
                 Current.Shutdown();
                 return;
             }
+            StartupDiagnostics.Mark("Agreement accepted");
 
             var mainWindow = Services.GetRequiredService<MainWindow>();
+            StartupDiagnostics.Mark("Main window constructed");
             MainWindow = mainWindow;
             if (_submitTelemetryAfterStartup)
-                mainWindow.Loaded += (_, _) => StartTelemetry();
+                mainWindow.ContentRendered += (_, _) => StartTelemetry();
             mainWindow.Show();
             ShutdownMode = previousShutdownMode;
 
             base.OnStartup(e);
-            this.DispatcherUnhandledException += App_DispatcherUnhandledException;
 
         }
 
@@ -79,16 +76,16 @@ namespace LLC_MOD_Toolbox
 
         private bool EnsureAgreementAccepted()
         {
-            var config = Services.GetRequiredService<ConfigurationManager>();
-            if (!config.Settings.telemetry.acceptedAgreement)
+            var config = Services.GetRequiredService<IConfigurationService>();
+            if (!config.Settings.Telemetry.HasAcceptedAgreement)
             {
                 var dialog = new AgreementDialog();
                 bool accepted = dialog.ShowDialog() == true && dialog.IsAccepted;
                 if (!accepted)
                     return false;
 
-                config.Settings.telemetry.acceptedAgreement = true;
-                config.SaveConfig();
+                config.Settings.Telemetry.HasAcceptedAgreement = true;
+                config.Save();
                 _submitTelemetryAfterStartup = true;
             }
             else
@@ -107,7 +104,7 @@ namespace LLC_MOD_Toolbox
             var cancellation = new CancellationTokenSource();
             _telemetryCancellation = cancellation;
             var telemetryService = Services.GetRequiredService<ITelemetryService>();
-            _ = Task.Run(async () =>
+            _telemetryTask = Task.Run(async () =>
             {
                 try
                 {
@@ -120,47 +117,23 @@ namespace LLC_MOD_Toolbox
                 {
                     Log.logger.Warn("遥测后台任务失败。", ex);
                 }
-                finally
-                {
-                    cancellation.Dispose();
-                }
             });
         }
 
         protected override void OnExit(ExitEventArgs e)
         {
-            _telemetryCancellation?.Cancel();
+            var cancellation = _telemetryCancellation;
             _telemetryCancellation = null;
+            if (cancellation is not null)
+            {
+                cancellation.Cancel();
+                if (_telemetryTask is not null)
+                    _ = _telemetryTask.ContinueWith(_ => cancellation.Dispose(), TaskScheduler.Default);
+                else
+                    cancellation.Dispose();
+            }
+            (Services as IDisposable)?.Dispose();
             base.OnExit(e);
-        }
-
-        private static void ConfigureServices(IServiceCollection services)
-        {
-            string currentDir = AppDomain.CurrentDomain.BaseDirectory;
-
-            services.AddSingleton<AppState>();
-            services.AddSingleton(new ConfigurationManager(Path.Combine(currentDir, "config.json")));
-
-            services.AddSingleton<IDialogService, DialogService>();
-            services.AddSingleton<IFileService, FileService>();
-            services.AddSingleton<IHttpService, HttpService>();
-            services.AddSingleton<INodeService, NodeService>();
-            services.AddSingleton<IMirrorChyanService, MirrorChyanService>();
-            services.AddSingleton<IInstallService, InstallService>();
-            services.AddSingleton<IUninstallService, UninstallService>();
-            services.AddSingleton<IToolboxUpdateService, ToolboxUpdateService>();
-            services.AddSingleton<IVersionService, VersionService>();
-            services.AddSingleton<IAnnouncementService, AnnouncementService>();
-            services.AddSingleton<ILoadingTextService, LoadingTextService>();
-            services.AddSingleton<IGachaService, GachaService>();
-            services.AddSingleton<IGreytestService, GreytestService>();
-            services.AddSingleton<IFontService, FontService>();
-            services.AddSingleton<ISkinService, SkinService>();
-            services.AddSingleton<ISkinMusicService, SkinMusicService>();
-            services.AddSingleton<ITelemetryService, TelemetryService>();
-
-            services.AddSingleton<MainWindowViewModel>();
-            services.AddSingleton<MainWindow>();
         }
 
         private void App_DispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)

@@ -16,7 +16,7 @@
         MouseLeftButtonDown="Window_MouseLeftButtonDown"
         MouseLeftButtonUp="Window_MouseLeftButtonUp"
         ResizeMode="CanMinimize"
-        Loaded="WindowLoaded">
+        ContentRendered="WindowContentRendered">
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
         <Style x:Key="NoHover" TargetType="Button">

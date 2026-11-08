@@ -37,7 +37,8 @@ namespace LLC_MOD_Toolbox.Services.Skin
             string jsonPath,
             Func<string, string?> resolveAssetPath,
             out PreparedSkinProperty? prepared,
-            out string? error)
+            out string? error,
+            IDictionary<string, BitmapImage>? bitmapCache = null)
         {
             prepared = null;
             error = null;
@@ -174,7 +175,7 @@ namespace LLC_MOD_Toolbox.Services.Skin
                         string? fullPath = resolveAssetPath(source);
                         if (string.IsNullOrWhiteSpace(fullPath) || !File.Exists(fullPath))
                             throw new FileNotFoundException($"素材不存在：{source}", fullPath);
-                        value = LoadBitmap(fullPath);
+                        value = LoadBitmap(fullPath, bitmapCache);
                         break;
                     case "stretch":
                         if (target is not Image)
@@ -432,8 +433,11 @@ namespace LLC_MOD_Toolbox.Services.Skin
             };
         }
 
-        private static BitmapImage LoadBitmap(string path)
+        private static BitmapImage LoadBitmap(string path, IDictionary<string, BitmapImage>? cache)
         {
+            if (cache != null && cache.TryGetValue(path, out BitmapImage? cached))
+                return cached;
+
             using var stream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite | FileShare.Delete);
             var bitmap = new BitmapImage();
             bitmap.BeginInit();
@@ -441,6 +445,8 @@ namespace LLC_MOD_Toolbox.Services.Skin
             bitmap.StreamSource = stream;
             bitmap.EndInit();
             bitmap.Freeze();
+            if (cache != null)
+                cache[path] = bitmap;
             return bitmap;
         }
     }

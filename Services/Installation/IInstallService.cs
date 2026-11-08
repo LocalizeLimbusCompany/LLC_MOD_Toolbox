@@ -11,6 +11,4 @@ namespace LLC_MOD_Toolbox.Services.Installation
         Succeeded,
         Aborted
     }
-
-    public record InstallProgress(float Percentage, string? StatusMessage = null);
 }

@@ -7,30 +7,9 @@ using System.Windows;
 
 namespace LLC_MOD_Toolbox.Services.Skin
 {
-    public interface ISkinService
-    {
-        List<string> GetAvailableSkins();
-        SkinDefinition? GetSkinInfo(string skinName);
-        SkinApplyResult LoadSkin(string skinName);
-        SkinApplyResult ApplySkinToWindow(Window window);
-        SkinApplyResult ReloadCurrentSkin();
-        void StartHotReload();
-        void StopHotReload();
-        Task<List<SkinDefinition>> GetRemoteSkinDefinitionsAsync();
-        Task<bool> InstallSkinFromServerAsync(string skinName);
-        List<SkinCatalogItem> BuildSkinCatalog(IEnumerable<SkinDefinition> remoteSkins, IEnumerable<string> localSkinNames);
-        string? GetCurrentSkinMusicPath();
-        bool SaveCurrentSkinMusicEnabled(bool enabled);
-        bool IsHotReloadWatching { get; }
-        event EventHandler<SkinReloadedEventArgs>? SkinReloaded;
-        event EventHandler? HotReloadStatusChanged;
-        string? CurrentSkinName { get; }
-        SkinDefinition? CurrentSkinInfo { get; }
-    }
-
     public sealed class SkinService : ISkinService
     {
-        private readonly AppState _appState;
+        private readonly ApplicationState _appState;
         private readonly IHttpService _httpService;
         private readonly IFileService _fileService;
 #if DEBUG
@@ -43,7 +22,7 @@ namespace LLC_MOD_Toolbox.Services.Skin
 #endif
         private string? _lastReportedError;
 
-        public SkinService(AppState appState, IHttpService httpService, IFileService fileService)
+        public SkinService(ApplicationState appState, IHttpService httpService, IFileService fileService)
         {
             _appState = appState;
             _httpService = httpService;
@@ -259,7 +238,7 @@ namespace LLC_MOD_Toolbox.Services.Skin
 
         public async Task<List<SkinDefinition>> GetRemoteSkinDefinitionsAsync()
         {
-            string raw = await _httpService.GetTextAsync("https://api.zeroasso.top/v2/skin/get_skin_info", reportError: false);
+            string raw = await _httpService.GetMetadataTextAsync("https://api.zeroasso.top/v2/skin/get_skin_info");
             if (string.IsNullOrWhiteSpace(raw))
                 return [];
             return JsonConvert.DeserializeObject<List<SkinDefinition>>(raw) ?? [];
@@ -270,7 +249,7 @@ namespace LLC_MOD_Toolbox.Services.Skin
             if (string.IsNullOrWhiteSpace(skinName))
                 return false;
 
-            string archivePath = Path.Combine(_appState.CurrentDir, $"{skinName}.7z");
+            string archivePath = Path.Combine(_appState.BaseDirectory, $"{skinName}.7z");
             string downloadUrl = $"https://api.zeroasso.top/v2/skin/get_skin/{Uri.EscapeDataString(skinName)}";
 
             try
@@ -278,9 +257,9 @@ namespace LLC_MOD_Toolbox.Services.Skin
                 Log.logger.Info($"开始下载皮肤: {skinName}");
                 await _httpService.DownloadFileWithoutProgressAsync(downloadUrl, archivePath);
                 Log.logger.Info($"开始解压皮肤: {skinName}");
-                _fileService.ExtractArchive(archivePath, _appState.CurrentDir);
+                _fileService.ExtractArchive(archivePath, _appState.BaseDirectory);
 
-                string installedSkinPath = Path.Combine(_appState.CurrentDir, "Skins", skinName, "skin.json");
+                string installedSkinPath = Path.Combine(_appState.BaseDirectory, "Skins", skinName, "skin.json");
                 bool installed = File.Exists(installedSkinPath);
                 Log.logger.Info(installed ? $"皮肤安装完成: {skinName}" : $"皮肤已解压但未找到预期配置: {installedSkinPath}");
                 return installed;

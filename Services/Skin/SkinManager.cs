@@ -8,6 +8,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
 
 namespace LLC_MOD_Toolbox.Services.Skin
 {
@@ -37,6 +38,8 @@ namespace LLC_MOD_Toolbox.Services.Skin
 
         private sealed class PreparedApplication
         {
+            // Scope to one application so hot reload always reads fresh assets.
+            public Dictionary<string, BitmapImage> Bitmaps { get; } = new(StringComparer.OrdinalIgnoreCase);
             public List<PreparedSkinProperty> Properties { get; } = [];
             public List<(Panel Host, Image Image)> DynamicImages { get; } = [];
             public HashSet<string> DynamicImageNames { get; } = new(StringComparer.Ordinal);
@@ -552,7 +555,8 @@ namespace LLC_MOD_Toolbox.Services.Skin
                             property.JsonPath,
                             source => ResolveAssetPath(package.DirectoryName, source),
                             out PreparedSkinProperty? preparedProperty,
-                            out string? error))
+                            out string? error,
+                            prepared.Bitmaps))
                     {
                         return SkinApplyResult.Failed(property.JsonPath, error ?? "属性转换失败", prepared.Warnings);
                     }
@@ -591,7 +595,8 @@ namespace LLC_MOD_Toolbox.Services.Skin
                         $"$.dynamicImages[{i}].source",
                         source => ResolveAssetPath(package.DirectoryName, source),
                         out PreparedSkinProperty? sourceProperty,
-                        out string? sourceError))
+                        out string? sourceError,
+                        prepared.Bitmaps))
                 {
                     return SkinApplyResult.Failed($"$.dynamicImages[{i}].source", sourceError ?? "图片加载失败", prepared.Warnings);
                 }
@@ -607,7 +612,8 @@ namespace LLC_MOD_Toolbox.Services.Skin
                             path,
                             source => ResolveAssetPath(package.DirectoryName, source),
                             out PreparedSkinProperty? imageProperty,
-                            out string? error))
+                            out string? error,
+                            prepared.Bitmaps))
                     {
                         return SkinApplyResult.Failed(path, error ?? "属性转换失败", prepared.Warnings);
                     }

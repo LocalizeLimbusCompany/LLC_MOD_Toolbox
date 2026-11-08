@@ -12,13 +12,20 @@ namespace LLC_MOD_Toolbox.Services.Network
     public sealed class HttpService : IHttpService
     {
         private static readonly HttpClient SharedHttpClient = CreateSharedHttpClient();
-        private readonly AppState _appState;
+        private readonly HttpClient _httpClient;
+        private readonly ApplicationState _appState;
         private readonly IDialogService _dialogService;
 
-        public HttpService(AppState appState, IDialogService dialogService)
+        public HttpService(ApplicationState appState, IDialogService dialogService)
+            : this(appState, dialogService, SharedHttpClient)
+        {
+        }
+
+        internal HttpService(ApplicationState appState, IDialogService dialogService, HttpClient httpClient)
         {
             _appState = appState;
             _dialogService = dialogService;
+            _httpClient = httpClient;
         }
 
         private static HttpClient CreateSharedHttpClient()
@@ -32,8 +39,9 @@ namespace LLC_MOD_Toolbox.Services.Network
             return client;
         }
 
-        public async Task<string> GetTextAsync(string url, bool reportError = true, int maxRetries = 3, int delayMs = 300, bool parseErrorJson = false)
+        public async Task<string> GetTextAsync(string url, bool reportError = true, int maxRetries = 3, int delayMs = 300, bool parseErrorJson = false, TimeSpan? timeout = null, CancellationToken cancellationToken = default)
         {
+            cancellationToken.ThrowIfCancellationRequested();
             if (string.IsNullOrWhiteSpace(url))
             {
                 Log.logger.Error("URL不能为空");
@@ -41,6 +49,10 @@ namespace LLC_MOD_Toolbox.Services.Network
             }
 
             Log.logger.Info(MaskToken($"获取 {url} 文本内容。"));
+            using var requestCancellation = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+            if (timeout.HasValue)
+                requestCancellation.CancelAfter(timeout.Value);
+            CancellationToken requestToken = requestCancellation.Token;
 
             for (int attempt = 1; attempt <= maxRetries; attempt++)
             {
@@ -48,20 +60,22 @@ namespace LLC_MOD_Toolbox.Services.Network
                 {
                     if (attempt > 1)
                     {
+                        await Task.Delay(delayMs, requestToken);
                         Log.logger.Info(MaskToken($"第 {attempt} 次尝试获取 {url}"));
                     }
 
-                    using HttpResponseMessage response = await SharedHttpClient.GetAsync(url);
+                    requestToken.ThrowIfCancellationRequested();
+                    using HttpResponseMessage response = await _httpClient.GetAsync(url, requestToken);
 
                     if (response.StatusCode == HttpStatusCode.Forbidden && parseErrorJson)
                     {
-                        string errorContent = await response.Content.ReadAsStringAsync();
+                        string errorContent = await response.Content.ReadAsStringAsync(requestToken);
                         HandleErrorJson(errorContent, url);
                         return string.Empty;
                     }
 
                     response.EnsureSuccessStatusCode();
-                    string result = await response.Content.ReadAsStringAsync();
+                    string result = await response.Content.ReadAsStringAsync(requestToken);
 
                     if (attempt > 1)
                     {
@@ -69,6 +83,15 @@ namespace LLC_MOD_Toolbox.Services.Network
                     }
 
                     return result;
+                }
+                catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+                {
+                    throw;
+                }
+                catch (OperationCanceledException) when (requestCancellation.IsCancellationRequested)
+                {
+                    Log.logger.Warn(MaskToken($"获取文本超过总等待时限，已取消请求：{url}"));
+                    return string.Empty;
                 }
                 catch (MirrorChyanException)
                 {
@@ -97,7 +120,6 @@ namespace LLC_MOD_Toolbox.Services.Network
                     else
                     {
                         Log.logger.Warn($"第 {attempt} 次获取失败，{delayMs}ms 后重试");
-                        await Task.Delay(delayMs);
                     }
                 }
             }

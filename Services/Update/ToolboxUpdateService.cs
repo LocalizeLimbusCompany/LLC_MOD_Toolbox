@@ -1,3 +1,5 @@
+using LLC_MOD_Toolbox.Views.Dialogs;
+using LLC_MOD_Toolbox.Models;
 using LLC_MOD_Toolbox.Services.IO;
 using LLC_MOD_Toolbox.Services.Network;
 using LLC_MOD_Toolbox.Services.UI;
@@ -13,14 +15,14 @@ namespace LLC_MOD_Toolbox.Services.Update
     {
         private const string OfficialToolboxPackageUrl = "https://download.zeroasso.top/files/LLC_MOD_Toolbox.7z";
 
-        private readonly AppState _appState;
+        private readonly ApplicationState _appState;
         private readonly IHttpService _httpService;
         private readonly INodeService _nodeService;
         private readonly IMirrorChyanService _mirrorChyanService;
         private readonly IFileService _fileService;
 
         public ToolboxUpdateService(
-            AppState appState,
+            ApplicationState appState,
             IHttpService httpService,
             INodeService nodeService,
             IMirrorChyanService mirrorChyanService,
@@ -46,9 +48,8 @@ namespace LLC_MOD_Toolbox.Services.Update
                 }
                 else
                 {
-                    string raw = await _httpService.GetTextAsync(
-                            _nodeService.ResolveApiUrl("v2/get_api/get/repos/LocalizeLimbusCompany/LLC_Mod_Toolbox/releases/latest"),
-                            reportError: false);
+                    string raw = await _httpService.GetMetadataTextAsync(
+                            _nodeService.ResolveApiUrl("v2/get_api/get/repos/LocalizeLimbusCompany/LLC_Mod_Toolbox/releases/latest"));
                     var jsonObject = JObject.Parse(raw);
                     string latestReleaseTag = jsonObject["tag_name"]!.Value<string>()!.TrimStart('v', 'V');
                     Log.logger.Info("最新工具箱tag：" + latestReleaseTag);
@@ -66,9 +67,8 @@ namespace LLC_MOD_Toolbox.Services.Update
                 }
                 else
                 {
-                    string raw = await _httpService.GetTextAsync(
-                        _nodeService.ResolveApiUrl("v2/get_api/get/repos/LocalizeLimbusCompany/LLC_Mod_Toolbox/releases/latest"),
-                        reportError: false);
+                    string raw = await _httpService.GetMetadataTextAsync(
+                        _nodeService.ResolveApiUrl("v2/get_api/get/repos/LocalizeLimbusCompany/LLC_Mod_Toolbox/releases/latest"));
                     var jsonObject = JObject.Parse(raw);
                     string latestReleaseTag = jsonObject["tag_name"]!.Value<string>()!.TrimStart('v', 'V');
                     Log.logger.Info("最新工具箱tag：" + latestReleaseTag);
@@ -96,7 +96,7 @@ namespace LLC_MOD_Toolbox.Services.Update
             }
 
             var dialog = new ToolboxUpdateDialog(
-                _appState.Version,
+                _appState.ToolboxVersion,
                 result.LatestVersion,
                 result.IsMirrorChyan ? "Mirror 酱源" : "官方源",
                 async p => await DownloadAndStageUpdateAsync(result, p));
@@ -169,7 +169,7 @@ namespace LLC_MOD_Toolbox.Services.Update
 
         private string CopyUpdaterFileToTemp(string fileName, string updateDir)
         {
-            string sourcePath = Path.Combine(_appState.CurrentDir, fileName);
+            string sourcePath = Path.Combine(_appState.BaseDirectory, fileName);
             if (!File.Exists(sourcePath))
                 throw new FileNotFoundException($"缺少自更新所需文件：{fileName}", sourcePath);
 
@@ -180,7 +180,7 @@ namespace LLC_MOD_Toolbox.Services.Update
 
         private void CreateBatchFile(string batPath, string updateDir, string archivePath, string sevenZipExePath)
         {
-            string toolboxDir = TrimTrailingDirectorySeparator(Path.GetFullPath(_appState.CurrentDir));
+            string toolboxDir = TrimTrailingDirectorySeparator(Path.GetFullPath(_appState.BaseDirectory));
             string toolboxExePath = Path.Combine(toolboxDir, "LLC_MOD_Toolbox.exe");
             int currentProcessId = Process.GetCurrentProcess().Id;
             string logPath = Path.Combine(updateDir, "update.log");

@@ -8,12 +8,12 @@ namespace LLC_MOD_Toolbox.Services.Network
 {
     public sealed class MirrorChyanService : IMirrorChyanService
     {
-        private readonly AppState _appState;
-        private readonly ConfigurationManager _config;
+        private readonly ApplicationState _appState;
+        private readonly IConfigurationService _config;
         private readonly IHttpService _httpService;
         private readonly IDialogService _dialogService;
 
-        public MirrorChyanService(AppState appState, ConfigurationManager config, IHttpService httpService, IDialogService dialogService)
+        public MirrorChyanService(ApplicationState appState, IConfigurationService config, IHttpService httpService, IDialogService dialogService)
         {
             _appState = appState;
             _config = config;
@@ -27,7 +27,7 @@ namespace LLC_MOD_Toolbox.Services.Network
 
         public void Initialize()
         {
-            if (_config.Settings.mirrorChyan.enable && SecureStringStorage.HasSavedData())
+            if (_config.Settings.MirrorChyan.IsEnabled && SecureStringStorage.HasSavedData())
             {
                 string token = SecureStringStorage.LoadToken();
                 if (!string.IsNullOrWhiteSpace(token))
@@ -66,16 +66,16 @@ namespace LLC_MOD_Toolbox.Services.Network
             _appState.IsMirrorChyanMode = true;
             _appState.MirrorChyanToken = token.Trim();
             SecureStringStorage.SaveToken(_appState.MirrorChyanToken);
-            _config.Settings.mirrorChyan.enable = true;
-            _config.SaveConfig();
+            _config.Settings.MirrorChyan.IsEnabled = true;
+            _config.Save();
         }
 
         public void DisableMode()
         {
             _appState.IsMirrorChyanMode = false;
             _appState.MirrorChyanToken = string.Empty;
-            _config.Settings.mirrorChyan.enable = false;
-            _config.SaveConfig();
+            _config.Settings.MirrorChyan.IsEnabled = false;
+            _config.Save();
             Log.logger.Info("MirrorChyan Mode 已关闭。");
         }
 
@@ -168,9 +168,8 @@ namespace LLC_MOD_Toolbox.Services.Network
             try
             {
                 Log.logger.Info("获取模组标签。");
-                string raw = await _httpService.GetTextAsync(
-                    "https://mirrorchyan.com/api/resources/LLC/latest?user_agent=LLC_MOD_Toolbox&current_version=&cdk=",
-                    reportError: false);
+                string raw = await _httpService.GetMetadataTextAsync(
+                    "https://mirrorchyan.com/api/resources/LLC/latest?user_agent=LLC_MOD_Toolbox&current_version=&cdk=");
                 var json = ParseResponse(raw);
                 string version = json["data"]!["version_name"]!.Value<string>()!;
                 Log.logger.Info($"汉化模组最后标签为： {version}");
@@ -232,9 +231,8 @@ namespace LLC_MOD_Toolbox.Services.Network
         {
             try
             {
-                string raw = await _httpService.GetTextAsync(
-                    "https://mirrorchyan.com/api/resources/LLC_MOD_Toolbox_Increment/latest?user_agent=LLC_MOD_Toolbox&current_version=&cdk=",
-                    reportError: false);
+                string raw = await _httpService.GetMetadataTextAsync(
+                    "https://mirrorchyan.com/api/resources/LLC_MOD_Toolbox_Increment/latest?user_agent=LLC_MOD_Toolbox&current_version=&cdk=");
                 var json = ParseResponse(raw);
                 string latestReleaseTag = json["data"]!["version_name"]!.Value<string>()!.TrimStart('v', 'V');
                 Log.logger.Info("最新安装器tag：" + latestReleaseTag);

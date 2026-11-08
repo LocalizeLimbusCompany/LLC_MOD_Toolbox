@@ -1,4 +1,5 @@
 using LLC_MOD_Toolbox.Models;
+using LLC_MOD_Toolbox.Infrastructure;
 using LLC_MOD_Toolbox.Services.Configuration;
 using LLC_MOD_Toolbox.Services.Gacha;
 using LLC_MOD_Toolbox.Services.Skin;
@@ -22,7 +23,7 @@ namespace LLC_MOD_Toolbox
     {
         public MainWindowViewModel ViewModel { get; }
         private readonly ISkinService _skinService;
-        private readonly ConfigurationManager _config;
+        private readonly IConfigurationService _config;
         private DispatcherTimer? _gachaTimer;
         private DispatcherTimer? _calciteGachaCooldownTimer;
         private int _gachaRevealIndex;
@@ -47,7 +48,7 @@ namespace LLC_MOD_Toolbox
         // 手动打轴！
         private static readonly (string Text, double StartTime)[] _calciteTimeline = [("虽然你已经不会再记得。", 2), ("这片宇宙曾孕育过辉煌的文明。", 5), ("在那时，知识的边界几乎等同于宇宙本身。", 10), ("人们的认知可以抵达想象的每一个角落，即使最遥远的恒星也像桌上的书籍般触手可得。", 16.5), ("可即便如此，人们依然无法回答关于自身的问题一一", 28), ("生命是否存在某种与生俱来的目的？", 33.5), ("也许这是造物主留下的最后一道帷幕。", 38), ("对意义的求索没有出口，生命注定在各自的旅途中走向孤独。", 42), ("哲人与学者最终放弃了从可观测的世界中寻求答案，选择将信念寄托于我们的本能。", 50), ("因为我们只能相信，在无解的孤独与困惑之外，爱的存在同样不可置疑。", 61), ("最深沉的绝望也无法阻止人们在茫茫星海中寻找自我存在的回声。", 70), ("在寂静降临前，人们依然会为了相隔数万光年生命的痕迹而落泪。", 77.5), ("我想，我在旅途中终于理解了这种感动。", 85), ("生命是美丽的，在宇宙的尺度下，“生命”与“希望”等意。", 90), ("我无法将过去的记忆交还给你，只能试图与你分享我的感受。", 100), ("我会相信你的本性，也希望你可以相信自己选择的意义。", 107), ("你会感到无助迷茫，因为没有人可以与你永远同行，也没有人能够理解你的孤独。", 114), ("罗德岛成为了许多人的家。", 123), ("我希望在那个时候，罗德岛也可以成为你的归宿。", 126), ("我的愿望是守护好你的愿望。", 132), ("希望在这场旅程结束时，会有人陪伴你，见证你期待的未来。", 136), ("Kal\'tsit", 145)];
 
-        public MainWindow(MainWindowViewModel viewModel, ISkinService skinService, ConfigurationManager config)
+        public MainWindow(MainWindowViewModel viewModel, ISkinService skinService, IConfigurationService config)
         {
             ViewModel = viewModel;
             _skinService = skinService;
@@ -122,7 +123,7 @@ namespace LLC_MOD_Toolbox
         {
             try
             {
-                using var client = new HttpClient();
+                using var client = new HttpClient { Timeout = TimeSpan.FromSeconds(8) };
                 var bytes = await client.GetByteArrayAsync(url);
                 using var stream = new MemoryStream(bytes);
                 var bitmap = new BitmapImage();
@@ -139,8 +140,13 @@ namespace LLC_MOD_Toolbox
             }
         }
 
-        private async void WindowLoaded(object sender, RoutedEventArgs e)
+        private async void WindowContentRendered(object? sender, EventArgs e)
         {
+            ContentRendered -= WindowContentRendered;
+            StartupDiagnostics.Mark("First content rendered");
+            await System.Windows.Threading.Dispatcher.Yield(DispatcherPriority.Background);
+            if (_isCloseFadeInProgress)
+                return;
             await ViewModel.InitializeAsync();
         }
 
@@ -218,7 +224,7 @@ namespace LLC_MOD_Toolbox
 
             if (IsCalciteSkinActive())
             {
-                double chance = _config.Settings.gacha.calciteEasterEggSeen ? 0.001 : 0.05;
+                double chance = _config.Settings.Gacha.HasSeenCalciteEasterEgg ? 0.001 : 0.05;
                 if (random.NextDouble() < chance)
                     calciteSlot = random.Next(0, 10);
             }
@@ -639,8 +645,8 @@ namespace LLC_MOD_Toolbox
             };
             CalciteBackground.BeginAnimation(OpacityProperty, bgFadeOut);
 
-            _config.Settings.gacha.calciteEasterEggSeen = true;
-            _config.SaveConfig();
+            _config.Settings.Gacha.HasSeenCalciteEasterEgg = true;
+            _config.Save();
         }
     }
 }

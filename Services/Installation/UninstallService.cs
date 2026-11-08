@@ -1,3 +1,4 @@
+using LLC_MOD_Toolbox.Models;
 using LLC_MOD_Toolbox.Services.IO;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -7,10 +8,10 @@ namespace LLC_MOD_Toolbox.Services.Installation
 {
     public sealed class UninstallService : IUninstallService
     {
-        private readonly AppState _appState;
+        private readonly ApplicationState _appState;
         private readonly IFileService _fileService;
 
-        public UninstallService(AppState appState, IFileService fileService)
+        public UninstallService(ApplicationState appState, IFileService fileService)
         {
             _appState = appState;
             _fileService = fileService;
@@ -18,13 +19,13 @@ namespace LLC_MOD_Toolbox.Services.Installation
 
         public void DeleteLanguagePack()
         {
-            _fileService.DeleteDirectory(Path.Combine(_appState.LimbusCompanyDir, "LimbusCompany_Data", "Lang", "LLC_zh-CN"));
+            _fileService.DeleteDirectory(Path.Combine(_appState.GameDirectory, "LimbusCompany_Data", "Lang", "LLC_zh-CN"));
             WriteLCBLangConfig("");
         }
 
         public void DeleteBepInEx()
         {
-            string dir = _appState.LimbusCompanyDir;
+            string dir = _appState.GameDirectory;
             _fileService.DeleteDirectory(Path.Combine(dir, "BepInEx"));
             _fileService.DeleteDirectory(Path.Combine(dir, "dotnet"));
             _fileService.DeleteFile(Path.Combine(dir, "doorstop_config.ini"));
@@ -40,7 +41,7 @@ namespace LLC_MOD_Toolbox.Services.Installation
 
         public void DeleteMelonLoader()
         {
-            string dir = _appState.LimbusCompanyDir;
+            string dir = _appState.GameDirectory;
             _fileService.DeleteDirectory(Path.Combine(dir, "MelonLoader"));
             _fileService.DeleteDirectory(Path.Combine(dir, "Mods"));
             _fileService.DeleteDirectory(Path.Combine(dir, "Plugins"));
@@ -61,7 +62,7 @@ namespace LLC_MOD_Toolbox.Services.Installation
         {
             try
             {
-                string configPath = Path.Combine(_appState.LimbusCompanyDir, "LimbusCompany_Data", "Lang", "config.json");
+                string configPath = Path.Combine(_appState.GameDirectory, "LimbusCompany_Data", "Lang", "config.json");
                 if (File.Exists(configPath))
                 {
                     string configJson = File.ReadAllText(configPath);
@@ -74,7 +75,7 @@ namespace LLC_MOD_Toolbox.Services.Installation
             {
                 Log.logger.Warn("修改LCB lang config失败: " + ex.Message);
                 File.WriteAllText(
-                    Path.Combine(_appState.LimbusCompanyDir, "LimbusCompany_Data", "Lang", "config.json"),
+                    Path.Combine(_appState.GameDirectory, "LimbusCompany_Data", "Lang", "config.json"),
                     "{\"lang\": \"\",\"titleFont\": \"\",\"contextFont\": \"\",\"samplingPointSize\": 78,\"padding\": 5}");
                 WriteLCBLangConfig(value);
             }

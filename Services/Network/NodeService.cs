@@ -8,8 +8,8 @@ namespace LLC_MOD_Toolbox.Services.Network
 {
     public sealed class NodeService : INodeService
     {
-        private readonly AppState _appState;
-        private readonly ConfigurationManager _config;
+        private readonly ApplicationState _appState;
+        private readonly IConfigurationService _config;
         private List<Node> _downloadNodes = [];
         private List<Node> _apiNodes = [];
         private string _defaultEndpoint = "";
@@ -18,7 +18,7 @@ namespace LLC_MOD_Toolbox.Services.Network
         private string _currentApiEndpoint = "";
         private bool _useGithub;
 
-        public NodeService(AppState appState, ConfigurationManager config)
+        public NodeService(ApplicationState appState, IConfigurationService config)
         {
             _appState = appState;
             _config = config;
@@ -40,11 +40,11 @@ namespace LLC_MOD_Toolbox.Services.Network
                     NamingStrategy = new CamelCaseNamingStrategy()
                 }
             };
-            var json = JsonConvert.DeserializeObject<RootModel>(File.ReadAllText("NodeList.json"), jsonSettings);
+            var json = JsonConvert.DeserializeObject<RootModel>(File.ReadAllText(Path.Combine(_appState.BaseDirectory, "NodeList.json")), jsonSettings);
             _downloadNodes = json!.DownloadNode;
             _apiNodes = json.ApiNode;
 
-            bool international = _config.Settings.general.internationalMode;
+            bool international = _config.Settings.General.InternationalMode;
 
             foreach (var node in _downloadNodes)
             {
@@ -150,8 +150,8 @@ namespace LLC_MOD_Toolbox.Services.Network
 
         public void ReadConfigNode()
         {
-            string defaultNode = _config.Settings.nodeSelect.defaultNode;
-            string defaultApiNode = _config.Settings.nodeSelect.defaultApiNode;
+            string defaultNode = _config.Settings.Nodes.DownloadNode;
+            string defaultApiNode = _config.Settings.Nodes.ApiNode;
             if (!string.IsNullOrEmpty(defaultNode))
             {
                 if (defaultNode == "Github直连")
@@ -193,15 +193,15 @@ namespace LLC_MOD_Toolbox.Services.Network
         private void SaveDownloadNodeConfig(string node)
         {
             Log.logger.Info("设置下载节点:" + node);
-            _config.Settings.nodeSelect.defaultNode = node;
-            _config.SaveConfig();
+            _config.Settings.Nodes.DownloadNode = node;
+            _config.Save();
         }
 
         private void SaveApiNodeConfig(string api)
         {
             Log.logger.Info("设置API节点:" + api);
-            _config.Settings.nodeSelect.defaultApiNode = api;
-            _config.SaveConfig();
+            _config.Settings.Nodes.ApiNode = api;
+            _config.Save();
         }
     }
 }

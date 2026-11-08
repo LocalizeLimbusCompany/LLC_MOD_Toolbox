@@ -50,27 +50,37 @@
 
 ## 🛠️ 项目结构
 
+模块职责、依赖关系与命名约定见 [架构与命名](docs/architecture.md)。启动流程、性能瓶颈与验证方法见 [性能与架构排查](docs/performance-review.md)。
+
 ```txt
 LLC_MOD_Toolbox/
-├── Models/                 # 数据模型 (配置、节点、皮肤等)
-├── ViewModels/             # WPF MVVM 设计模式的视图模型
+├── App.xaml.cs             # 应用生命周期、协议与窗口启动
+├── MainWindow.xaml         # 主窗口及控件宿主
+├── Infrastructure/         # MVVM 基础类型、诊断
+│   └── DependencyInjection/# 集中的服务注册入口
+├── Models/                 # 运行状态、节点、皮肤等数据
+│   └── Configuration/      # 配置模型及旧 JSON 字段映射
+├── ViewModels/
+│   ├── AnnouncementViewModel.cs # 公告状态与阅读倒计时
+│   ├── MainWindow/         # 主窗口编排，按功能组织 partial
+│   └── Navigation/         # 页面与安装子页枚举
 ├── Views/
-│   └── Controls/           # 页面控件 (包含抽卡、设置、皮肤、灰度测试等)
-├── Services/               # 核心业务逻辑
-│   ├── Adaptation/         # 历史结构兼容适配
-│   ├── Configuration/      # config.json 读写与配置管理
-│   ├── Content/            # 公告与加载文本服务
-│   ├── Font/               # 字体生成与处理服务
-│   ├── Gacha/              # 抽卡模拟器逻辑
-│   ├── Greytest/           # 灰度/测试通道逻辑
-│   ├── Installation/       # 模组安装 (InstallService) 与卸载服务
-│   ├── IO/                 # 文件读取与删除包装
-│   ├── Network/            # HTTP 请求、测速与节点检测
-│   ├── Skin/               # 皮肤资源管理与应用
-│   └── System/             # 注册表检测与 Steam 路径寻找
-├── Skins/                  # 预设皮肤配置文件夹
-├── Fonts/                  # 预设字体资源及子集化字库
-└── Pictures/               # UI 贴图与背景素材
+│   ├── Controls/           # 页面控件
+│   └── Dialogs/            # 协议、通用输入、Mirror 酱、更新对话框
+├── Services/               # 按功能分组，接口与实现各自独立文件
+│   ├── Configuration/      # IConfigurationService / ConfigurationService
+│   ├── Content/            # 公告、加载文案
+│   ├── Installation/       # 模组安装与卸载
+│   ├── Network/            # HTTP、节点、Mirror 酱、DNS 检查
+│   ├── Skin/               # 换肤、热重载、背景音乐
+│   ├── Update/             # 工具箱自身更新
+│   ├── Version/            # 模组版本检查（ModVersionService）
+│   └── ...                 # 字体、抽卡、灰度、文件、遥测等服务
+├── tests/StartupChecks/    # 跨平台的服务行为回归检查
+├── docs/                   # 架构与验证说明
+├── Skins/                  # 皮肤配置
+├── Fonts/                  # 字体资源及子集
+└── Picture/                # UI 贴图与背景素材
 ```
 
 ---

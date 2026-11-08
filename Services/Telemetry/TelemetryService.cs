@@ -16,10 +16,10 @@ namespace LLC_MOD_Toolbox.Services.Telemetry
             Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
             "LLC_MOD_Toolbox",
             "TelemetryGuid.txt");
-        private readonly ConfigurationManager _config;
+        private readonly IConfigurationService _config;
         private readonly INodeService _nodeService;
 
-        public TelemetryService(ConfigurationManager config, INodeService nodeService)
+        public TelemetryService(IConfigurationService config, INodeService nodeService)
         {
             _config = config;
             _nodeService = nodeService;
@@ -31,7 +31,7 @@ namespace LLC_MOD_Toolbox.Services.Telemetry
 
             while (!cancellationToken.IsCancellationRequested)
             {
-                if (_config.Settings.telemetry.lastSubmittedDate == DateTime.Today.ToString("yyyy-MM-dd"))
+                if (_config.Settings.Telemetry.LastSubmittedDate == DateTime.Today.ToString("yyyy-MM-dd"))
                     await SubmitHeartbeatAsync(cancellationToken).ConfigureAwait(false);
                 else
                     await SubmitDailyAsync(cancellationToken).ConfigureAwait(false);
@@ -42,12 +42,12 @@ namespace LLC_MOD_Toolbox.Services.Telemetry
 
         private async Task SubmitDailyAsync(CancellationToken cancellationToken)
         {
-            if (_config.Settings.telemetry.lastSubmittedDate == DateTime.Today.ToString("yyyy-MM-dd"))
+            if (_config.Settings.Telemetry.LastSubmittedDate == DateTime.Today.ToString("yyyy-MM-dd"))
                 return;
 
             var payload = new
             {
-                guid = _config.Settings.telemetry.clientGuid,
+                guid = _config.Settings.Telemetry.ClientId,
                 app_version = GetAppVersion(),
                 os_version = Environment.OSVersion.VersionString
             };
@@ -66,9 +66,9 @@ namespace LLC_MOD_Toolbox.Services.Telemetry
                     return;
                 }
 
-                _config.Settings.telemetry.telemeteringSubmitted = true;
-                _config.Settings.telemetry.lastSubmittedDate = DateTime.Today.ToString("yyyy-MM-dd");
-                _config.SaveConfig();
+                _config.Settings.Telemetry.HasSubmittedTelemetry = true;
+                _config.Settings.Telemetry.LastSubmittedDate = DateTime.Today.ToString("yyyy-MM-dd");
+                _config.Save();
             }
             catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
             {
@@ -82,7 +82,7 @@ namespace LLC_MOD_Toolbox.Services.Telemetry
 
         private async Task SubmitHeartbeatAsync(CancellationToken cancellationToken)
         {
-            var payload = new { guid = _config.Settings.telemetry.clientGuid };
+            var payload = new { guid = _config.Settings.Telemetry.ClientId };
 
             try
             {
@@ -107,23 +107,23 @@ namespace LLC_MOD_Toolbox.Services.Telemetry
 
         private void EnsureClientGuid()
         {
-            if (!string.IsNullOrWhiteSpace(_config.Settings.telemetry.clientGuid))
+            if (!string.IsNullOrWhiteSpace(_config.Settings.Telemetry.ClientId))
             {
-                SaveClientGuid(_config.Settings.telemetry.clientGuid);
+                SaveClientGuid(_config.Settings.Telemetry.ClientId);
                 return;
             }
 
             string savedGuid = LoadClientGuid();
             if (!string.IsNullOrWhiteSpace(savedGuid))
             {
-                _config.Settings.telemetry.clientGuid = savedGuid;
-                _config.SaveConfig();
+                _config.Settings.Telemetry.ClientId = savedGuid;
+                _config.Save();
                 return;
             }
 
-            _config.Settings.telemetry.clientGuid = Guid.NewGuid().ToString();
-            SaveClientGuid(_config.Settings.telemetry.clientGuid);
-            _config.SaveConfig();
+            _config.Settings.Telemetry.ClientId = Guid.NewGuid().ToString();
+            SaveClientGuid(_config.Settings.Telemetry.ClientId);
+            _config.Save();
         }
 
         private static string LoadClientGuid()

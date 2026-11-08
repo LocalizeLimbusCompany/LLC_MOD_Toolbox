@@ -1,3 +1,4 @@
+using LLC_MOD_Toolbox.Models;
 using LLC_MOD_Toolbox.Services.Configuration;
 using LLC_MOD_Toolbox.Services.IO;
 using LLC_MOD_Toolbox.Services.Network;
@@ -22,24 +23,24 @@ namespace LLC_MOD_Toolbox.Services.Installation
             public void Report(T value) => report(value);
         }
 
-        private readonly AppState _appState;
+        private readonly ApplicationState _appState;
         private readonly IHttpService _httpService;
         private readonly INodeService _nodeService;
         private readonly IMirrorChyanService _mirrorChyanService;
         private readonly IFileService _fileService;
         private readonly IDialogService _dialogService;
-        private readonly ConfigurationManager _config;
+        private readonly IConfigurationService _config;
         private JObject? _hashCacheObject;
         private volatile bool _isStopped;
 
         public InstallService(
-            AppState appState,
+            ApplicationState appState,
             IHttpService httpService,
             INodeService nodeService,
             IMirrorChyanService mirrorChyanService,
             IFileService fileService,
             IDialogService dialogService,
-            ConfigurationManager config)
+            IConfigurationService config)
         {
             _appState = appState;
             _httpService = httpService;
@@ -62,7 +63,7 @@ namespace LLC_MOD_Toolbox.Services.Installation
             {
                 ct.ThrowIfCancellationRequested();
 
-                if (_appState.GreytestStatus)
+                if (_appState.IsGreytestMode)
                 {
                     IProgress<float> greytestProgress = CreateDownloadProgress(progress, 0, 1);
                     if (!await InstallGreytestMod(greytestProgress, ct) || _isStopped)
@@ -122,7 +123,7 @@ namespace LLC_MOD_Toolbox.Services.Installation
         public Task StopInstallAsync()
         {
             _isStopped = true;
-            string dir = _appState.LimbusCompanyDir;
+            string dir = _appState.GameDirectory;
             _fileService.DeleteFile(Path.Combine(dir, "BepInEx-IL2CPP-x64.7z"));
             _fileService.DeleteFile(Path.Combine(dir, "tmpchinesefont_BIE.7z"));
             _fileService.DeleteFile(Path.Combine(dir, "LLCCN-Font.7z"));
@@ -136,7 +137,7 @@ namespace LLC_MOD_Toolbox.Services.Installation
         private async Task<InstallPlan?> CreateInstallPlanAsync(CancellationToken ct)
         {
             string fontDir = Path.Combine(
-                _appState.LimbusCompanyDir,
+                _appState.GameDirectory,
                 "LimbusCompany_Data",
                 "Lang",
                 "LLC_zh-CN",
@@ -144,7 +145,7 @@ namespace LLC_MOD_Toolbox.Services.Installation
                 "Context");
             string fontChinese = Path.Combine(fontDir, "ChineseFont.ttf");
             string fontBackup = Path.Combine(
-                _appState.LimbusCompanyDir,
+                _appState.GameDirectory,
                 "LimbusCompany_Data",
                 "Lang",
                 "LLC_zh-CN",
@@ -153,7 +154,7 @@ namespace LLC_MOD_Toolbox.Services.Installation
             bool installFont = !File.Exists(fontChinese) && !File.Exists(fontBackup);
 
             string versionJsonPath = Path.Combine(
-                _appState.LimbusCompanyDir,
+                _appState.GameDirectory,
                 "LimbusCompany_Data",
                 "Lang",
                 "LLC_zh-CN",
@@ -195,9 +196,9 @@ namespace LLC_MOD_Toolbox.Services.Installation
             return await Task.Run(async () =>
             {
                 Log.logger.Info("正在安装字体文件。");
-                string fontDir = Path.Combine(_appState.LimbusCompanyDir, "LimbusCompany_Data", "Lang", "LLC_zh-CN", "Font", "Context");
+                string fontDir = Path.Combine(_appState.GameDirectory, "LimbusCompany_Data", "Lang", "LLC_zh-CN", "Font", "Context");
                 Directory.CreateDirectory(fontDir);
-                string fontZIPFile = Path.Combine(_appState.LimbusCompanyDir, "LLCCN-Font.7z");
+                string fontZIPFile = Path.Combine(_appState.GameDirectory, "LLCCN-Font.7z");
 
                 ct.ThrowIfCancellationRequested();
                 if (_appState.IsMirrorChyanMode)
@@ -232,7 +233,7 @@ namespace LLC_MOD_Toolbox.Services.Installation
                 }
 
                 Log.logger.Info("解压字体包中。");
-                _fileService.ExtractArchive(fontZIPFile, _appState.LimbusCompanyDir);
+                _fileService.ExtractArchive(fontZIPFile, _appState.GameDirectory);
                 ct.ThrowIfCancellationRequested();
                 Log.logger.Info("删除字体包。");
                 File.Delete(fontZIPFile);
@@ -245,7 +246,7 @@ namespace LLC_MOD_Toolbox.Services.Installation
             return await Task.Run(async () =>
             {
                 Log.logger.Info("开始安装模组。");
-                string limbusLocalizeZipPath = Path.Combine(_appState.LimbusCompanyDir, "LimbusLocalize.7z");
+                string limbusLocalizeZipPath = Path.Combine(_appState.GameDirectory, "LimbusLocalize.7z");
 
                 ct.ThrowIfCancellationRequested();
                 if (_appState.IsMirrorChyanMode)
@@ -288,7 +289,7 @@ namespace LLC_MOD_Toolbox.Services.Installation
                 }
 
                 Log.logger.Info("解压模组本体 zip 中。");
-                _fileService.ExtractArchive(limbusLocalizeZipPath, _appState.LimbusCompanyDir);
+                _fileService.ExtractArchive(limbusLocalizeZipPath, _appState.GameDirectory);
                 ct.ThrowIfCancellationRequested();
                 Log.logger.Info("删除模组本体 zip 。");
                 File.Delete(limbusLocalizeZipPath);
@@ -301,20 +302,20 @@ namespace LLC_MOD_Toolbox.Services.Installation
             return await Task.Run(async () =>
             {
                 Log.logger.Info("灰度测试模式已开启。开始安装灰度模组。");
-                if (string.IsNullOrWhiteSpace(_appState.GreytestUrl))
+                if (string.IsNullOrWhiteSpace(_appState.GreytestDownloadUrl))
                 {
                     Log.logger.Error("灰度模组下载地址为空。");
                     await StopInstallAsync();
                     return false;
                 }
 
-                string zipPath = Path.Combine(_appState.LimbusCompanyDir, "LimbusLocalize_Dev.7z");
-                await _httpService.DownloadFileAsync(_appState.GreytestUrl, zipPath, downloadProgress);
+                string zipPath = Path.Combine(_appState.GameDirectory, "LimbusLocalize_Dev.7z");
+                await _httpService.DownloadFileAsync(_appState.GreytestDownloadUrl, zipPath, downloadProgress);
                 ct.ThrowIfCancellationRequested();
                 if (_isStopped)
                     return false;
 
-                _fileService.ExtractArchive(zipPath, _appState.LimbusCompanyDir);
+                _fileService.ExtractArchive(zipPath, _appState.GameDirectory);
                 ct.ThrowIfCancellationRequested();
                 File.Delete(zipPath);
                 Log.logger.Info("灰度模组安装完成。");
@@ -355,7 +356,7 @@ namespace LLC_MOD_Toolbox.Services.Installation
         {
             try
             {
-                string url = _config.Settings.general.internationalMode
+                string url = _config.Settings.General.InternationalMode
                     ? "https://cdn-api.zeroasso.top/v2/hash/get_hash"
                     : "https://api.zeroasso.top/v2/hash/get_hash";
                 string hash = await _httpService.GetTextAsync(url, reportError: false);
@@ -443,7 +444,7 @@ namespace LLC_MOD_Toolbox.Services.Installation
         {
             try
             {
-                string configPath = Path.Combine(_appState.LimbusCompanyDir, "LimbusCompany_Data", "Lang", "config.json");
+                string configPath = Path.Combine(_appState.GameDirectory, "LimbusCompany_Data", "Lang", "config.json");
                 if (File.Exists(configPath))
                 {
                     string configJson = File.ReadAllText(configPath);

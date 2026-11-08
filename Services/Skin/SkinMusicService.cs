@@ -6,14 +6,6 @@ using System.Windows.Threading;
 
 namespace LLC_MOD_Toolbox.Services.Skin
 {
-    public interface ISkinMusicService
-    {
-        void PlayWithFadeIn(string musicPath);
-        void FadeOutAndStop();
-        Task FadeOutAndStopAsync();
-        void SetVolumeMultiplier(double multiplier);
-    }
-
     public sealed class SkinMusicService : ISkinMusicService
     {
         private static readonly TimeSpan FadeInDuration = TimeSpan.FromSeconds(0.5);

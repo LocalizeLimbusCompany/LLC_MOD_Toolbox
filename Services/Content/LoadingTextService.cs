@@ -1,3 +1,4 @@
+using LLC_MOD_Toolbox.Models;
 using LLC_MOD_Toolbox.Services.Configuration;
 using LLC_MOD_Toolbox.Services.Network;
 using Newtonsoft.Json.Linq;
@@ -5,21 +6,17 @@ using System.IO;
 
 namespace LLC_MOD_Toolbox.Services.Content
 {
-    public interface ILoadingTextService
-    {
-        Task InitializeAsync();
-        string GetRandomLoadingText();
-    }
-
     public sealed class LoadingTextService : ILoadingTextService
     {
-        private readonly AppState _appState;
+        private readonly ApplicationState _appState;
         private readonly IHttpService _httpService;
-        private readonly ConfigurationManager _config;
+        private readonly IConfigurationService _config;
         private JArray? _cachedTexts;
+        private JObject? _loadingObject;
+        private bool _needsRefresh;
         private readonly Random _random = new();
 
-        public LoadingTextService(AppState appState, IHttpService httpService, ConfigurationManager config)
+        public LoadingTextService(ApplicationState appState, IHttpService httpService, IConfigurationService config)
         {
             _appState = appState;
             _httpService = httpService;
@@ -28,26 +25,54 @@ namespace LLC_MOD_Toolbox.Services.Content
 
         public async Task InitializeAsync()
         {
-            string filePath = Path.Combine(_appState.CurrentDir, "loadingText.json");
-            JObject loadingObject = JObject.Parse(await File.ReadAllTextAsync(filePath));
-
-            if (DateTime.TryParseExact(loadingObject["loadingDate"]!.Value<string>(), "yyyy-MM-dd HH:mm", null, System.Globalization.DateTimeStyles.None, out DateTime parsedDate))
+            string filePath = Path.Combine(_appState.BaseDirectory, "loadingText.json");
+            try
             {
-                TimeSpan difference = DateTime.Now - parsedDate;
-                if (Math.Abs(difference.TotalDays) >= 14)
-                {
-                    Log.logger.Info("Loading文本需要更新。");
-                    var newObj = await DownloadNewLoadingText(filePath, loadingObject);
-                    if (newObj != null)
-                        loadingObject = newObj;
-                }
+                _loadingObject = JObject.Parse(await File.ReadAllTextAsync(filePath));
+                _cachedTexts = ReadTexts(_loadingObject["loadingTexts"]);
+                _needsRefresh = _cachedTexts.Count == 0 ||
+                    !DateTime.TryParseExact(_loadingObject["loadingDate"]?.Value<string>(), "yyyy-MM-dd HH:mm", null,
+                        System.Globalization.DateTimeStyles.None, out DateTime parsedDate) ||
+                    Math.Abs((DateTime.Now - parsedDate).TotalDays) >= 14;
             }
-            else
+            catch (Exception ex)
             {
-                Log.logger.Error("读取Loading文本日期失败。");
+                _needsRefresh = true;
+                Log.logger.Warn("读取本地Loading文本失败，将使用默认文本。", ex);
             }
+        }
 
-            _cachedTexts = loadingObject["loadingTexts"] as JArray;
+        // Refresh only after startup; stale local text remains usable if the network fails.
+        public async Task RefreshAsync()
+        {
+            if (!_needsRefresh)
+                return;
+
+            try
+            {
+                string url = _config.Settings.General.InternationalMode
+                    ? "https://cdn-api.zeroasso.top/v2/loading/get_loading"
+                    : "https://api.zeroasso.top/v2/loading/get_loading";
+                string raw = await _httpService.GetMetadataTextAsync(url);
+                if (string.IsNullOrWhiteSpace(raw))
+                    return;
+
+                JArray texts = ReadTexts(JArray.Parse(raw));
+                if (texts.Count == 0)
+                    return;
+
+                var updated = (JObject?)_loadingObject?.DeepClone() ?? new JObject();
+                updated["loadingDate"] = DateTime.Now.ToString("yyyy-MM-dd HH:mm");
+                updated["loadingTexts"] = texts;
+                await File.WriteAllTextAsync(Path.Combine(_appState.BaseDirectory, "loadingText.json"), updated.ToString());
+                _loadingObject = updated;
+                _cachedTexts = texts;
+                _needsRefresh = false;
+            }
+            catch (Exception ex)
+            {
+                Log.logger.Warn("更新Loading文本失败，继续使用本地文本。", ex);
+            }
         }
 
         public string GetRandomLoadingText()
@@ -60,7 +85,7 @@ namespace LLC_MOD_Toolbox.Services.Content
 
             int choice = _random.Next(0, 100);
             string text;
-            if (choice < 25)
+            if (choice < 25 && _cachedTexts.Count > 1)
                 text = _cachedTexts[1]!.Value<string>()!;
             else if (choice < 35)
                 text = _cachedTexts[0]!.Value<string>()!;
@@ -71,21 +96,8 @@ namespace LLC_MOD_Toolbox.Services.Content
             return text;
         }
 
-        private async Task<JObject?> DownloadNewLoadingText(string filePath, JObject loadingObject)
-        {
-            string url = _config.Settings.general.internationalMode
-                ? "https://cdn-api.zeroasso.top/v2/loading/get_loading"
-                : "https://api.zeroasso.top/v2/loading/get_loading";
-
-            string loadingText = await _httpService.GetTextAsync(url, false);
-            if (string.IsNullOrEmpty(loadingText))
-                return null;
-
-            JArray loadingArray = JArray.Parse(loadingText);
-            loadingObject["loadingDate"] = DateTime.Now.ToString("yyyy-MM-dd HH:mm");
-            loadingObject["loadingTexts"] = loadingArray;
-            File.WriteAllText(filePath, loadingObject.ToString());
-            return loadingObject;
-        }
+        private static JArray ReadTexts(JToken? token) => token is JArray texts
+            ? new JArray(texts.Where(text => text.Type == JTokenType.String && !string.IsNullOrWhiteSpace(text.Value<string>())))
+            : new JArray();
     }
 }

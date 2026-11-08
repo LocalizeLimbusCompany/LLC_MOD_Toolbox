@@ -4,17 +4,6 @@ using Newtonsoft.Json.Linq;
 
 namespace LLC_MOD_Toolbox.Services.Gacha
 {
-    public interface IGachaService
-    {
-        bool IsInitialized { get; }
-        bool InitializationFailed { get; }
-        int RollCount { get; }
-        Task InitializeAsync();
-        GachaRollResult Roll();
-    }
-
-    public record GachaRollResult(List<PersonalInfo> Personals, int[] UniqueCounts, bool HasVergil, int RollCount);
-
     public sealed class GachaService : IGachaService
     {
         private const string PersonalityDataUrl = "https://download.zeroasso.top/wiki/personality.json";

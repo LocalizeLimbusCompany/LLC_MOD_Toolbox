@@ -5,21 +5,13 @@ using System.IO;
 
 namespace LLC_MOD_Toolbox.Services.Content
 {
-    public interface IAnnouncementService
-    {
-        Task<AnnouncementResult> CheckForAnnouncementAsync();
-        void MarkAsRead(int version);
-    }
-
-    public record AnnouncementResult(bool HasNew, string Content, string Level, int Version, Exception? Error = null);
-
     public sealed class AnnouncementService : IAnnouncementService
     {
         private readonly IHttpService _httpService;
         private readonly INodeService _nodeService;
-        private readonly ConfigurationManager _config;
+        private readonly IConfigurationService _config;
 
-        public AnnouncementService(IHttpService httpService, INodeService nodeService, ConfigurationManager config)
+        public AnnouncementService(IHttpService httpService, INodeService nodeService, IConfigurationService config)
         {
             _httpService = httpService;
             _nodeService = nodeService;
@@ -28,18 +20,18 @@ namespace LLC_MOD_Toolbox.Services.Content
 
         public async Task<AnnouncementResult> CheckForAnnouncementAsync()
         {
-            if (!_config.Settings.announcement.getAnno)
+            if (!_config.Settings.Announcements.IsEnabled)
                 return new AnnouncementResult(false, string.Empty, string.Empty, 0);
 
             try
             {
-                string annoText = await _httpService.GetTextAsync(_nodeService.ResolveApiUrl("v2/announcement/get_anno"), reportError: false);
+                string annoText = await _httpService.GetMetadataTextAsync(_nodeService.ResolveApiUrl("v2/announcement/get_anno"));
                 if (string.IsNullOrEmpty(annoText))
                     return new AnnouncementResult(false, string.Empty, string.Empty, 0);
 
                 var annoObject = JObject.Parse(annoText);
                 int version = annoObject["version"]!.Value<int>();
-                if (version <= _config.Settings.announcement.annoVersion)
+                if (version <= _config.Settings.Announcements.LastReadVersion)
                 {
                     Log.logger.Info("无新公告。");
                     return new AnnouncementResult(false, string.Empty, string.Empty, 0);
@@ -59,8 +51,8 @@ namespace LLC_MOD_Toolbox.Services.Content
 
         public void MarkAsRead(int version)
         {
-            _config.Settings.announcement.annoVersion = version;
-            _config.SaveConfig();
+            _config.Settings.Announcements.LastReadVersion = version;
+            _config.Save();
         }
     }
 }

@@ -30,7 +30,7 @@
                Foreground="#FFFFEED4"
                FontFamily="/Fonts/subset/#Source Han Sans CN"
                FontWeight="Medium">
-            <TextBlock Text="{Binding AnnouncementText}" TextWrapping="Wrap" Height="262" Width="634"/>
+            <TextBlock Text="{Binding Announcement.Content}" TextWrapping="Wrap" Height="262" Width="634"/>
         </Label>
         <Image x:Name="AnnouncementButtonHover"
                Panel.ZIndex="5"
@@ -42,7 +42,7 @@
                VerticalAlignment="Top"
                Width="80"
                Source="Picture/SettingButtonHover.png"/>
-        <Button x:Name="AnnouncementAcknowledgeButton" IsHitTestVisible="{Binding IsAnnouncementButtonEnabled}"
+        <Button x:Name="AnnouncementAcknowledgeButton" IsHitTestVisible="{Binding Announcement.CanAcknowledge}"
                 HorizontalAlignment="Center"
                 Margin="0,343,0,0"
                 VerticalAlignment="Top"
@@ -99,8 +99,8 @@
                Foreground="#FFFFEED4"
                FontFamily="/Fonts/subset/#Source Han Sans CN"
                FontWeight="Medium">
-            <TextBlock Text="{Binding AnnouncementTip}"
-                       Visibility="{Binding IsAnnouncementTipVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
+            <TextBlock Text="{Binding Announcement.Tip}"
+                       Visibility="{Binding Announcement.ShowTip, Converter={StaticResource BooleanToVisibilityConverter}}"
                        TextWrapping="Wrap"
                        Height="23"
                        Width="254"/>
